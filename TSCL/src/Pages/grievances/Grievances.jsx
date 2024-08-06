@@ -64,9 +64,9 @@ const Grivences = () => {
             </a>
           </div>
         </div>
-        <div className="bg-white mx-10 my-5 rounded-lg overflow-x-auto">
+        <div className="bg-white mx-10 my-5 rounded-lg overflow-x-auto ">
           <table className="w-full  ">
-            <thead>
+            <thead >
             <tr className="border-b-2 border-gray-300">
                 <th className="py-2">
                   <p className="flex gap-2 items-center mx-4 my-2 font-lexend font-semibold whitespace-nowrap">
@@ -150,7 +150,7 @@ const Grivences = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody >
              
               <tr className="border-b-2 border-gray-300">
                 <td className="">

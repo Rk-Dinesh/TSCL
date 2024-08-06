@@ -14,6 +14,8 @@ import User from './Pages/publicuser/User';
 import Settings from './Pages/setting/Setting';
 import ViewRequest from './Pages/request/ViewRequest';
 import Login from './Pages/auth/Login';
+import OTP from './Pages/auth/OTP';
+import SignUp from './Pages/auth/SignUp';
 
 function App() {
   
@@ -22,7 +24,9 @@ function App() {
     <>
      <BrowserRouter>
       <Routes>
+      <Route path='/signup' element={<SignUp/>} />
       <Route path='/login' element={<Login/>} />
+      <Route path='/auth' element={<OTP/>} />
        <Route path="/" element={<Layout/>}>
        <Route path='/organization' element={<Organization/>} />
        <Route path='/department' element={<Department/>} />
