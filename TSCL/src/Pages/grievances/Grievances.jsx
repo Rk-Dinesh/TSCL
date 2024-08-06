@@ -17,6 +17,10 @@ const Grivences = () => {
   const handleform = () => {
     navigate("/form");
   };
+
+  const form = () => {
+    navigate("/view");
+  };
   return (
     <Fragment>
       <div className="  bg-blue-100 h-screen">
@@ -216,7 +220,7 @@ const Grivences = () => {
                   </div>
                 </td>
                 <td>
-                  <div className="mx-4 my-3 whitespace-nowrap">
+                  <div className="mx-4 my-3 whitespace-nowrap" onClick={form}>
                     <BsThreeDotsVertical />
                   </div>
                 </td>
@@ -289,7 +293,7 @@ const Grivences = () => {
                   </div>
                 </td>
                 <td>
-                  <div className="mx-4 my-3 whitespace-nowrap">
+                  <div className="mx-4 my-3 whitespace-nowrap" onClick={form}>
                     <BsThreeDotsVertical />
                   </div>
                 </td>

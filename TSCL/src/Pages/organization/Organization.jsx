@@ -49,7 +49,7 @@ const Organization = () => {
           </a>
         </div>
 
-        <div className="bg-white mx-10 rounded-lg my-2">
+        <div className="bg-white mx-10 rounded-lg my-2 overflow-x-auto">
           <table className="w-full  ">
             <thead className=" border-b-2 border-gray-300">
               <th className="py-3 font-normal text-xl font-lexend">

@@ -12,6 +12,8 @@ import GrievanceForm from './Pages/grievances/GrievanceForm';
 import Admin from './Pages/adminuser/Admin';
 import User from './Pages/publicuser/User';
 import Settings from './Pages/setting/Setting';
+import ViewRequest from './Pages/request/ViewRequest';
+import Login from './Pages/auth/Login';
 
 function App() {
   
@@ -20,6 +22,7 @@ function App() {
     <>
      <BrowserRouter>
       <Routes>
+      <Route path='/login' element={<Login/>} />
        <Route path="/" element={<Layout/>}>
        <Route path='/organization' element={<Organization/>} />
        <Route path='/department' element={<Department/>} />
@@ -32,7 +35,9 @@ function App() {
        <Route path='/admin' element={<Admin/>} />
        <Route path='/user' element={<User/>} />
        <Route path='/setting' element={<Settings/>} />
+       <Route path='/view' element={<ViewRequest/>} />
        </Route>
+       
       </Routes>
       </BrowserRouter>
     </>
