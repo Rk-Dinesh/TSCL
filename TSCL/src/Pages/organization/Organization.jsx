@@ -37,24 +37,27 @@ const Organization = () => {
             </button>
           </a>
         </div>
-        <div className="flex justify-between my-2 mx-8">
-          <h1 className="text-2xl font-medium ml-8"> Organization Structure</h1>
-          <a href="#">
+        <div className="flex justify-between items-center my-2 mx-8">
+          <h1 className="text-2xl font-medium "> Organization Structure</h1>
+       
             <button
-              className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between mb-2"
+              className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between mb-2"
               onClick={toggleModal}
             >
               <FaPlus /> Add New Organization
             </button>
-          </a>
+         
         </div>
 
-        <div className="bg-white mx-10 rounded-lg my-2 overflow-x-auto">
-          <table className="w-full  ">
-            <thead className=" border-b-2 border-gray-300">
-              <th className="py-3 font-normal text-xl font-lexend">
+        <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto">
+          <table>
+          <th className="pt-3 px-4 font-normal text-xl font-lexend">
                 Employee Details
               </th>
+          </table>
+          <table className="w-full  ">
+            <thead className=" border-b-2 border-gray-300">
+             
               <tr className="border-b-2 border-gray-300">
                 <th className="">
                   <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold">
@@ -82,7 +85,7 @@ const Organization = () => {
                   </p>
                 </th>
                 <th>
-                  <p className="mx-4 my-3 font-semibold font-lexend">
+                  <p className="text-center mx-4 my-3 font-semibold font-lexend">
                     Action
                   </p>
                 </th>
@@ -91,32 +94,32 @@ const Organization = () => {
             <tbody>
               <tr className="border-b-2 border-gray-300">
                 <td className="">
-                  <p className="items-center mx-4 my-2 font-lexend text-center">
+                  <p className=" mx-4 my-2 font-lexend text-center">
                     123456
                   </p>
                 </td>
                 <td>
-                  <div className="items-center mx-4  my-2 font-lexend text-center">
+                  <div className=" mx-4  my-2 font-lexend text-center">
                     Alwin
                   </div>
                 </td>
                 <td>
-                  <p className="items-center mx-4  my-2  font-lexend text-center">
+                  <p className=" mx-4  my-2  font-lexend text-center">
                     JE
                   </p>
                 </td>
                 <td>
-                  <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
+                  <p className=" text-center mx-4  my-2 font-lexend ">
                     6767676767
                   </p>
                 </td>
                 <td>
-                  <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
+                  <p className="text-center mx-4  my-2 font-lexend ">
                     masilamani123@gmail.com
                   </p>
                 </td>
                 <td>
-                  <p className="mx-4 my-3">
+                  <p className="flex justify-center mx-4 my-3">
                     <BsThreeDotsVertical />
                   </p>
                 </td>
