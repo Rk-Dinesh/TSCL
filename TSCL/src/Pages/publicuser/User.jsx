@@ -69,7 +69,7 @@ const User = () => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row justify-end gap-3 p-2 mt-3 mx-8">
-            <p className="flex items-center gap-3 bg-white px-2 rounded-full">
+            <div className="flex items-center gap-3 bg-white px-2 rounded-full">
               <IoMdSearch className="text-xl" />
               <input
                 type="search"
@@ -78,7 +78,7 @@ const User = () => {
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
-            </p>
+            </div>
             <a href="#">
               <button className="flex gap-2 items-center border-2 border-blue-500  font-lexend bg-slate-100 text-blue-500 rounded-full p-2 w-40 justify-center">
                 {" "}

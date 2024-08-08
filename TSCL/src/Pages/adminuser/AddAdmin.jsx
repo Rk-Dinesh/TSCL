@@ -1,24 +1,33 @@
 import React from "react";
-import { RiArrowDropDownLine } from "react-icons/ri";
-// import { useFormAction } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { API } from "../../Host";
+import { toast } from "react-toastify";
 
-const AddUserSchema = yup.object().shape({
-  user: yup.string().required("user is required"),
-  department: yup.string().required("Department is required"),
-  phone: yup.string().required("phone is required"),
-  email: yup.string().required("email is required"),
-  address: yup.string().required("address is required"),
-  password: yup.string().required("password is required"),
-  pincode: yup.string().required("pincode is required"),
-  status: yup.string().required("status is required"),
-  role: yup.string().required("role is required"),
-  last_login: yup.string().required("last login is required"),
-  created_by: yup.string().required("created by is required"),
-  // created_time: yup.string().required("created time is required"),
-  //  updated: yup.string().required("updated is required"),
+const AddAdminSchema = yup.object().shape({
+  user_name: yup.string().required("User Name is required"),
+  dept_name:yup.string().required("Department is required"),
+  phone: yup.string().required("Phone Number is required"),
+  email: yup.string().required("Email Id  is required"),
+  address: yup.string().required("Address is required"),
+  login_password: yup.string().required("password is required"),
+  pincode: yup.string().required("Pincode is required"),
+  status: yup
+  .string()
+  .test(
+    "not-select",
+    "Please select an Status",
+    (value) => value !== "" && value !== "Status"
+  ),
+  role: yup
+  .string()
+  .test(
+    "not-select",
+    "Please select an Role",
+    (value) => value !== "" && value !== "Role"
+  )
 });
 
 const AddAdmin = (props) => {
@@ -29,64 +38,90 @@ const AddAdmin = (props) => {
     setValue,
     watch,
   } = useForm({
-    resolver: yupResolver(AddUserSchema),
+    resolver: yupResolver(AddAdminSchema),
     mode: "all",
   });
 
   const onSubmit = async (data) => {
-    console.log("data", data);
+    const formData = {
+      ...data,
+      created_by_user:"admin"
+    };
+
+    // console.log(formData);
+
+    try {
+      const response = await axios.post(`${API}/user/post`, formData);
+
+      if (response.status === 200) {
+        toast.success("Admin created Successfully");
+        props.toggleModal();
+        props.handlerefresh();
+      } else {
+        console.error("Error in posting data", response);
+        toast.error("Failed to Upload");
+      }
+    } catch (error) {
+      console.error("Error in posting data", error);
+    }
   };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
-      <div className="bg-white w-fit h-fit  font-lexend">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="border-b-2 border-gray-300 mx-10 mb-3">
-            <div className=" flex pt-5 items-center gap-6">
-              <label
-                className="block text-black text-lg font-medium mb-2"
-                htmlFor="user"
-              >
-                User Details
-              </label>
-              <input
-                type="text"
-                id="user"
-                className="mx-2 font-lexend px-2 text-sm outline-none"
-                placeholder="User Name"
-                {...register("user")}
-              />
-              {errors.user && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.user.message}
-                </p>
-              )}
-            </div>
+    <div className="bg-white w-fit h-fit  font-lexend">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="border-b-2 border-gray-300 mx-10 my-5">
+          <div className=" grid grid-cols-3 gap-3">
+            <label
+              className="block text-black text-lg font-medium mb-2 col-span-1"
+              htmlFor="user_name"
+            >
+              User Details
+            </label>
+            <input
+              type="text"
+              id="user_name"
+              className="mx-2 font-lexend px-2 text-sm outline-none col-span-2"
+              placeholder="User Name"
+              {...register("user_name")}
+            />
           </div>
+          {errors.user_name && (
+            <p className="text-red-500 text-xs text-end ">
+              {errors.user_name.message}
+            </p>
+          )}
+        </div>
 
-          <div>
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+        <div className=" flex flex-col gap-3 mx-10 my-1 ">
+
+        <div>
+            <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="department"
+                className=" text-black text-lg font-medium mb-2 col-span-1"
+                htmlFor="dept_name"
               >
                 Department:
               </label>
               <input
                 type="text"
-                id="department"
-                className="w-6/5 text-end outline-none"
-                placeholder="Department"
-                {...register("department")}
+                id="dept_name"
+                className="w-6/5 text-end outline-none col-span-2"
+                placeholder="Department Name"
+                {...register("dept_name")}
               />
-              {errors.department && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.department.message}
-                </p>
-              )}
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+            {errors.dept_name && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.dept_name.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
+                className=" text-black text-lg font-medium mb-2 col-span-1"
                 htmlFor="Phone"
               >
                 Phone No:
@@ -94,40 +129,45 @@ const AddAdmin = (props) => {
               <input
                 type="text"
                 id="phone"
-                className="w-6/5 text-end outline-none"
+                className="w-6/5 text-end outline-none col-span-2"
                 placeholder="Phone Number"
                 {...register("phone")}
               />
-              {errors.phone && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.phone.message}
-                </p>
-              )}
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+            {errors.phone && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
+                className=" text-black text-lg font-medium mb-2 col-span-1"
                 htmlFor="email"
               >
-                Email id:
+                Email Id:
               </label>
               <input
-                id="email"
                 type="email"
-                className="w-6/5 text-end outline-none px-2"
+                id="email"
+                className=" text-end outline-none col-span-2"
                 placeholder="abc@gmail.com"
                 {...register("email")}
               />
-              {errors.email && (
-                <p className=" text-red-500 text-xs text-end px-10">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
+            {errors.email && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+          <div>
+            <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
+                className=" text-black text-lg font-medium mb-2 col-span-1"
                 htmlFor="address"
               >
                 Address:
@@ -135,123 +175,127 @@ const AddAdmin = (props) => {
               <input
                 type="text"
                 id="address"
-                className="w-6/5 text-end outline-none px-2"
+                className=" text-end outline-none col-span-2"
                 placeholder="Address"
                 {...register("address")}
               />
-              {errors.address && (
-                <p className=" text-red-500 text-xs text-end px-10">
-                  {errors.address.message}
-                </p>
-              )}
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+            {errors.address && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.address.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
+                className=" text-black text-lg font-medium mb-2 col-span-1"
                 htmlFor="pincode"
               >
                 Pincode:
               </label>
               <input
-                type="pincode"
+                type="text"
                 id="pincode"
-                className="w-6/5 text-end outline-none px-2"
-                placeholder="000 000"
+                className=" text-end outline-none col-span-2"
+                placeholder="Pincode Number"
                 {...register("pincode")}
               />
-              {errors.pincode && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.pincode.message}
-                </p>
-              )}
             </div>
+            {errors.pincode && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.pincode.message}
+              </p>
+            )}
+          </div>
 
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+          <div>
+            <div className=" grid grid-cols-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
+                className=" text-black text-lg font-medium mb-2 col-span-2"
                 htmlFor="status"
               >
                 Status:
               </label>
-              <select
-                  className="block w-2/6 px-1 py-3  text-sm text-black border border-gray-900 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black border-none"
-                 
-                >
-                  <option  hidden>
-                    Status
-                  </option>
-
-                  <option value="active">Active</option>
-                  <option value="inactive">InActive</option>
-                </select>
-              {/* {errors.status && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.status.message}
-                </p>
-              )} */}
+              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+              id="status"
+               {...register("status")}
+               >
+                <option value="">Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">InActive</option>
+              </select>
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+            {errors.status && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.status.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className=" grid grid-cols-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
+                className=" text-black text-lg font-medium mb-2 col-span-2"
                 htmlFor="role"
               >
                 Role:
               </label>
-              <select
-                  className="block w-2/6 px-1 py-3  text-sm text-black border border-gray-900 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black border-none"
-                 
-                >
-                  <option  hidden>
-                    Role
-                  </option>
-
-                  <option value="active">SuperAdmin</option>
-                  <option value="inactive">Admin</option>
-                  <option value="inactive">Junior Engnieer</option>
-                </select>
-              {/* {errors.role && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.role.message}
-                </p>
-              )} */}
+              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+              id="role"
+               {...register("role")}
+               >
+                <option value="">Role</option>
+                <option value="superadmin">Superadmin</option>
+                <option value="admin">admin</option>
+              </select>
             </div>
+            {errors.role && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.role.message}
+              </p>
+            )}
+          </div>
 
-            <div className=" flex justify-between font-normal mx-10 py-1.5">
+          <div>
+            <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="password"
+                className=" text-black text-lg font-medium mb-2 col-span-1"
+                htmlFor="login_password"
               >
-                Login Password:
+                Password:
               </label>
               <input
                 type="password"
-                id="password"
-                className="w-6/5 text-end outline-none px-2"
-                placeholder="*******"
-                {...register("password")}
+                id="login_password"
+                className=" text-end outline-none col-span-2"
+                placeholder="Password"
+                {...register("login_password")}
               />
-              {errors.password && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.password.message}
-                </p>
-              )}
             </div>
+            {errors.login_password && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.login_password.message}
+              </p>
+            )}
           </div>
+        </div>
 
-          <div className="flex justify-end  py-6 mx-10  gap-3 ">
-            <button
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleModal}
-            >
-              cancel
-            </button>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="flex justify-end  py-6 mx-10 my-3 gap-5 ">
+          <button
+            className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
+            onClick={props.toggleModal}
+          >
+            cancel
+          </button>
+          <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
+            Save
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
   );
 };
 

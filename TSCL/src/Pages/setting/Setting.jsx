@@ -1,153 +1,264 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddRole from "./AddRole";
+import { API, formatDate } from "../../Host";
+import axios from "axios";
+import { IoMdSearch } from "react-icons/io";
+
 
 const Settings = () => {
   const [isModal, setIsModal] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [role, setRole] = useState([]);
+
+  useEffect(() => {
+    handlerefresh();
+  }, [searchValue, currentPage]);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const handlerefresh = () => {
+    axios
+      .get(`${API}/role/get`)
+      .then((response) => {
+        setRole(response.data.data);
+
+        const filteredCenters = response.data.data.filter((roles) =>
+          Object.values(roles).some((value) =>
+            value.toString().toLowerCase().includes(searchValue.toLowerCase())
+          )
+        );
+
+        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+        const lastIndex = currentPage * itemsPerPage;
+        const firstIndex = lastIndex - itemsPerPage;
+
+        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const toggleModal = () => {
     setIsModal(!isModal);
   };
+
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const filteredCenters = role.filter((roles) =>
+    Object.values(roles).some((value) =>
+      value.toString().toLowerCase().includes(searchValue.toLowerCase())
+    )
+  );
+
+  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
   return (
     <Fragment>
-      <div className="  bg-blue-100 h-screen">
-        <div className="mt-8">
+      <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
+        <div className="h-screen mt-10">
           <div className="flex justify-between items-center my-2 mx-8">
-            <h1 className="text-2xl font-medium ml-8"> Roles</h1>
-            <a href="#">
-              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between mb-2" onClick={toggleModal}>
+            <h1 className="text-2xl font-medium "> Roles</h1>
+            <div className="flex items-center  gap-3">
+            <div className="flex items-center gap-3 bg-white px-2 py-2 rounded-full">
+              <IoMdSearch className="text-xl" />
+              <input
+                type="search"
+                className="outline-none bg-transparent text-base"
+                placeholder="Search User"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 w-fit justify-between px-3" onClick={toggleModal}>
                 <FaPlus /> Add New Role
               </button>
-            </a>
+              </div>
+           
           </div>
 
-          <div className="bg-white mx-10 rounded-lg my-2 overflow-x-auto">
-            <table className="w-full  ">
-              <thead className=" border-b-2 border-gray-300">
-                <th className="py-3 font-normal text-xl font-lexend ">
+          <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+            <table>
+              <thead>
+              <th className="pt-4 pb-2 px-4 font-normal text-xl font-lexend whitespace-nowrap">
                   Roles Category
                 </th>
+              </thead>
+            </table>
+            <table className="w-full  ">
+              <thead className=" border-b-2 border-gray-300">
+                
                 <tr className="border-b-2 border-gray-300">
                   <th className="">
-                    <div className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold ">
+                    <p className="flex gap-2 items-center mx-3 my-2 font-lexend justify-center font-semibold whitespace-nowrap ">
                       S.no <RiExpandUpDownLine />
-                    </div>
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font- whitespace-nowrap">
                       Role Name <RiExpandUpDownLine />
-                    </div>
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       Status <RiExpandUpDownLine />
-                    </div>
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       CreatedBy <RiExpandUpDownLine />
-                    </div>
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       CreatedAt <RiExpandUpDownLine />
-                    </div>
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       UpdatedAt <RiExpandUpDownLine />
-                    </div>
+                    </p>
                   </th>
                   <th>
-                    <div className="mx-4 my-3 font-semibold font-lexend">
+                    <p className="mx-3 my-2 font-semibold font-lexend whitespace-nowrap">
                       Action
-                    </div>
+                    </p>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                
+                {currentItemsOnPage.map((roles,index)=>(
                 <tr className="border-b-2 border-gray-300">
                   <td className="">
-                    <div className="items-center mx-4 my-2 font-lexend text-center">
-                      1
-                    </div>
+                    <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap">
+                    {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                    </p>
                   </td>
                   <td>
-                    <div className="items-center mx-4  my-2 font-lexend text-center">
-                      Admin
-                    </div>
+                    <p className="mx-3  my-2 font-lexend text-center whitespace-nowrap">
+                     {roles.role_name}
+                    </p>
                   </td>
                   <td>
-                    <div className="items-center mx-4  my-2  font-lexend text-center">
-                      Active
-                    </div>
+                    <p className=" mx-3  my-2  font-lexend text-center whitespace-nowrap">
+                    {roles.status}
+                    </p>
                   </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
-                      Admin
-                    </div>
+                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                    {roles.created_by_user}
+                    </p>
                   </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
-                      29 july 2024 - 11:30am
-                    </div>
+                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                     {formatDate(roles.createdAt)}
+                    </p>
                   </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
-                      29 july 2024 - 11:30am
-                    </div>
+                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                    {formatDate(roles.updatedAt)}
+                    </p>
                   </td>
                   <td>
-                    <div className="mx-4 my-3">
+                    <p className="flex justify-center mx-3 my-2 whitespace-nowrap">
                       <BsThreeDotsVertical />
-                    </div>
+                    </p>
                   </td>
                 </tr>
-                <tr className="border-b-2 border-gray-300">
-                  <td className="">
-                    <div className="items-center mx-4 my-2 font-lexend text-center">
-                      2
-                    </div>
-                  </td>
-                  <td>
-                    <div className="items-center mx-4  my-2 font-lexend text-center">
-                      SuperAdmin
-                    </div>
-                  </td>
-                  <td>
-                    <div className="items-center mx-4  my-2  font-lexend text-center">
-                      InActive
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
-                      Admin
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
-                      29 july 2024 - 11:30am
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center">
-                      29 july 2024 - 11:30am
-                    </div>
-                  </td>
-                  <td>
-                    <div className="mx-4 my-3">
-                      <BsThreeDotsVertical />
-                    </div>
-                  </td>
-                </tr>
+                ))}
               </tbody>
             </table>
           </div>
+
+          <div className=" my-5 mb-5 mx-7">
+            <nav
+              className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+              aria-label="Table navigation"
+            >
+              <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto font-alegerya">
+                Showing{" "}
+                <span className="text-gray-700">
+                  {firstIndex + 1} to {Math.min(lastIndex, role.length)}
+                </span>{" "}
+                of <span className="text-gray-900">{role.length} entries</span>
+              </span>
+              <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8 font-alegerya">
+                <li>
+                  <button
+                    onClick={() => paginate(1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-primary bg-paginate-bg border border-paginate-br rounded-s-lg hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    &lt;&lt;
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    Back
+                  </button>
+                </li>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .slice(
+                    Math.max(0, currentPage - 2),
+                    Math.min(totalPages, currentPage + 1)
+                  )
+                  .map((number) => (
+                    <li key={number}>
+                      <button
+                        onClick={() => paginate(number)}
+                        className={`flex items-center justify-center px-3 h-8 leading-tight border border-paginate-br hover:text-white hover:bg-primary ${
+                          currentPage === number
+                            ? "bg-primary text-white"
+                            : "bg-white text-black"
+                        }`}
+                      >
+                        {number}
+                      </button>
+                    </li>
+                  ))}
+
+                <li>
+                  <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={lastIndex >= filteredCenters.length}
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    next
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => paginate(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br rounded-e-lg hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    &gt;&gt;
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
-      {isModal && <AddRole toggleModal={toggleModal} />}
+      {isModal && <AddRole toggleModal={toggleModal} handlerefresh={handlerefresh}/>}
     </Fragment>
   );
 };
