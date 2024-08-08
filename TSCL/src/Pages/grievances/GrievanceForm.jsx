@@ -29,7 +29,7 @@ const GrievanceForm = (props) => {
 
   return (
     <>
-      <div className="bg-blue-100 flex flex-col  pl-10 text-start h-fit   font-lexend">
+      <div className="bg-blue-100 flex flex-col  px-10 text-start h-fit   font-lexend overflow-y-auto no-scrollbar">
         <h1 className="text-xl my-5">Grievance Form</h1>
         <div className=" flex-col justify-center items-center w-[592px] bg-white h-fit rounded-lg">
           <div className="border-b-2 border-search">

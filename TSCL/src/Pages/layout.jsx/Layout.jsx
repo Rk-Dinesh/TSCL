@@ -24,6 +24,8 @@ const Layout = ({ route }) => {
   const handlelogout= () => {
     navigate('/login')
   }
+  
+  
 
   const Menus = [
     { title: "Dashboard", icon: <RxHome /> },
@@ -117,7 +119,7 @@ const Layout = ({ route }) => {
 
                     {menu.submenu && open && (
                       <BsChevronDown
-                        className={`cursor-pointer transition-transform delay-100n  ${
+                        className={`cursor-pointer transition-transform delay-100  ${
                           submenuopen && "rotate-180"
                         }`}
                         onClick={() => Setsubmenuopen(!submenuopen)}

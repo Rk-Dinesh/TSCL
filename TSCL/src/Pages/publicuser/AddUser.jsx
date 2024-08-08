@@ -1,22 +1,25 @@
 import React from "react";
-import { RiArrowDropDownLine } from "react-icons/ri";
-// import { useFormAction } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { API } from "../../Host";
+import { toast } from "react-toastify";
 
 const AddUserSchema = yup.object().shape({
-  user: yup.string().required("Department is required"),
-  phone: yup.string().required("phone is required"),
-  email: yup.string().required("email is required"),
-  address: yup.string().required("address is required"),
-  password: yup.string().required("password is required"),
-  pincode: yup.string().required("pincode is required"),
-  status: yup.string().required("status is required"),
-  last_login: yup.string().required("last login is required"),
-  created_by: yup.string().required("created by is required"),
-  // created_time: yup.string().required("created time is required"),
-  //  updated: yup.string().required("updated is required"),
+  public_user_name: yup.string().required("User Name is required"),
+  phone: yup.string().required("Phone Number is required"),
+  email: yup.string().required("Email Id  is required"),
+  address: yup.string().required("Address is required"),
+  login_password: yup.string().required("password is required"),
+  pincode: yup.string().required("Pincode is required"),
+  user_status: yup
+  .string()
+  .test(
+    "not-select",
+    "Please select an Status",
+    (value) => value !== "" && value !== "Status"
+  ),
 });
 
 const AddUser = (props) => {
@@ -32,158 +35,197 @@ const AddUser = (props) => {
   });
 
   const onSubmit = async (data) => {
-    console.log("data", data);
+    const formData = {
+      ...data,
+      verification_status:"active"
+    };
+
+    console.log(formData);
+
+    try {
+      const response = await axios.post(`${API}/public-user/post`, formData);
+
+      if (response.status === 200) {
+        toast.success("Public User created Successfully");
+        props.toggleModal();
+        props.handlerefresh();
+      } else {
+        console.error("Error in posting data", response);
+        toast.error("Failed to Upload");
+      }
+    } catch (error) {
+      console.error("Error in posting data", error);
+    }
   };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
       <div className="bg-white w-fit h-fit  font-lexend">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="border-b-2 border-gray-300 mx-10 mb-3">
-            <div className=" flex pt-5 items-center gap-6">
+          <div className="border-b-2 border-gray-300 mx-10 my-5">
+            <div className=" grid grid-cols-3 gap-3">
               <label
-                className="block text-black text-lg font-medium mb-2"
-                htmlFor="user"
+                className="block text-black text-lg font-medium mb-2 col-span-1"
+                htmlFor="public_user_name"
               >
                 User Details
               </label>
               <input
                 type="text"
-                id="user"
-                className="mx-2 font-lexend px-2 text-sm outline-none"
+                id="public_user_name"
+                className="mx-2 font-lexend px-2 text-sm outline-none col-span-2"
                 placeholder="User Name"
-                {...register("user")}
+                {...register("public_user_name")}
               />
-              {errors.user && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.user.message}
-                </p>
-              )}
             </div>
+            {errors.public_user_name && (
+              <p className="text-red-500 text-xs text-end ">
+                {errors.public_user_name.message}
+              </p>
+            )}
           </div>
 
-          <div>
-            <div className=" flex justify-between font-normal mx-10 py-2">
-              <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="Phone"
-              >
-                Phone No:
-              </label>
-              <input
-                type="text"
-                id="phone"
-                className="w-6/5 text-end outline-none"
-                placeholder="Phone Number"
-                {...register("phone")}
-              />
+          <div className=" flex flex-col gap-3 mx-10 my-1 ">
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className=" text-black text-lg font-medium mb-2 col-span-1"
+                  htmlFor="Phone"
+                >
+                  Phone No:
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  className="w-6/5 text-end outline-none col-span-2"
+                  placeholder="Phone Number"
+                  {...register("phone")}
+                />
+              </div>
               {errors.phone && (
-                <p className="text-red-500 text-xs text-end px-10">
+                <p className="text-red-500 text-xs text-end ">
                   {errors.phone.message}
                 </p>
               )}
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-2">
-              <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="email"
-              >
-                Email id:
-              </label>
-              <input
-                id="email"
-                type="email"
-                className="w-6/5 text-end outline-none px-2"
-                placeholder="abc@gmail.com"
-                {...register("email")}
-              />
+
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className=" text-black text-lg font-medium mb-2 col-span-1"
+                  htmlFor="email"
+                >
+                  Email Id:
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className=" text-end outline-none col-span-2"
+                  placeholder="abc@gmail.com"
+                  {...register("email")}
+                />
+              </div>
               {errors.email && (
-                <p className=" text-red-500 text-xs text-end px-10">
+                <p className="text-red-500 text-xs text-end ">
                   {errors.email.message}
                 </p>
               )}
             </div>
 
-            <div className=" flex justify-between font-normal mx-10 py-2">
-              <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="address"
-              >
-                Address:
-              </label>
-              <input
-                type="text"
-                id="address"
-                className="w-6/5 text-end outline-none px-2"
-                placeholder="Address"
-                {...register("address")}
-              />
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className=" text-black text-lg font-medium mb-2 col-span-1"
+                  htmlFor="address"
+                >
+                  Address:
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  className=" text-end outline-none col-span-2"
+                  placeholder="Address"
+                  {...register("address")}
+                />
+              </div>
               {errors.address && (
-                <p className=" text-red-500 text-xs text-end px-10">
+                <p className="text-red-500 text-xs text-end ">
                   {errors.address.message}
                 </p>
               )}
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-2">
-              <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="pincode"
-              >
-                Pincode:
-              </label>
-              <input
-                type="pincode"
-                id="pincode"
-                className="w-6/5 text-end outline-none px-2"
-                placeholder="000 000"
-                {...register("pincode")}
-              />
+
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className=" text-black text-lg font-medium mb-2 col-span-1"
+                  htmlFor="pincode"
+                >
+                  Pincode:
+                </label>
+                <input
+                  type="text"
+                  id="pincode"
+                  className=" text-end outline-none col-span-2"
+                  placeholder="Pincode Number"
+                  {...register("pincode")}
+                />
+              </div>
               {errors.pincode && (
-                <p className="text-red-500 text-xs text-end px-10">
+                <p className="text-red-500 text-xs text-end ">
                   {errors.pincode.message}
                 </p>
               )}
             </div>
-            <div className=" flex justify-between font-normal mx-10 py-2">
-              <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="status"
-              >
-                Status:
-              </label>
-              <select className="block w-2/6 px-1 py-3  text-sm text-black border border-gray-900 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black border-none">
-                <option hidden>Status</option>
 
-                <option value="active">Active</option>
-                <option value="inactive">InActive</option>
-              </select>
-              {/* {errors.status && (
-                <p className="text-red-500 text-xs text-end px-10">{errors.status.message}</p>
-              )} */}
+            <div>
+              <div className=" grid grid-cols-3">
+                <label
+                  className=" text-black text-lg font-medium mb-2 col-span-2"
+                  htmlFor="user_status"
+                >
+                  Status:
+                </label>
+                <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+                id="user_status"
+                 {...register("user_status")}
+                 >
+                  <option value="">Status</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">InActive</option>
+                </select>
+              </div>
+              {errors.user_status && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.user_status.message}
+                </p>
+              )}
             </div>
 
-            <div className=" flex justify-between font-normal mx-10 py-2">
-              <label
-                className=" text-black text-lg font-medium mb-2"
-                htmlFor="password"
-              >
-                Login Password:
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="w-6/5 text-end outline-none px-2"
-                placeholder="*******"
-                {...register("password")}
-              />
-              {errors.password && (
-                <p className="text-red-500 text-xs text-end px-10">
-                  {errors.password.message}
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className=" text-black text-lg font-medium mb-2 col-span-1"
+                  htmlFor="login_password"
+                >
+                  Password:
+                </label>
+                <input
+                  type="password"
+                  id="login_password"
+                  className=" text-end outline-none col-span-2"
+                  placeholder="Password"
+                  {...register("login_password")}
+                />
+              </div>
+              {errors.login_password && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.login_password.message}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex justify-end  py-6 mx-10  gap-5 ">
+          <div className="flex justify-end  py-6 mx-10 my-3 gap-5 ">
             <button
               className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
               onClick={props.toggleModal}

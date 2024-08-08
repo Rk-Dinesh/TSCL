@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -7,16 +7,21 @@ import * as yup from "yup";
 import { API } from "../../Host";
 
 const departmentSchema = yup.object().shape({
-  org_name: yup.string().test('not-select', 'Please select an Organization', (value) => value !== '' && value !== 'Select  Organization'),
+  org_name: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select an Organization",
+      (value) => value !== "" && value !== "Select  Organization"
+    ),
   dept_name: yup.string().required("Department is required"),
 });
 
 const AddDepartment = (props) => {
   const { ExistingOrganiZations } = props;
-  const [orgId, setorgId] = useState(null)
-  const [OrgName, setOrgName] = useState(null)
+  const [orgId, setorgId] = useState(null);
+  const [OrgName, setOrgName] = useState(null);
   //console.log(ExistingOrganiZations);
-  
 
   const {
     register,
@@ -34,7 +39,7 @@ const AddDepartment = (props) => {
         (org) => org.org_name === OrgName
       );
       if (selectedorg) {
-        setorgId( selectedorg.org_id);
+        setorgId(selectedorg.org_id);
       }
     }
   }, [OrgName, ExistingOrganiZations]);
@@ -42,7 +47,7 @@ const AddDepartment = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      org_id:orgId,
+      org_id: orgId,
       status: "inactive",
       created_by_user: "admin",
     };
@@ -97,7 +102,7 @@ const AddDepartment = (props) => {
               )}
             </div>
 
-            <div className="">
+            <div>
               <label
                 className="block text-gray-900 text-base font-normal mb-3"
                 htmlFor="dept_name"
