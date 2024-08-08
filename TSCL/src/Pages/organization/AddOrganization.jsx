@@ -34,9 +34,9 @@ const AddOrganization = (props) => {
       const response = await axios.post(`${API}/organization/post`, formData);
 
       if (response.status === 200) { 
-        toast.success("Organization created Successfully");
+        toast.success("Org created Successfully");
         props.toggleModal();
-        // props.fetchData();
+        props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");

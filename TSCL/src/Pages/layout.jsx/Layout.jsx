@@ -149,12 +149,12 @@ const Layout = ({ route }) => {
       </div>
 
       <div
-        className={`flex flex-col bg-blue-100 overflow-auto no-scrollbar h-screen transition-all duration-300 ${
+        className={`flex flex-col bg-blue-100  no-scrollbar h-screen transition-all duration-300 overflow-hidden ${
           open ? "w-5/6" : "w-11/12"
         }`}
       >
         <Header />
-        <Suspense>
+        <Suspense >
           <Outlet />
         </Suspense>
       </div>

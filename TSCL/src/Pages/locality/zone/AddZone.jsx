@@ -33,9 +33,9 @@ const AddZone = (props) => {
       const response = await axios.post(`${API}/zone/post`, formData);
 
       if (response.status === 200) { 
-        toast.success("Zonecreated Successfully");
+        toast.success("Zone created Successfully");
         props.toggleModal();
-        // props.fetchData();
+        props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");

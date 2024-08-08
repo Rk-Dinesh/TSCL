@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 const StreetSchema = yup.object().shape({
-  ward_name: yup.string().required("ward_name is required"),
+  ward_name: yup.string().test('not-select', 'Please select a ward', (value) => value !== '' && value !== 'Select Street'),
   street_name: yup.string().required("street_name is required"),
 });
 
@@ -15,10 +15,10 @@ const StreetSchema = yup.object().shape({
 const AddStreet = (props) => {
   const {ExistingWards} = props
   const [zoneId, setZoneId] = useState(null)
+  const [wardId, setWardId] = useState(null)
+  const [zoneName, setZoneName] = useState(null)
   const [WardName, setWardName] = useState(null)
-  // console.log(ExistingWards);
-  
-
+ 
   const {
     register,
     formState: { errors },
@@ -31,11 +31,13 @@ const AddStreet = (props) => {
 
   useEffect(() => {
     if (WardName) {
-      const selectedZone = ExistingWards.find(
+      const selectedWard = ExistingWards.find(
         (ward) => ward.ward_name === WardName
       );
-      if (selectedZone) {
-        setZoneId( selectedZone.zone_id);
+      if (selectedWard) {
+        setZoneId( selectedWard.zone_id);
+        setWardId( selectedWard.ward_id);
+        setZoneName(selectedWard.zone_name);
       }
     }
   }, [WardName, ExistingWards]);
@@ -44,6 +46,8 @@ const AddStreet = (props) => {
     const formData = {
       ...data,
       zone_id:zoneId,
+      ward_id:wardId,
+      zone_name:zoneName,
       status: "inactive",
       created_by_user: "admin",
     };
@@ -56,7 +60,7 @@ const AddStreet = (props) => {
       if (response.status === 200) {
         toast.success("Street created Successfully");
         props.toggleModal();
-        // props.fetchData();
+        props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");
@@ -68,18 +72,18 @@ const AddStreet = (props) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
-      <div className="bg-white w-[522px] h-[358px]  font-lexend">
+      <div className="bg-white w-[522px] h-[368px]  font-lexend">
         <div className="border-b-2 border-gray-300 mx-10">
           <h1 className="text-xl font-medium pt-10 pb-2">Add Street</h1>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mx-6 my-5">
+          <div className="mx-6 my-3">
             <div className="mb-3">
               <label
                 className="block text-gray-900 text-base font-normal mb-3"
                 htmlFor="ward_name"
               >
-                ward_name
+               Ward Name
               </label>
               <select
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
@@ -87,7 +91,7 @@ const AddStreet = (props) => {
                 {...register("ward_name")}
                 onChange={(e) => setWardName(e.target.value)}
               >
-                <option>Select Street</option>
+                <option value="">Select Street</option>
                 {ExistingWards.map((ward) => (
                   <option key={ward.ward_name} value={ward.ward_name}>
                     {ward.ward_name}
@@ -118,7 +122,7 @@ const AddStreet = (props) => {
               )}
             </div>
           </div>
-          <div className="flex justify-end mx-10 gap-5 ">
+          <div className="flex justify-end mx-10  gap-5 ">
             <button
               className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
               onClick={props.toggleCloseModal}

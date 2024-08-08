@@ -14,6 +14,8 @@ export default {
         'primary': '#4078E4',
         'secondary': '#FBFAFA',
          'search': '#E8E2E2',
+         'paginate-br' : '#BDBDBD',
+        'paginate-bg' : '#F3F3F3',
       }
     },
   },

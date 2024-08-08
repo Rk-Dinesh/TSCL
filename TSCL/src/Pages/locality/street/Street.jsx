@@ -5,16 +5,66 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoMdSearch } from "react-icons/io";
 import AddStreet from "./AddSreet";
-import { API } from "../../../Host";
+import { API, formatDate } from "../../../Host";
 import axios from "axios";
 
 const Street = () => {
   const [isModal, setIsModal] = useState(false);
   const [ExistingWards, setExistingWards] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [street, setStreet] = useState([])
 
   useEffect(() => {
-    fetchExistingWards();
-  }, []);
+    axios
+      .get(`${API}/street/get`)
+      .then((response) => {
+        setStreet(response.data.data);
+
+        const filteredCenters = response.data.data.filter((streets) =>
+          Object.values(streets).some((value) =>
+            value.toString().toLowerCase().includes(searchValue.toLowerCase())
+          )
+        );
+
+        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+        const lastIndex = currentPage * itemsPerPage;
+        const firstIndex = lastIndex - itemsPerPage;
+
+        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+        fetchExistingWards();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [searchValue, currentPage]);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const handlerefresh = () => {
+    axios.get(`${API}/street/get`).then((response) => {
+      setStreet(response.data.data);
+
+      const filteredCenters = response.data.data.filter((streets) =>
+        Object.values(streets).some((value) =>
+          value.toString().toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+
+      setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+      const lastIndex = currentPage * itemsPerPage;
+      const firstIndex = lastIndex - itemsPerPage;
+
+      setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+    });
+  };
 
   const toggleModal = () => {
     setIsModal(!isModal);
@@ -36,18 +86,31 @@ const Street = () => {
     }
   };
 
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const filteredCenters = street.filter((streets) =>
+    Object.values(streets).some((value) =>
+      value.toString().toLowerCase().includes(searchValue.toLowerCase())
+    )
+  );
+
+  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
   return (
     <Fragment>
-      <div className="  bg-blue-100 h-screen">
+      <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
+        <div className="h-screen">
         <div className="flex flex-row justify-end gap-3 p-2 mt-3 mx-8">
-          <p className="flex items-center gap-3 bg-white px-2 rounded-full">
-            <IoMdSearch className="text-xl" />
-            <input
-              type="search"
-              className="  outline-none bg-transparent"
-              placeholder=""
-            />
-          </p>
+        <div className="flex items-center gap-3 bg-white px-2 rounded-full">
+              <IoMdSearch className="text-xl" />
+              <input
+                type="search"
+                className="outline-none bg-transparent text-base"
+                placeholder="Search Street"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
           <a href="#">
             <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full p-2 w-40 justify-center">
               {" "}
@@ -73,43 +136,45 @@ const Street = () => {
           </button>
         </div>
 
-        <div className="bg-white mx-6 my-3 rounded-lg overflow-x-auto">
+        <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
           <table>
-            <th className="pt-4 px-4 font-medium font-lexend text-xl whitespace-nowrap">
+            <thead>
+            <th className="pt-4 pb-2 px-4 font-medium font-lexend text-xl whitespace-nowrap">
               Street Catogories
             </th>
+            </thead>
           </table>
           <table className="w-full  ">
             <thead className=" border-b-2 border-gray-300">
               <tr className="border-b-2 border-gray-300">
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
                     Street <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
                     Ward <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
                     Zone <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold">
                     CreatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold">
                     UpdatedAt
                     <RiExpandUpDownLine />
                   </p>
@@ -122,27 +187,28 @@ const Street = () => {
               </tr>
             </thead>
             <tbody>
+              {currentItemsOnPage.map((streets,index)=>(
               <tr className="border-b-2 border-gray-300">
                 <td>
-                  <p className="text-center mx-4 my-2 font-lexend ">Street 1</p>
+                  <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">{streets.street_name}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-4 my-2 font-lexend ">Ward 1</p>
+                  <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">{streets.ward_name}</p>
                 </td>
                 <td>
-                  <p className="text-centerr mx-4 my-2 font-lexend ">Zone 1</p>
+                  <p className="text-centerr mx-3 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-4  my-2 font-lexend ">Admin</p>
+                  <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-4 my-2  font-lexend whitespace-nowrap">
-                    29 july 2024 - 11:30am
+                  <p className="text-center mx-3 my-2  font-lexend whitespace-nowrap">
+                   {formatDate(streets.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className="text-center mx-4  my-2 font-lexend whitespace-nowrap">
-                    29 july 2024 - 11:30am
+                  <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                  {formatDate(streets.updatedAt)}
                   </p>
                 </td>
                 <td>
@@ -151,8 +217,86 @@ const Street = () => {
                   </p>
                 </td>
               </tr>
+              ))}
             </tbody>
           </table>
+        </div>
+        <div className=" my-5 mb-5 mx-7">
+          
+          <nav
+            className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+            aria-label="Table navigation"
+          >
+            <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto font-alegerya">
+              Showing{" "}
+              <span className="text-gray-700">
+                {firstIndex + 1} to {Math.min(lastIndex, street.length)}
+              </span>{" "}
+              of <span className="text-gray-900">{street.length} entries</span>
+            </span>
+            <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8 font-alegerya">
+              <li>
+                <button
+                  onClick={() => paginate(1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-primary bg-paginate-bg border border-paginate-br rounded-s-lg hover:bg-paginate-bg hover:text-primary-hover"
+                >
+                  &lt;&lt;
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
+                >
+                  Back
+                </button>
+              </li>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .slice(
+                  Math.max(0, currentPage - 2),
+                  Math.min(totalPages, currentPage + 1)
+                )
+                .map((number) => (
+                  <li key={number}>
+                    <button
+                      onClick={() => paginate(number)}
+                      className={`flex items-center justify-center px-3 h-8 leading-tight border border-paginate-br hover:text-white hover:bg-primary ${
+                        currentPage === number
+                          ? "bg-primary text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      {number}
+                    </button>
+                  </li>
+                ))}
+
+              <li>
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={lastIndex >= filteredCenters.length}
+                  className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
+                >
+                  next
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => paginate(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br rounded-e-lg hover:bg-paginate-bg hover:text-primary-hover"
+                >
+                  &gt;&gt;
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
         </div>
       </div>
       {isModal && (
@@ -160,6 +304,7 @@ const Street = () => {
           toggleModal={toggleModal}
           toggleCloseModal={toggleCloseModal}
           ExistingWards={ExistingWards}
+          handlerefresh={handlerefresh}
         />
       )}
     </Fragment>
