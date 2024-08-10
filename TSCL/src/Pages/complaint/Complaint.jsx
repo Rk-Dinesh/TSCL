@@ -1,28 +1,81 @@
-import React, { Fragment,useState } from "react";
+import React, { Fragment,useState,useEffect} from "react";
 import { FaPlus } from "react-icons/fa6";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoMdSearch } from "react-icons/io";
 import AddComplaint from "./AddComplaint";
-
+import { API } from "../../Host";
+import axios from "axios";
 
 const Complaint = () => {
-  const [isModal,setIsModal]=useState(false);
-  const toggleModal=()=>{
-      setIsModal(!isModal)
-  }
+  const [isModal, setIsModal] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [complaint, setComplaint] = useState([]);
+
+  useEffect(() => {
+    handlerefresh();
+  }, [searchValue, currentPage]);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const handlerefresh = () => {
+    axios
+      .get(`${API}/complaint/get`)
+      .then((response) => {
+        setComplaint(response.data.data);
+
+        const filteredCenters = response.data.data.filter((comp) =>
+          Object.values(comp).some((value) =>
+            value.toString().toLowerCase().includes(searchValue.toLowerCase())
+          )
+        );
+
+        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+        const lastIndex = currentPage * itemsPerPage;
+        const firstIndex = lastIndex - itemsPerPage;
+
+        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const toggleModal = () => {
+    setIsModal(!isModal);
+  };
+
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const filteredCenters = complaint.filter((comp) =>
+    Object.values(comp).some((value) =>
+      value.toString().toLowerCase().includes(searchValue.toLowerCase())
+    )
+  );
+
+  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
   return (
     <Fragment>
-    <div className="  bg-blue-100 h-screen">
+    <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
+      <div className="h-screen">
       <div className="flex flex-row justify-end gap-3 p-2 mt-3 mx-8">
       <p className="flex items-center gap-3 bg-white px-2 rounded-full">
         <IoMdSearch className="text-xl"/>
-          <input
-            type="search"
-            className="  outline-none bg-transparent"
-            placeholder=""
-          />
+        <input
+                type="search"
+                className="outline-none bg-transparent text-base"
+                placeholder="Search Complaint"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
         </p>
         <a href="#">
           <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full p-2 w-40 justify-center">
@@ -39,237 +92,242 @@ const Complaint = () => {
         </a>
       </div>
       <div className="flex justify-between items-center my-2 mx-8">
-        <h1 className="text-2xl font-medium ml-8">Complaint Category</h1>
-        <a href="#">
+        <h1 className="text-xl font-medium ">Complaint Category</h1>
+       
           <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between" onClick={toggleModal}>
             <FaPlus /> Add New Complaint
           </button>
-        </a>
+       
       </div>
-
-
-      <div className="bg-white mx-10 rounded-lg overflow-x-auto">
+      <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
         <table className="w-full  ">
           <thead>
           <tr className="border-b-2 border-gray-300">
               <th className="py-2">
-                <p  className="flex gap-2 items-center mx-4 my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
                   S.no <RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                 Complaint type <RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                 Department<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                   TAT Type<RiExpandUpDownLine />
+                </p>
+              </th>
+              <th>
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                    Duration<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                    Priority<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                    Escalation-1<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                 Escalation-2<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                 Escalation-3<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                    Status<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="flex gap-2 items-center mx-4  my-2 font-lexend font-semibold whitespace-nowrap">
+                <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                   CreatedBy<RiExpandUpDownLine />
                 </p>
               </th>
               <th>
-                <p  className="mx-4 my-3 font-lexend font-semibold whitespace-nowrap">
+                <p  className="mx-3 my-3 text-center font-lexend font-semibold whitespace-nowrap">
                   Action
                 </p>
               </th>
             </tr>
           </thead>
           <tbody>
-           
-              <tr className="border-b-2 border-gray-300">
-                <td className="">
-                  <div className="items-center mx-4 my-2 font-lexend whitespace-nowrap"> 1</div>
+           {currentItemsOnPage.map((complaints,index)=>(
+              <tr className="border-b-2 border-gray-300" key={index}>
+                <td >
+                  <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">  {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                            </p>
                 </td>
                 <td>
-                  <div className="items-center mx-4  my-2 font-lexend whitespace-nowrap text-center">Water</div>
+                  <p className="mx-3  my-2 font-lexend whitespace-nowrap text-center">{complaints.complaint_type_title}</p>
                 </td>
                 <td>
-                  <div className="items-center mx-4  my-2  font-lexend whitespace-nowrap text-center">PWD</div>
+                  <p className="mx-3  my-2  font-lexend whitespace-nowrap text-center">{complaints.dept}</p>
                 </td>
                 <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  15 
+                <p className="mx-3  my-2  font-lexend whitespace-nowrap text-center">
+                {complaints.tat_type} 
+                  </p>
+                </td>
+                <td>
+                  <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  {complaints.tat_duration}
+                  </p>
+                </td>
+                <td>
+                  <p className="mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  {complaints.priority}
+                  </p>
+                </td>
+                <td >
+                  <div className="mx-3 my-3 flex gap-3 items-center justify-center font-lexend">  
+                  <p className=" whitespace-nowrap  bg-gray-100 px-2 py-1.5 rounded-full">
+                  {complaints.escalation_l1} 
+                  </p>
+                  <p className="  whitespace-nowrap ">
+                  {complaints.role_l1}
+                  </p>
+                  </div>
+                </td>
+                
+                <td >
+                  <div className="mx-3 my-3 flex gap-3 items-center justify-center font-lexend">  
+                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1.5 rounded-full">
+                  {complaints.escalation_l2} 
+                  </p>
+                  <p className=" whitespace-nowrap ">
+                  {complaints.role_l2}
+                  </p>
+                  </div>
+                </td>
+
+                <td >
+                  <div className="mx-3 my-3 flex gap-3 items-center justify-center font-lexend">  
+                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1.5 rounded-full ">
+                  {complaints.escalation_l3} 
+                  </p>
+                  <p className=" whitespace-nowrap ">
+                  {complaints.role_l3}
+                  </p>
+                  </div>
+                </td>
+
+
+                <td>
+                  <div className="mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  {complaints.status}
                   </div>
                 </td>
                 <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  High
-                  </div>
+                  <p className="fmx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  {complaints.created_by_user}
+                  </p>
                 </td>
                 <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  pending 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  Admin
-                  </div>
-                </td>
-                <td>
-                  <div className="mx-4 my-3 whitespace-nowrap">
+                  <p className="mx-3 my-3 flex justify-center whitespace-nowrap">
                     <BsThreeDotsVertical />
-                  </div>
+                  </p>
                 </td>
               </tr>
-              <tr className="border-b-2 border-gray-300">
-                <td className="">
-                  <div className="items-center mx-4 my-2 font-lexend whitespace-nowrap"> 2</div>
-                </td>
-                <td>
-                  <div className="items-center mx-4  my-2 font-lexend whitespace-nowrap text-center">Sewage</div>
-                </td>
-                <td>
-                  <div className="items-center mx-4  my-2  font-lexend whitespace-nowrap text-center">PWD</div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  15 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  High
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  pending 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  Admin
-                  </div>
-                </td>
-                <td>
-                  <div className="mx-4 my-3 whitespace-nowrap">
-                    <BsThreeDotsVertical />
-                  </div>
-                </td>
-              </tr>
-              <tr className="border-b-2 border-gray-300">
-                <td className="">
-                  <div className="items-center mx-4 my-2 font-lexend whitespace-nowrap"> 3</div>
-                </td>
-                <td>
-                  <div className="items-center mx-4  my-2 font-lexend whitespace-nowrap text-center">Current</div>
-                </td>
-                <td>
-                  <div className="items-center mx-4  my-2  font-lexend whitespace-nowrap text-center">Electric Board</div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  15 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  High
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  5 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  pending 
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                  Admin
-                  </div>
-                </td>
-                <td>
-                  <div className="mx-4 my-3 whitespace-nowrap">
-                    <BsThreeDotsVertical />
-                  </div>
-                </td>
-              </tr>
-             
+              ))}
           </tbody>
         </table>
       </div>
+
+      <div className=" my-5 mb-5 mx-7">
+            <nav
+              className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+              aria-label="Table navigation"
+            >
+              <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto font-alegerya">
+                Showing{" "}
+                <span className="text-gray-700">
+                  {firstIndex + 1} to {Math.min(lastIndex, complaint.length)}
+                </span>{" "}
+                of <span className="text-gray-900">{complaint.length} entries</span>
+              </span>
+              <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8 font-alegerya">
+                <li>
+                  <button
+                    onClick={() => paginate(1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-primary bg-paginate-bg border border-paginate-br rounded-s-lg hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    &lt;&lt;
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    Back
+                  </button>
+                </li>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .slice(
+                    Math.max(0, currentPage - 2),
+                    Math.min(totalPages, currentPage + 1)
+                  )
+                  .map((number) => (
+                    <li key={number}>
+                      <button
+                        onClick={() => paginate(number)}
+                        className={`flex items-center justify-center px-3 h-8 leading-tight border border-paginate-br hover:text-white hover:bg-primary ${
+                          currentPage === number
+                            ? "bg-primary text-white"
+                            : "bg-white text-black"
+                        }`}
+                      >
+                        {number}
+                      </button>
+                    </li>
+                  ))}
+
+                <li>
+                  <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={lastIndex >= filteredCenters.length}
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    next
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => paginate(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br rounded-e-lg hover:bg-paginate-bg hover:text-primary-hover"
+                  >
+                    &gt;&gt;
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+      </div>
     </div>
-    {isModal && <AddComplaint toggleModal={toggleModal}/>}
+    {isModal && <AddComplaint toggleModal={toggleModal} handlerefresh={handlerefresh}/>}
     </Fragment>
   );
 };

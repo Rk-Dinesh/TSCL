@@ -171,7 +171,7 @@ const Admin = () => {
               </thead>
               <tbody>
                 {currentItemsOnPage.map((admins, index) => (
-                  <tr className="border-b-2 border-gray-300">
+                  <tr className="border-b-2 border-gray-300" key={index}>
                     <td className="">
                       <p className="items-center mx-4 my-2 font-lexend whitespace-nowrap">
                         {" "}

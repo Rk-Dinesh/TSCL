@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IoMdClose } from "react-icons/io";
+import { API } from "../../Host";
+import axios from "axios";
 
 const steps = [
   {
@@ -16,26 +19,62 @@ const steps = [
 ];
 
 const complaintdetailSchema = yup.object().shape({
-  complaint_type: yup.string().required("Complaint_type is required"),
-  dept: yup.string().required("Department is required"),
-  tat_type: yup.string().required("TAT is required"),
-  duration: yup.string().required("Duration is required"),
+  complaint_type_title: yup.string().required("complaint_type is required"),
+  dept: yup
+  .string()
+  .test(
+    "not-select",
+    "select an Department",
+    (value) => value !== "" && value !== "Select an Department"
+  ),
+  tat_type: yup
+  .string()
+  .test(
+    "not-select",
+    "select an TAT Type",
+    (value) => value !== "" && value !== "Select Type"
+  ),
+  tat_duration: yup.string().required("Duration is required"),
   priority: yup.string().required("Priority is required"),
 });
 
 const escdetailSchema = yup.object().shape({
-  esc_type: yup.string().required("Esc_type is required"),
-  durationlo: yup.string().required("L1 duration is required"),
-  userlo: yup.string().required("L1 user is required"),
-  durationlt: yup.string().required("L2 duration is required"),
-  userlt: yup.string().required("L2 user is required"),
-  durationlth: yup.string().required("L3 duration is required"),
-  userlth: yup.string().required("L3 user is required"),
+  escalation_type:yup
+  .string()
+  .test(
+    "not-select",
+    "select an Type",
+    (value) => value !== "" && value !== "Select Type"
+  ),
+  escalation_l1: yup.string().required("L1 duration is required"),
+  role_l1: yup
+  .string()
+  .test(
+    "not-select",
+    "select an L1 role",
+    (value) => value !== "" && value !== "Select an Role"
+  ),
+  escalation_l2: yup.string().required("L2 duration is required"),
+  role_l2: yup
+  .string()
+  .test(
+    "not-select",
+    "select an L2 role",
+    (value) => value !== "" && value !== "Select an Role"
+  ),
+  escalation_l3: yup.string().required("L3 duration is required"),
+  role_l3: yup
+  .string()
+  .test(
+    "not-select",
+    "select an L3 role",
+    (value) => value !== "" && value !== "Select an Role"
+  ),
 });
 
 const AddComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
-  const { isCenters } = props;
+  
 
   let currentStepSchema;
   switch (stepNumber) {
@@ -64,8 +103,28 @@ const AddComplaint = (props) => {
     if (stepNumber !== steps.length - 1) {
       setStepNumber(stepNumber + 1);
     } else {
-      // Save the form data here
-      console.log("Form submitted:", data);
+      const formData = {
+        ...data,
+        status: "active",
+        created_by_user: "admin",
+      };
+  
+      // console.log(formData);
+  
+      try {
+        const response = await axios.post(`${API}/complaint/post`, formData);
+  
+        if (response.status === 200) {
+          toast.success("Complaint created Successfully");
+          props.toggleModal();
+          props.handlerefresh();
+        } else {
+          console.error("Error in posting data", response);
+          toast.error("Failed to Upload");
+        }
+      } catch (error) {
+        console.error("Error in posting data", error);
+      }
     }
   };
 
@@ -74,13 +133,13 @@ const AddComplaint = (props) => {
       <div className="overflow-hidden shadow-lg bg-white flex items-end justify-between relative font-alegerya">
         <div className="w-[590px] min-h-[350px]">
           <div>
-            <div className="flex justify-between items-center px-5 text-white bg-slate-900 h-12">
+            <div className="flex justify-between items-center px-5 text-white bg-gray-700 h-12">
               <p className="">New Complaint</p>
               <button onClick={props.toggleModal} className="">
                 <IoMdClose className="text-2xl" />
               </button>
             </div>
-            <div>
+            <div >
               <div className="flex items-center gap-9 relative justify-center mx-60 py-1 rounded-full bg-slate-200 mt-4">
                 {steps.map((item, i) => (
                   <div
@@ -90,7 +149,7 @@ const AddComplaint = (props) => {
                     <div
                       className={`${
                         stepNumber >= i
-                          ? "bg-primary text-white"
+                          ? "bg-black text-white"
                           : "bg-white text-slate-900"
                       } transition duration-150 icon-box h-8 w-8 rounded-full flex flex-col items-center justify-center relative z-[66] text-base font-medium`}
                     >
@@ -107,7 +166,7 @@ const AddComplaint = (props) => {
                 ))}
               </div>
 
-              <div className="conten-box m-4">
+              <div className="conten-box mx-8 my-4">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {stepNumber === 0 && (
                     <div>
@@ -120,20 +179,20 @@ const AddComplaint = (props) => {
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="complaint_type"
+                            htmlFor="complaint_type_title"
                           >
                             Complaint Type
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
-                            id="complaint_type"
+                            id="complaint_type_title"
                             type="text"
                             placeholder="Complaint Type"
-                            {...register("complaint_type")}
+                            {...register("complaint_type_title")}
                           />
-                          {errors.complaint_type && (
-                            <p className="text-red-500">
-                              {errors.complaint_type.message}
+                          {errors.complaint_type_title && (
+                            <p className="text-red-500 text-sm text-start -mt-3">
+                              {errors.complaint_type_title.message}
                             </p>
                           )}
                         </div>
@@ -145,16 +204,17 @@ const AddComplaint = (props) => {
                             Department
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2  block outline-none px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
                             {...register("dept")}
+                            id="dept"
                           >
-                            <option hidden>Select a Department</option>
+                            <option value="">Select an Department</option>
                             <option value="PWD">PWD</option>
                             <option value="Electric Board">Electric Board</option>
                             <option value="Public Commision">Public Commision</option>
                           </select>
                           {errors.dept && (
-                            <p className="text-red-500">
+                            <p className="text-red-500 text-sm text-center -mt-3">
                               {errors.dept.message}
                             </p>
                           )}
@@ -167,15 +227,16 @@ const AddComplaint = (props) => {
                             TAT Type
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
                             {...register("tat_type")}
+                            id="tat_type"
                           >
-                            <option hidden>Select Type</option>
+                            <option value="">Select Type</option>
                             <option value="Month">Month</option>
                             <option value="Days">Days</option>
                           </select>
                           {errors.tat_type && (
-                            <p className="text-red-500">
+                            <p className="text-red-500 text-sm text-center -mt-3">
                               {errors.tat_type.message}
                             </p>
                           )}
@@ -183,20 +244,20 @@ const AddComplaint = (props) => {
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="duration"
+                            htmlFor="tat_duration"
                           >
                             Duration
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
-                            id="duration"
+                            id="tat_duration"
                             type="text"
                             placeholder="Duration"
-                            {...register("duration")}
+                            {...register("tat_duration")}
                           />
-                          {errors.duration && (
-                            <p className="text-red-500">
-                              {errors.duration.message}
+                          {errors.tat_duration && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.tat_duration.message}
                             </p>
                           )}
                         </div>
@@ -208,16 +269,17 @@ const AddComplaint = (props) => {
                             Priority
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
                             {...register("priority")}
+                            id="priority"
                           >
-                            <option hidden>Select Priority</option>
+                            <option value="">Select Priority</option>
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
                             <option value="Low">Low</option>
                           </select>
                           {errors.priority && (
-                            <p className="text-red-500">
+                            <p className="text-red-500 text-sm text-center -mt-3">
                               {errors.priority.message}
                             </p>
                           )}
@@ -237,144 +299,148 @@ const AddComplaint = (props) => {
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="esc_type"
+                            htmlFor="escalation_type"
                           >
                             Escalation Type
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                            {...register("esc_type")}
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            {...register("escalation_type")}
+                            id="escalation_type"
                           >
-                            <option hidden>Select Type</option>
+                            <option value="">Select Type</option>
                             <option value="Month">Month</option>
                             <option value="days">Days</option>
                           </select>
-                          {errors.esc_type && (
-                            <p className="text-red-500">
-                              {errors.esc_type.message}
+                          {errors.escalation_type && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.escalation_type.message}
                             </p>
                           )}
                         </div>
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="durationlo"
+                            htmlFor="escalation_l1"
                           >
                             L1 Duration
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
-                            id="durationlo"
+                            id="escalation_l1"
                             type="text"
                             placeholder="L1 Duration"
-                            {...register("durationlo")}
+                            {...register("escalation_l1")}
                           />
-                          {errors.durationlo && (
-                            <p className="text-red-500">
-                              {errors.durationlo.message}
+                          {errors.escalation_l1 && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.escalation_l1.message}
                             </p>
                           )}
                         </div>
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="userlo"
+                            htmlFor="role_l1"
                           >
-                            L1 User
+                            L1 Role
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                            {...register("userlo")}
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            {...register("role_l1")}
+                            id="role_l1"
                           >
-                            <option hidden>Select a User</option>
+                            <option value="">Select an Role</option>
                             <option value="Ravi">Ravi</option>
                             <option value="Kumar">Kumar</option>
                           </select>
-                          {errors.userlo && (
-                            <p className="text-red-500">
-                              {errors.userlo.message}
+                          {errors.role_l1 && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.role_l1.message}
                             </p>
                           )}
                         </div>
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="durationlt"
+                            htmlFor="escalation_l2"
                           >
                             L2 Duration
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
-                            id="durationlt"
+                            id="escalation_l2"
                             type="text"
                             placeholder="L2 Duration"
-                            {...register("durationlt")}
+                            {...register("escalation_l2")}
                           />
-                          {errors.durationlt && (
-                            <p className="text-red-500">
-                              {errors.durationlt.message}
+                          {errors.escalation_l2 && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.escalation_l2.message}
                             </p>
                           )}
                         </div>
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="userlt"
+                            htmlFor="role_l2"
                           >
-                            L2 User
+                            L2 Role
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                            {...register("userlt")}
+                            className="col-span-2  outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            {...register("role_l2")}
+                            id="role_l2"
                           >
-                            <option hidden>Select a User</option>
+                            <option value="">Select an Role</option>
                             <option value="Ravi">Ravi</option>
                             <option value="Kumar">Kumar</option>
                           </select>
-                          {errors.userlt && (
-                            <p className="text-red-500">
-                              {errors.userlt.message}
+                          {errors.role_l2 && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.role_l2.message}
                             </p>
                           )}
                         </div>
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="durationlth"
+                            htmlFor="escalation_l3"
                           >
                             L3 Duration
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
-                            id="durationlth"
+                            id="escalation_l3"
                             type="text"
                             placeholder="L3 Duration"
-                            {...register("durationlth")}
+                            {...register("escalation_l3")}
                           />
-                          {errors.durationlth && (
-                            <p className="text-red-500">
-                              {errors.durationlth.message}
+                          {errors.escalation_l3 && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.escalation_l3.message}
                             </p>
                           )}
                         </div>
                         <div className="grid grid-cols-3 items-center">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="userlth"
+                            htmlFor="role_l3"
                           >
-                            L3 User
+                            L3 Role
                           </label>
                           <select
-                            className="col-span-2 block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                            {...register("userlth")}
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            {...register("role_l3")}
+                            id="role_l3"
                           >
-                            <option hidden>Select a User</option>
+                            <option value="">Select an Role</option>
                             <option value="Ravi">Ravi</option>
                             <option value="Kumar">Kumar</option>
                           </select>
-                          {errors.userlth && (
-                            <p className="text-red-500">
-                              {errors.userlth.message}
+                          {errors.role_l3 && (
+                            <p className="text-red-500 text-sm text-center -mt-3">
+                              {errors.role_l3.message}
                             </p>
                           )}
                         </div>
@@ -385,7 +451,7 @@ const AddComplaint = (props) => {
                   <div className="footer flex justify-between items-center py-4 px-12">
                     <div className="flex gap-4 items-center justify-center">
                       <button
-                        className="bg-slate-900 text-white h-12 w-24 rounded-md"
+                        className="bg-primary text-white px-4 py-1.5 rounded-full"
                         type="button"
                         onClick={() => setStepNumber(stepNumber - 1)}
                         disabled={stepNumber === 0}
@@ -395,7 +461,7 @@ const AddComplaint = (props) => {
                     </div>
                     <div className="flex gap-4 items-center justify-center">
                       <button
-                        className="bg-slate-900 text-white h-12 w-24 rounded-md"
+                        className="bg-primary text-white px-6 py-1.5 rounded-full"
                         type="submit"
                       >
                         {stepNumber === steps.length - 1 ? "Save" : "Next"}

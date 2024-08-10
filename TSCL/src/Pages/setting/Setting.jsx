@@ -137,7 +137,7 @@ const Settings = () => {
               </thead>
               <tbody>
                 {currentItemsOnPage.map((roles,index)=>(
-                <tr className="border-b-2 border-gray-300">
+                <tr className="border-b-2 border-gray-300" key={index}>
                   <td className="">
                     <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap">
                     {firstIndex + index + 1 < 10

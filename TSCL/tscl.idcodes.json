@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "66b30917675a24a585422d9b"
+  },
+  "idname": "Street",
+  "idcode": "ST",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b30941675a24a585422d9d"
+  },
+  "idname": "Zone",
+  "idcode": "Z",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b3095a675a24a585422d9f"
+  },
+  "idname": "Ward",
+  "idcode": "Ward",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b30976675a24a585422da1"
+  },
+  "idname": "Complaint",
+  "idcode": "Complaint",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b309b0675a24a585422da3"
+  },
+  "idname": "NewGrievance",
+  "idcode": "NG",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b309d2675a24a585422da5"
+  },
+  "idname": "PublicUser",
+  "idcode": "PU",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b309e0675a24a585422da7"
+  },
+  "idname": "User",
+  "idcode": "User",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b35557675a24a585422db9"
+  },
+  "idname": "Organization",
+  "idcode": "Org",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b45afa675a24a585422dc0"
+  },
+  "idname": "Department",
+  "idcode": "dept",
+  "codes": 0
+},
+{
+  "_id": {
+    "$oid": "66b4d687675a24a585422dd1"
+  },
+  "idname": "Role",
+  "idcode": "role",
+  "codes": 0
+}]

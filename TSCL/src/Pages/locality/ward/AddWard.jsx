@@ -1,10 +1,12 @@
 import React,{useState,useEffect} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { API } from "../../../Host";
+import { fetchZone } from "../../redux/slice/zone";
 
 const WardSchema = yup.object().shape({
   zone_name: yup.string().test('not-select', 'Please select an Zone', (value) => value !== '' && value !== 'Select Zone'),
@@ -12,6 +14,10 @@ const WardSchema = yup.object().shape({
 });
 const AddWard = (props) => {
   const { ExistingZones } = props;
+
+  const dispatch = useDispatch()
+  // const Zone = useSelector((state) => state.zone);
+  // const ExistingZones = Zone.data
   const [zoneId, setZoneId] = useState(null)
   const [ZoneName, setZoneName] = useState(null)
   //console.log(ExistingZones);
@@ -28,6 +34,7 @@ const AddWard = (props) => {
   });
 
   useEffect(() => {
+    // dispatch(fetchZone())
     if (ZoneName) {
       const selectedZone = ExistingZones.find(
         (zone) => zone.zone_name === ZoneName

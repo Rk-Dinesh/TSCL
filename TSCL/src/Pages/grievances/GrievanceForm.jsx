@@ -1,8 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
+import React, { useEffect } from "react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
-import { RiArrowDropDownLine } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import{ fetchZone } from "../redux/slice/zone";
+import { fetchWard } from "../redux/slice/ward";
+import { fetchStreet } from "../redux/slice/street";
+import { fetchDepartment } from "../redux/slice/department";
+import { fetchComplaint } from "../redux/slice/complaint";
 
 const AddGrivencesSchema = yup.object().shape({
   name: yup.string().required("name type is required"),
@@ -11,7 +16,25 @@ const AddGrivencesSchema = yup.object().shape({
   address: yup.string().required("address is required"),
 });
 
-const GrievanceForm = (props) => {
+const GrievanceForm = () => {
+  const dispatch = useDispatch();
+
+  const Department = useSelector((state) => state.department)
+  const Complaint = useSelector((state) => state.complaint);;
+  const Zone = useSelector((state) => state.zone);
+  const Ward = useSelector((state) => state.ward);
+  const Street = useSelector((state) => (state.street));
+
+  useEffect(() => {
+    dispatch(fetchDepartment())
+    dispatch(fetchComplaint())
+    dispatch(fetchZone());
+    dispatch(fetchWard());
+    dispatch(fetchStreet());
+  }, []);
+
+
+
   const {
     register,
     formState: { errors },
@@ -37,7 +60,7 @@ const GrievanceForm = (props) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col flex-nowrap overflow-hidden my-5 gap-2">
-            <div className=" flex justify-between font-normal mx-10 ">
+              <div className=" flex justify-between font-normal mx-10 ">
                 <label
                   className="block text-black text-lg  font-medium mb-2"
                   htmlFor="name"
@@ -134,19 +157,16 @@ const GrievanceForm = (props) => {
                   Origin
                 </label>
                 <div className="border  rounded-lg col-span-2">
-                <select
-                  className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                  defaultValue="Select an Organization"
-                >
-                  <option  hidden>
-                  Select an Origin
-                  </option>
+                  <select
+                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    defaultValue="Select an Organization"
+                  >
+                    <option hidden>Select an Origin</option>
 
-                  <option value="active">Whatsapp </option>
-                  <option value="inactive"> Call</option>
-                  <option value="inactive"> Website</option>
-
-                </select> 
+                    <option value="active">Whatsapp </option>
+                    <option value="inactive"> Call</option>
+                    <option value="inactive"> Website</option>
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-3  font-normal mx-10 ">
@@ -157,19 +177,16 @@ const GrievanceForm = (props) => {
                   Complaint Type
                 </label>
                 <div className="border  rounded-lg col-span-2">
-                <select
-                  className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                  defaultValue="Select an Organization"
-                >
-                  <option  hidden>
-                  Select an Complaint Type
-                  </option>
+                  <select
+                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    defaultValue="Select an Organization"
+                  >
+                    <option hidden>Select an Complaint Type</option>
 
-                  <option value="active">Water</option>
-                  <option value="inactive"> Sewage</option>
-                  <option value="inactive"> Electric related</option>
-
-                </select> 
+                    <option value="active">Water</option>
+                    <option value="inactive"> Sewage</option>
+                    <option value="inactive"> Electric related</option>
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-3  font-normal mx-10 ">
@@ -177,25 +194,26 @@ const GrievanceForm = (props) => {
                   className="block text-black text-lg font-medium mb-2 col-span-1"
                   htmlFor=" Name"
                 >
-                 Department
+                  Department
                 </label>
                 <div className="border  rounded-lg col-span-2">
-                <select
-                  className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                  defaultValue="Select an Organization"
-                >
-                  <option  hidden>
-                  Select an Department
-                  </option>
+                  <select
+                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    defaultValue="Select an Organization"
+                  >
+                    <option >Select an Department</option>
+                    <option value="active">EB</option>
+                    <option value="inactive"> PWD</option>
 
-                  <option value="active">PWD </option>
-                  <option value="inactive"> Electric Board</option>
-                  <option value="inactive"> Public Commision</option>
-
-                </select> 
+                    {/* {Department.data.map((option) => (
+        <option key={option.id} value={option._id}>
+          {option.dept_name}
+        </option>
+      ))} */}
+                  </select>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-3  font-normal mx-10 ">
                 <label
                   className="block text-black text-lg font-medium mb-2 col-span-1"
@@ -204,19 +222,16 @@ const GrievanceForm = (props) => {
                   Zone
                 </label>
                 <div className="border  rounded-lg col-span-2">
-                <select
-                  className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                  defaultValue="Select an Organization"
-                >
-                  <option  hidden>
-                  Select an Zone
-                  </option>
+                  <select
+                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    defaultValue="Select an Organization"
+                  >
+                    <option hidden>Select an Zone</option>
 
-                  <option value="active">Zone 1 </option>
-                  <option value="inactive"> Zone 2</option>
-                  <option value="inactive"> Zone 3</option>
-
-                </select> 
+                    <option value="active">Zone 1 </option>
+                    <option value="inactive"> Zone 2</option>
+                    <option value="inactive"> Zone 3</option>
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-3  font-normal mx-10 ">
@@ -227,19 +242,16 @@ const GrievanceForm = (props) => {
                   Ward
                 </label>
                 <div className="border  rounded-lg col-span-2">
-                <select
-                  className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                  defaultValue="Select an Organization"
-                >
-                  <option  hidden>
-                  Select an Ward
-                  </option>
+                  <select
+                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    defaultValue="Select an Organization"
+                  >
+                    <option hidden>Select an Ward</option>
 
-                  <option value="active">Ward 1 </option>
-                  <option value="inactive"> Ward 2</option>
-                  <option value="inactive"> Ward 3</option>
-
-                </select> 
+                    <option value="active">Ward 1 </option>
+                    <option value="inactive"> Ward 2</option>
+                    <option value="inactive"> Ward 3</option>
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-3  font-normal mx-10 ">
@@ -247,22 +259,19 @@ const GrievanceForm = (props) => {
                   className="block text-black text-lg font-medium mb-2 col-span-1"
                   htmlFor=" Name"
                 >
-                 Street
+                  Street
                 </label>
                 <div className="border  rounded-lg col-span-2">
-                <select
-                  className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                  defaultValue="Select an Organization"
-                >
-                  <option  hidden>
-                  Select an Street
-                  </option>
+                  <select
+                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    defaultValue="Select an Organization"
+                  >
+                    <option hidden>Select an Street</option>
 
-                  <option value="active">Street 1 </option>
-                  <option value="inactive"> Street 2</option>
-                  <option value="inactive"> Street 3</option>
-
-                </select> 
+                    <option value="active">Street 1 </option>
+                    <option value="inactive"> Street 2</option>
+                    <option value="inactive"> Street 3</option>
+                  </select>
                 </div>
               </div>
               <div className=" grid grid-cols-3  font-normal mx-10 ">
@@ -280,7 +289,6 @@ const GrievanceForm = (props) => {
                     placeholder="Pincode"
                     {...register(" Name")}
                   />
-                  
                 </div>
               </div>
               <div className=" grid grid-cols-3  font-normal mx-10 ">
@@ -298,7 +306,6 @@ const GrievanceForm = (props) => {
                     placeholder="Complaint"
                     {...register(" Name")}
                   />
-                  
                 </div>
               </div>
               <div className=" grid grid-cols-3  font-normal mx-10 ">
@@ -308,23 +315,21 @@ const GrievanceForm = (props) => {
                 >
                   Description
                 </label>
-                
+
                 <textarea
-                        id="text"
-                        rows="5"
-                        className="block  py-2.5 pl-3 col-span-2 w-full text-sm text-gray-900 rounded border border-gray-300 focus:outline-none focus:shadow-outline mb-2"
-                        placeholder="Description here..."
-                        {...register("text")}
-                      ></textarea>
-                  
-               
+                  id="text"
+                  rows="5"
+                  className="block  py-2.5 pl-3 col-span-2 w-full text-sm text-gray-900 rounded border border-gray-300 focus:outline-none focus:shadow-outline mb-2"
+                  placeholder="Description here..."
+                  {...register("text")}
+                ></textarea>
               </div>
-            <div className=" grid grid-cols-3  font-normal mx-10 ">
+              <div className=" grid grid-cols-3  font-normal mx-10 ">
                 <label
                   className="block text-black text-lg  font-medium mb-2 col-span-1"
                   htmlFor="Contact_Number"
                 >
-                 Attachment
+                  Attachment
                 </label>
                 <div className="border flex rounded-lg col-span-2">
                   <input
@@ -334,7 +339,6 @@ const GrievanceForm = (props) => {
                     placeholder="name"
                     {...register(" Name")}
                   />
-                  
                 </div>
               </div>
             </div>
