@@ -54,7 +54,7 @@ const AddDepartment = (props) => {
       created_by_user: "admin",
     };
 
-    // console.log(formData);
+    console.log(formData);
 
     try {
       const response = await axios.post(`${API}/department/post`, formData);

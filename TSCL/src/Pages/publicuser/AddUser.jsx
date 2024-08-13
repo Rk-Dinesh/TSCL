@@ -11,15 +11,15 @@ const AddUserSchema = yup.object().shape({
   phone: yup.string().required("Phone Number is required"),
   email: yup.string().required("Email Id  is required"),
   address: yup.string().required("Address is required"),
-  login_password: yup.string().required("password is required"),
+  // login_password: yup.string().required("password is required"),
   pincode: yup.string().required("Pincode is required"),
-  user_status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+  // user_status: yup
+  // .string()
+  // .test(
+  //   "not-select",
+  //   "Please select an Status",
+  //   (value) => value !== "" && value !== "Status"
+  // ),
 });
 
 const AddUser = (props) => {
@@ -37,6 +37,8 @@ const AddUser = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
+      login_password:"tscl@123",
+      user_status:"active",
       verification_status:"active"
     };
 
@@ -67,7 +69,7 @@ const AddUser = (props) => {
                 className="block text-black text-lg font-medium mb-2 col-span-1"
                 htmlFor="public_user_name"
               >
-                User Details
+                User Name
               </label>
               <input
                 type="text"
@@ -177,7 +179,7 @@ const AddUser = (props) => {
               )}
             </div>
 
-            <div>
+            {/* <div>
               <div className=" grid grid-cols-3">
                 <label
                   className=" text-black text-lg font-medium mb-2 col-span-2"
@@ -199,9 +201,9 @@ const AddUser = (props) => {
                   {errors.user_status.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
                   className=" text-black text-lg font-medium mb-2 col-span-1"
@@ -222,7 +224,8 @@ const AddUser = (props) => {
                   {errors.login_password.message}
                 </p>
               )}
-            </div>
+            </div> */}
+
           </div>
 
           <div className="flex justify-end  py-6 mx-10 my-3 gap-5 ">

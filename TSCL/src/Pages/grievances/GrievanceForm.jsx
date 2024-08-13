@@ -9,21 +9,19 @@ import { fetchStreet } from "../redux/slice/street";
 import { fetchDepartment } from "../redux/slice/department";
 import { fetchComplaint } from "../redux/slice/complaint";
 
+
+
 const AddGrivencesSchema = yup.object().shape({
   name: yup.string().required("name type is required"),
   contact_number: yup.string().required("contact number  is required"),
   Email_id: yup.string().required("Email id is required"),
   address: yup.string().required("address is required"),
+  
 });
 
 const GrievanceForm = () => {
-  const dispatch = useDispatch();
 
-  const Department = useSelector((state) => state.department)
-  const Complaint = useSelector((state) => state.complaint);;
-  const Zone = useSelector((state) => state.zone);
-  const Ward = useSelector((state) => state.ward);
-  const Street = useSelector((state) => (state.street));
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchDepartment())
@@ -33,8 +31,12 @@ const GrievanceForm = () => {
     dispatch(fetchStreet());
   }, []);
 
-
-
+  const Department = useSelector((state) => state.department)
+  const Complaint = useSelector((state) => state.complaint);;
+  const Zone = useSelector((state) => state.zone);
+  const Ward = useSelector((state) => state.ward);
+  const Street = useSelector((state) => (state.street));
+  
   const {
     register,
     formState: { errors },
@@ -60,6 +62,26 @@ const GrievanceForm = () => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col flex-nowrap overflow-hidden my-5 gap-2">
+            <div className=" flex justify-between font-normal mx-10 ">
+                <label
+                  className="block text-black text-lg  font-medium mb-2"
+                  htmlFor="Contact_Number"
+                >
+                  Contact Number
+                </label>
+                <input
+                  type="text"
+                  id="Contact_Number"
+                  className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                  placeholder="Phone Number"
+                  {...register("Contact_Number")}
+                />
+                {/* {errors.Contact_Number && (
+                  <p className="text-red-500 text-xs text-end px-10">
+                    {errors.Contact_Number.message}
+                  </p>
+                )} */}
+              </div>
               <div className=" flex justify-between font-normal mx-10 ">
                 <label
                   className="block text-black text-lg  font-medium mb-2"
@@ -80,26 +102,7 @@ const GrievanceForm = () => {
                   </p>
                 )} */}
               </div>
-              <div className=" flex justify-between font-normal mx-10 ">
-                <label
-                  className="block text-black text-lg  font-medium mb-2"
-                  htmlFor="Contact_Number"
-                >
-                  Contact Number
-                </label>
-                <input
-                  type="text"
-                  id="Contact_Number"
-                  className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
-                  placeholder="Phone Number"
-                  {...register("Contact_Number")}
-                />
-                {/* {errors.Contact_Number && (
-                  <p className="text-red-500 text-xs text-end px-10">
-                    {errors.Contact_Number.message}
-                  </p>
-                )} */}
-              </div>
+             
               <div className=" flex justify-between font-normal mx-10 ">
                 <label
                   className="block text-black text-lg font-medium mb-2"
@@ -158,7 +161,7 @@ const GrievanceForm = () => {
                 </label>
                 <div className="border  rounded-lg col-span-2">
                   <select
-                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                     defaultValue="Select an Organization"
                   >
                     <option hidden>Select an Origin</option>
@@ -178,14 +181,16 @@ const GrievanceForm = () => {
                 </label>
                 <div className="border  rounded-lg col-span-2">
                   <select
-                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                     defaultValue="Select an Organization"
                   >
                     <option hidden>Select an Complaint Type</option>
 
-                    <option value="active">Water</option>
-                    <option value="inactive"> Sewage</option>
-                    <option value="inactive"> Electric related</option>
+                    {Complaint.data && Complaint.data.map((option) => (
+  <option key={option.complaint_id} value={option.complaint_type_title}>
+    {option.complaint_type_title}
+  </option>
+))}
                   </select>
                 </div>
               </div>
@@ -198,18 +203,18 @@ const GrievanceForm = () => {
                 </label>
                 <div className="border  rounded-lg col-span-2">
                   <select
-                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                     defaultValue="Select an Organization"
                   >
                     <option >Select an Department</option>
                     <option value="active">EB</option>
                     <option value="inactive"> PWD</option>
 
-                    {/* {Department.data.map((option) => (
-        <option key={option.id} value={option._id}>
-          {option.dept_name}
-        </option>
-      ))} */}
+                    {Department.data && Department.data.map((option) => (
+  <option key={option.dept_id} value={option.dept_name}>
+    {option.dept_name}
+  </option>
+))}
                   </select>
                 </div>
               </div>
@@ -223,14 +228,16 @@ const GrievanceForm = () => {
                 </label>
                 <div className="border  rounded-lg col-span-2">
                   <select
-                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                     defaultValue="Select an Organization"
                   >
                     <option hidden>Select an Zone</option>
 
-                    <option value="active">Zone 1 </option>
-                    <option value="inactive"> Zone 2</option>
-                    <option value="inactive"> Zone 3</option>
+                    {Zone.data && Zone.data.map((option) => (
+  <option key={option.zone_id} value={option.zone_name}>
+    {option.zone_name}
+  </option>
+))}
                   </select>
                 </div>
               </div>
@@ -243,14 +250,16 @@ const GrievanceForm = () => {
                 </label>
                 <div className="border  rounded-lg col-span-2">
                   <select
-                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                     defaultValue="Select an Organization"
                   >
                     <option hidden>Select an Ward</option>
 
-                    <option value="active">Ward 1 </option>
-                    <option value="inactive"> Ward 2</option>
-                    <option value="inactive"> Ward 3</option>
+                    {Ward.data && Ward.data.map((option) => (
+  <option key={option.ward_id} value={option.ward_name}>
+    {option.ward_name}
+  </option>
+))}
                   </select>
                 </div>
               </div>
@@ -263,14 +272,16 @@ const GrievanceForm = () => {
                 </label>
                 <div className="border  rounded-lg col-span-2">
                   <select
-                    className="block w-full px-1 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                    className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                     defaultValue="Select an Organization"
                   >
                     <option hidden>Select an Street</option>
 
-                    <option value="active">Street 1 </option>
-                    <option value="inactive"> Street 2</option>
-                    <option value="inactive"> Street 3</option>
+                    {Street.data && Street.data.map((option) => (
+  <option key={option.street_id} value={option.street_name}>
+    {option.street_name}
+  </option>
+))}
                   </select>
                 </div>
               </div>

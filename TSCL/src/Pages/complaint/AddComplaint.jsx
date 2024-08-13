@@ -7,6 +7,7 @@ import { IoMdClose } from "react-icons/io";
 import { API } from "../../Host";
 import axios from "axios";
 
+
 const steps = [
   {
     id: 1,
@@ -74,6 +75,8 @@ const escdetailSchema = yup.object().shape({
 
 const AddComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
+
+  const {ExistingDept,ExistingRoles} = props
   
 
   let currentStepSchema;
@@ -209,9 +212,11 @@ const AddComplaint = (props) => {
                             id="dept"
                           >
                             <option value="">Select an Department</option>
-                            <option value="PWD">PWD</option>
-                            <option value="Electric Board">Electric Board</option>
-                            <option value="Public Commision">Public Commision</option>
+                            {ExistingDept.map((dept) => (
+                            <option key={dept.dept_id} value={dept.dept_name}>
+                              {dept.dept_name}
+                            </option>
+                             ))}
                           </select>
                           {errors.dept && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -351,8 +356,11 @@ const AddComplaint = (props) => {
                             id="role_l1"
                           >
                             <option value="">Select an Role</option>
-                            <option value="Ravi">Ravi</option>
-                            <option value="Kumar">Kumar</option>
+                            {ExistingRoles.map((role) => (
+                  <option key={role.role_id} value={role.role_name}>
+                    {role.role_name}
+                  </option>
+                ))}
                           </select>
                           {errors.role_l1 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -393,8 +401,11 @@ const AddComplaint = (props) => {
                             id="role_l2"
                           >
                             <option value="">Select an Role</option>
-                            <option value="Ravi">Ravi</option>
-                            <option value="Kumar">Kumar</option>
+                            {ExistingRoles.map((role) => (
+                  <option key={role.role_id} value={role.role_name}>
+                    {role.role_name}
+                  </option>
+                ))}
                           </select>
                           {errors.role_l2 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -435,8 +446,11 @@ const AddComplaint = (props) => {
                             id="role_l3"
                           >
                             <option value="">Select an Role</option>
-                            <option value="Ravi">Ravi</option>
-                            <option value="Kumar">Kumar</option>
+                            {ExistingRoles.map((role) => (
+                  <option key={role.role_id} value={role.role_name}>
+                    {role.role_name}
+                  </option>
+                ))}
                           </select>
                           {errors.role_l3 && (
                             <p className="text-red-500 text-sm text-center -mt-3">

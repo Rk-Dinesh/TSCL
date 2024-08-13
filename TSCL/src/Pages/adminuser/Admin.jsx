@@ -10,6 +10,8 @@ import { API } from "../../Host";
 
 const Admin = () => {
   const [isModal, setIsModal] = useState(false);
+  const [ExistingRoles, setExistingRoles] = useState(null);
+  const [ExistingDept, setExistingDept] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
@@ -44,6 +46,8 @@ const Admin = () => {
         const firstIndex = lastIndex - itemsPerPage;
 
         setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+        fetchExistingRoles()
+        fetchExistingDepts()
       })
       .catch((error) => {
         console.error(error);
@@ -51,6 +55,26 @@ const Admin = () => {
   };
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const fetchExistingRoles = async () => {
+    try {
+      const response = await axios.get(`${API}/role/get`);
+      const responseData = response.data.data;
+      setExistingRoles(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Roles:", error);
+    }
+  };
+
+  const fetchExistingDepts = async () => {
+    try {
+      const response = await axios.get(`${API}/department/get`);
+      const responseData = response.data.data;
+      setExistingDept(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Department:", error);
+    }
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -303,7 +327,7 @@ const Admin = () => {
         </div>
       </div>
       {isModal && (
-        <AddAdmin toggleModal={toggleModal} handlerefresh={handlerefresh} />
+        <AddAdmin toggleModal={toggleModal} handlerefresh={handlerefresh} ExistingRoles={ExistingRoles} ExistingDept={ExistingDept}/>
       )}
     </Fragment>
   );

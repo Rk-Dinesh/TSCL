@@ -14,13 +14,13 @@ const AddAdminSchema = yup.object().shape({
   address: yup.string().required("Address is required"),
   login_password: yup.string().required("password is required"),
   pincode: yup.string().required("Pincode is required"),
-  status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+  // status: yup
+  // .string()
+  // .test(
+  //   "not-select",
+  //   "Please select an Status",
+  //   (value) => value !== "" && value !== "Status"
+  // ),
   role: yup
   .string()
   .test(
@@ -31,6 +31,9 @@ const AddAdminSchema = yup.object().shape({
 });
 
 const AddAdmin = (props) => {
+
+  const { ExistingRoles,ExistingDept } = props;
+
   const {
     register,
     formState: { errors },
@@ -45,6 +48,7 @@ const AddAdmin = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
+      status:"active",
       created_by_user:"admin"
     };
 
@@ -76,7 +80,7 @@ const AddAdmin = (props) => {
               className="block text-black text-lg font-medium mb-2 col-span-1"
               htmlFor="user_name"
             >
-              User Details
+              User Name
             </label>
             <input
               type="text"
@@ -98,18 +102,22 @@ const AddAdmin = (props) => {
         <div>
             <div className="grid grid-cols-3 gap-3">
               <label
-                className=" text-black text-lg font-medium mb-2 col-span-1"
+                className=" text-black text-lg font-medium mb-2 col-span-2"
                 htmlFor="dept_name"
               >
                 Department:
               </label>
-              <input
-                type="text"
-                id="dept_name"
-                className="w-6/5 text-end outline-none col-span-2"
-                placeholder="Department Name"
-                {...register("dept_name")}
-              />
+              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+              id="dept_name"
+               {...register("dept_name")}
+               >
+                <option value="">Department</option>
+                {ExistingDept.map((dept) => (
+                  <option key={dept.dept_id} value={dept.dept_name}>
+                    {dept.dept_name}
+                  </option>
+                ))}
+              </select>
             </div>
             {errors.dept_name && (
               <p className="text-red-500 text-xs text-end ">
@@ -210,7 +218,7 @@ const AddAdmin = (props) => {
             )}
           </div>
 
-          <div>
+          {/* <div>
             <div className=" grid grid-cols-3">
               <label
                 className=" text-black text-lg font-medium mb-2 col-span-2"
@@ -232,7 +240,7 @@ const AddAdmin = (props) => {
                 {errors.status.message}
               </p>
             )}
-          </div>
+          </div> */}
 
           <div>
             <div className=" grid grid-cols-3">
@@ -247,8 +255,11 @@ const AddAdmin = (props) => {
                {...register("role")}
                >
                 <option value="">Role</option>
-                <option value="superadmin">Superadmin</option>
-                <option value="admin">admin</option>
+                {ExistingRoles.map((role) => (
+                  <option key={role.role_name} value={role.role_name}>
+                    {role.role_name}
+                  </option>
+                ))}
               </select>
             </div>
             {errors.role && (

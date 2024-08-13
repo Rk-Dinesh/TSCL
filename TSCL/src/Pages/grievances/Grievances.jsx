@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoMdSearch } from "react-icons/io";
@@ -8,9 +8,9 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const Grivences = () => {
   const [isModal, setIsModal] = useState(false);
-  const toggleModal = () => {
-    setIsModal(!isModal);
-  };
+
+  
+
 
   const navigate = useNavigate();
 
@@ -225,79 +225,7 @@ const Grivences = () => {
                   </div>
                 </td>
               </tr>
-              <tr className="border-b-2 border-gray-300">
-                <td className="">
-                  <div className="items-center mx-4 my-2 font-lexend whitespace-nowrap">
-                    {" "}
-                    2
-                  </div>
-                </td>
-                <td>
-                  <div className="items-center mx-4  my-2 font-lexend whitespace-nowrap text-center">
-                    Rk
-                  </div>
-                </td>
-                <td>
-                  <div className="items-center mx-4  my-2  font-lexend whitespace-nowrap text-center">
-                    1234567890
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    rk@gmail.com
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    ChennaiOne
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    Origin12
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    Website
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    EB
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    Current
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    Chennai
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    Ward-56
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    Shanthi Nagar
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-2 items-center mx-4  my-2 font-lexend whitespace-nowrap justify-center">
-                    6001240
-                  </div>
-                </td>
-                <td>
-                  <div className="mx-4 my-3 whitespace-nowrap" onClick={form}>
-                    <BsThreeDotsVertical />
-                  </div>
-                </td>
-              </tr>
+             
             </tbody>
           </table>
         </div>
