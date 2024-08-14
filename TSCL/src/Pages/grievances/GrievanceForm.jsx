@@ -12,6 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { API } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate} from "react-router-dom";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -43,15 +44,12 @@ const GrievanceDetailsSchema = yup.object().shape({
 });
 
 const AttachmentSchema = yup.object().shape({
-  file: yup
-    .mixed()
-    .required("Attachment is required")
-    .test("fileSize", "File size is too large", (value) => {
-      if (value && value[0]) {
-        return value[0].size <= 5000000; // 5MB
-      }
-      return false;
-    }),
+  file: yup.mixed().test("fileSize", "File size is too large", (value) => {
+    if (value && value[0]) {
+      return value[0].size <= 5000000; // 5MB
+    }
+    return true; // Allow no file
+  }),
 });
 
 const CombinedSchema = yup
@@ -65,6 +63,7 @@ const CombinedSchema = yup
 
 const GrievanceForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [autoFillData, setAutoFillData] = useState(null);
 
   useEffect(() => {
@@ -99,9 +98,7 @@ const GrievanceForm = () => {
 
   useEffect(() => {
     if (contactNumber && PublicUser.data) {
-      const user = PublicUser.data.find(
-        (user) => user.phone === contactNumber
-      );
+      const user = PublicUser.data.find((user) => user.phone === contactNumber);
       if (user) {
         setAutoFillData(user);
         setValue("public_user_name", user.public_user_name);
@@ -113,7 +110,6 @@ const GrievanceForm = () => {
       }
     }
   }, [contactNumber, PublicUser.data, setValue]);
-  
 
   const onSubmit = async (data) => {
     const userInfo = {
@@ -138,17 +134,22 @@ const GrievanceForm = () => {
       complaint: data.complaint,
       complaint_details: data.complaint_details,
       public_user_name: data.public_user_name,
+      phone: data.phone,
+      status: "new",
+      statusflow:"new"
     };
 
-    const attachmentData = {
-      file: data.file[0],
-    };
+    const attachmentData = data.file
+      ? {
+          file: data.file[0],
+        }
+      : null;
 
     try {
       // Replace the below console.logs with actual API calls
-      console.log("User Info:", userInfo);
-      console.log("Grievance Details:", grievanceDetails);
-      console.log("Attachment Data:", attachmentData);
+      // console.log("User Info:", userInfo);
+      // console.log("Grievance Details:", grievanceDetails);
+      // console.log("Attachment Data:", attachmentData);
 
       const response = await axios.post(`${API}/public-user/post`, userInfo);
       const response1 = await axios.post(
@@ -162,31 +163,34 @@ const GrievanceForm = () => {
         toast.success("Grievance created Successfully");
       }
 
-      const fileInput = document.getElementById("file");
-      const file = fileInput.files ? fileInput.files[0] : null;
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("grievance_id",grievanceId);
-        formData.append("created_by_user","admin");
+      if (attachmentData) {
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files ? fileInput.files[0] : null;
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("grievance_id", grievanceId);
+          formData.append("created_by_user", "admin");
 
-        const response3 = await axios.post(
-          `${API}/new-grievance-attachment/post`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+          const response3 = await axios.post(
+            `${API}/new-grievance-attachment/post`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (response3.status === 200) {
+            toast.success("Attachment created Successfully");
           }
-        );
-        if (response3.status === 200) {
-          toast.success("Attachment created Successfully");
-        }
-      } else {
-        toast.error("No file selected or file input error");
+        } 
       }
 
       reset();
+      navigate("/view", {
+        state: { grievanceId:grievanceId},
+      })
     } catch (error) {
       toast.error("An error occurred during submission. Please try again.");
     }
@@ -213,12 +217,12 @@ const GrievanceForm = () => {
                   <input
                     type="text"
                     id="phone"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="Phone Number"
                     {...register("phone")}
                   />
                   {errors.phone && (
-                    <p className="text-red-500 text-xs text-start px-2">
+                    <p className="text-red-500 text-xs text-start px-2 pt-2">
                       {errors.phone.message}
                     </p>
                   )}
@@ -235,7 +239,7 @@ const GrievanceForm = () => {
                   <input
                     type="text"
                     id="public_user_name"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="User Name"
                     {...register("public_user_name")}
                     defaultValue={
@@ -243,7 +247,7 @@ const GrievanceForm = () => {
                     }
                   />
                   {errors.public_user_name && (
-                    <p className="text-red-500 text-xs text-start px-2">
+                    <p className="text-red-500 text-xs text-start px-2 pt-2">
                       {errors.public_user_name.message}
                     </p>
                   )}
@@ -261,13 +265,13 @@ const GrievanceForm = () => {
                   <input
                     type="email"
                     id="email"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="abc@gmail.com"
                     {...register("email")}
                     defaultValue={autoFillData ? autoFillData.email : ""}
                   />
                   {errors.email && (
-                    <p className="text-red-500 text-xs text-start px-2">
+                    <p className="text-red-500 text-xs text-start px-2 pt-2">
                       {errors.email.message}
                     </p>
                   )}
@@ -284,13 +288,13 @@ const GrievanceForm = () => {
                   <input
                     type="text"
                     id="address"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="Enter your Address"
                     {...register("address")}
                     defaultValue={autoFillData ? autoFillData.address : ""}
                   />
                   {errors.address && (
-                    <p className="text-red-500 text-xs text-start px-2">
+                    <p className="text-red-500 text-xs text-start px-2 pt-2">
                       {errors.address.message}
                     </p>
                   )}
@@ -298,7 +302,7 @@ const GrievanceForm = () => {
               </div>
             </div>
 
-            <div className=" flex-col justify-center items-center w-[592px] bg-white h-fit rounded-lg mt-3">
+            <div className=" flex-col justify-center items-center w-[592px] bg-white h-fit rounded-lg mt-5">
               <div className="border-b-2 border-search">
                 <h1 className=" text-xl px-3 py-3">Grievance Details</h1>
               </div>
@@ -311,7 +315,7 @@ const GrievanceForm = () => {
                   >
                     Origin
                   </label>
-                  <div className="border  rounded-lg col-span-2">
+                  <div className=" col-span-2">
                     <select
                       className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -325,7 +329,7 @@ const GrievanceForm = () => {
                       <option value="Website">Website</option>
                     </select>
                     {errors.grievance_mode && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.grievance_mode.message}
                       </p>
                     )}
@@ -338,7 +342,7 @@ const GrievanceForm = () => {
                   >
                     Complaint Type
                   </label>
-                  <div className="border  rounded-lg col-span-2">
+                  <div className=" col-span-2">
                     <select
                       className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -359,7 +363,7 @@ const GrievanceForm = () => {
                         ))}
                     </select>
                     {errors.complaint_type_title && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.complaint_type_title.message}
                       </p>
                     )}
@@ -372,7 +376,7 @@ const GrievanceForm = () => {
                   >
                     Department
                   </label>
-                  <div className="border  rounded-lg col-span-2">
+                  <div className="col-span-2">
                     <select
                       className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -389,7 +393,7 @@ const GrievanceForm = () => {
                         ))}
                     </select>
                     {errors.dept_name && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.dept_name.message}
                       </p>
                     )}
@@ -403,7 +407,7 @@ const GrievanceForm = () => {
                   >
                     Zone
                   </label>
-                  <div className="border  rounded-lg col-span-2">
+                  <div className="col-span-2">
                     <select
                       className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -421,7 +425,7 @@ const GrievanceForm = () => {
                         ))}
                     </select>
                     {errors.zone_name && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.zone_name.message}
                       </p>
                     )}
@@ -434,7 +438,7 @@ const GrievanceForm = () => {
                   >
                     Ward
                   </label>
-                  <div className="border  rounded-lg col-span-2">
+                  <div className=" col-span-2">
                     <select
                       className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -452,7 +456,7 @@ const GrievanceForm = () => {
                         ))}
                     </select>
                     {errors.ward_name && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.ward_name.message}
                       </p>
                     )}
@@ -465,7 +469,7 @@ const GrievanceForm = () => {
                   >
                     Street
                   </label>
-                  <div className="border  rounded-lg col-span-2">
+                  <div className="col-span-2">
                     <select
                       className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -486,7 +490,7 @@ const GrievanceForm = () => {
                         ))}
                     </select>
                     {errors.street_name && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.street_name.message}
                       </p>
                     )}
@@ -509,7 +513,7 @@ const GrievanceForm = () => {
                       defaultValue={autoFillData ? autoFillData.pincode : ""}
                     />
                     {errors.pincode && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.pincode.message}
                       </p>
                     )}
@@ -531,7 +535,7 @@ const GrievanceForm = () => {
                       {...register("complaint")}
                     />
                     {errors.complaint && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.complaint.message}
                       </p>
                     )}
@@ -554,7 +558,7 @@ const GrievanceForm = () => {
                       {...register("complaint_details")}
                     ></textarea>
                     {errors.complaint_details && (
-                      <p className="text-red-500 text-xs text-start px-2">
+                      <p className="text-red-500 text-xs text-start px-2 ">
                         {errors.complaint_details.message}
                       </p>
                     )}
@@ -565,7 +569,7 @@ const GrievanceForm = () => {
                     className="block text-black text-lg  font-medium mb-2 col-span-1"
                     htmlFor="file"
                   >
-                    Attachment
+                    Attachment <p className="text-xs ">(optional)</p>
                   </label>
                   <div className="flex flex-col col-span-2">
                     <input
@@ -586,6 +590,7 @@ const GrievanceForm = () => {
                 <button
                   type="submit"
                   className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 "
+                  
                 >
                   Submit
                 </button>

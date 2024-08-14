@@ -196,6 +196,7 @@ const Organization = () => {
               </tbody>
             </table>
           </div>
+          
           <div className=" my-5 mb-5 mx-7">
             <nav
               className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"

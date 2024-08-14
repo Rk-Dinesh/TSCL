@@ -1,27 +1,59 @@
-import React from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { API } from "../../Host";
+import { useLocation } from "react-router-dom";
+
 
 const ViewRequest = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const grievanceId = location.state?.grievanceId;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`
+        );
+        setData(response.data.data);
+        console.log(response.data.data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  if (!data) return <p>No data found</p>;
+
   return (
-    <div className=" h-screen">
-      <div className="mx-6 my-5 font-lexend overflow-y-auto">
-        <p>Reply Complaint R-00122343</p>
+    <div className="h-screen overflow-y-auto no-scrollbar">
+      <div className="mx-6 my-5 font-lexend">
+        <p>Reply Complaint {data.grievance_id}</p>
         <div className="bg-white mt-2 pb-3">
-          <p className="px-3 py-3 text-lg">Request By :</p>
+          <p className="px-5 py-3 text-lg">Request By :</p>
           <div className="grid grid-cols-12 gap-3 mx-3 my-3">
-            <div className=" col-span-3 pl-3">
-              <p>Alwin G</p>
-              <p>+91 00000 000000</p>
+            <div className="col-span-3 px-5 pb-3">
+              <p>{data.public_user_name}</p>
+              <p>+91 {data.phone}</p>{" "}
             </div>
-            <div className="col-span-4">
+            {/* <div className="col-span-4">
               <div className="flex gap-3 mb-3 items-center">
                 <p>Status: </p>
-                <span className="text-sm border-2 border-black px-4 py-0.5 rounded-full  ">
+                <span className="text-sm border-2 border-black px-4 py-0.5 rounded-full">
                   New
                 </span>
               </div>
-              <div className="flex gap-3 items-center ">
+              <div className="flex gap-3 items-center">
                 <p>Priority: </p>
-                <span className="text-sm text-white bg-orange-400 px-4 py-1 rounded-full ">
+                <span className="text-sm text-white bg-orange-400 px-4 py-1 rounded-full">
                   High
                 </span>
               </div>
@@ -37,70 +69,72 @@ const ViewRequest = () => {
               <button className="bg-primary px-4 py-1.5 text-white rounded-full">
                 Submit
               </button>
-            </div>
+            </div> */}
           </div>
           <hr />
-          <div className="grid grid-cols-12 gap-2 mx-3 my-4 ">
+          <div className="grid grid-cols-12 gap-2 mx-3 my-4">
             <div className="col-span-6 border px-2 py-3 rounded">
               <p className="pt-2 text-lg">Grievance Details</p>
               <hr className="my-3" />
-              <div className=" flex flex-col gap-3 mx-2 text-base">
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Origin :</p>
-                  <p>Call</p>
+              <div className="flex flex-col gap-3 mx-2 text-base">
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Origin :</p>
+                  <p className="col-span-2">{data.grievance_mode}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Complaint Type :</p>
-                  <p>Water</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Complaint Type :</p>
+                  <p className="col-span-2">{data.complaint_type_title}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Department :</p>
-                  <p>PWD</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Department :</p>
+                  <p className="col-span-2">{data.dept_name}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Zone :</p>
-                  <p>Zone 1</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Zone :</p>
+                  <p className="col-span-2">{data.zone_name}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Ward :</p>
-                  <p>Ward 1</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Ward :</p>
+                  <p className="col-span-2">{data.ward_name}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Street :</p>
-                  <p>Street 1</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Street :</p>
+                  <p className="col-span-2">{data.street_name}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Pincode :</p>
-                  <p>600130</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Pincode :</p>
+                  <p className="col-span-2">{data.pincode}</p>
                 </div>
-                <div className="grid grid-cols-3">
-                  <p className="col-span-1">Description :</p>
-                  <p>Water Complaint</p>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Description :</p>
+                  <p className="col-span-2">{data.complaint_details}</p>
                 </div>
               </div>
             </div>
             <div className="col-span-6 border px-2 py-3 rounded">
               <p className="pt-2 text-lg">Similar Request</p>
               <hr className="my-3" />
-              <table className="w-full bg-gray-200 rounded ">
-                <thead className="" >
-                  <tr className=" ">
-                    <th className="items-center py-2   font-lexend whitespace-nowrap">
+              <table className="w-full bg-gray-200 rounded">
+                <thead>
+                  <tr>
+                    <th className="items-center py-2 font-lexend whitespace-nowrap">
                       Date/Time
                     </th>
-                    <th className="items-center py-2  font-lexend whitespace-nowrap">
+                    <th className="items-center py-2 font-lexend whitespace-nowrap">
                       Complaint No
                     </th>
-                    <th className="items-center  py-2  font-lexend whitespace-nowrap">
+                    <th className="items-center py-2 font-lexend whitespace-nowrap">
                       Status
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300">
-                  <tr className="">
-                    <td className="text-center py-2">15-05-2024 / 12:00 AM </td>
+                  <tr>
+                    <td className="text-center py-2">15-05-2024 / 12:00 AM</td>
                     <td className="text-center py-2">R-0001122</td>
-                    <td className="text-center py-2 text-green-600">In Progress</td>
+                    <td className="text-center py-2 text-green-600">
+                      In Progress
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -110,37 +144,42 @@ const ViewRequest = () => {
             <p className="mb-2 mx-1 text-lg">Complaint History</p>
             <div className="bg-gray-100 py-3">
               <div className="mx-8">
-                <p className="py-3 font-semibold ">Complaint No 024324322</p>
-                <p className="py-2">Saturday 10 August</p>
+                <p className="py-3 font-semibold">
+                  Complaint No {data.grievance_id}
+                </p>
+                <p className="py-2">
+                  {new Date(data.createdAt).toLocaleDateString()}
+                </p>
                 <div className="grid grid-cols-3 divide-x-2 divide-black">
-                  <p>6.00 PM</p>
-                  <p className="pl-5">Logged In</p>
+                <p>{new Date(data.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                  <p className="pl-5 col-span-2">Logged In</p>
                 </div>
                 <br />
                 <div className="grid grid-cols-3 divide-x-2 divide-black">
-                  <p>6.10 PM</p>
-                  <p className="pl-5">Ticket Raised R-001222</p>
+                <p>{new Date(data.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                  <p className="pl-5 col-span-2">Ticket Raised {data.grievance_id}</p>
                 </div>
                 <br />
                 <div className="grid grid-cols-3 divide-x-2 divide-black">
-                  <p>6.13 PM</p>
-                  <p className="pl-5">Assigned To Particular Department</p>
+                <p>{new Date(data.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                  <p className="pl-5 col-span-2">Assigned To Particular Department</p>
                 </div>
                 <br />
-                <p className="mb-2">Saturday,10 July</p>
+                <p className="mb-2">
+                  {new Date(data.updatedAt).toLocaleDateString()}
+                </p>
                 <div className="grid grid-cols-3 divide-x-2 divide-black">
-                  <p>6.15 PM</p>
-
+                <p>{new Date(data.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                   <div className="col-span-2">
-                  <p className="pl-5">Status:</p>
-                  <p className="pl-5 text-gray-500 ">open / Inprogress / Assigned to JE / Closed</p>
+                    <p className="pl-5">Status:</p>
+                    <p className="pl-5 text-gray-500">{data.status}/</p>
                   </div>
                 </div>
                 <hr className="my-3" />
-                <div className="grid grid-cols-3 border-2 mx-20 ">
+                <div className="grid grid-cols-3 border-2 mx-20">
                   <p className="text-center py-1.5">Status</p>
                   <p className="text-center bg-gray-800 col-span-2 text-white py-1.5">
-                    Closed
+                    {data.status}
                   </p>
                 </div>
               </div>
