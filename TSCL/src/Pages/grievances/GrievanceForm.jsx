@@ -9,6 +9,9 @@ import { fetchComplaint } from "../redux/slice/complaint";
 import { fetchPublic_User } from "../redux/slice/public_user";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { API } from "../../Host";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -17,7 +20,7 @@ const UserInfoSchema = yup.object().shape({
     .string()
     .required("Contact number is required")
     .matches(/^[0-9]{10}$/, "Contact number must be 10 digits"),
-    email: yup
+  email: yup
     .string()
     .required("Email id is required")
     .email("Invalid email format"),
@@ -40,7 +43,7 @@ const GrievanceDetailsSchema = yup.object().shape({
 });
 
 const AttachmentSchema = yup.object().shape({
-  attachment: yup
+  file: yup
     .mixed()
     .required("Attachment is required")
     .test("fileSize", "File size is too large", (value) => {
@@ -48,7 +51,7 @@ const AttachmentSchema = yup.object().shape({
         return value[0].size <= 5000000; // 5MB
       }
       return false;
-    })
+    }),
 });
 
 const CombinedSchema = yup
@@ -110,6 +113,7 @@ const GrievanceForm = () => {
       }
     }
   }, [contactNumber, PublicUser.data, setValue]);
+  
 
   const onSubmit = async (data) => {
     const userInfo = {
@@ -117,7 +121,10 @@ const GrievanceForm = () => {
       phone: data.phone,
       email: data.email,
       address: data.address,
-      pincode:data.pincode
+      pincode: data.pincode,
+      login_password: "tscl@123",
+      verification_status: "active",
+      user_status: "active",
     };
 
     const grievanceDetails = {
@@ -130,10 +137,11 @@ const GrievanceForm = () => {
       pincode: data.pincode,
       complaint: data.complaint,
       complaint_details: data.complaint_details,
+      public_user_name: data.public_user_name,
     };
 
     const attachmentData = {
-      attachment: data.attachment[0], // Accessing the first file in case of multiple
+      file: data.file[0],
     };
 
     try {
@@ -142,11 +150,40 @@ const GrievanceForm = () => {
       console.log("Grievance Details:", grievanceDetails);
       console.log("Attachment Data:", attachmentData);
 
-      alert("Form submitted successfully!");
+      const response = await axios.post(`${API}/public-user/post`, userInfo);
+      const response1 = await axios.post(
+        `${API}/new-grievance/post`,
+        grievanceDetails
+      );
+
+      if (response1.status === 200) {
+        toast.success("Grievance created Successfully");
+      }
+
+      const fileInput = document.getElementById("file");
+      const file = fileInput.files ? fileInput.files[0] : null;
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response3 = await axios.post(
+          `${API}/new-grievance-attachment/post`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response3.status === 200) {
+          toast.success("Attachment created Successfully");
+        }
+      } else {
+        toast.error("No file selected or file input error");
+      }
+
       reset();
     } catch (error) {
-      console.error("Submission Error:", error);
-      alert("An error occurred during submission. Please try again.");
+      toast.error("An error occurred during submission. Please try again.");
     }
   };
 
@@ -160,101 +197,102 @@ const GrievanceForm = () => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col flex-nowrap overflow-hidden my-5 gap-2">
-            <div className="flex justify-between font-normal mx-10">
-              <label
-                className="block text-black text-lg font-medium mb-2"
-                htmlFor="phone"
-              >
-                Contact Number
-              </label>
-              <div className="flex flex-col">
-                <input
-                  type="text"
-                  id="phone"
-                  className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
-                  placeholder="Phone Number"
-                  {...register("phone")}
-                />
-                {errors.phone && (
-                  <p className="text-red-500 text-xs text-start px-2">
-                    {errors.phone.message}
-                  </p>
-                )}
+              <div className="flex justify-between font-normal mx-10">
+                <label
+                  className="block text-black text-lg font-medium mb-2"
+                  htmlFor="phone"
+                >
+                  Contact Number
+                </label>
+                <div className="flex flex-col">
+                  <input
+                    type="text"
+                    id="phone"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    placeholder="Phone Number"
+                    {...register("phone")}
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs text-start px-2">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex justify-between font-normal mx-10">
-              <label
-                className="block text-black text-lg font-medium mb-2"
-                htmlFor="public_user_name"
-              >
-                Name
-              </label>
-              <div className="flex flex-col">
-                <input
-                  type="text"
-                  id="public_user_name"
-                  className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
-                  placeholder="User Name"
-                  {...register("public_user_name")}
-                  defaultValue={autoFillData ? autoFillData.public_user_name : ""}
-                />
-                {errors.public_user_name && (
-                  <p className="text-red-500 text-xs text-start px-2">
-                    {errors.public_user_name.message}
-                  </p>
-                )}
+              <div className="flex justify-between font-normal mx-10">
+                <label
+                  className="block text-black text-lg font-medium mb-2"
+                  htmlFor="public_user_name"
+                >
+                  Name
+                </label>
+                <div className="flex flex-col">
+                  <input
+                    type="text"
+                    id="public_user_name"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    placeholder="User Name"
+                    {...register("public_user_name")}
+                    defaultValue={
+                      autoFillData ? autoFillData.public_user_name : ""
+                    }
+                  />
+                  {errors.public_user_name && (
+                    <p className="text-red-500 text-xs text-start px-2">
+                      {errors.public_user_name.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-between font-normal mx-10">
+                <label
+                  className="block text-black text-lg font-medium mb-2"
+                  htmlFor="email"
+                >
+                  Email id
+                </label>
+                <div className="flex flex-col">
+                  <input
+                    type="email"
+                    id="email"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    placeholder="abc@gmail.com"
+                    {...register("email")}
+                    defaultValue={autoFillData ? autoFillData.email : ""}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs text-start px-2">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-between font-normal mx-10">
+                <label
+                  className="block text-black text-lg font-medium mb-2 py-2"
+                  htmlFor="address"
+                >
+                  Address
+                </label>
+                <div className="flex flex-col">
+                  <input
+                    type="text"
+                    id="address"
+                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
+                    placeholder="Enter your Address"
+                    {...register("address")}
+                    defaultValue={autoFillData ? autoFillData.address : ""}
+                  />
+                  {errors.address && (
+                    <p className="text-red-500 text-xs text-start px-2">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-between font-normal mx-10">
-              <label
-                className="block text-black text-lg font-medium mb-2"
-                htmlFor="email"
-              >
-                Email id
-              </label>
-              <div className="flex flex-col">
-                <input
-                  type="email"
-                  id="email"
-                  className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
-                  placeholder="abc@gmail.com"
-                  {...register("email")}
-                  defaultValue={autoFillData ? autoFillData.email : ""}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-xs text-start px-2">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="flex justify-between font-normal mx-10">
-              <label
-                className="block text-black text-lg font-medium mb-2 py-2"
-                htmlFor="address"
-              >
-                Address
-              </label>
-              <div className="flex flex-col">
-                <input
-                  type="text"
-                  id="address"
-                  className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2"
-                  placeholder="Enter your Address"
-                  {...register("address")}
-                  defaultValue={autoFillData ? autoFillData.address : ""}
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-xs text-start px-2">
-                    {errors.address.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            </div>
-            
             <div className=" flex-col justify-center items-center w-[592px] bg-white h-fit rounded-lg mt-3">
               <div className="border-b-2 border-search">
                 <h1 className=" text-xl px-3 py-3">Grievance Details</h1>
@@ -434,7 +472,10 @@ const GrievanceForm = () => {
 
                       {Street.data &&
                         Street.data.map((option) => (
-                          <option key={option.street_id} value={option.street_name}>
+                          <option
+                            key={option.street_id}
+                            value={option.street_name}
+                          >
                             {option.street_name}
                           </option>
                         ))}
@@ -447,28 +488,28 @@ const GrievanceForm = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-3 font-normal mx-10">
-              <label
-                className="block text-black text-lg font-medium mb-2 col-span-1"
-                htmlFor="pincode"
-              >
-                Pincode
-              </label>
-              <div className="flex flex-col col-span-2">
-                <input
-                  type="text"
-                  id="pincode"
-                  className=" text-start border-2  rounded-lg  px-2 py-2 outline-none"
-                  placeholder="Pincode"
-                  {...register("pincode")}
-                  defaultValue={autoFillData ? autoFillData.pincode : ""}
-                />
-                {errors.pincode && (
-                  <p className="text-red-500 text-xs text-start px-2">
-                    {errors.pincode.message}
-                  </p>
-                )}
-              </div>
-            </div>
+                  <label
+                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    htmlFor="pincode"
+                  >
+                    Pincode
+                  </label>
+                  <div className="flex flex-col col-span-2">
+                    <input
+                      type="text"
+                      id="pincode"
+                      className=" text-start border-2  rounded-lg  px-2 py-2 outline-none"
+                      placeholder="Pincode"
+                      {...register("pincode")}
+                      defaultValue={autoFillData ? autoFillData.pincode : ""}
+                    />
+                    {errors.pincode && (
+                      <p className="text-red-500 text-xs text-start px-2">
+                        {errors.pincode.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
                 <div className=" grid grid-cols-3  font-normal mx-10 ">
                   <label
                     className="block text-black text-lg  font-medium mb-2 col-span-1"
@@ -517,20 +558,20 @@ const GrievanceForm = () => {
                 <div className=" grid grid-cols-3  font-normal mx-10 ">
                   <label
                     className="block text-black text-lg  font-medium mb-2 col-span-1"
-                    htmlFor="attachment"
+                    htmlFor="file"
                   >
                     Attachment
                   </label>
                   <div className="flex flex-col col-span-2">
                     <input
                       type="file"
-                      id="attachment"
+                      id="file"
                       className=" py-2 px-2 rounded-lg outline-none"
-                      {...register("attachment")}
+                      {...register("file")}
                     />
-                    {errors.attachment && (
+                    {errors.file && (
                       <p className="text-red-500 text-xs text-start px-2">
-                        {errors.attachment.message}
+                        {errors.file.message}
                       </p>
                     )}
                   </div>
