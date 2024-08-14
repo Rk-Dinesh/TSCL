@@ -9,6 +9,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddDepartment from "./AddDepartment";
 import axios from "axios";
 import { API, formatDate } from "../../Host";
+import logo from "../../assets/images/logo1.png"
 
 const Department = () => {
   const [isModal, setIsModal] = useState(false);
@@ -187,7 +188,7 @@ const Department = () => {
                     <td>
                       <div className="flex gap-3 items-center justify-center mx-3 my-3 whitespace-nowrap">
                         <img
-                          src="./src/assets/table.png"
+                          src={logo}
                           alt="logo"
                           className="w-9 h-9"
                         />

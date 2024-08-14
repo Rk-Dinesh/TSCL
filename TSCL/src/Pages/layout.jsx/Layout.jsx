@@ -14,6 +14,7 @@ import { BsShieldExclamation } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { LuUserCircle2 } from "react-icons/lu";
 import Header from "./Header";
+import logo from "../../assets/images/logo1.png"
 
 const Layout = ({ route }) => {
   const location = useLocation();
@@ -72,10 +73,10 @@ const Layout = ({ route }) => {
 
         <span className="row-span-2 flex flex-col items-center gap-6 mt-3 mb-2">
           <img
-            src={"./src/assets/logo.png"}
+            src={logo}
             alt="Image"
             className={`transition-all duration-500 ${
-              open ? "w-40 h-16 mt-1" : "w-14 h-14 mt-2 mr-5"
+              open ? "w-20 h-20 mt-1" : "w-14 h-14 mt-2 mr-5"
             }`}
           />
           <h1

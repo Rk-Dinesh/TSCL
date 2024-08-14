@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { IoCloseCircle } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { FaAsterisk } from "react-icons/fa";
+import logo from "../../assets/images/logo1.png"
 const SignUp = () => {
   const navigate = useNavigate();
 
@@ -15,7 +16,7 @@ const handleOtp = () =>{
 }
 
 const handleSignIn = () =>{
-    navigate('/login')
+    navigate('/')
 }
   
   return (
@@ -24,7 +25,7 @@ const handleSignIn = () =>{
      
         <div className='flex items-center gap-3'>
         <img
-          src='./src/assets/logo1.png'
+          src={logo}
           alt="Image"
           className="w-24 h-24"
         />
