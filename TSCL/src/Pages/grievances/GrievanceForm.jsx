@@ -156,6 +156,8 @@ const GrievanceForm = () => {
         grievanceDetails
       );
 
+      const grievanceId = await response1.data.data.grievance_id;
+
       if (response1.status === 200) {
         toast.success("Grievance created Successfully");
       }
@@ -165,6 +167,9 @@ const GrievanceForm = () => {
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("grievance_id",grievanceId);
+        formData.append("created_by_user","admin");
+
         const response3 = await axios.post(
           `${API}/new-grievance-attachment/post`,
           formData,
