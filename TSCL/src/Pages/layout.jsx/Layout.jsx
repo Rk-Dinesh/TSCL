@@ -54,9 +54,9 @@ const Layout = ({ route }) => {
 
   return (
     <div className="w-full h-screen relative flex">
-      <div className="z-10 absolute bottom-0 left-1">
+      {/* <div className="z-10 absolute bottom-0 left-1">
         <img src="./src/assets/back_logo.png" alt="img" className="w-54 h-60"/>
-      </div>
+      </div> */}
       <div
         className={`bg-primary relative grid grid-rows-12 transition-all duration-100 ${
           open ? "w-1/6" : "w-1/12"
