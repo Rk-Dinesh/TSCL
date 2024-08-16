@@ -63,147 +63,171 @@ const CombinedSchema = yup
 
 const GrievanceForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [autoFillData, setAutoFillData] = useState(null);
+const navigate = useNavigate();
+const [autoFillData, setAutoFillData] = useState(null);
+const [filteredWards, setFilteredWards] = useState([]);
+const [filteredStreets, setFilteredStreets] = useState([]);
 
-  useEffect(() => {
-    dispatch(fetchDepartment());
-    dispatch(fetchComplaint());
-    dispatch(fetchZone());
-    dispatch(fetchWard());
-    dispatch(fetchStreet());
-    dispatch(fetchPublic_User());
-  }, [dispatch]);
+useEffect(() => {
+  dispatch(fetchDepartment());
+  dispatch(fetchComplaint());
+  dispatch(fetchZone());
+  dispatch(fetchWard());
+  dispatch(fetchStreet());
+  dispatch(fetchPublic_User());
+}, [dispatch]);
 
-  const Department = useSelector((state) => state.department);
-  const Complaint = useSelector((state) => state.complaint);
-  const Zone = useSelector((state) => state.zone);
-  const Ward = useSelector((state) => state.ward);
-  const Street = useSelector((state) => state.street);
-  const PublicUser = useSelector((state) => state.publicUser);
+const Department = useSelector((state) => state.department);
+const Complaint = useSelector((state) => state.complaint);
+const Zone = useSelector((state) => state.zone);
+const Ward = useSelector((state) => state.ward);
+const Street = useSelector((state) => state.street);
+const PublicUser = useSelector((state) => state.publicUser);
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-  } = useForm({
-    resolver: yupResolver(CombinedSchema),
-    mode: "onBlur",
-  });
+const {
+  register,
+  formState: { errors },
+  handleSubmit,
+  reset,
+  setValue,
+  watch,
+} = useForm({
+  resolver: yupResolver(CombinedSchema),
+  mode: "onBlur",
+});
 
-  const contactNumber = watch("phone");
+const contactNumber = watch("phone");
+const zoneName = watch("zone_name"); 
+const wardName = watch("ward_name");
 
-  useEffect(() => {
-    if (contactNumber && PublicUser.data) {
-      const user = PublicUser.data.find((user) => user.phone === contactNumber);
-      if (user) {
-        setAutoFillData(user);
-        setValue("public_user_name", user.public_user_name);
-        setValue("email", user.email);
-        setValue("address", user.address);
-        setValue("pincode", user.pincode);
-      } else {
-        setAutoFillData(null);
-      }
+useEffect(() => {
+  if (zoneName) {
+    const filteredWards = Ward.data.filter((ward) => ward.zone_name === zoneName);
+    setFilteredWards(filteredWards);
+  } else {
+    setFilteredWards([]);
+  }
+}, [zoneName, Ward.data]);
+
+useEffect(() => {
+  if (wardName) {
+    const filteredStreets = Street.data.filter(
+      (street) => street.ward_name === wardName
+    );
+    setFilteredStreets(filteredStreets);
+  } else {
+    setFilteredStreets([]);
+  }
+}, [wardName, Street.data]);
+
+useEffect(() => {
+  if (contactNumber && PublicUser.data) {
+    const user = PublicUser.data.find((user) => user.phone === contactNumber);
+    if (user) {
+      setAutoFillData(user);
+      setValue("public_user_name", user.public_user_name);
+      setValue("email", user.email);
+      setValue("address", user.address);
+      setValue("pincode", user.pincode);
+    } else {
+      setAutoFillData(null);
     }
-  }, [contactNumber, PublicUser.data, setValue]);
+  }
+}, [contactNumber, PublicUser.data, setValue]);
 
-  const onSubmit = async (data) => {
-    const userInfo = {
-      public_user_name: data.public_user_name,
-      phone: data.phone,
-      email: data.email,
-      address: data.address,
-      pincode: data.pincode,
-      login_password: "tscl@123",
-      verification_status: "active",
-      user_status: "active",
-    };
-
-    const getPriorityFromComplaintType = (complaintTypeTitle) => {
-      const complaint = Complaint.data.find((complaint) => complaint.complaint_type_title === complaintTypeTitle);
-      return complaint ? complaint.priority : null;
-    };
-
-    const grievanceDetails = {
-      grievance_mode: data.grievance_mode,
-      complaint_type_title: data.complaint_type_title,
-      dept_name: data.dept_name,
-      zone_name: data.zone_name,
-      ward_name: data.ward_name,
-      street_name: data.street_name,
-      pincode: data.pincode,
-      complaint: data.complaint,
-      complaint_details: data.complaint_details,
-      public_user_id:autoFillData.public_user_id,
-      public_user_name: data.public_user_name,
-      phone: data.phone,
-      status: "new",
-      statusflow:"new",
-      priority: getPriorityFromComplaintType(data.complaint_type_title),
-    };
-
-    const attachmentData = data.file
-      ? {
-          file: data.file[0],
-        }
-      : null;
-
-    try {
-      // Replace the below console.logs with actual API calls
-      // console.log("User Info:", userInfo);
-      // console.log("Grievance Details:", grievanceDetails);
-      // console.log("Attachment Data:", attachmentData);
-
-      const response = await axios.post(`${API}/public-user/post`, userInfo);
-      const public_user_id = response.data.data.public_user_id;
-
-      const response1 = await axios.post(
-        `${API}/new-grievance/post`,
-        grievanceDetails
-      );
-
-      const grievanceId = await response1.data.data.grievance_id;
-
-      if (response1.status === 200) {
-        toast.success("Grievance created Successfully");
-      }
-
-      if (attachmentData) {
-        const fileInput = document.getElementById("file");
-        const file = fileInput.files ? fileInput.files[0] : null;
-        if (file) {
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("grievance_id", grievanceId);
-          formData.append("created_by_user", "admin");
-
-          const response3 = await axios.post(
-            `${API}/new-grievance-attachment/post`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          if (response3.status === 200) {
-            toast.success("Attachment created Successfully");
-          }
-        } 
-      }
-
-      reset();
-      navigate("/view", {
-        state: { grievanceId:grievanceId},
-      })
-    } catch (error) {
-      toast.error("An error occurred during submission. Please try again.");
-    }
+const onSubmit = async (data) => {
+  const userInfo = {
+    public_user_name: data.public_user_name,
+    phone: data.phone,
+    email: data.email,
+    address: data.address,
+    pincode: data.pincode,
+    login_password: "tscl@123",
+    verification_status: "active",
+    user_status: "active",
   };
+
+  const getPriorityFromComplaintType = (complaintTypeTitle) => {
+    const complaint = Complaint.data.find((complaint) => complaint.complaint_type_title === complaintTypeTitle);
+    return complaint ? complaint.priority : null;
+  };
+
+  let public_user_id;
+  if (autoFillData) {
+    public_user_id = autoFillData.public_user_id;
+  } else {
+    const response = await axios.post(`${API}/public-user/post`, userInfo);
+    public_user_id = response.data.data.public_user_id;
+  }
+
+  const grievanceDetails = {
+    grievance_mode: data.grievance_mode,
+    complaint_type_title: data.complaint_type_title,
+    dept_name: data.dept_name,
+    zone_name: data.zone_name,
+    ward_name: data.ward_name,
+    street_name: data.street_name,
+    pincode: data.pincode,
+    complaint: data.complaint,
+    complaint_details: data.complaint_details,
+    public_user_id: public_user_id,
+    public_user_name: data.public_user_name,
+    phone: data.phone,
+    status: "new",
+    statusflow: "new",
+    priority: getPriorityFromComplaintType(data.complaint_type_title),
+  };
+
+  const attachmentData = data.file
+    ? {
+        file: data.file[0],
+      }
+    : null;
+
+  try {
+    const response1 = await axios.post(
+      `${API}/new-grievance/post`,
+      grievanceDetails
+    );
+
+    const grievanceId = await response1.data.data.grievance_id;
+
+    if (response1.status === 200) {
+      toast.success("Grievance created Successfully");
+    }
+
+    if (attachmentData) {
+      const fileInput = document.getElementById("file");
+      const file = fileInput.files ? fileInput.files[0] : null;
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("grievance_id", grievanceId);
+        formData.append("created_by_user", "admin");
+
+        const response3 = await axios.post(
+          `${API}/new-grievance-attachment/post`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response3.status === 200) {
+          toast.success("Attachment created Successfully");
+        }
+      }
+    }
+
+    reset();
+    navigate("/view", {
+      state: { grievanceId: grievanceId },
+    });
+  } catch (error) {
+    toast.error("An error occurred during submission. Please try again.");
+  }
+};
 
   return (
     <>
@@ -457,8 +481,8 @@ const GrievanceForm = () => {
                         Select a Ward
                       </option>
 
-                      {Ward.data &&
-                        Ward.data.map((option) => (
+                      {filteredWards &&
+                        filteredWards.map((option) => (
                           <option key={option.ward_id} value={option.ward_name}>
                             {option.ward_name}
                           </option>
@@ -488,8 +512,8 @@ const GrievanceForm = () => {
                         Select a Street
                       </option>
 
-                      {Street.data &&
-                        Street.data.map((option) => (
+                      {filteredStreets &&
+                        filteredStreets.map((option) => (
                           <option
                             key={option.street_id}
                             value={option.street_name}
