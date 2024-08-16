@@ -37,16 +37,16 @@ const handlesignIn = () =>{
               
             <div className=" grid grid-cols-3  font-normal mx-6 py-3">
             <label
-                className="flex text-black text-lg font-medium mb-2"
+                className="flex text-black text-lg font-medium mb-2 "
                 htmlFor="email"
               >
-                Email Id<span className='text-red-700 px-2'>*</span>
+                Email / Phone<span className='text-red-700 px-2'>*</span>
               </label>
               <input
                 type="email"
                 id="email"
                 className="col-span-2  border rounded-lg py-1.5 px-2 outline-none"
-                placeholder="tscl123@gmail.com"
+                placeholder="email address or phone number"
                
                 />
                

@@ -58,7 +58,7 @@ const AddAdmin = (props) => {
       const response = await axios.post(`${API}/user/post`, formData);
 
       if (response.status === 200) {
-        toast.success("Admin created Successfully");
+        toast.success(response.data.message);
         props.toggleModal();
         props.handlerefresh();
       } else {
@@ -72,12 +72,12 @@ const AddAdmin = (props) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
-    <div className="bg-white w-fit h-fit  font-lexend">
+    <div className="bg-white w-fit h-fit  font-lexend m-2">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="border-b-2 border-gray-300 mx-10 my-5">
           <div className=" grid grid-cols-3 gap-3">
             <label
-              className="block text-black text-lg font-medium mb-2 col-span-1"
+              className="block text-black text-lg font-medium mb-2 col-span-1 whitespace-nowrap"
               htmlFor="user_name"
             >
               User Name
@@ -132,7 +132,7 @@ const AddAdmin = (props) => {
                 className=" text-black text-lg font-medium mb-2 col-span-1"
                 htmlFor="Phone"
               >
-                Phone No:
+                Phone :
               </label>
               <input
                 type="text"
@@ -207,7 +207,7 @@ const AddAdmin = (props) => {
                 type="text"
                 id="pincode"
                 className=" text-end outline-none col-span-2"
-                placeholder="Pincode Number"
+                placeholder="Pincode "
                 {...register("pincode")}
               />
             </div>

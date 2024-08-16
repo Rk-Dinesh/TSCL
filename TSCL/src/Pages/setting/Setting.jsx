@@ -66,10 +66,10 @@ const Settings = () => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen mt-10">
-          <div className="flex justify-between items-center my-2 mx-8">
-            <h1 className="text-2xl font-medium "> Roles</h1>
-            <div className="flex items-center  gap-3">
-            <div className="flex items-center gap-3 bg-white px-2 py-2 rounded-full">
+          <div className="flex justify-between items-center my-2 mx-8 flex-wrap gap-3">
+            <h1 className="md:text-2xl text-xl font-medium "> Roles</h1>
+            <div className="flex items-center  gap-3 flex-wrap">
+            <div className="flex items-center gap-3 bg-white px-2 py-1.5 rounded-full ">
               <IoMdSearch className="text-xl" />
               <input
                 type="search"
@@ -79,14 +79,14 @@ const Settings = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
-              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 w-fit justify-between px-3" onClick={toggleModal}>
+              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={toggleModal}>
                 <FaPlus /> Add New Role
               </button>
               </div>
            
           </div>
 
-          <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
             <table>
               <thead>
               <th className="pt-4 pb-2 px-4 font-normal text-xl font-lexend whitespace-nowrap">
@@ -181,12 +181,12 @@ const Settings = () => {
             </table>
           </div>
 
-          <div className=" my-5 mb-5 mx-7">
+          <div className=" my-3 mb-5 mx-7">
             <nav
-              className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+              className="flex items-center flex-column flex-wrap md:flex-row md:justify-between justify-center pt-4"
               aria-label="Table navigation"
             >
-              <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto font-alegerya">
+              <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto text-center font-alegerya">
                 Showing{" "}
                 <span className="text-gray-700">
                   {firstIndex + 1} to {Math.min(lastIndex, role.length)}

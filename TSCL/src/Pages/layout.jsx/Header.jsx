@@ -7,9 +7,9 @@ import master from "../../assets/images/img1.png"
 const Header = () => {
   return (
     <div className=" flex justify-between bg-secondary p-3">
-      <div className="flex gap-2 items-center  bg-slate-100  ml-3 px-3 pt-1 rounded-full">
-       <img className="rounded-full" src={master} alt="image" />
-       <h1 className="text-lg">Hi, Master</h1>
+      <div className="flex gap-2 items-center  bg-slate-100  md:ml-3 ml-24 px-2 mx-1 pt-1 rounded-full">
+       <img className="rounded-full " src={master} alt="image" />
+       <h1 className="md:text-lg text-xs">Hi, Master</h1>
       </div>
 
       <div className="flex gap-5 items-center pr-5">

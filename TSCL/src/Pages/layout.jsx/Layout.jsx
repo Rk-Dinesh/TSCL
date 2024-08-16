@@ -2,6 +2,7 @@ import React, { useState, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { BsChevronDown } from "react-icons/bs";
+import { TiThMenu } from "react-icons/ti";
 import { FaUser } from "react-icons/fa";
 import { SiAwsorganizations } from "react-icons/si";
 import { RxHome } from "react-icons/rx";
@@ -54,19 +55,15 @@ const Layout = ({ route }) => {
 
 
   return (
-    <div className="w-full h-screen relative flex">
-      {/* <div className="z-10 absolute bottom-0 left-1">
-        <img src="./src/assets/back_logo.png" alt="img" className="w-54 h-60"/>
-      </div> */}
+    <div className="w-full h-screen relative  md:flex">
+    
       <div
-        className={`bg-primary relative grid grid-rows-12 transition-all duration-100 ${
-          open ? "w-1/6" : "w-1/12"
+        className={` md:relative md:grid md:grid-rows-12 absolute   transition-all duration-100 ${
+          open ? "md:w-1/6 w-3/6 h-screen bg-primary" : "md:w-1/12 md:bg-primary"
         }`}
       >
-        <BsChevronDown
-          className={`text-white absolute top-0 -right-0 cursor-pointer transition-transform ${
-            !open && "rotate-180"
-          }`}
+        <TiThMenu
+          className={`md:text-white absolute top-4 right-2 cursor-pointer transition-transform text-2xl  `}
           onClick={() => setOpen(!open)}
           fontSize="small"
         />
@@ -76,7 +73,7 @@ const Layout = ({ route }) => {
             src={logo}
             alt="Image"
             className={`transition-all duration-500 ${
-              open ? "w-20 h-20 mt-1" : "w-14 h-14 mt-2 mr-5"
+              open ? "w-20 h-20 mt-1" : "md:w-14 md:h-14 md:mt-12 md:mr-5 w-9 h-9 mr-10"
             }`}
           />
           <h1
@@ -88,23 +85,23 @@ const Layout = ({ route }) => {
           </h1>
         </span>
 
-        <div className="row-span-10 mt-6 ">
+        <div className="row-span-10 mt-4 ">
           <ul className="pt-2">
             {Menus.map((menu, index) => (
               <React.Fragment key={index} >
                 <NavLink to={menu.to}> 
                   <li
-                    className={` cursor-pointer text-md flex items-center gap-x-3 p-2 mt-1 pl-6 transition-all duration-700 hover:bg-gray-200 hover:text-primary  ${
-                      location.pathname === menu.to
-                        ? "bg-gray-200 text-primary transition-all duration-500"
-                        : "text-white"
+                    className={` cursor-pointer text-md flex items-center gap-x-3 p-2 mt-1 pl-3 transition-all duration-700 hover:bg-gray-200 hover:text-primary  ${
+                      location.pathname === menu.to 
+                        ? `${ open ?  "bg-gray-200 text-primary transition-all duration-500" : "md:bg-gray-200 md:text-primary md:transition-all md:duration-500 duration-75"}`
+                        : "text-white  "
                     }`}
                   
                   >
-                    <div className="flex items-center gap-x-3">
+                    <div className="flex items-center gap-x-2">
                       <span
-                        className={`block float-left ${
-                          open ? "text-2xl" : "text-3xl"
+                        className={`md:block md:float-left ${
+                          open ? "md:text-2xl" : "md:text-3xl md:opacity-100 opacity-0"
                         }`}
                       >
                         <div className="">{menu.icon}</div>
@@ -133,7 +130,7 @@ const Layout = ({ route }) => {
                     {menu.submenuItems.map((submenuitem, subIndex) => (
                       <NavLink to={submenuitem.to} key={subIndex}>
                         <li
-                          className={` cursor-pointer font-alegerya text-sm flex items-center gap-x-4 p-2 pl-20 hover:bg-gray-200 hover:text-primary ${
+                          className={` cursor-pointer font-alegerya text-sm flex items-center gap-x-2 p-2 pl-20 hover:bg-gray-200 hover:text-primary ${
                             location.pathname === submenuitem.to
                               ? "bg-gray-200 text-primary "
                               : "text-white"
@@ -153,7 +150,7 @@ const Layout = ({ route }) => {
 
       <div
         className={`flex flex-col bg-blue-100  no-scrollbar h-screen transition-all duration-300 overflow-hidden ${
-          open ? "w-5/6" : "w-11/12"
+          open ? "md:w-5/6 sm:w-full" : "md:w-11/12 sm:w-full"
         }`}
       >
         <Header />
@@ -161,6 +158,7 @@ const Layout = ({ route }) => {
           <Outlet />
         </Suspense>
       </div>
+
     </div>
   );
 };

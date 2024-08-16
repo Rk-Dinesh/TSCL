@@ -100,8 +100,8 @@ const Street = () => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-        <div className="flex flex-row justify-end gap-3 p-2 mt-3 mx-8">
-        <div className="flex items-center gap-3 bg-white px-2 rounded-full">
+        <div className="flex flex-row md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+        <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
               <IoMdSearch className="text-xl" />
               <input
                 type="search"
@@ -112,31 +112,31 @@ const Street = () => {
               />
             </div>
           <a href="#">
-            <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full p-2 w-40 justify-center">
+            <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
               {" "}
               <FaPlus />
               Bulk Upload
             </button>
           </a>
           <a href="#">
-            <button className="flex gap-2 items-center border-2 bg-slate-100  font-lexend text-black rounded-full p-2 w-32 justify-between">
+            <button className="flex gap-2 items-center border-2 bg-slate-100  font-lexend text-black rounded-full px-3 py-1.5 w-28 justify-between">
               {" "}
               CSV <RiArrowDropDownLine />
             </button>
           </a>
         </div>
-        <div className="flex justify-between items-center my-2 mx-8">
-          <h1 className="text-2xl font-medium ">Locality</h1>
+        <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
+          <h1 className="md:text-2xl text-xl font-medium ">Locality</h1>
 
           <button
-            className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between"
+            className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
             onClick={toggleModal}
           >
             <FaPlus /> Add New Street
           </button>
         </div>
 
-        <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+        <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
           <table>
             <thead>
             <th className="pt-4 pb-2 px-4 font-medium font-lexend text-xl whitespace-nowrap">
@@ -221,13 +221,13 @@ const Street = () => {
             </tbody>
           </table>
         </div>
-        <div className=" my-5 mb-5 mx-7">
+        <div className=" my-3 mb-5 mx-7">
           
           <nav
-            className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+            className="flex items-center flex-column flex-wrap md:flex-row md:justify-between justify-center pt-4"
             aria-label="Table navigation"
           >
-            <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto font-alegerya">
+            <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto text-center font-alegerya">
               Showing{" "}
               <span className="text-gray-700">
                 {firstIndex + 1} to {Math.min(lastIndex, street.length)}

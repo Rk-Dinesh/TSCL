@@ -1,79 +1,68 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { API } from "../../Host";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { API } from '../../Host';
+import { useDispatch, useSelector } from 'react-redux';
 
 const departmentSchema = yup.object().shape({
   org_name: yup
     .string()
     .test(
-      "not-select",
-      "Please select an Organization",
-      (value) => value !== "" && value !== "Select  Organization"
+      'not-select',
+      'Please select an Organization',
+      (value) => value !== '' && value !== 'Select  Organization'
     ),
-  dept_name: yup.string().required("Department is required"),
+  dept_name: yup.string().required('Department is required'),
 });
 
-const AddDepartment = (props) => {
-  
-  const { ExistingOrganiZations } = props;
-  const [orgId, setorgId] = useState(null);
-  const [OrgName, setOrgName] = useState(null);
-  //console.log(ExistingOrganiZations);
+const AddDepartment = ({ ExistingOrganiZations, toggleModal, handleRefresh }) => {
+  const [orgId, setOrgId] = useState(null);
+  const [orgName, setOrgName] = useState(null);
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    watch,
-  } = useForm({
+  const { register, formState: { errors }, handleSubmit, watch } = useForm({
     resolver: yupResolver(departmentSchema),
-    mode: "all",
+    mode: 'all',
   });
 
   useEffect(() => {
-    if (OrgName) {
-      const selectedorg = ExistingOrganiZations.find(
-        (org) => org.org_name === OrgName
-      );
-      if (selectedorg) {
-        setorgId(selectedorg.org_id);
+    if (orgName) {
+      const selectedOrg = ExistingOrganiZations.find((org) => org.org_name === orgName);
+      if (selectedOrg) {
+        setOrgId(selectedOrg.org_id);
       }
     }
-  }, [OrgName, ExistingOrganiZations]);
+  }, [orgName, ExistingOrganiZations]);
 
   const onSubmit = async (data) => {
     const formData = {
       ...data,
       org_id: orgId,
-      status: "inactive",
-      created_by_user: "admin",
+      status: 'inactive',
+      created_by_user: 'admin',
     };
-
-    console.log(formData);
 
     try {
       const response = await axios.post(`${API}/department/post`, formData);
 
       if (response.status === 200) {
-        toast.success("Department created Successfully");
-        props.toggleModal();
-        props.handlerefresh();
+        toast.success('Department created Successfully');
+        toggleModal();
+        handleRefresh();
       } else {
-        console.error("Error in posting data", response);
-        toast.error("Failed to Upload");
+        console.error('Error in posting data', response);
+        toast.error('Failed to Upload');
       }
     } catch (error) {
-      console.error("Error in posting data", error);
+      console.error('Error in posting data', error);
     }
   };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
-      <div className="bg-white w-[522px] h-[368px]  font-lexend">
+    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
+      <div className="bg-white w-[522px] h-[368px] font-lexend m-2">
         <div className="border-b-2 border-gray-300 mx-10">
           <h1 className="text-xl font-medium pt-10 pb-2">Add Department</h1>
         </div>
@@ -89,7 +78,7 @@ const AddDepartment = (props) => {
               <select
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
                 id="org_name"
-                {...register("org_name")}
+                {...register('org_name')}
                 onChange={(e) => setOrgName(e.target.value)}
               >
                 <option value="">Select Organization</option>
@@ -116,21 +105,21 @@ const AddDepartment = (props) => {
                 id="dept_name"
                 type="text"
                 placeholder="Add Department Name"
-                {...register("dept_name")}
+                {...register('dept_name')}
               />
               {errors.dept_name && (
                 <p className="text-red-500">{errors.dept_name.message}</p>
               )}
             </div>
           </div>
-          <div className="flex justify-end mx-10 gap-5 ">
+          <div className="flex justify-end mx-10 gap-5">
             <button
               className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleCloseModal}
+              onClick={toggleModal}
             >
-              cancel
+              Cancel
             </button>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
+            <button className="text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
               Save
             </button>
           </div>

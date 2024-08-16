@@ -51,7 +51,7 @@ const OTP = () => {
   };
 
   const handlelogin = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   return (

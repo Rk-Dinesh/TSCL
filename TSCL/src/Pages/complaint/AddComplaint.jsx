@@ -132,11 +132,11 @@ const AddComplaint = (props) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
-      <div className="overflow-hidden shadow-lg bg-white flex items-end justify-between relative font-alegerya">
-        <div className="w-[590px] min-h-[350px]">
+    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center flex-wrap">
+      <div className="overflow-hidden shadow-lg bg-white flex items-end justify-between relative font-alegerya mx-2 ">
+        <div className="min-w-[390px] min-h-[350px] ">
           <div>
-            <div className="flex justify-between items-center px-5 text-white bg-gray-700 h-12">
+            <div className="flex justify-between items-center px-5 text-white bg-gray-700 h-12 flex-wrap">
               <p className="">New Complaint</p>
               <button onClick={props.toggleModal} className="">
                 <IoMdClose className="text-2xl" />
@@ -179,7 +179,7 @@ const AddComplaint = (props) => {
                             Create Complaint
                           </h4>
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="complaint_type_title"
@@ -187,7 +187,7 @@ const AddComplaint = (props) => {
                             Complaint Type
                           </label>
                           <input
-                            className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
+                            className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline  col-span-2"
                             id="complaint_type_title"
                             type="text"
                             placeholder="Complaint Type"
@@ -199,7 +199,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="dept"
@@ -224,7 +224,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="tat_type"
@@ -246,7 +246,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="tat_duration"
@@ -266,7 +266,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="priority"
@@ -301,7 +301,7 @@ const AddComplaint = (props) => {
                             Escalation Details
                           </h4>
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="escalation_type"
@@ -323,7 +323,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="escalation_l1"
@@ -343,7 +343,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="role_l1"
@@ -368,7 +368,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="escalation_l2"
@@ -388,7 +388,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="role_l2"
@@ -413,7 +413,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="escalation_l3"
@@ -433,7 +433,7 @@ const AddComplaint = (props) => {
                             </p>
                           )}
                         </div>
-                        <div className="grid grid-cols-3 items-center">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="role_l3"

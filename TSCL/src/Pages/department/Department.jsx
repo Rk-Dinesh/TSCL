@@ -102,8 +102,8 @@ const Department = () => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-          <div className="flex flex-row justify-end gap-3 p-2 mt-3 mx-8">
-            <div className="flex items-center gap-3 bg-white px-2 rounded-full">
+          <div className="flex flex-row md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+            <div className="flex items-center gap-3 bg-white py-1.5 px-3 rounded-full">
               <IoMdSearch className="text-xl" />
               <input
                 type="search"
@@ -114,7 +114,7 @@ const Department = () => {
               />
             </div>
             <a href="#">
-              <button className="flex gap-2  items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full p-2 w-40 justify-center">
+              <button className="flex gap-2  items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
                 {" "}
                 <FaPlus />
                 Bulk Upload
@@ -127,21 +127,21 @@ const Department = () => {
               </button>
             </a>
           </div>
-          <div className="flex justify-between items-center my-2 mx-8">
-            <h1 className="text-2xl font-medium ml-8 font-lexend">
+          <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
+            <h1 className="md:text-2xl text-lg font-medium  font-lexend">
               Department
             </h1>
             <a href="#">
               <button
-                className="flex flex-row-2 gap-2  items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between"
+                className="flex  gap-2  items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between"
                 onClick={toggleModal}
               >
-                <FaPlus /> Add New Department
+                <FaPlus /> Add Department
               </button>
             </a>
           </div>
 
-          <div className="bg-white mx-6 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
             <table className="w-full  ">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">
@@ -192,21 +192,21 @@ const Department = () => {
                           alt="logo"
                           className="w-9 h-9"
                         />
-                        <p className="font-lexend"> {dept.dept_name}</p>
+                        <p className="font-lexend "> {dept.dept_name}</p>
                       </div>
                     </td>
                     <td className="">
-                      <p className=" mx-4 my-2 font-lexend text-center">
+                      <p className=" mx-4 my-2 font-lexend text-center whitespace-nowrap">
                         {dept.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2 font-lexend text-center">
+                      <p className=" mx-4  my-2 font-lexend text-center whitespace-nowrap">
                         {dept.status}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2  font-lexend text-center">
+                      <p className=" mx-4  my-2  font-lexend text-center whitespace-nowrap">
                         {dept.created_by_user}
                       </p>
                     </td>
@@ -230,12 +230,12 @@ const Department = () => {
               </tbody>
             </table>
           </div>
-          <div className=" my-5 mb-5 mx-7">
+          <div className=" my-3 mb-5 mx-7">
             <nav
-              className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+              className="flex items-center flex-column flex-wrap md:flex-row md:justify-between justify-center pt-4"
               aria-label="Table navigation"
             >
-              <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto font-alegerya">
+              <span className="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto text-center font-alegerya">
                 Showing{" "}
                 <span className="text-gray-700">
                   {firstIndex + 1} to {Math.min(lastIndex, department.length)}
