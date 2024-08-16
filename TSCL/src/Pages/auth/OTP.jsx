@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../../assets/images/logo1.png"
 
 const OTP = () => {
   const [formData, setFormData] = useState({
@@ -56,7 +57,7 @@ const OTP = () => {
   return (
     <div className="h-screen  bg-primary py-6 flex flex-col items-center gap-8 justify-center ">
       <div className="flex items-center gap-4">
-        <img src="./src/assets/logo1.png" alt="Image" className="w-24 h-24" />
+        <img src={logo} alt="Image" className="w-24 h-24" />
         <p className="text-6xl text-secondary">TSCL</p>
       </div>
       <div className="p-6 md:w-[550px]   bg-white  rounded-lg mx-5">

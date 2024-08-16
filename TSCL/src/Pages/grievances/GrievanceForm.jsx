@@ -123,6 +123,11 @@ const GrievanceForm = () => {
       user_status: "active",
     };
 
+    const getPriorityFromComplaintType = (complaintTypeTitle) => {
+      const complaint = Complaint.data.find((complaint) => complaint.complaint_type_title === complaintTypeTitle);
+      return complaint ? complaint.priority : null;
+    };
+
     const grievanceDetails = {
       grievance_mode: data.grievance_mode,
       complaint_type_title: data.complaint_type_title,
@@ -133,10 +138,12 @@ const GrievanceForm = () => {
       pincode: data.pincode,
       complaint: data.complaint,
       complaint_details: data.complaint_details,
+      public_user_id:autoFillData.public_user_id,
       public_user_name: data.public_user_name,
       phone: data.phone,
       status: "new",
-      statusflow:"new"
+      statusflow:"new",
+      priority: getPriorityFromComplaintType(data.complaint_type_title),
     };
 
     const attachmentData = data.file
@@ -152,6 +159,8 @@ const GrievanceForm = () => {
       // console.log("Attachment Data:", attachmentData);
 
       const response = await axios.post(`${API}/public-user/post`, userInfo);
+      const public_user_id = response.data.data.public_user_id;
+
       const response1 = await axios.post(
         `${API}/new-grievance/post`,
         grievanceDetails
