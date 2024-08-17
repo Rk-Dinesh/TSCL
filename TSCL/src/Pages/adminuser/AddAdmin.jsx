@@ -52,7 +52,9 @@ const AddAdmin = (props) => {
       created_by_user:"admin"
     };
 
-    // console.log(formData);
+    const token = localStorage.getItem('token');
+    console.log(token);
+    
 
     try {
       const response = await axios.post(`${API}/user/post`, formData);

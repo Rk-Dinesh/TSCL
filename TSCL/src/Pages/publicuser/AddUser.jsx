@@ -44,8 +44,15 @@ const AddUser = (props) => {
 
     console.log(formData);
 
+    const token = sessionStorage.getItem('token');
+  
+
     try {
-      const response = await axios.post(`${API}/public-user/post`, formData);
+      const response = await axios.post(`${API}/public-user/post`, formData,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 200) {
         toast.success("Public User created Successfully");

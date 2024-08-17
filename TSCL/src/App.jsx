@@ -18,10 +18,10 @@ import ViewRequest from './Pages/request/ViewRequest';
 import Login from './Pages/auth/Login';
 import OTP from './Pages/auth/OTP';
 import SignUp from './Pages/auth/SignUp';
+import Expire from './Pages/expiresToken/Expire';
 
 function App() {
   
-
   return (
     <>
      <BrowserRouter>
@@ -42,6 +42,7 @@ function App() {
        <Route path='/user' element={<User/>} />
        <Route path='/setting' element={<Settings/>} />
        <Route path='/view' element={<ViewRequest/>} />
+       <Route path='/token' element={<Expire/>} />
        </Route>
        
       </Routes>

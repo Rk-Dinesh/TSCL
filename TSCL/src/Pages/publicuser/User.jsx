@@ -28,9 +28,17 @@ const User = () => {
     }
   };
 
+
   const handlerefresh = () => {
+
+    const token = sessionStorage.getItem('token'); 
+    
     axios
-      .get(`${API}/public-user/get`)
+      .get(`${API}/public-user/get`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         setUser(response.data.data);
 

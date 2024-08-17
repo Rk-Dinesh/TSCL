@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo1.png";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { API } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const UserSchema = yup.object().shape({
   identifier: yup.string().required("User Name is required"),
@@ -15,6 +16,7 @@ const UserSchema = yup.object().shape({
 
 const Login = ({ setToken }) => {
   const navigate = useNavigate();
+  const [timeoutId, setTimeoutId] = useState(null);
 
   const {
     register,
@@ -27,19 +29,29 @@ const Login = ({ setToken }) => {
     mode: "all",
   });
 
+
+  function getTokenExpirationDuration(token) {
+    const decodedToken = jwtDecode(token);
+    const expirationTime = decodedToken.exp;
+    const currentTime = Math.floor(Date.now() / 1000);
+    const expirationDuration = expirationTime - currentTime;
+    return expirationDuration;
+  }
   
   const onSubmit = async (data) => {
     let isPublicUserLoggedIn = false;
     let isRegularUserLoggedIn = false;
+    let token = null;
 
     try {
       const responsePublic = await axios.post(`${API}/public-user/loginweb`, data);
       
       if (responsePublic.status === 200) {
         isPublicUserLoggedIn = true;
+        token = responsePublic.data.token;
       }
     } catch (error) {
-      console.error("Error logging in as public user", error);
+      // console.error("Error logging in as public user", error);
     }
 
     try {
@@ -47,9 +59,10 @@ const Login = ({ setToken }) => {
       
       if (response.status === 200) {
         isRegularUserLoggedIn = true;
+        token = response.data.token;
       }
     } catch (error) {
-      console.error("Error logging in as public user", error);
+      // console.error("Error logging in as user", error);
     }
   
    
@@ -57,12 +70,31 @@ const Login = ({ setToken }) => {
       // navigate("/department");
       alert("Both user and admin")
     } else if (isPublicUserLoggedIn || isRegularUserLoggedIn) {
+      const tokenExpirationDuration = getTokenExpirationDuration(token);
+      sessionStorage.setItem('token', token);
       toast.success("Logged in successfully");
       navigate("/organization");
+      const timeoutId = setTimeout(() => {
+        navigate("/token");
+      }, tokenExpirationDuration * 1000);
+      setTimeoutId(timeoutId);
     } else {
       toast.error("Invalid Credentials");
     }
   };
+
+
+
+
+
+  function autoNavigateToTokenPage(token) {
+    const tokenExpirationDuration = getTokenExpirationDuration(token);
+    const navigateTimeout = setTimeout(() => {
+      navigate("/token");
+    }, tokenExpirationDuration * 1000);
+    
+    return navigateTimeout;
+  }
   
 
 

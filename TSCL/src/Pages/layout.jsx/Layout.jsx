@@ -17,18 +17,11 @@ import { LuUserCircle2 } from "react-icons/lu";
 import Header from "./Header";
 import logo from "../../assets/images/logo1.png"
 
-const Layout = ({ route }) => {
+const Layout = () => {
   const location = useLocation();
   const [open, setOpen] = useState(true);
   const [submenuopen, Setsubmenuopen] = useState(false);
-  const navigate = useNavigate();
-
-  const handlelogout= () => {
-    navigate('/login')
-  }
-  
-  
-
+ 
   const Menus = [
     { title: "Dashboard", icon: <RxHome /> },
     { title: "Organization", icon: <GoOrganization />, to: "/organization" },
@@ -49,7 +42,7 @@ const Layout = ({ route }) => {
     { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
-    { title: "Logout", icon: <CiLogout />,onClick:handlelogout },
+   
   ];
   
 
