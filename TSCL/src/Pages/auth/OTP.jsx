@@ -58,11 +58,11 @@ const OTP = () => {
     <div className="h-screen  bg-primary py-6 flex flex-col items-center gap-8 justify-center ">
       <div className="flex items-center gap-4">
         <img src={logo} alt="Image" className="w-24 h-24" />
-        <p className="text-6xl text-secondary">TSCL</p>
+        <p className="text-6xl text-secondary ">TSCL</p>
       </div>
-      <div className="p-6 md:w-[550px]   bg-white  rounded-lg mx-5">
+      <div className="p-6 md:w-[550px]   md:bg-white  rounded-lg mx-5">
         <div className="font-lexend text-start mt-2">
-          <p className="text-xl py-2">OTP</p>
+          <p className="text-xl py-2 md:text-black text-gray-200 text-center">One Time Password</p>
           <form onSubmit={handleSubmit}>
             <div className="flex justify-center gap-3  pt-5">
               <input
@@ -110,10 +110,10 @@ const OTP = () => {
                 onKeyUp={(e) => inputfocus(e)}
               />
             </div>
-            <p className="text-center text-xs text-primary ml-36 mt-2">Resend 3s</p>
+            <p className="text-center text-xs md:text-primary text-white ml-36 mt-2">Resend 3s</p>
             <div className="text-center my-5">
               <button
-                className="px-5 py-2 bg-primary text-white rounded-full"
+                className="px-5 py-2 md:bg-primary md:text-white text-primary bg-gray-100 rounded-full"
                 type="submit"
                 onClick={handlelogin}
 
