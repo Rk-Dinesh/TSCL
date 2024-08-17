@@ -231,15 +231,15 @@ const onSubmit = async (data) => {
 
   return (
     <>
-      <div className="bg-blue-100 flex flex-col  px-10 text-start h-fit   font-lexend overflow-y-auto no-scrollbar">
+      <div className="bg-blue-100 flex flex-col  md:px-8 px-3 text-start h-fit   font-lexend overflow-y-auto no-scrollbar">
         <h1 className="text-xl my-5">Grievance Form</h1>
-        <div className=" flex-col justify-center items-center w-[592px] bg-white h-fit rounded-lg">
+        <div className="  bg-white max-w-[592px] h-fit rounded-lg ">
           <div className="border-b-2 border-search">
             <h1 className=" text-xl px-3 py-3">Request by</h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col flex-nowrap overflow-hidden my-5 gap-2">
-              <div className="flex justify-between font-normal mx-10">
+            <div className="flex flex-col flex-wrap overflow-hidden my-5 gap-2">
+              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                 <label
                   className="block text-black text-lg font-medium mb-2"
                   htmlFor="phone"
@@ -250,7 +250,7 @@ const onSubmit = async (data) => {
                   <input
                     type="text"
                     id="phone"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
+                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="Phone Number"
                     {...register("phone")}
                   />
@@ -261,7 +261,7 @@ const onSubmit = async (data) => {
                   )}
                 </div>
               </div>
-              <div className="flex justify-between font-normal mx-10">
+              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                 <label
                   className="block text-black text-lg font-medium mb-2"
                   htmlFor="public_user_name"
@@ -272,7 +272,7 @@ const onSubmit = async (data) => {
                   <input
                     type="text"
                     id="public_user_name"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
+                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="User Name"
                     {...register("public_user_name")}
                     defaultValue={
@@ -287,7 +287,7 @@ const onSubmit = async (data) => {
                 </div>
               </div>
 
-              <div className="flex justify-between font-normal mx-10">
+              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                 <label
                   className="block text-black text-lg font-medium mb-2"
                   htmlFor="email"
@@ -298,7 +298,7 @@ const onSubmit = async (data) => {
                   <input
                     type="email"
                     id="email"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
+                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="abc@gmail.com"
                     {...register("email")}
                     defaultValue={autoFillData ? autoFillData.email : ""}
@@ -310,7 +310,7 @@ const onSubmit = async (data) => {
                   )}
                 </div>
               </div>
-              <div className="flex justify-between font-normal mx-10">
+              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                 <label
                   className="block text-black text-lg font-medium mb-2 py-2"
                   htmlFor="address"
@@ -321,7 +321,7 @@ const onSubmit = async (data) => {
                   <input
                     type="text"
                     id="address"
-                    className="w-6/5 text-start border-2 w-80 rounded-lg ml-2 px-2 py-2 outline-none"
+                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
                     placeholder="Enter your Address"
                     {...register("address")}
                     defaultValue={autoFillData ? autoFillData.address : ""}
@@ -335,22 +335,22 @@ const onSubmit = async (data) => {
               </div>
             </div>
 
-            <div className=" flex-col justify-center items-center w-[592px] bg-white h-fit rounded-lg mt-5">
+            <div className=" flex-col justify-center items-center max-w-[592px] bg-white h-fit rounded-lg mt-5">
               <div className="border-b-2 border-search">
                 <h1 className=" text-xl px-3 py-3">Grievance Details</h1>
               </div>
 
-              <div className="flex flex-col flex-nowrap overflow-hidden my-5 gap-2">
-                <div className="grid grid-cols-3  font-normal mx-10 ">
+              <div className="flex flex-col flex-wrap overflow-y-auto my-5 gap-2 no-scrollbar">
+                <div className="flex flex-col md:grid md:grid-cols-3  font-normal mx-10  ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="grievance_mode"
                   >
                     Origin
                   </label>
-                  <div className=" col-span-2">
+                  <div className=" md:col-span-2">
                     <select
-                      className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
+                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
                       {...register("grievance_mode")}
                     >
@@ -368,16 +368,16 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-3  font-normal mx-10 ">
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="complaint_type_title"
                   >
                     Complaint Type
                   </label>
-                  <div className=" col-span-2">
+                  <div className=" md:col-span-2">
                     <select
-                      className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
+                      className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
                       {...register("complaint_type_title")}
                     >
@@ -402,16 +402,16 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-3  font-normal mx-10 ">
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="dept_name"
                   >
                     Department
                   </label>
-                  <div className="col-span-2">
+                  <div className="md:col-span-2">
                     <select
-                      className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
+                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
                       {...register("dept_name")}
                     >
@@ -433,16 +433,16 @@ const onSubmit = async (data) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3  font-normal mx-10 ">
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="zone_name"
                   >
                     Zone
                   </label>
-                  <div className="col-span-2">
+                  <div className="md:col-span-2">
                     <select
-                      className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
+                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
                       {...register("zone_name")}
                     >
@@ -464,16 +464,16 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-3  font-normal mx-10 ">
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="ward_name"
                   >
                     Ward
                   </label>
-                  <div className=" col-span-2">
+                  <div className=" md:col-span-2">
                     <select
-                      className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
+                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
                       {...register("ward_name")}
                     >
@@ -495,16 +495,16 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-3  font-normal mx-10 ">
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="street_name"
                   >
                     Street
                   </label>
-                  <div className="col-span-2">
+                  <div className="md:col-span-2">
                     <select
-                      className="block w-full px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50  dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200 outline-none"
+                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
                       {...register("street_name")}
                     >
@@ -529,18 +529,18 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-3 font-normal mx-10">
+                <div className="gflex flex-col md:grid md:grid-cols-3   font-normal mx-10">
                   <label
-                    className="block text-black text-lg font-medium mb-2 col-span-1"
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="pincode"
                   >
                     Pincode
                   </label>
-                  <div className="flex flex-col col-span-2">
+                  <div className="flex flex-col md:col-span-2">
                     <input
                       type="text"
                       id="pincode"
-                      className=" text-start border-2  rounded-lg  px-2 py-2 outline-none"
+                      className="w-full text-start border-2  rounded-lg  px-2 py-2 outline-none"
                       placeholder="Pincode"
                       {...register("pincode")}
                       defaultValue={autoFillData ? autoFillData.pincode : ""}
@@ -552,18 +552,18 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className=" grid grid-cols-3  font-normal mx-10 ">
+                <div className=" flex flex-col md:grid md:grid-cols-3   font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg  font-medium mb-2 col-span-1"
+                    className="block text-black text-lg  font-medium mb-2 md:col-span-1"
                     htmlFor="complaint"
                   >
                     Complaint
                   </label>
-                  <div className="flex flex-col col-span-2">
+                  <div className="flex flex-col md:col-span-2">
                     <input
                       type="text"
                       id="complaint"
-                      className=" text-start border-2 rounded-lg  px-2 py-2 outline-none"
+                      className=" w-full  text-start border-2 rounded-lg  px-2 py-2 outline-none"
                       placeholder="Complaint"
                       {...register("complaint")}
                     />
@@ -574,19 +574,19 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className=" grid grid-cols-3  font-normal mx-10 ">
+                <div className=" flex flex-col md:grid md:grid-cols-3   font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg  font-medium mb-2 col-span-1"
+                    className="block text-black text-lg  font-medium mb-2 md:col-span-1"
                     htmlFor="complaint_details"
                   >
                     Description
                   </label>
 
-                  <div className="flex flex-col col-span-2">
+                  <div className="flex flex-col md:col-span-2">
                     <textarea
                       id="complaint_details"
                       rows="5"
-                      className="block  py-2.5 pl-3  w-full text-sm text-gray-900 rounded border border-gray-300 focus:outline-none focus:shadow-outline mb-2"
+                      className="block  py-2.5 pl-3  w-full  text-sm text-gray-900 rounded border border-gray-300 focus:outline-none focus:shadow-outline mb-2"
                       placeholder="Description here..."
                       {...register("complaint_details")}
                     ></textarea>
@@ -597,18 +597,18 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                <div className=" grid grid-cols-3  font-normal mx-10 ">
+                <div className=" flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
-                    className="block text-black text-lg  font-medium mb-2 col-span-1"
+                    className="block text-black text-lg  font-medium mb-2 md:col-span-1"
                     htmlFor="file"
                   >
                     Attachment <p className="text-xs ">(optional)</p>
                   </label>
-                  <div className="flex flex-col col-span-2">
+                  <div className="flex flex-col md:col-span-2">
                     <input
                       type="file"
                       id="file"
-                      className=" py-2 px-2 rounded-lg outline-none"
+                      className=" w-full py-2 px-2 rounded-lg outline-none"
                       {...register("file")}
                     />
                     {errors.file && (
