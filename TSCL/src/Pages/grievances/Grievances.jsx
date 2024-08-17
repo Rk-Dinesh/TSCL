@@ -65,15 +65,17 @@ const Grivences = () => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-          <div className="flex flex-row  gap-3 p-2 mt-3 mx-8 flex-wrap ">
+          <div className="flex flex-row  gap-3 p-2 mt-3 mx-8 flex-wrap md:justify-end ">
             
               <p className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
                 <IoMdSearch className="text-xl" />
                 <input
-                  type="search"
-                  className="  outline-none bg-transparent"
-                  placeholder=""
-                />
+                type="search"
+                className="outline-none bg-transparent text-base"
+                placeholder="Search Grievances"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
               </p>
               <a href="#">
                 <button className="flex gap-2 items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
@@ -193,7 +195,7 @@ const Grivences = () => {
                     </div>
                   </td>
                   <td>
-                    <div className="items-center mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                    <div className="items-center mx-3  my-2 font-lexend whitespace-nowrap text-start">
                      {grievances.public_user_name}
                     </div>
                   </td>
@@ -213,12 +215,12 @@ const Grivences = () => {
                     </div>
                   </td> */}
                   <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
+                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-start">
                     {grievances.grievance_mode}
                     </div>
                   </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
+                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-start text-sm">
                     {grievances.complaint_type_title}
                     </div>
                   </td>

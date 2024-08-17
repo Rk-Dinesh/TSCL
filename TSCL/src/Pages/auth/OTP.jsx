@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo1.png"
+import axios from "axios";
+import { toast } from "react-toastify";
+import { API } from "../../Host";
 
 const OTP = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +14,7 @@ const OTP = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (value, event) => {
     setFormData({ ...formData, [value]: event.target.value });
@@ -18,20 +22,47 @@ const OTP = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const otpValue = Object.values(formData).join("");
+      if (otpValue.length !== 4) {
+        toast.error("Please fill in the complete OTP");
+        return;
+      }
+      console.log("OTP Value:", otpValue);
+      
+      // const otpVerification = {
+      //   otp: otpValue,
+      // };
+  
+      //const response1 = await axios.post(`${API}/public-user/verify-otp`, otpVerification);
 
-      const otpVerification = {
-        email: email,
-        otp: otpValue,
-      };
-
-      //   const response = await axios.post(`${API}/verifyotp`, otpVerification);
-      //   console.log(response)
-      //   navigate("/resetpassword" , { state: { email: email } });
+      const finalvalue = "1234"
+  
+      if (otpValue === finalvalue) {
+        toast.success("OTP verified"); 
+        
+      const DataForm = { ...location.state?.DataForm };
+      DataForm.verification_status = "verified";
+      DataForm.user_status = "active";
+      DataForm.role = "user";
+      // console.log(DataForm);
+        
+      const responseUser = await axios.post(`${API}/public-user/post`, DataForm);
+  
+        if (responseUser.status === 200) {
+          toast.success(responseUser.data.message);
+          navigate("/");
+          
+       } else { 
+          console.error(response.data.message);
+         toast.error("Error posting form data");
+        }
+      } else {
+        
+        toast.error("Invalid OTP");
+      }
     } catch (error) {
-      console.error(error.response.data.message);
       toast.error("Invalid credentials");
     }
   };
@@ -115,7 +146,7 @@ const OTP = () => {
               <button
                 className="px-5 py-2 md:bg-primary md:text-white text-primary bg-gray-100 rounded-full"
                 type="submit"
-                onClick={handlelogin}
+                // onClick={handlelogin}
 
               >
                 Verify OTP

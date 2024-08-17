@@ -63,7 +63,7 @@ const Layout = ({ route }) => {
         }`}
       >
         <TiThMenu
-          className={`md:text-white absolute top-4 right-2 cursor-pointer transition-transform text-2xl  `}
+          className={`absolute top-4 right-2 cursor-pointer transition-transform text-2xl ${open ? "text-white " : "md:text-white text-black "}  `}
           onClick={() => setOpen(!open)}
           fontSize="small"
         />
@@ -101,7 +101,7 @@ const Layout = ({ route }) => {
                     <div className="flex items-center gap-x-2">
                       <span
                         className={`md:block md:float-left ${
-                          open ? "md:text-2xl" : "md:text-3xl md:opacity-100 opacity-0"
+                          open ? "md:text-2xl" : "md:text-3xl md:ml-3 md:opacity-100 opacity-0"
                         }`}
                       >
                         <div className="">{menu.icon}</div>

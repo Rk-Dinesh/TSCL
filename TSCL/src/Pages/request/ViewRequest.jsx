@@ -17,7 +17,7 @@ const ViewRequest = () => {
           `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`
         );
         setData(response.data.data);
-        console.log(response.data.data);
+        // console.log(response.data.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -119,26 +119,26 @@ const ViewRequest = () => {
                 <table className="w-full bg-gray-200 rounded ">
                   <thead>
                     <tr>
-                      <th className="items-center mx-3 my-2 font-lexend whitespace-nowrap">
+                      <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
                         Date/Time
                       </th>
-                      <th className="items-center mx-3 my-2 font-lexend whitespace-nowrap">
+                      <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
                         Complaint No
                       </th>
-                      <th className="items-center mx-3 my-2 font-lexend whitespace-nowrap">
+                      <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
                         Status
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-300">
-                    <tr className="border-b-2 border-gray-300">
-                      <td className="text-center mx-3 my-2 whitespace-nowrap">
+                    <tr className="border-b-2  border-gray-300">
+                      <td className="text-center mx-3 py-2.5 whitespace-nowrap">
                         15-05-2024 / 12:00 AM
                       </td>
-                      <td className="text-center  mx-3 my-2 whitespace-nowrap">
+                      <td className="text-center  mx-3 py-2.5 whitespace-nowrap">
                         R-0001122
                       </td>
-                      <td className="text-center  mx-3 my-2 text-green-600 whitespace-nowrap">
+                      <td className="text-center  mx-3 py-2.5 text-green-600 whitespace-nowrap">
                         In Progress
                       </td>
                     </tr>
