@@ -21,7 +21,7 @@ const steps = [
 
 const complaintdetailSchema = yup.object().shape({
   complaint_type_title: yup.string().required("complaint_type is required"),
-  dept: yup
+  dept_name: yup
   .string()
   .test(
     "not-select",
@@ -207,14 +207,14 @@ const AddComplaint = (props) => {
                         <div className="grid grid-cols-3 items-center gap-3">
                           <label
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
-                            htmlFor="dept"
+                            htmlFor="dept_name"
                           >
                             Department
                           </label>
                           <select
                             className="col-span-2  block outline-none px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
-                            {...register("dept")}
-                            id="dept"
+                            {...register("dept_name")}
+                            id="dept_name"
                           >
                             <option value="">Select an Department</option>
                             {ExistingDept.map((dept) => (
@@ -223,9 +223,9 @@ const AddComplaint = (props) => {
                             </option>
                              ))}
                           </select>
-                          {errors.dept && (
+                          {errors.dept_name && (
                             <p className="text-red-500 text-sm text-center -mt-3">
-                              {errors.dept.message}
+                              {errors.dept_name.message}
                             </p>
                           )}
                         </div>

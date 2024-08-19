@@ -68,6 +68,7 @@ const navigate = useNavigate();
 const [autoFillData, setAutoFillData] = useState(null);
 const [filteredWards, setFilteredWards] = useState([]);
 const [filteredStreets, setFilteredStreets] = useState([]);
+const [filteredComplaints, setFilteredComplaints] = useState([])
 const token = sessionStorage.getItem('token'); 
 
 useEffect(() => {
@@ -103,6 +104,18 @@ const {
 const contactNumber = watch("phone");
 const zoneName = watch("zone_name"); 
 const wardName = watch("ward_name");
+const deptName = watch("dept_name")
+
+useEffect(() => {
+  if (deptName) {
+    const filteredComplaints = Complaint.data.filter(
+      (complaint) => complaint.dept_name === deptName
+    );
+    setFilteredComplaints(filteredComplaints);
+  } else {
+    setFilteredComplaints([]);
+  }
+}, [deptName, Complaint.data]);
 
 useEffect(() => {
   if (zoneName) {
@@ -123,6 +136,8 @@ useEffect(() => {
     setFilteredStreets([]);
   }
 }, [wardName, Street.data]);
+
+
 
 useEffect(() => {
   if (contactNumber && PublicUser.data) {
@@ -414,40 +429,6 @@ const onSubmit = async (data) => {
                 <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
                     className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="complaint_type_title"
-                  >
-                    Complaint
-                  </label>
-                  <div className=" md:col-span-2">
-                    <select
-                      className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("complaint_type_title")}
-                    >
-                      <option value="" disabled>
-                        Select a Complaint 
-                      </option>
-
-                      {Complaint.data &&
-                        Complaint.data.map((option) => (
-                          <option
-                            key={option.complaint_id}
-                            value={option.complaint_type_title}
-                          >
-                            {option.complaint_type_title}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.complaint_type_title && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.complaint_type_title.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="dept_name"
                   >
                     Department
@@ -475,6 +456,41 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                  <label
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                    htmlFor="complaint_type_title"
+                  >
+                    Complaint
+                  </label>
+                  <div className=" md:col-span-2">
+                    <select
+                      className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                      defaultValue=""
+                      {...register("complaint_type_title")}
+                    >
+                      <option value="" disabled>
+                        Select a Complaint 
+                      </option>
+
+                      {filteredComplaints &&
+                        filteredComplaints.map((option) => (
+                          <option
+                            key={option.complaint_id}
+                            value={option.complaint_type_title}
+                          >
+                            {option.complaint_type_title}
+                          </option>
+                        ))}
+                    </select>
+                    {errors.complaint_type_title && (
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
+                        {errors.complaint_type_title.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+               
 
                 <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label

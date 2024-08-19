@@ -216,7 +216,7 @@ const Complaint = () => {
                   <p className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm">{complaints.complaint_type_title}</p>
                 </td>
                 <td>
-                  <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm">{complaints.dept}</p>
+                  <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm">{complaints.dept_name}</p>
                 </td>
                 <td>
                 <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm">
