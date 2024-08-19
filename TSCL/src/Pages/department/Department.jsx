@@ -164,7 +164,7 @@ const Department = () => {
                     </p>
                   </th>
                   <th className="">
-                    <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-3 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Department Name <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -211,17 +211,17 @@ const Department = () => {
                       </div>
                     </td>
                     <td>
-                      <div className="flex gap-3 items-center justify-start mx-1.5 my-3 whitespace-nowrap text-sm">
+                      <div className="flex  gap-2 items-center justify-start mx-5 my-3  text-sm">
                         <img
                           src={logo}
                           alt="logo"
-                          className="w-9 h-9"
+                          className="w-8 h-8"
                         />
-                        <p className="font-lexend "> {dept.dept_name}</p>
+                        <p className="font-lexend whitespace-nowrap  "> {dept.dept_name}</p>
                       </div>
                     </td>
                     <td className="">
-                      <p className=" mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-3 my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.org_name}
                       </p>
                     </td>
