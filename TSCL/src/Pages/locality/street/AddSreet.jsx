@@ -55,7 +55,12 @@ const AddStreet = (props) => {
     console.log(formData);
 
     try {
-      const response = await axios.post(`${API}/street/post`, formData);
+      const token = sessionStorage.getItem('token'); 
+      const response = await axios.post(`${API}/street/post`, formData,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
 
       if (response.status === 200) {
         toast.success("Street created Successfully");
@@ -93,7 +98,7 @@ const AddStreet = (props) => {
               >
                 <option value="">Select Street</option>
                 {ExistingWards.map((ward) => (
-                  <option key={ward.ward_name} value={ward.ward_name}>
+                  <option key={ward.ward_id} value={ward.ward_name}>
                     {ward.ward_name}
                   </option>
                 ))}

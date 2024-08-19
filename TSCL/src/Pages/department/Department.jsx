@@ -20,10 +20,15 @@ const Department = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [department, setDepartmnent] = useState([]);
+  const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
     axios
-      .get(`${API}/department/get`)
+      .get(`${API}/department/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
       .then((response) => {
         setDepartmnent(response.data.data);
 
@@ -52,7 +57,11 @@ const Department = () => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/department/get`).then((response) => {
+    axios.get(`${API}/department/get`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    }).then((response) => {
       setDepartmnent(response.data.data);
 
       const filteredCenters = response.data.data.filter((dept) =>
@@ -79,7 +88,11 @@ const Department = () => {
 
   const fetchExistingOrganiZations = async () => {
     try {
-      const response = await axios.get(`${API}/organization/get`);
+      const response = await axios.get(`${API}/organization/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
       const responseData = response.data.data;
       setExistingOrganiZations(responseData);
     } catch (error) {

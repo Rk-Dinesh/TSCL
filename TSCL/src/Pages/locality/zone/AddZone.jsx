@@ -30,7 +30,12 @@ const AddZone = (props) => {
     };
 
     try {
-      const response = await axios.post(`${API}/zone/post`, formData);
+      const token = sessionStorage.getItem('token'); 
+      const response = await axios.post(`${API}/zone/post`, formData,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
 
       if (response.status === 200) { 
         toast.success("Zone created Successfully");

@@ -16,6 +16,7 @@ const Settings = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [role, setRole] = useState([]);
+  const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     handlerefresh();
@@ -29,7 +30,11 @@ const Settings = () => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/role/get`)
+      .get(`${API}/role/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
       .then((response) => {
         setRole(response.data.data);
 

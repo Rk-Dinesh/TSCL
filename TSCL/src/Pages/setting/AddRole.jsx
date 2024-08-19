@@ -27,12 +27,17 @@ const AddRole = (props) => {
    
     const formData = {
       ...data,
-      status:"inactive",
+      status:"active",
       created_by_user:"admin"
     };
 
     try {
-      const response = await axios.post(`${API}/role/post`, formData);
+      const token = sessionStorage.getItem('token');
+      const response = await axios.post(`${API}/role/post`, formData,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
 
       if (response.status === 200) { 
         toast.success("Role created Successfully");

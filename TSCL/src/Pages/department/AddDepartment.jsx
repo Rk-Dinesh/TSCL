@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { API } from '../../Host';
-import { useDispatch, useSelector } from 'react-redux';
+
 
 const departmentSchema = yup.object().shape({
   org_name: yup
@@ -18,7 +18,7 @@ const departmentSchema = yup.object().shape({
   dept_name: yup.string().required('Department is required'),
 });
 
-const AddDepartment = ({ ExistingOrganiZations, toggleModal, handleRefresh }) => {
+const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) => {
   const [orgId, setOrgId] = useState(null);
   const [orgName, setOrgName] = useState(null);
 
@@ -45,12 +45,18 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handleRefresh }) =>
     };
 
     try {
-      const response = await axios.post(`${API}/department/post`, formData);
+      const token = sessionStorage.getItem('token');
+      const response = await axios.post(`${API}/department/post`, formData,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      }
+      );
 
       if (response.status === 200) {
         toast.success('Department created Successfully');
         toggleModal();
-        handleRefresh();
+        handlerefresh();
       } else {
         console.error('Error in posting data', response);
         toast.error('Failed to Upload');
@@ -83,7 +89,7 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handleRefresh }) =>
               >
                 <option value="">Select Organization</option>
                 {ExistingOrganiZations.map((org) => (
-                  <option key={org.org_name} value={org.org_name}>
+                  <option key={org.org_id} value={org.org_name}>
                     {org.org_name}
                   </option>
                 ))}

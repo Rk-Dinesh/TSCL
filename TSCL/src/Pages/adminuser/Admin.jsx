@@ -18,6 +18,7 @@ const Admin = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [admin, setAdmin] = useState([]);
+  const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
     handlerefresh();
@@ -30,7 +31,7 @@ const Admin = () => {
   };
 
   const handlerefresh = () => {
-    const token = sessionStorage.getItem('token'); 
+   
     axios
       .get(`${API}/user/get`,{
         headers: {
@@ -64,7 +65,11 @@ const Admin = () => {
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(`${API}/role/get`);
+      const response = await axios.get(`${API}/role/get`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const responseData = response.data.data;
       setExistingRoles(responseData);
     } catch (error) {
@@ -74,7 +79,11 @@ const Admin = () => {
 
   const fetchExistingDepts = async () => {
     try {
-      const response = await axios.get(`${API}/department/get`);
+      const response = await axios.get(`${API}/department/get`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const responseData = response.data.data;
       setExistingDept(responseData);
     } catch (error) {

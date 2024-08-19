@@ -17,10 +17,15 @@ const Zone = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [zone, setZone] = useState([])
+  const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
     axios
-      .get(`${API}/zone/get`)
+      .get(`${API}/zone/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
       .then((response) => {
         setZone(response.data.data);
 
@@ -48,7 +53,11 @@ const Zone = () => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/zone/get`).then((response) => {
+    axios.get(`${API}/zone/get`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    }).then((response) => {
       setZone(response.data.data);
 
       const filteredCenters = response.data.data.filter((org) =>

@@ -56,7 +56,12 @@ const AddWard = (props) => {
     // console.log(formData);
 
     try {
-      const response = await axios.post(`${API}/ward/post`, formData);
+      const token = sessionStorage.getItem('token'); 
+      const response = await axios.post(`${API}/ward/post`, formData,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
 
       if (response.status === 200) {
         toast.success("Ward created Successfully");
@@ -94,7 +99,7 @@ const AddWard = (props) => {
               >
                 <option value="" >Select Zone</option>
                 {ExistingZones.map((zone) => (
-                  <option key={zone.zone_name} value={zone.zone_name}>
+                  <option key={zone.zone_id} value={zone.zone_name}>
                     {zone.zone_name}
                   </option>
                 ))}

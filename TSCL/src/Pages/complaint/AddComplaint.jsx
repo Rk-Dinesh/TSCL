@@ -115,7 +115,12 @@ const AddComplaint = (props) => {
       // console.log(formData);
   
       try {
-        const response = await axios.post(`${API}/complaint/post`, formData);
+        const token = sessionStorage.getItem('token'); 
+        const response = await axios.post(`${API}/complaint/post`, formData,{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
   
         if (response.status === 200) {
           toast.success("Complaint created Successfully");

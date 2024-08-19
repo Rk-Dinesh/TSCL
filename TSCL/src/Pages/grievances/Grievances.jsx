@@ -16,6 +16,7 @@ const Grivences = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
+  const token = sessionStorage.getItem('token'); 
   const navigate = useNavigate();
   const handleform = () => {
     navigate("/form");
@@ -24,7 +25,11 @@ const Grivences = () => {
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/get`)
+      .get(`${API}/new-grievance/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
       .then((response) => {
         setGrievance(response.data.data);
 

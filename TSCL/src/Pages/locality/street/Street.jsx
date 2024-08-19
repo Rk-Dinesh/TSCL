@@ -17,10 +17,15 @@ const Street = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [street, setStreet] = useState([])
+  const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
     axios
-      .get(`${API}/street/get`)
+      .get(`${API}/street/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
       .then((response) => {
         setStreet(response.data.data);
 
@@ -49,7 +54,11 @@ const Street = () => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/street/get`).then((response) => {
+    axios.get(`${API}/street/get`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    }).then((response) => {
       setStreet(response.data.data);
 
       const filteredCenters = response.data.data.filter((streets) =>
@@ -76,7 +85,11 @@ const Street = () => {
 
   const fetchExistingWards = async () => {
     try {
-      const response = await axios.get(`${API}/ward/get`);
+      const response = await axios.get(`${API}/ward/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
       const responseData = response.data.data;
       // console.log("fetch",responseData);
 

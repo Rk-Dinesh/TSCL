@@ -52,12 +52,14 @@ const AddAdmin = (props) => {
       created_by_user:"admin"
     };
 
-    const token = localStorage.getItem('token');
-    console.log(token);
-    
+    const token = sessionStorage.getItem('token');
 
     try {
-      const response = await axios.post(`${API}/user/post`, formData);
+      const response = await axios.post(`${API}/user/post`, formData,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 200) {
         toast.success(response.data.message);

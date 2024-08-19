@@ -9,12 +9,17 @@ const ViewRequest = () => {
   const [error, setError] = useState(null);
   const location = useLocation();
   const grievanceId = location.state?.grievanceId;
+  const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`
+          `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }
         );
         setData(response.data.data);
         // console.log(response.data.data);

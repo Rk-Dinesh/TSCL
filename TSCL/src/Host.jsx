@@ -16,8 +16,4 @@ export function formatDate(dateString) {
 
   const token = sessionStorage.getItem('token'); 
 
-  // {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   }
-  // }
+//  `Bearer ${token}`

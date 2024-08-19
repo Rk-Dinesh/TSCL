@@ -3,7 +3,12 @@ import axios from "axios"
 import { API } from "../../../Host"
 
 export const fetchWard = createAsyncThunk("fetchWard",async ()=>{
-    const response = await axios.get(`${API}/ward/get`)
+  const token =sessionStorage.getItem('token')
+    const response = await axios.get(`${API}/ward/get`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     const responseData = response.data.data
     return responseData;
 })

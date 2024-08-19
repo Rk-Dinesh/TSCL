@@ -5,6 +5,8 @@ import StreetReducer from "../slice/street"
 import DepartmentReducer from "../slice/department"
 import ComplaintReducer from "../slice/complaint"
 import PublicUserReducer from "../slice/public_user"
+import OrganizationReducer from "../slice/organization"
+
 
 export const store = configureStore({
     devTools:true,
@@ -15,6 +17,7 @@ export const store = configureStore({
         ward: WardReducer,
         street: StreetReducer,
         publicUser:PublicUserReducer,
+        organization:OrganizationReducer,
        
 
     }

@@ -17,10 +17,15 @@ const Ward = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [ward, setWard] = useState([])
+  const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
     axios
-      .get(`${API}/ward/get`)
+      .get(`${API}/ward/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
       .then((response) => {
         setWard(response.data.data);
 
@@ -49,7 +54,11 @@ const Ward = () => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/ward/get`).then((response) => {
+    axios.get(`${API}/ward/get`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    }).then((response) => {
       setWard(response.data.data);
 
       const filteredCenters = response.data.data.filter((wards) =>
@@ -76,7 +85,11 @@ const Ward = () => {
 
   const fetchExistingZones = async () => {
     try {
-      const response = await axios.get(`${API}/zone/get`);
+      const response = await axios.get(`${API}/zone/get`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
       const responseData = response.data.data;
       // console.log("fetch", responseData);
 

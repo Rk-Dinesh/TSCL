@@ -67,6 +67,7 @@ const navigate = useNavigate();
 const [autoFillData, setAutoFillData] = useState(null);
 const [filteredWards, setFilteredWards] = useState([]);
 const [filteredStreets, setFilteredStreets] = useState([]);
+const token = sessionStorage.getItem('token'); 
 
 useEffect(() => {
   dispatch(fetchDepartment());
@@ -188,7 +189,11 @@ const onSubmit = async (data) => {
   try {
     const response1 = await axios.post(
       `${API}/new-grievance/post`,
-      grievanceDetails
+      grievanceDetails,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      }
     );
 
     const grievanceId = await response1.data.data.grievance_id;
