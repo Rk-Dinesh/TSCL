@@ -103,28 +103,22 @@ const User = () => {
           </div>
           <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
             <h1 className="md:text-2xl text-xl font-medium  items-center font-lexend">
-              User Details
+            Public User 
             </h1>
             <a href="#">
               <button
                 className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm "
                 onClick={toggleModal}
               >
-                <FaPlus /> Add User Details
+                <FaPlus /> Add User 
               </button>
             </a>
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
-          <table>
-            <thead>
-            <th className=" pt-3 pb-1.5 px-4 font-semibold text-xl font-lexend">
-                Public_User 
-              </th>
-            </thead>
-          </table>
+         
           <div className="overflow-x-auto no-scrollbar">
-            <table className="w-full  ">
+            <table className="w-full  mt-3">
               <thead>
                 <tr className="border-b-2 border-gray-300">
                   <th className="py-2">
@@ -277,7 +271,7 @@ const User = () => {
                     disabled={lastIndex >= filteredCenters.length}
                     className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
                   >
-                    next
+                    Next
                   </button>
                 </li>
 

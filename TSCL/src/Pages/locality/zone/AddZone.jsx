@@ -68,7 +68,7 @@ const AddZone = (props) => {
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
               id="zone_name"
               type="text"
-              placeholder="Add Zone Name"
+              placeholder="Zone Name"
               {...register("zone_name")}
             />
             {errors.zone_name && (

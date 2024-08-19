@@ -141,12 +141,12 @@ const Department = () => {
             </a>
           </div>
           <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
-            <h1 className="md:text-2xl text-lg font-medium  font-lexend">
+            <h1 className="md:text-xl text-lg font-medium  font-lexend">
               Department
             </h1>
             <a href="#">
               <button
-                className="flex  gap-2  items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between"
+                className="flex  gap-2  items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2 w-fit justify-between"
                 onClick={toggleModal}
               >
                 <FaPlus /> Add Department
@@ -155,7 +155,7 @@ const Department = () => {
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
-            <table className="w-full  ">
+            <table className="w-full  mt-3">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">
                 <th className="py-2">
@@ -317,7 +317,7 @@ const Department = () => {
                     disabled={lastIndex >= filteredCenters.length}
                     className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
                   >
-                    next
+                    Next
                   </button>
                 </li>
 

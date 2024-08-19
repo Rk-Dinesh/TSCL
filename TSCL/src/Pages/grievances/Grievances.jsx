@@ -104,7 +104,7 @@ const Grivences = () => {
                   className="flex flex-row-2 gap-2 items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
                   onClick={handleform}
                 >
-                  <FaPlus /> Add New Grievances
+                  <FaPlus /> Add Grievances
                 </button>
            
            
@@ -294,7 +294,7 @@ const Grivences = () => {
                     disabled={lastIndex >= filteredCenters.length}
                     className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
                   >
-                    next
+                    Next
                   </button>
                 </li>
 

@@ -110,7 +110,7 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) =>
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
                 id="dept_name"
                 type="text"
-                placeholder="Add Department Name"
+                placeholder="Department Name"
                 {...register('dept_name')}
               />
               {errors.dept_name && (

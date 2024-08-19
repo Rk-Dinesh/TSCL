@@ -69,7 +69,7 @@ const AddOrganization = (props) => {
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
               id="org_name"
               type="text"
-              placeholder="Add Organization Name"
+              placeholder=" Organization Name"
               {...register("org_name")}
             />
             {errors.org_name && (

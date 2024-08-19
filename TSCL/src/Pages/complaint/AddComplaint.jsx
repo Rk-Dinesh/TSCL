@@ -141,7 +141,7 @@ const AddComplaint = (props) => {
       <div className="overflow-hidden shadow-lg bg-white flex items-end justify-between relative font-alegerya mx-2 ">
         <div className="min-w-[390px] min-h-[350px] ">
           <div>
-            <div className="flex justify-between items-center px-5 text-white bg-gray-700 h-12 flex-wrap">
+            <div className="flex justify-between items-center px-5 text-white bg-primary h-12 flex-wrap">
               <p className="">New Complaint</p>
               <button onClick={props.toggleModal} className="">
                 <IoMdClose className="text-2xl" />

@@ -40,7 +40,7 @@ const ViewRequest = () => {
   return (
     <div className="h-screen overflow-y-auto no-scrollbar">
       <div className="md:mx-6 mx-2  my-5 font-lexend">
-        <p>Reply Complaint {data.grievance_id}</p>
+        <p>Complaint Details #{data.grievance_id}</p>
         <div className="bg-white mt-2 pb-3">
           <p className="px-5 py-2 text-lg">Request By :</p>
           <div className="md:grid md:grid-cols-12 flex gap-3 mx-3 my-1">
@@ -86,12 +86,16 @@ const ViewRequest = () => {
                   <p className="col-span-2">: {data.grievance_mode}</p>
                 </div>
                 <div className="grid grid-cols-4">
-                  <p className="col-span-2">Complaint Type </p>
-                  <p className="col-span-2">: {data.complaint_type_title}</p>
-                </div>
-                <div className="grid grid-cols-4">
                   <p className="col-span-2">Department </p>
                   <p className="col-span-2">: {data.dept_name}</p>
+                </div>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Complaint Type </p>
+                  <p className="col-span-2">: {data.complaint}</p>
+                </div>
+                <div className="grid grid-cols-4">
+                  <p className="col-span-2">Complaint  </p>
+                  <p className="col-span-2">: {data.complaint_type_title}</p>
                 </div>
                 <div className="grid grid-cols-4">
                   <p className="col-span-2">Zone </p>

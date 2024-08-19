@@ -70,7 +70,7 @@ const AddRole = (props) => {
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
               id="role_name"
               type="text"
-              placeholder="Add Role Name"
+              placeholder="Role Name"
               {...register("role_name")}
             />
             {errors.role_name && (

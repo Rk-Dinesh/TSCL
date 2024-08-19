@@ -119,7 +119,7 @@ const AddStreet = (props) => {
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
                 id="street_name"
                 type="text"
-                placeholder="Add Street Name"
+                placeholder="Street Name"
                 {...register("street_name")}
               />
               {errors.street_name && (

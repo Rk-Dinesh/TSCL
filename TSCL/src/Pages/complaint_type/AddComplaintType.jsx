@@ -70,7 +70,7 @@ const AddComplaintType = (props) => {
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
               id="complaint_type"
               type="text"
-              placeholder="Add Role Name"
+              placeholder="Complaint Type"
               {...register("complaint_type")}
             />
             {errors.complaint_type && (

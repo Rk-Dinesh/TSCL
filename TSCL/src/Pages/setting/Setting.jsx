@@ -72,7 +72,7 @@ const Settings = () => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen mt-10">
           <div className="flex justify-between items-center my-2 mx-8 flex-wrap gap-3">
-            <h1 className="md:text-2xl text-xl font-medium "> Roles</h1>
+            <h1 className="md:text-xl text-lg font-medium "> Roles</h1>
             <div className="flex items-center  gap-3 flex-wrap">
             <div className="flex items-center gap-3 bg-white px-2 py-1.5 rounded-full ">
               <IoMdSearch className="text-xl" />
@@ -85,22 +85,16 @@ const Settings = () => {
               />
             </div>
               <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={toggleModal}>
-                <FaPlus /> Add New Role
+                <FaPlus /> Add Role
               </button>
               </div>
            
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
-            <table>
-              <thead>
-              <th className="pt-4 pb-2 px-4 font-normal text-xl font-lexend whitespace-nowrap">
-                  Roles Category
-                </th>
-              </thead>
-            </table>
+            
             <div className="overflow-x-auto  no-scrollbar">
-            <table className="w-full  ">
+            <table className="w-full  mt-3">
               <thead className=" border-b-2 border-gray-300">
                 
                 <tr className="border-b-2 border-gray-300">
@@ -110,7 +104,7 @@ const Settings = () => {
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-center font- whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
                       Role Name <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -247,7 +241,7 @@ const Settings = () => {
                     disabled={lastIndex >= filteredCenters.length}
                     className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
                   >
-                    next
+                    Next
                   </button>
                 </li>
 

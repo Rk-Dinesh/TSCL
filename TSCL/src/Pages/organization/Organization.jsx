@@ -98,9 +98,9 @@ const Organization = () => {
             </a>
           </div>
           <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
-            <h1 className="md:text-2xl text-lg font-medium whitespace-nowrap">
+            <h1 className="md:text-xl text-lg font-medium whitespace-nowrap">
               {" "}
-              Organization Structure
+              Organization 
             </h1>
 
             <button
@@ -112,12 +112,8 @@ const Organization = () => {
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
-            <table>
-              <th className=" pt-4 pb-1.5 px-4 font-normal text-xl font-lexend">
-                Employee Details
-              </th>
-            </table>
-            <div className="overflow-x-auto no-scrollbar">
+           
+            <div className="overflow-x-auto no-scrollbar my-3">
             <table className="w-full  ">
               <thead className=" border-b-2 border-gray-300">
                 <tr className="border-b-2 border-gray-300">
@@ -267,7 +263,7 @@ const Organization = () => {
                     disabled={lastIndex >= filteredCenters.length}
                     className="flex items-center justify-center px-3 h-8 leading-tight text-primary bg-paginate-bg border border-paginate-br hover:bg-paginate-bg hover:text-primary-hover"
                   >
-                    next
+                    Next
                   </button>
                 </li>
 

@@ -76,12 +76,12 @@ const AddUser = (props) => {
                 className="block text-black text-lg font-medium mb-2 col-span-1 whitespace-nowrap"
                 htmlFor="public_user_name"
               >
-                User Name
+                 Name
               </label>
               <input
                 type="text"
                 id="public_user_name"
-                className="mx-2 font-lexend px-2 text-sm outline-none col-span-2"
+                className="mx-2 font-lexend px-2 text-sm text-end outline-none col-span-2"
                 placeholder="User Name"
                 {...register("public_user_name")}
               />
@@ -123,7 +123,7 @@ const AddUser = (props) => {
                   className=" text-black text-lg font-medium mb-2 col-span-1"
                   htmlFor="email"
                 >
-                  Email Id:
+                  Email Id :
                 </label>
                 <input
                   type="email"
@@ -146,7 +146,7 @@ const AddUser = (props) => {
                   className=" text-black text-lg font-medium mb-2 col-span-1"
                   htmlFor="address"
                 >
-                  Address:
+                  Address :
                 </label>
                 <input
                   type="text"
@@ -169,7 +169,7 @@ const AddUser = (props) => {
                   className=" text-black text-lg font-medium mb-2 col-span-1"
                   htmlFor="pincode"
                 >
-                  Pincode:
+                  Pincode :
                 </label>
                 <input
                   type="text"
