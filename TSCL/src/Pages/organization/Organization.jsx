@@ -18,8 +18,23 @@ const Organization = () => {
   const [organization, setOrganization] = useState([]);
 
   useEffect(() => {
+    handlerefresh()
+  }, [searchValue, currentPage]);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const handlerefresh = () => {
+    const token = sessionStorage.getItem('token'); 
     axios
-      .get(`${API}/organization/get`)
+      .get(`${API}/organization/get`,{
+          headers: {
+             Authorization: `Bearer ${token}`,
+         }
+        })
       .then((response) => {
         setOrganization(response.data.data);
 
@@ -38,30 +53,6 @@ const Organization = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [searchValue, currentPage]);
-
-  const paginate = (pageNumber) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
-  const handlerefresh = () => {
-    axios.get(`${API}/organization/get`).then((response) => {
-      setOrganization(response.data.data);
-
-      const filteredCenters = response.data.data.filter((org) =>
-        Object.values(org).some((value) =>
-          value.toString().toLowerCase().includes(searchValue.toLowerCase())
-        )
-      );
-
-      setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-      const lastIndex = currentPage * itemsPerPage;
-      const firstIndex = lastIndex - itemsPerPage;
-
-      setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-    });
   };
 
   const toggleModal = () => {
@@ -136,32 +127,32 @@ const Organization = () => {
                     </p>
                   </th>
                   <th className="">
-                    <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Org Name <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       CreatedBy <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       CreatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Last UpdatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="text-center mx-4 my-3 font-semibold font-lexend">
+                    <p className="text-center mx-1.5 my-3 font-semibold font-lexend">
                       Action
                     </p>
                   </th>
@@ -178,32 +169,32 @@ const Organization = () => {
                       </div>
                     </td>
                     <td className="">
-                      <p className=" mx-4 my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {org.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {org.status}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2  font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
                         {org.created_by_user}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm ">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
                         {formatDate(org.createdAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                         {formatDate(org.updatedAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="flex justify-center mx-4 my-3">
+                      <p className="flex justify-center mx-1.5 my-3">
                         <BsThreeDotsVertical />
                       </p>
                     </td>

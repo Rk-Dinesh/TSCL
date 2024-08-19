@@ -137,29 +137,29 @@ const Zone = () => {
                     </p>
                   </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
                     Zone <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     UpdatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="text-center mx-4 my-3 font-lexend font-semibold">
+                  <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
                     Action
                   </p>
                 </th>
@@ -176,18 +176,18 @@ const Zone = () => {
                       </div>
                     </td>
                 <td className="">
-                  <p className="text-start mx-4 my-2 font-lexend whitespace-nowrap text-sm">{zones.zone_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{zones.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">{zones.created_by_user}</p>
+                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">{zones.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-4  my-2  font-lexend whitespace-nowrap text-sm">
+                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm">
                   {formatDate(zones.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                   {formatDate(zones.updatedAt)}
                   </p>
                 </td>

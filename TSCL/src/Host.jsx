@@ -13,3 +13,11 @@ export function formatDate(dateString) {
   
     return `${day} ${month} ${year} - ${formattedHours}:${minutes.toString().padStart(2, '0')}${ampm}`;
   }
+
+  const token = sessionStorage.getItem('token'); 
+
+  // {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   }
+  // }

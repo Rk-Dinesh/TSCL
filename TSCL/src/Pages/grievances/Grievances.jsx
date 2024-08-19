@@ -93,7 +93,7 @@ const Grivences = () => {
            
           </div>
           <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
-          <h1 className="md:text-2xl text-lg font-medium whitespace-nowrap"> New Grievances</h1>
+          <h1 className="md:text-xl text-lg font-medium whitespace-nowrap"> New Grievances</h1>
              
                 <button
                   className="flex flex-row-2 gap-2 items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
@@ -107,76 +107,50 @@ const Grivences = () => {
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
             <table className="w-full  ">
               <thead>
-                <tr className="border-b-2 border-gray-300 py-1">
-                  <th className="py-2">
-                    <p className="flex gap-2 items-center mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
-                      S.no <RiExpandUpDownLine />
+                <tr className="border-b-2 border-gray-300 ">
+                  <th className="">
+                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                       Name <RiExpandUpDownLine />
                     </p>
                   </th>
-                  {/* <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Contact <RiExpandUpDownLine />
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                     Phone <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Email
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th> */}
-                  <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Address
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                       Origin
                       <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                       Complaint type
                       <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                      Complaint
+                      <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                
+                 
+                  
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                       Department
                       <RiExpandUpDownLine />
                     </p>
                   </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Zone
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Ward
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Street
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Pincode
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
+                 
                   <th>
                     <p className="mx-3 my-3 font-lexend font-semibold whitespace-nowrap">
                       Action
@@ -188,48 +162,43 @@ const Grivences = () => {
               {currentItemsOnPage.map((grievances, index) => (
                 <tr className="border-b-2 border-gray-300" key={index}>
                   <td className="">
-                    <div className="items-center mx-3 my-2 font-lexend whitespace-nowrap">
+                    <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
                     {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}
                     </div>
                   </td>
                   <td>
-                    <div className="items-center mx-3  my-2 font-lexend whitespace-nowrap text-start">
+                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
                      {grievances.public_user_name}
                     </div>
                   </td>
                   <td>
-                    <div className="items-center mx-3  my-2  font-lexend whitespace-nowrap text-center">
+                    <div className=" mx-3  my-3  font-lexend whitespace-nowrap text-start text-sm">
                     {grievances.phone}
                     </div>
                   </td>
-                  {/* <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
-                      ravi@gmail.com
-                    </div>
-                  </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
-                      Chennai
-                    </div>
-                  </td> */}
-                  <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-start">
+                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
                     {grievances.grievance_mode}
                     </div>
                   </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-start text-sm">
+                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap  text-start text-sm">
+                    {grievances.complaint}
+                    </div>
+                  </td>
+                  <td>
+                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
                     {grievances.complaint_type_title}
                     </div>
                   </td>
                   <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
+                    <div className=" mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">
                     {grievances.dept_name}
                     </div>
                   </td>
-                  <td>
+                  {/* <td>
                     <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
                     {grievances.zone_name}
                     </div>
@@ -243,12 +212,8 @@ const Grivences = () => {
                     <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
                     {grievances.street_name}
                     </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
-                    {grievances.pincode}
-                    </div>
-                  </td>
+                  </td> */}
+                 
                   <td>
                     <div className="mx-3 my-3 whitespace-nowrap" onClick={() =>
                       navigate(`/view`, {

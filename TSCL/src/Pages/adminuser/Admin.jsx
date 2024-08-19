@@ -30,8 +30,13 @@ const Admin = () => {
   };
 
   const handlerefresh = () => {
+    const token = sessionStorage.getItem('token'); 
     axios
-      .get(`${API}/user/get`)
+      .get(`${API}/user/get`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         setAdmin(response.data.data);
 
@@ -129,7 +134,7 @@ const Admin = () => {
             </a>
           </div>
 
-          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
           <table>
             <thead>
             <th className=" pt-3 pb-1.5 px-4 font-semibold text-xl font-lexend">
@@ -137,57 +142,58 @@ const Admin = () => {
               </th>
             </thead>
           </table>
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full  ">
               <thead>
                 <tr className="border-b-2 border-gray-300">
                   <th className="py-2">
-                    <div className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
-                      S.no <RiExpandUpDownLine />
-                    </div>
+                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Username <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Department
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Phone
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Email
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Status
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Role
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       CreatedBy
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="mx-3 my-3 text-center font-lexend font-semibold whitespace-nowrap">
+                    <div className="mx-1 my-3 text-start font-lexend font-semibold whitespace-nowrap">
                       Action
                     </div>
                   </th>
@@ -197,7 +203,7 @@ const Admin = () => {
                 {currentItemsOnPage.map((admins, index) => (
                   <tr className="border-b-2 border-gray-300" key={index}>
                     <td className="">
-                      <p className="items-center mx-4 my-2 font-lexend whitespace-nowrap">
+                      <p className="text-center text-sm mx-4 my-2 font-lexend whitespace-nowrap">
                         {" "}
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
@@ -205,37 +211,37 @@ const Admin = () => {
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                      <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm">
                         {admins.user_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-3  my-2  font-lexend whitespace-nowrap text-center">
+                      <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap ">
                         {admins.dept_name}
                       </p>
                     </td>
                     <td>
-                      <p className="mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
                         {admins.phone}
                       </p>
                     </td>
                     <td>
-                      <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
                         {admins.email}
                       </p>
                     </td>
                     <td>
-                      <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
                         {admins.status}
                       </p>
                     </td>
                     <td>
-                      <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
                         {admins.role}
                       </p>
                     </td>
                     <td>
-                      <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
                         {admins.created_by_user}
                       </p>
                     </td>
@@ -248,6 +254,7 @@ const Admin = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
           <div className=" my-3 mb-5 mx-7">
             <nav

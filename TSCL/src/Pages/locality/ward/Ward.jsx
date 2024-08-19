@@ -155,34 +155,34 @@ const Ward = () => {
                     </p>
                   </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
                     Ward <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
                     Zone <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-4  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     UpdatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="text-center mx-4 my-3 font-semibold font-lexend">
+                  <p className="text-center mx-1.5 my-3 font-semibold font-lexend">
                     Action
                   </p>
                 </th>
@@ -199,26 +199,26 @@ const Ward = () => {
                       </div>
                     </td>
                 <td className="">
-                  <p className="text-start mx-4 my-2 font-lexend whitespace-nowrap text-sm">{wards.ward_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.ward_name}</p>
                 </td>
                 <td className="">
-                  <p className="text-start mx-4 my-2 font-lexend whitespace-nowrap text-sm">{wards.zone_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">{wards.created_by_user}</p>
+                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">{wards.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-4  my-2  font-lexend whitespace-nowrap text-sm">
+                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm">
                     {formatDate(wards.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                   {formatDate(wards.updatedAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" flex justify-center mx-4 my-3">
+                  <p className=" flex justify-center mx-1.5 my-3">
                     <BsThreeDotsVertical />
                   </p>
                 </td>

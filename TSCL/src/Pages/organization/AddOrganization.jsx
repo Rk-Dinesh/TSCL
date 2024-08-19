@@ -23,6 +23,7 @@ const AddOrganization = (props) => {
   });
 
   const onSubmit = async (data) => {
+    const token = sessionStorage.getItem('token');
    
     const formData = {
       ...data,
@@ -31,7 +32,11 @@ const AddOrganization = (props) => {
     };
 
     try {
-      const response = await axios.post(`${API}/organization/post`, formData);
+      const response = await axios.post(`${API}/organization/post`, formData,{
+        headers: {
+           Authorization: `Bearer ${token}`,
+       }
+      });
 
       if (response.status === 200) { 
         toast.success("Org created Successfully");

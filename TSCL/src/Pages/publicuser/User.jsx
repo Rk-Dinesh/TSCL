@@ -115,7 +115,7 @@ const User = () => {
             </a>
           </div>
 
-          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
           <table>
             <thead>
             <th className=" pt-3 pb-1.5 px-4 font-semibold text-xl font-lexend">
@@ -123,45 +123,46 @@ const User = () => {
               </th>
             </thead>
           </table>
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full  ">
               <thead>
                 <tr className="border-b-2 border-gray-300">
                   <th className="py-2">
-                    <div className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
-                      S.no <RiExpandUpDownLine />
-                    </div>
+                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Public Username <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Phone
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Email
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Status
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
                       Verification Status
                       <RiExpandUpDownLine />
                     </div>
                   </th>
                   <th>
-                    <div className="mx-3 my-3 font-lexend font-semibold whitespace-nowrap">
+                    <div className="mx-3 my-3 font-lexend font-semibold whitespace-nowrap text-center">
                       Action
                     </div>
                   </th>
@@ -171,7 +172,7 @@ const User = () => {
               {currentItemsOnPage.map((users,index)=>(
                 <tr className="border-b-2 border-gray-300" key={index}>
                   <td className="">
-                    <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">
+                    <p className="text-center text-sm mx-1 my-2 font-lexend whitespace-nowrap">
                       
                     {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
@@ -179,33 +180,33 @@ const User = () => {
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm ">
                      {users.public_user_name}
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm ">
                     {users.phone}
                     </p>
                   </td>
                   <td>
-                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap ">
+                    <p className="text-start text-sm mx-1  my-2 font-lexend  whitespace-nowrap ">
                     {users.email}
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm ">
                     {users.user_status}
                     </p>
                   </td>
                   <td>
-                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap ">
+                    <p className="text-start mx-1  my-2 font-lexend whitespace-nowrap text-sm  ">
                     {users.verification_status}
                     </p>
                   </td>
 
                   <td>
-                    <p className="flex justify-center mx-3 my-3 whitespace-nowrap">
+                    <p className="flex justify-center mx-1 my-3 whitespace-nowrap">
                       <BsThreeDotsVertical />
                     </p>
                   </td>
@@ -214,6 +215,7 @@ const User = () => {
                 
               </tbody>
             </table>
+            </div>
           </div>
 
           <div className=" my-3 mb-5 mx-7">

@@ -154,39 +154,39 @@ const Street = () => {
                     </p>
                   </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
                     Street <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
                     Ward <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th className="">
-                  <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
                     Zone <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold">
+                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     UpdatedAt
                     <RiExpandUpDownLine />
                   </p>
                 </th>
                 <th>
-                  <p className="text-center mx-4 my-3 font-lexend font-semibold">
+                  <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
                     Action
                   </p>
                 </th>
@@ -203,29 +203,29 @@ const Street = () => {
                       </div>
                     </td>
                 <td>
-                  <p className="text-start text-sm mx-3 my-2 font-lexend whitespace-nowrap">{streets.street_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.street_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-3 my-2 font-lexend whitespace-nowrap">{streets.ward_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.ward_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-3 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>
+                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-3 my-2  font-lexend whitespace-nowrap">
+                  <p className="text-start text-sm mx-1.5 my-2  font-lexend whitespace-nowrap">
                    {formatDate(streets.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap">
+                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap">
                   {formatDate(streets.updatedAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" flex justify-center  mx-4 my-3">
+                  <p className=" flex justify-center  mx-1.5 my-3">
                     <BsThreeDotsVertical />
                   </p>
                 </td>

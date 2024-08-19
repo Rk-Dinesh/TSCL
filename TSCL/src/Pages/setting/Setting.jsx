@@ -86,7 +86,7 @@ const Settings = () => {
            
           </div>
 
-          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
             <table>
               <thead>
               <th className="pt-4 pb-2 px-4 font-normal text-xl font-lexend whitespace-nowrap">
@@ -94,42 +94,43 @@ const Settings = () => {
                 </th>
               </thead>
             </table>
+            <div className="overflow-x-auto  no-scrollbar">
             <table className="w-full  ">
               <thead className=" border-b-2 border-gray-300">
                 
                 <tr className="border-b-2 border-gray-300">
                   <th className="">
-                    <p className="flex gap-2 items-center mx-3 my-2 font-lexend justify-center font-semibold whitespace-nowrap ">
-                      S.no <RiExpandUpDownLine />
+                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font- whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-center font- whitespace-nowrap">
                       Role Name <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       CreatedBy <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       CreatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-3  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       UpdatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="mx-3 my-2 font-semibold font-lexend whitespace-nowrap">
+                    <p className="mx-1.5 my-2 font-semibold font-lexend whitespace-nowrap text-center">
                       Action
                     </p>
                   </th>
@@ -139,39 +140,39 @@ const Settings = () => {
                 {currentItemsOnPage.map((roles,index)=>(
                 <tr className="border-b-2 border-gray-300" key={index}>
                   <td className="">
-                    <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap">
+                    <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap text-sm">
                     {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}
                     </p>
                   </td>
                   <td>
-                    <p className="mx-3  my-2 font-lexend text-center whitespace-nowrap">
+                    <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
                      {roles.role_name}
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-3  my-2  font-lexend text-center whitespace-nowrap">
+                    <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
                     {roles.status}
                     </p>
                   </td>
                   <td>
-                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                     {roles.created_by_user}
                     </p>
                   </td>
                   <td>
-                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                      {formatDate(roles.createdAt)}
                     </p>
                   </td>
                   <td>
-                    <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                     {formatDate(roles.updatedAt)}
                     </p>
                   </td>
                   <td>
-                    <p className="flex justify-center mx-3 my-2 whitespace-nowrap">
+                    <p className="flex justify-center mx-1.5 my-2 whitespace-nowrap">
                       <BsThreeDotsVertical />
                     </p>
                   </td>
@@ -179,6 +180,7 @@ const Settings = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           <div className=" my-3 mb-5 mx-7">

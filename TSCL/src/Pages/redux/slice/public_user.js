@@ -3,7 +3,12 @@ import axios from "axios"
 import { API } from "../../../Host"
 
 export const fetchPublic_User = createAsyncThunk("fetchPublic_User",async ()=>{
-    const response = await axios.get(`${API}/public-user/get`)
+    const token =sessionStorage.getItem('token')
+    const response = await axios.get(`${API}/public-user/get`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     const responseData = response.data.data
     return responseData;
 })

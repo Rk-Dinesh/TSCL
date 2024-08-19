@@ -151,37 +151,37 @@ const Department = () => {
                     </p>
                   </th>
                   <th className="">
-                    <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Department Name <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th className="">
-                    <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Org Name <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold  whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold  whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       CreatedBy <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       CreatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                       Last UpdatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="text-center mx-4 my-3 font-semibold font-lexend  whitespace-nowrap">
+                    <p className="text-center mx-1.5 my-3 font-semibold font-lexend  whitespace-nowrap">
                       Action
                     </p>
                   </th>
@@ -198,7 +198,7 @@ const Department = () => {
                       </div>
                     </td>
                     <td>
-                      <div className="flex gap-3 items-center justify-start mx-3 my-3 whitespace-nowrap text-sm">
+                      <div className="flex gap-3 items-center justify-start mx-1.5 my-3 whitespace-nowrap text-sm">
                         <img
                           src={logo}
                           alt="logo"
@@ -208,32 +208,32 @@ const Department = () => {
                       </div>
                     </td>
                     <td className="">
-                      <p className=" mx-4 my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.status}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2  font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
                         {dept.created_by_user}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm ">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
                         {formatDate(dept.createdAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                         {formatDate(dept.updatedAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="flex justify-center mx-4 my-3">
+                      <p className="flex justify-center mx-1.5 my-3">
                         <BsThreeDotsVertical />
                       </p>
                     </td>
