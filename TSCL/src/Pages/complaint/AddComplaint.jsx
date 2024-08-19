@@ -189,13 +189,13 @@ const AddComplaint = (props) => {
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="complaint_type_title"
                           >
-                            Complaint Type
+                            Complaint 
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline  col-span-2"
                             id="complaint_type_title"
                             type="text"
-                            placeholder="Complaint Type"
+                            placeholder="Complaint"
                             {...register("complaint_type_title")}
                           />
                           {errors.complaint_type_title && (

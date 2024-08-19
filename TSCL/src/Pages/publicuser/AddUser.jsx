@@ -42,7 +42,7 @@ const AddUser = (props) => {
       verification_status:"active"
     };
 
-    console.log(formData);
+    // console.log(formData);
 
     const token = sessionStorage.getItem('token');
   

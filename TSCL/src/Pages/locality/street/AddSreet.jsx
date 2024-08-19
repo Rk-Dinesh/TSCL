@@ -52,7 +52,7 @@ const AddStreet = (props) => {
       created_by_user: "admin",
     };
 
-    console.log(formData);
+    // console.log(formData);
 
     try {
       const token = sessionStorage.getItem('token'); 

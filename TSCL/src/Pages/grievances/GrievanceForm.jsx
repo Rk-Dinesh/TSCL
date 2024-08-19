@@ -13,6 +13,7 @@ import { API } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate} from "react-router-dom";
+import { fetchComplainttype } from "../redux/slice/complainttype";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -76,6 +77,7 @@ useEffect(() => {
   dispatch(fetchWard());
   dispatch(fetchStreet());
   dispatch(fetchPublic_User());
+  dispatch(fetchComplainttype());
 }, [dispatch]);
 
 const Department = useSelector((state) => state.department);
@@ -84,6 +86,7 @@ const Zone = useSelector((state) => state.zone);
 const Ward = useSelector((state) => state.ward);
 const Street = useSelector((state) => state.street);
 const PublicUser = useSelector((state) => state.publicUser);
+const Complainttype = useSelector((state) => state.complainttype);
 
 const {
   register,
@@ -391,9 +394,15 @@ const onSubmit = async (data) => {
                         Select a Complaint Type
                       </option>
 
-                      <option value="Organization">Organization</option>
-                      <option value="Association">Association</option>
-                      <option value="Individual">Individual</option>
+                      {Complainttype.data &&
+                        Complainttype.data.map((option) => (
+                          <option
+                            key={option.compliant_type_id}
+                            value={option.complaint_type}
+                          >
+                            {option.complaint_type}
+                          </option>
+                        ))}
                     </select>
                     {errors.complaint && (
                       <p className="text-red-500 text-xs text-start px-2 pt-2">

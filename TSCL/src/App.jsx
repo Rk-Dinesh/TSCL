@@ -19,6 +19,7 @@ import Login from './Pages/auth/Login';
 import OTP from './Pages/auth/OTP';
 import SignUp from './Pages/auth/SignUp';
 import Expire from './Pages/expiresToken/Expire';
+import ComplaintType from './Pages/complaint_type/ComplaintType';
 
 function App() {
   
@@ -43,6 +44,8 @@ function App() {
        <Route path='/setting' element={<Settings/>} />
        <Route path='/view' element={<ViewRequest/>} />
        <Route path='/token' element={<Expire/>} />
+       <Route path='/complainttype' element={<ComplaintType/>} />
+
        </Route>
        
       </Routes>

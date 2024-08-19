@@ -38,6 +38,7 @@ const Layout = () => {
       ],
     },
     { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
+    { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
     { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
     { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
