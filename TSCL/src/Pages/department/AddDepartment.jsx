@@ -40,7 +40,7 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handleRefresh }) =>
     const formData = {
       ...data,
       org_id: orgId,
-      status: 'inactive',
+      status: 'active',
       created_by_user: 'admin',
     };
 

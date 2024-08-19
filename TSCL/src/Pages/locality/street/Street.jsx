@@ -136,7 +136,7 @@ const Street = () => {
           </button>
         </div>
 
-        <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+        <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
           <table>
             <thead>
             <th className="pt-4 pb-2 px-4 font-medium font-lexend text-xl whitespace-nowrap">
@@ -144,9 +144,15 @@ const Street = () => {
             </th>
             </thead>
           </table>
+          <div className="overflow-x-auto no-scrollbar">
           <table className="w-full  ">
             <thead className=" border-b-2 border-gray-300">
               <tr className="border-b-2 border-gray-300">
+              <th className="">
+                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
+                  </th>
                 <th className="">
                   <p className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold">
                     Street <RiExpandUpDownLine />
@@ -189,25 +195,32 @@ const Street = () => {
             <tbody>
               {currentItemsOnPage.map((streets,index)=>(
               <tr className="border-b-2 border-gray-300">
+                <td className="">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                        {firstIndex + index + 1 < 10
+                          ? `0${firstIndex + index + 1}`
+                          : firstIndex + index + 1}
+                      </div>
+                    </td>
                 <td>
-                  <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">{streets.street_name}</p>
+                  <p className="text-start text-sm mx-3 my-2 font-lexend whitespace-nowrap">{streets.street_name}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">{streets.ward_name}</p>
+                  <p className="text-start text-sm mx-3 my-2 font-lexend whitespace-nowrap">{streets.ward_name}</p>
                 </td>
                 <td>
-                  <p className="text-centerr mx-3 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
+                  <p className="text-start text-sm mx-3 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>
+                  <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-3 my-2  font-lexend whitespace-nowrap">
+                  <p className="text-start text-sm mx-3 my-2  font-lexend whitespace-nowrap">
                    {formatDate(streets.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className="text-center mx-3  my-2 font-lexend whitespace-nowrap">
+                  <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap">
                   {formatDate(streets.updatedAt)}
                   </p>
                 </td>
@@ -220,6 +233,7 @@ const Street = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
         <div className=" my-3 mb-5 mx-7">
           

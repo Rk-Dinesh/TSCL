@@ -137,7 +137,7 @@ const Ward = () => {
           </button>
         </div>
 
-        <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+        <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
           <table>
             <thead>
             <th className="pt-4  pb-2 px-4 font-medium font-lexend text-lg whitespace-nowrap">
@@ -145,9 +145,15 @@ const Ward = () => {
             </th>
             </thead>
           </table>
+          <div className="overflow-x-auto no-scrollbar">
           <table className="w-full  ">
             <thead className=" border-b-2 border-gray-300">
               <tr className="border-b-2 border-gray-300">
+              <th className="">
+                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
+                  </th>
                 <th className="">
                   <p className="flex gap-2 items-center justify-center mx-4 my-2 font-lexend font-semibold">
                     Ward <RiExpandUpDownLine />
@@ -186,21 +192,28 @@ const Ward = () => {
               {currentItemsOnPage.map((wards,index)=>(
               <tr className="border-b-2 border-gray-300" key={index}>
                 <td className="">
-                  <p className="text-center mx-4 my-2 font-lexend whitespace-nowrap">{wards.ward_name}</p>
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                        {firstIndex + index + 1 < 10
+                          ? `0${firstIndex + index + 1}`
+                          : firstIndex + index + 1}
+                      </div>
+                    </td>
+                <td className="">
+                  <p className="text-start mx-4 my-2 font-lexend whitespace-nowrap text-sm">{wards.ward_name}</p>
                 </td>
                 <td className="">
-                  <p className="text-center mx-4 my-2 font-lexend whitespace-nowrap">{wards.zone_name}</p>
+                  <p className="text-start mx-4 my-2 font-lexend whitespace-nowrap text-sm">{wards.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-4  my-2 font-lexend whitespace-nowrap">{wards.created_by_user}</p>
+                  <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">{wards.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-center mx-4  my-2  font-lexend whitespace-nowrap">
+                  <p className="text-start mx-4  my-2  font-lexend whitespace-nowrap text-sm">
                     {formatDate(wards.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-center mx-4  my-2 font-lexend whitespace-nowrap">
+                  <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
                   {formatDate(wards.updatedAt)}
                   </p>
                 </td>
@@ -213,6 +226,7 @@ const Ward = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
         <div className=" my-3 mb-5 mx-7">
           

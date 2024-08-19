@@ -127,11 +127,11 @@ const Complaint = () => {
       <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
         <table className="w-full  ">
           <thead>
-          <tr className="border-b-2 border-gray-300">
+          <tr className="border-b-2 border-gray-300 py-1">
               <th className="py-2">
-                <p  className="flex gap-2 items-center justify-center mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
-                  S.no <RiExpandUpDownLine />
-                </p>
+              <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
               </th>
               <th>
                 <p  className="flex gap-2 items-center justify-center mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
@@ -194,46 +194,46 @@ const Complaint = () => {
            {currentItemsOnPage.map((complaints,index)=>(
               <tr className="border-b-2 border-gray-300" key={index}>
                 <td >
-                  <p className="text-center mx-3 my-2 font-lexend whitespace-nowrap">  {firstIndex + index + 1 < 10
+                  <p className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">  {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}
                             </p>
                 </td>
                 <td>
-                  <p className="mx-3  my-2 font-lexend whitespace-nowrap text-center">{complaints.complaint_type_title}</p>
+                  <p className="mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">{complaints.complaint_type_title}</p>
                 </td>
                 <td>
-                  <p className="mx-3  my-2  font-lexend whitespace-nowrap text-center">{complaints.dept}</p>
+                  <p className="mx-3  my-2  font-lexend whitespace-nowrap text-start text-sm">{complaints.dept}</p>
                 </td>
                 <td>
-                <p className="mx-3  my-2  font-lexend whitespace-nowrap text-center">
+                <p className="mx-3  my-2  font-lexend whitespace-nowrap text-start text-sm">
                 {complaints.tat_type} 
                   </p>
                 </td>
                 <td>
-                  <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">
                   {complaints.tat_duration}
                   </p>
                 </td>
                 <td>
-                  <p className="mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  <p className="mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">
                   {complaints.priority}
                   </p>
                 </td>
                 <td >
-                  <div className="mx-3 my-3 flex gap-3 items-center justify-center font-lexend">  
-                  <p className=" whitespace-nowrap  bg-gray-100 px-2 py-1.5 rounded-full">
+                  <div className="mx-3 my-3 flex gap-3 items-center justify-start text-sm font-lexend">  
+                  <p className=" whitespace-nowrap  bg-gray-100 px-2 py-1 rounded-full">
                   {complaints.escalation_l1} 
                   </p>
-                  <p className="  whitespace-nowrap ">
+                  <p className="  whitespace-nowrap text-start text-sm ">
                   {complaints.role_l1}
                   </p>
                   </div>
                 </td>
                 
                 <td >
-                  <div className="mx-3 my-3 flex gap-3 items-center justify-center font-lexend">  
-                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1.5 rounded-full">
+                  <div className="mx-3 my-3 flex gap-3 items-center justify-start  font-lexend">  
+                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm">
                   {complaints.escalation_l2} 
                   </p>
                   <p className=" whitespace-nowrap ">
@@ -243,11 +243,11 @@ const Complaint = () => {
                 </td>
 
                 <td >
-                  <div className="mx-3 my-3 flex gap-3 items-center justify-center font-lexend">  
-                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1.5 rounded-full ">
+                  <div className="mx-3 my-3 flex gap-3 items-center justify-start  font-lexend">  
+                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm ">
                   {complaints.escalation_l3} 
                   </p>
-                  <p className=" whitespace-nowrap ">
+                  <p className=" whitespace-nowrap text-start text-sm ">
                   {complaints.role_l3}
                   </p>
                   </div>
@@ -255,12 +255,12 @@ const Complaint = () => {
 
 
                 <td>
-                  <div className="mx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  <div className="mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">
                   {complaints.status}
                   </div>
                 </td>
                 <td>
-                  <p className="fmx-3  my-2 font-lexend whitespace-nowrap text-center">
+                  <p className="fmx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">
                   {complaints.created_by_user}
                   </p>
                 </td>

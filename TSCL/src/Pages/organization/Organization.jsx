@@ -10,7 +10,7 @@ import axios from "axios";
 
 const Organization = () => {
   const [isModal, setIsModal] = useState(false);
-  const [searchValue, setSearchValue] = useState("")
+  const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
@@ -107,7 +107,10 @@ const Organization = () => {
             </a>
           </div>
           <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
-            <h1 className="md:text-2xl text-lg font-medium whitespace-nowrap"> Organization Structure</h1>
+            <h1 className="md:text-2xl text-lg font-medium whitespace-nowrap">
+              {" "}
+              Organization Structure
+            </h1>
 
             <button
               className="flex flex-row  gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm"
@@ -117,37 +120,43 @@ const Organization = () => {
             </button>
           </div>
 
-          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
             <table>
               <th className=" pt-4 pb-1.5 px-4 font-normal text-xl font-lexend">
                 Employee Details
               </th>
             </table>
+            <div className="overflow-x-auto no-scrollbar">
             <table className="w-full  ">
               <thead className=" border-b-2 border-gray-300">
                 <tr className="border-b-2 border-gray-300">
+                <th className="py-2">
+                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
+                  </th>
                   <th className="">
-                    <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       Org Name <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       CreatedBy <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       CreatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold">
+                    <p className="flex gap-2 items-center mx-4  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       Last UpdatedAt <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -162,27 +171,34 @@ const Organization = () => {
                 {currentItemsOnPage.map((org, index) => (
                   <tr className="border-b-2 border-gray-300" key={index}>
                     <td className="">
-                      <p className=" mx-4 my-2 font-lexend text-center">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                        {firstIndex + index + 1 < 10
+                          ? `0${firstIndex + index + 1}`
+                          : firstIndex + index + 1}
+                      </div>
+                    </td>
+                    <td className="">
+                      <p className=" mx-4 my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {org.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2 font-lexend text-center">
+                      <p className=" mx-4  my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {org.status}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2  font-lexend text-center">
+                      <p className=" mx-4  my-2  font-lexend text-start whitespace-nowrap text-sm">
                         {org.created_by_user}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-center mx-4  my-2 font-lexend whitespace-nowrap ">
+                      <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm ">
                         {formatDate(org.createdAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="text-center mx-4  my-2 font-lexend whitespace-nowrap">
+                      <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
                         {formatDate(org.updatedAt)}
                       </p>
                     </td>
@@ -195,8 +211,9 @@ const Organization = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
-          
+
           <div className=" my-3 mb-5 mx-7">
             <nav
               className="flex items-center flex-column flex-wrap md:flex-row md:justify-between justify-center pt-4"

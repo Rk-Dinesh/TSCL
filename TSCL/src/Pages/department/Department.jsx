@@ -145,6 +145,11 @@ const Department = () => {
             <table className="w-full  ">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">
+                <th className="py-2">
+                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
+                  </th>
                   <th className="">
                     <p className="flex gap-2 items-center mx-4 my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                       Department Name <RiExpandUpDownLine />
@@ -185,8 +190,15 @@ const Department = () => {
               <tbody>
                 {currentItemsOnPage.map((dept, index) => (
                   <tr className="border-b-2 border-gray-300" key={index}>
+                    <td className="">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                        {firstIndex + index + 1 < 10
+                          ? `0${firstIndex + index + 1}`
+                          : firstIndex + index + 1}
+                      </div>
+                    </td>
                     <td>
-                      <div className="flex gap-3 items-center justify-center mx-3 my-3 whitespace-nowrap">
+                      <div className="flex gap-3 items-center justify-start mx-3 my-3 whitespace-nowrap text-sm">
                         <img
                           src={logo}
                           alt="logo"
@@ -196,27 +208,27 @@ const Department = () => {
                       </div>
                     </td>
                     <td className="">
-                      <p className=" mx-4 my-2 font-lexend text-center whitespace-nowrap">
+                      <p className=" mx-4 my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2 font-lexend text-center whitespace-nowrap">
+                      <p className=" mx-4  my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.status}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-4  my-2  font-lexend text-center whitespace-nowrap">
+                      <p className=" mx-4  my-2  font-lexend text-start whitespace-nowrap text-sm">
                         {dept.created_by_user}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-center mx-4  my-2 font-lexend whitespace-nowrap ">
+                      <p className=" text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm ">
                         {formatDate(dept.createdAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="text-center mx-4  my-2 font-lexend whitespace-nowrap">
+                      <p className="text-start mx-4  my-2 font-lexend whitespace-nowrap text-sm">
                         {formatDate(dept.updatedAt)}
                       </p>
                     </td>
