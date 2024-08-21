@@ -8,6 +8,8 @@ import AddWard from "./AddWard";
 import { API, formatDate } from "../../../Host";
 import axios from "axios";
 
+
+
 const Ward = () => {
   const [isModal, setIsModal] = useState(false);
   const [ExistingZones, setExistingZones] = useState(null);
@@ -17,35 +19,41 @@ const Ward = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [ward, setWard] = useState([])
-  const token = sessionStorage.getItem('token'); 
+  const token = sessionStorage.getItem('token');
+
 
   useEffect(() => {
-    axios
-      .get(`${API}/ward/get`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      })
-      .then((response) => {
+    const fetchWards = async () => {
+      try {
+        const response = await axios.get(`${API}/ward/get`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setWard(response.data.data);
-
+  
         const filteredCenters = response.data.data.filter((wards) =>
           Object.values(wards).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
-
+  
         setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
         const lastIndex = currentPage * itemsPerPage;
         const firstIndex = lastIndex - itemsPerPage;
-
+  
         setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-        fetchExistingZones();
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error(error);
-      });
-  }, [searchValue, currentPage]);
+      }
+    };
+  
+    fetchWards();
+    fetchExistingZones(); 
+  }, [searchValue, currentPage, itemsPerPage, token]); 
+  
+  
+
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {

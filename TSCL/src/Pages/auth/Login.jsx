@@ -39,20 +39,9 @@ const Login = ({ setToken }) => {
   }
   
   const onSubmit = async (data) => {
-    let isPublicUserLoggedIn = false;
+
     let isRegularUserLoggedIn = false;
     let token = null;
-
-    try {
-      const responsePublic = await axios.post(`${API}/public-user/loginweb`, data);
-      
-      if (responsePublic.status === 200) {
-        isPublicUserLoggedIn = true;
-        token = responsePublic.data.token;
-      }
-    } catch (error) {
-      // console.error("Error logging in as public user", error);
-    }
 
     try {
       const response = await axios.post(`${API}/user/loginweb`, data);
@@ -64,12 +53,7 @@ const Login = ({ setToken }) => {
     } catch (error) {
       // console.error("Error logging in as user", error);
     }
-  
-   
-    if (isPublicUserLoggedIn && isRegularUserLoggedIn) {
-      // navigate("/department");
-      alert("Both user and admin")
-    } else if (isPublicUserLoggedIn || isRegularUserLoggedIn) {
+    if ( isRegularUserLoggedIn === true) {
       const tokenExpirationDuration = getTokenExpirationDuration(token);
       sessionStorage.setItem('token', token);
       toast.success("Logged in successfully");
@@ -167,12 +151,12 @@ const Login = ({ setToken }) => {
                 </button>
               </div>
             </form>
-            <p className="text-sm text-center mt-3">
+            {/* <p className="text-sm text-center mt-3">
               Don't have an account?{" "}
               <span className="text-base md:text-primary text-white" onClick={handlesignUp}>
                 Sign Up
               </span>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

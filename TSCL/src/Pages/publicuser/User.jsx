@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddUser from "./AddUser";
 import axios from "axios";
 import { API } from "../../Host";
+import decryptData from "../../Decrypt";
 
 
 const User = () => {
@@ -40,9 +41,13 @@ const User = () => {
         },
       })
       .then((response) => {
-        setUser(response.data.data);
-
-        const filteredCenters = response.data.data.filter((users) =>
+        console.log(response.data.data);
+        const responseData= decryptData(response.data.data)
+        console.log(responseData);
+        
+        
+        setUser(responseData); 
+        const filteredCenters = responseData.filter((users) =>
           Object.values(users).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )

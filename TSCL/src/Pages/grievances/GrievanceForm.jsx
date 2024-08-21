@@ -6,13 +6,12 @@ import { fetchWard } from "../redux/slice/ward";
 import { fetchStreet } from "../redux/slice/street";
 import { fetchDepartment } from "../redux/slice/department";
 import { fetchComplaint } from "../redux/slice/complaint";
-import { fetchPublic_User } from "../redux/slice/public_user";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { API } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchComplainttype } from "../redux/slice/complainttype";
 
 // Validation Schemas
@@ -64,194 +63,212 @@ const CombinedSchema = yup
 
 const GrievanceForm = () => {
   const dispatch = useDispatch();
-const navigate = useNavigate();
-const [autoFillData, setAutoFillData] = useState(null);
-const [filteredWards, setFilteredWards] = useState([]);
-const [filteredStreets, setFilteredStreets] = useState([]);
-const [filteredComplaints, setFilteredComplaints] = useState([])
-const token = sessionStorage.getItem('token'); 
+  const navigate = useNavigate();
+  const [autoFillData, setAutoFillData] = useState(null);
+  const [filteredWards, setFilteredWards] = useState([]);
+  const [filteredStreets, setFilteredStreets] = useState([]);
+  const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const token = sessionStorage.getItem("token");
 
-useEffect(() => {
-  dispatch(fetchDepartment());
-  dispatch(fetchComplaint());
-  dispatch(fetchZone());
-  dispatch(fetchWard());
-  dispatch(fetchStreet());
-  dispatch(fetchPublic_User());
-  dispatch(fetchComplainttype());
-}, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchDepartment());
+    dispatch(fetchComplaint());
+    dispatch(fetchZone());
+    dispatch(fetchWard());
+    dispatch(fetchStreet());
+    dispatch(fetchComplainttype());
+  }, [dispatch]);
 
-const Department = useSelector((state) => state.department);
-const Complaint = useSelector((state) => state.complaint);
-const Zone = useSelector((state) => state.zone);
-const Ward = useSelector((state) => state.ward);
-const Street = useSelector((state) => state.street);
-const PublicUser = useSelector((state) => state.publicUser);
-const Complainttype = useSelector((state) => state.complainttype);
+  const Department = useSelector((state) => state.department);
+  const Complaint = useSelector((state) => state.complaint);
+  const Zone = useSelector((state) => state.zone);
+  const Ward = useSelector((state) => state.ward);
+  const Street = useSelector((state) => state.street);
+  const Complainttype = useSelector((state) => state.complainttype);
 
-const {
-  register,
-  formState: { errors },
-  handleSubmit,
-  reset,
-  setValue,
-  watch,
-} = useForm({
-  resolver: yupResolver(CombinedSchema),
-  mode: "onBlur",
-});
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+  } = useForm({
+    resolver: yupResolver(CombinedSchema),
+    mode: "onBlur",
+  });
 
-const contactNumber = watch("phone");
-const zoneName = watch("zone_name"); 
-const wardName = watch("ward_name");
-const deptName = watch("dept_name")
+  const contactNumber = watch("phone");
+  const zoneName = watch("zone_name");
+  const wardName = watch("ward_name");
+  const deptName = watch("dept_name");
 
-useEffect(() => {
-  if (deptName) {
-    const filteredComplaints = Complaint.data.filter(
-      (complaint) => complaint.dept_name === deptName
-    );
-    setFilteredComplaints(filteredComplaints);
-  } else {
-    setFilteredComplaints([]);
-  }
-}, [deptName, Complaint.data]);
+  useEffect(() => {
+    if (deptName) {
+      const filteredComplaints = Complaint.data.filter(
+        (complaint) => complaint.dept_name === deptName
+      );
+      setFilteredComplaints(filteredComplaints);
+      setValue("complaint_type_title","")
 
-useEffect(() => {
-  if (zoneName) {
-    const filteredWards = Ward.data.filter((ward) => ward.zone_name === zoneName);
-    setFilteredWards(filteredWards);
-  } else {
-    setFilteredWards([]);
-  }
-}, [zoneName, Ward.data]);
-
-useEffect(() => {
-  if (wardName) {
-    const filteredStreets = Street.data.filter(
-      (street) => street.ward_name === wardName
-    );
-    setFilteredStreets(filteredStreets);
-  } else {
-    setFilteredStreets([]);
-  }
-}, [wardName, Street.data]);
-
-
-
-useEffect(() => {
-  if (contactNumber && PublicUser.data) {
-    const user = PublicUser.data.find((user) => user.phone === contactNumber);
-    if (user) {
-      setAutoFillData(user);
-      setValue("public_user_name", user.public_user_name);
-      setValue("email", user.email);
-      setValue("address", user.address);
-      setValue("pincode", user.pincode);
     } else {
+      setFilteredComplaints([]);
+    }
+  }, [deptName, Complaint.data]);
+
+  useEffect(() => {
+    if (zoneName) {
+      const filteredWards = Ward.data.filter(
+        (ward) => ward.zone_name === zoneName
+      );
+      setFilteredWards(filteredWards);
+      setValue("ward_name", "");
+      setValue("street_name", "");
+    } else {
+      setFilteredWards([]);
+    }
+  }, [zoneName, Ward.data]);
+
+  useEffect(() => {
+    if (wardName) {
+      const filteredStreets = Street.data.filter(
+        (street) => street.ward_name === wardName
+      );
+      setFilteredStreets(filteredStreets);
+      setValue("street_name", "");
+    } else {
+      setFilteredStreets([]);
+    }
+  }, [wardName, Street.data]);
+
+  useEffect(() => {
+    if (contactNumber && contactNumber.length === 10) {
+      async function fetchAutoFillData() {
+        try {
+          const response = await axios.get(
+            `${API}/public-user/getbyphone?phone=${contactNumber}`
+          );
+          const autoFillData = response.data.data;
+          setValue("public_user_name", autoFillData.public_user_name);
+          setValue("email", autoFillData.email);
+          setValue("address", autoFillData.address);
+          setValue("pincode", autoFillData.pincode);
+          setAutoFillData(autoFillData);
+        } catch (error) {
+          setAutoFillData(null);
+        }
+      }
+      fetchAutoFillData();
+    } else {
+      setValue("public_user_name", "");
+      setValue("email", "");
+      setValue("address", "");
+      setValue("pincode", "");
       setAutoFillData(null);
     }
-  }
-}, [contactNumber, PublicUser.data, setValue]);
+  }, [contactNumber]);
 
-const onSubmit = async (data) => {
-  const userInfo = {
-    public_user_name: data.public_user_name,
-    phone: data.phone,
-    email: data.email,
-    address: data.address,
-    pincode: data.pincode,
-    login_password: "tscl@123",
-    verification_status: "active",
-    user_status: "active",
-  };
+  const onSubmit = async (data) => {
+    const userInfo = {
+      public_user_name: data.public_user_name,
+      phone: data.phone,
+      email: data.email,
+      address: data.address,
+      pincode: data.pincode,
+      login_password: "tscl@123",
+      verification_status: "active",
+      user_status: "active",
+    };
 
-  const getPriorityFromComplaintType = (complaintTypeTitle) => {
-    const complaint = Complaint.data.find((complaint) => complaint.complaint_type_title === complaintTypeTitle);
-    return complaint ? complaint.priority : null;
-  };
+    const getPriorityFromComplaintType = (complaintTypeTitle) => {
+      const complaint = Complaint.data.find(
+        (complaint) => complaint.complaint_type_title === complaintTypeTitle
+      );
+      return complaint ? complaint.priority : null;
+    };
 
-  let public_user_id;
-  if (autoFillData) {
-    const response = await axios.post(`${API}/public-user/post`, userInfo);
-    public_user_id = autoFillData.public_user_id;
-  } else {
-    const response = await axios.post(`${API}/public-user/post`, userInfo);
-    public_user_id = response.data.data.public_user_id;
-  }
-
-  const grievanceDetails = {
-    grievance_mode: data.grievance_mode,
-    complaint_type_title: data.complaint_type_title,
-    dept_name: data.dept_name,
-    zone_name: data.zone_name,
-    ward_name: data.ward_name,
-    street_name: data.street_name,
-    pincode: data.pincode,
-    complaint: data.complaint,
-    complaint_details: data.complaint_details,
-    public_user_id: public_user_id,
-    public_user_name: data.public_user_name,
-    phone: data.phone,
-    status: "new",
-    statusflow: "new",
-    priority: getPriorityFromComplaintType(data.complaint_type_title),
-  };
-
-  const attachmentData = data.file
-    ? {
-        file: data.file[0],
-      }
-    : null;
-
-  try {
-    const response1 = await axios.post(
-      `${API}/new-grievance/post`,
-      grievanceDetails,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      }
-    );
-
-    const grievanceId = await response1.data.data.grievance_id;
-
-    if (response1.status === 200) {
-      toast.success("Grievance created Successfully");
+    let public_user_id;
+    if (autoFillData) {
+      const response = await axios.post(`${API}/public-user/post`, userInfo);
+      public_user_id = autoFillData.public_user_id;
+    } else {
+      const response = await axios.post(`${API}/public-user/post`, userInfo);
+      public_user_id = response.data.data.public_user_id;
     }
 
-    if (attachmentData) {
-      const fileInput = document.getElementById("file");
-      const file = fileInput.files ? fileInput.files[0] : null;
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("grievance_id", grievanceId);
-        formData.append("created_by_user", "admin");
+    const grievanceDetails = {
+      grievance_mode: data.grievance_mode,
+      complaint_type_title: data.complaint_type_title,
+      dept_name: data.dept_name,
+      zone_name: data.zone_name,
+      ward_name: data.ward_name,
+      street_name: data.street_name,
+      pincode: data.pincode,
+      complaint: data.complaint,
+      complaint_details: data.complaint_details,
+      public_user_id: public_user_id,
+      public_user_name: data.public_user_name,
+      phone: data.phone,
+      status: "new",
+      statusflow: "new",
+      priority: getPriorityFromComplaintType(data.complaint_type_title),
+    };
 
-        const response3 = await axios.post(
-          `${API}/new-grievance-attachment/post`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+    const attachmentData = data.file
+      ? {
+          file: data.file[0],
+        }
+      : null;
+
+    try {
+      const response1 = await axios.post(
+        `${API}/new-grievance/post`,
+        grievanceDetails,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const grievanceId = await response1.data.data.grievance_id;
+
+      if (response1.status === 200) {
+        toast.success("Grievance created Successfully");
+      }
+
+      if (attachmentData) {
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files ? fileInput.files[0] : null;
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("grievance_id", grievanceId);
+          formData.append("created_by_user", "admin");
+
+          const response3 = await axios.post(
+            `${API}/new-grievance-attachment/post`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (response3.status === 200) {
+            toast.success("Attachment created Successfully");
           }
-        );
-        if (response3.status === 200) {
-          toast.success("Attachment created Successfully");
         }
       }
-    }
 
-    reset();
-    navigate("/view", {
-      state: { grievanceId: grievanceId },
-    });
-  } catch (error) {
-    toast.error("An error occurred during submission. Please try again.");
-  }
-};
+      reset();
+      navigate("/view", {
+        state: { grievanceId: grievanceId },
+      });
+    } catch (error) {
+      toast.error("An error occurred during submission. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -470,7 +487,7 @@ const onSubmit = async (data) => {
                       {...register("complaint_type_title")}
                     >
                       <option value="" disabled>
-                        Select a Complaint 
+                        Select a Complaint
                       </option>
 
                       {filteredComplaints &&
@@ -490,7 +507,6 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-               
 
                 <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
@@ -611,7 +627,7 @@ const onSubmit = async (data) => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className=" flex flex-col md:grid md:grid-cols-3   font-normal mx-10 ">
                   <label
                     className="block text-black text-lg  font-medium mb-2 md:col-span-1"
@@ -661,7 +677,6 @@ const onSubmit = async (data) => {
                 <button
                   type="submit"
                   className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 "
-                  
                 >
                   Submit
                 </button>

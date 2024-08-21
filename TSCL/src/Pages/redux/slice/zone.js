@@ -4,7 +4,7 @@ import { API } from "../../../Host"
 
 export const fetchZone = createAsyncThunk("fetchZone",async ()=>{
   const token =sessionStorage.getItem('token')
-    const response = await axios.get(`${API}/zone/get`,{
+    const response = await axios.get(`${API}/zone/getgrievance`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },
