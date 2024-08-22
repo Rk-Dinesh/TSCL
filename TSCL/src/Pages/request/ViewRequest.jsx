@@ -221,7 +221,7 @@ const ViewRequest = () => {
                 </p>
                 <div className="grid grid-cols-3 divide-x-2 divide-black">
                   <p>
-                    {new Date(data.createdAt).toLocaleTimeString([], {
+                    {new Date(data.updatedAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                       hour12: true,
@@ -229,7 +229,7 @@ const ViewRequest = () => {
                   </p>
                   <div className="col-span-2">
                     <p className="pl-5">Status:</p>
-                    <p className="pl-5 text-gray-500">{data.status}/</p>
+                    <p className="pl-5 text-gray-500">{data.statusflow}/</p>
                   </div>
                 </div>
                 <hr className="my-3" />

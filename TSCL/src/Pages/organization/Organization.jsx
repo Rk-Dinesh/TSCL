@@ -17,6 +17,14 @@ const Organization = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [organization, setOrganization] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem('token'); 
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
     handlerefresh()
@@ -29,7 +37,7 @@ const Organization = () => {
   };
 
   const handlerefresh = () => {
-    const token = sessionStorage.getItem('token'); 
+    
     axios
       .get(`${API}/organization/get`,{
           headers: {
@@ -69,6 +77,21 @@ const Organization = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async (deleteId) => {
+    try {
+      await axios.delete(`${API}/organization/delete?org_id=${deleteId}`,{
+        headers: {
+           Authorization: `Bearer ${token}`,
+       }
+      });
+      handlerefresh(); 
+      setOrganization(organization.filter((status) => organization.org_id !== deleteId)); 
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
 
   return (
     <Fragment>
@@ -150,7 +173,7 @@ const Organization = () => {
                     </p>
                   </th>
                   <th>
-                    <p className="text-center mx-1.5 my-3 font-semibold font-lexend">
+                    <p className="text-start mx-1.5 my-3 font-semibold font-lexend">
                       Action
                     </p>
                   </th>
@@ -192,8 +215,26 @@ const Organization = () => {
                       </p>
                     </td>
                     <td>
-                      <p className="flex justify-center mx-1.5 my-3">
-                        <BsThreeDotsVertical />
+                      <p className="flex justify-start mx-1.5 my-3">
+                        <BsThreeDotsVertical  onClick={() => toggleDropdown(index)}/>
+                        {isDropdownOpen(index) && (
+                            <div
+                              className=" bg-white shadow-md rounded-lg ml-1"
+                             
+                            >
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={()=>handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
                       </p>
                     </td>
                   </tr>
