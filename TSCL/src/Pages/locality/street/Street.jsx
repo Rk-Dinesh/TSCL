@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddStreet from "./AddSreet";
 import { API, formatDate } from "../../../Host";
 import axios from "axios";
+import decryptData from "../../../Decrypt";
 
 const Street = () => {
   const [isModal, setIsModal] = useState(false);
@@ -20,31 +21,8 @@ const Street = () => {
   const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
-    axios
-      .get(`${API}/street/get`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      })
-      .then((response) => {
-        setStreet(response.data.data);
-
-        const filteredCenters = response.data.data.filter((streets) =>
-          Object.values(streets).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-        fetchExistingWards();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+   handlerefresh()
+   fetchExistingWards()
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -59,9 +37,10 @@ const Street = () => {
         Authorization:`Bearer ${token}`
       }
     }).then((response) => {
-      setStreet(response.data.data);
+      const responseData =  decryptData(response.data.data);
+      setStreet(responseData);
 
-      const filteredCenters = response.data.data.filter((streets) =>
+      const filteredCenters = responseData.filter((streets) =>
         Object.values(streets).some((value) =>
           value.toString().toLowerCase().includes(searchValue.toLowerCase())
         )
@@ -90,8 +69,8 @@ const Street = () => {
           Authorization:`Bearer ${token}`
         }
       });
-      const responseData = response.data.data;
-      // console.log("fetch",responseData);
+      const responseData = decryptData(response.data.data);
+      
 
       setExistingWards(responseData);
     } catch (error) {
@@ -143,7 +122,7 @@ const Street = () => {
 
           <button
             className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
-            onClick={toggleModal}
+            onClick={()=>setIsModal(true)}
           >
             <FaPlus /> Add Street
           </button>

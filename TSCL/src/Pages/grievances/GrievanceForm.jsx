@@ -13,6 +13,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { fetchComplainttype } from "../redux/slice/complainttype";
+import decryptData from "../../Decrypt";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -148,7 +149,8 @@ const GrievanceForm = () => {
           const response = await axios.get(
             `${API}/public-user/getbyphone?phone=${contactNumber}`
           );
-          const autoFillData = response.data.data;
+          const responseData= decryptData(response.data.data)
+          const autoFillData = responseData;
           setValue("public_user_name", autoFillData.public_user_name);
           setValue("email", autoFillData.email);
           setValue("address", autoFillData.address);
@@ -230,8 +232,12 @@ const GrievanceForm = () => {
           },
         }
       );
+      
+      
 
-      const grievanceId = await response1.data.data.grievance_id;
+      const grievanceId = await response1.data.data;
+      
+      
 
       if (response1.status === 200) {
         toast.success("Grievance created Successfully");
@@ -262,10 +268,13 @@ const GrievanceForm = () => {
       }
 
       reset();
+     
+      
       navigate("/view", {
         state: { grievanceId: grievanceId },
       });
     } catch (error) {
+      console.log(error)
       toast.error("An error occurred during submission. Please try again.");
     }
   };

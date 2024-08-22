@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddWard from "./AddWard";
 import { API, formatDate } from "../../../Host";
 import axios from "axios";
+import decryptData from "../../../Decrypt";
 
 
 
@@ -23,32 +24,7 @@ const Ward = () => {
 
 
   useEffect(() => {
-    const fetchWards = async () => {
-      try {
-        const response = await axios.get(`${API}/ward/get`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setWard(response.data.data);
-  
-        const filteredCenters = response.data.data.filter((wards) =>
-          Object.values(wards).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-  
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-  
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    fetchWards();
+    handlerefresh()
     fetchExistingZones(); 
   }, [searchValue, currentPage, itemsPerPage, token]); 
   
@@ -61,15 +37,17 @@ const Ward = () => {
     }
   };
 
-  const handlerefresh = () => {
-    axios.get(`${API}/ward/get`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    }).then((response) => {
-      setWard(response.data.data);
+  const handlerefresh = async() => {
+    try {
+      const response = await axios.get(`${API}/ward/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data)
+      setWard(responseData);
 
-      const filteredCenters = response.data.data.filter((wards) =>
+      const filteredCenters = responseData.filter((wards) =>
         Object.values(wards).some((value) =>
           value.toString().toLowerCase().includes(searchValue.toLowerCase())
         )
@@ -80,7 +58,9 @@ const Ward = () => {
       const firstIndex = lastIndex - itemsPerPage;
 
       setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const toggleModal = () => {
@@ -98,9 +78,7 @@ const Ward = () => {
           Authorization:`Bearer ${token}`
         }
       });
-      const responseData = response.data.data;
-      // console.log("fetch", responseData);
-
+      const responseData = decryptData(response.data.data)
       setExistingZones(responseData);
     } catch (error) {
       console.error("Error fetching existing roles:", error);
@@ -152,7 +130,7 @@ const Ward = () => {
 
           <button
             className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
-            onClick={toggleModal}
+            onClick={()=>setIsModal(true)}
           >
             <FaPlus /> Add Ward
           </button>

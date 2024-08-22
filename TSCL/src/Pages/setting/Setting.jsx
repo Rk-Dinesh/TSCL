@@ -6,6 +6,7 @@ import AddRole from "./AddRole";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
+import decryptData from "../../Decrypt";
 
 
 const Settings = () => {
@@ -36,9 +37,10 @@ const Settings = () => {
         }
       })
       .then((response) => {
-        setRole(response.data.data);
+        const reponseData = decryptData(response.data.data)
+        setRole(reponseData);
 
-        const filteredCenters = response.data.data.filter((roles) =>
+        const filteredCenters = reponseData.filter((roles) =>
           Object.values(roles).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
@@ -84,7 +86,7 @@ const Settings = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
-              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={toggleModal}>
+              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={()=>setIsModal(true)}>
                 <FaPlus /> Add Role
               </button>
               </div>

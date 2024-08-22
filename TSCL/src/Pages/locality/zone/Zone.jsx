@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddZone from "./AddZone";
 import axios from "axios";
 import { API, formatDate } from "../../../Host";
+import decryptData from "../../../Decrypt";
 
 
 const Zone = () => {
@@ -20,30 +21,7 @@ const Zone = () => {
   const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
-    axios
-      .get(`${API}/zone/get`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      })
-      .then((response) => {
-        setZone(response.data.data);
-
-        const filteredCenters = response.data.data.filter((org) =>
-          Object.values(org).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+   handlerefresh()
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -58,9 +36,10 @@ const Zone = () => {
         Authorization:`Bearer ${token}`
       }
     }).then((response) => {
-      setZone(response.data.data);
+      const responseData = decryptData(response.data.data)
+      setZone(responseData);
 
-      const filteredCenters = response.data.data.filter((org) =>
+      const filteredCenters = responseData.filter((org) =>
         Object.values(org).some((value) =>
           value.toString().toLowerCase().includes(searchValue.toLowerCase())
         )
@@ -122,7 +101,7 @@ const Zone = () => {
           <h1 className="md:text-xl text-lg font-medium ">Zone</h1>
           <button
             className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
-            onClick={toggleModal}
+            onClick={()=>setIsModal(true)}
           >
             <FaPlus /> Add Zone
           </button>

@@ -41,11 +41,9 @@ const User = () => {
         },
       })
       .then((response) => {
-        console.log(response.data.data);
+      
         const responseData= decryptData(response.data.data)
-        console.log(responseData);
-        
-        
+
         setUser(responseData); 
         const filteredCenters = responseData.filter((users) =>
           Object.values(users).some((value) =>
@@ -113,7 +111,7 @@ const User = () => {
             <a href="#">
               <button
                 className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm "
-                onClick={toggleModal}
+                onClick={()=>setIsModal(true)}
               >
                 <FaPlus /> Add User 
               </button>

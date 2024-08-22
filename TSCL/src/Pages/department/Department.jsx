@@ -10,6 +10,7 @@ import AddDepartment from "./AddDepartment";
 import axios from "axios";
 import { API, formatDate } from "../../Host";
 import logo from "../../assets/images/logo1.png"
+import decryptData from "../../Decrypt";
 
 const Department = () => {
   const [isModal, setIsModal] = useState(false);
@@ -23,31 +24,8 @@ const Department = () => {
   const token = sessionStorage.getItem('token'); 
 
   useEffect(() => {
-    axios
-      .get(`${API}/department/get`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      })
-      .then((response) => {
-        setDepartmnent(response.data.data);
-
-        const filteredCenters = response.data.data.filter((dept) =>
-          Object.values(dept).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-        fetchExistingOrganiZations();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+   handlerefresh()
+   fetchExistingOrganiZations()
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -62,9 +40,10 @@ const Department = () => {
         Authorization:`Bearer ${token}`
       }
     }).then((response) => {
-      setDepartmnent(response.data.data);
+      const responseData = decryptData(response.data.data)
+      setDepartmnent(responseData);
 
-      const filteredCenters = response.data.data.filter((dept) =>
+      const filteredCenters = responseData.filter((dept) =>
         Object.values(dept).some((value) =>
           value.toString().toLowerCase().includes(searchValue.toLowerCase())
         )
@@ -93,7 +72,7 @@ const Department = () => {
           Authorization:`Bearer ${token}`
         }
       });
-      const responseData = response.data.data;
+      const responseData = decryptData(response.data.data);
       setExistingOrganiZations(responseData);
     } catch (error) {
       console.error("Error fetching existing Organisations:", error);
@@ -144,14 +123,14 @@ const Department = () => {
             <h1 className="md:text-xl text-lg font-medium  font-lexend">
               Department
             </h1>
-            <a href="#">
+          
               <button
                 className="flex  gap-2  items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2 w-fit justify-between"
-                onClick={toggleModal}
+                onClick={()=>setIsModal(true)}
               >
                 <FaPlus /> Add Department
               </button>
-            </a>
+  
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">

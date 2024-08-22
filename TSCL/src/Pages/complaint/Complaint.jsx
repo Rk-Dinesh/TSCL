@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddComplaint from "./AddComplaint";
 import { API } from "../../Host";
 import axios from "axios";
+import decryptData from "../../Decrypt";
 
 const Complaint = () => {
   const [isModal, setIsModal] = useState(false);
@@ -40,9 +41,10 @@ const Complaint = () => {
         }
       })
       .then((response) => {
-        setComplaint(response.data.data);
+        const responseData = decryptData(response.data.data)
+        setComplaint(responseData);
 
-        const filteredCenters = response.data.data.filter((comp) =>
+        const filteredCenters = responseData.filter((comp) =>
           Object.values(comp).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
@@ -66,7 +68,7 @@ const Complaint = () => {
           Authorization:`Bearer ${token}`
         }
       });
-      const responseData = response.data.data;
+      const responseData = decryptData(response.data.data)
       setExistingRoles(responseData);
     } catch (error) {
       console.error("Error fetching existing Roles:", error);
@@ -80,7 +82,7 @@ const Complaint = () => {
           Authorization:`Bearer ${token}`
         }
       });
-      const responseData = response.data.data;
+      const responseData = decryptData(response.data.data)
       setExistingDept(responseData);
     } catch (error) {
       console.error("Error fetching existing Department:", error);
@@ -132,7 +134,7 @@ const Complaint = () => {
       <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
         <h1 className="md:text-xl text-lg font-medium ">Complaint </h1>
        
-          <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm" onClick={toggleModal}>
+          <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm" onClick={()=>setIsModal(true)}>
             <FaPlus /> Add Complaint
           </button>
        

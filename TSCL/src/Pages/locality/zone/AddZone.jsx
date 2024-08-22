@@ -76,12 +76,12 @@ const AddZone = (props) => {
             )}
           </div>
           <div className="flex justify-end  mx-10 gap-5 ">
-            <button
+            <div
               className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
               onClick={props.toggleModal}
             >
               cancel
-            </button>
+            </div>
             <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5"  type="submit">
               Save
             </button>

@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddOrganization from "./AddOrganization";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
+import decryptData from "../../Decrypt";
 
 const Organization = () => {
   const [isModal, setIsModal] = useState(false);
@@ -36,9 +37,10 @@ const Organization = () => {
          }
         })
       .then((response) => {
-        setOrganization(response.data.data);
+        const reponseData = decryptData(response.data.data)
+        setOrganization(reponseData);
 
-        const filteredCenters = response.data.data.filter((org) =>
+        const filteredCenters = reponseData.filter((org) =>
           Object.values(org).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
@@ -105,7 +107,7 @@ const Organization = () => {
 
             <button
               className="flex flex-row  gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm"
-              onClick={toggleModal}
+              onClick={()=>setIsModal(true)}
             >
               <FaPlus /> Add Organization
             </button>
@@ -285,6 +287,7 @@ const Organization = () => {
         <AddOrganization
           toggleModal={toggleModal}
           handlerefresh={handlerefresh}
+          
         />
       )}
     </Fragment>

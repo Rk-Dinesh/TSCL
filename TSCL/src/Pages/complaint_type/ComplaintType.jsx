@@ -6,6 +6,7 @@ import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
 import AddComplaintType from "./AddComplaintType";
+import decryptData from "../../Decrypt";
 
 
 const ComplaintType = () => {
@@ -36,9 +37,10 @@ const ComplaintType = () => {
         }
       })
       .then((response) => {
-        setComplaint(response.data.data);
+        const responseData = decryptData(response.data.data)
+        setComplaint(responseData);
 
-        const filteredCenters = response.data.data.filter((complaintstype) =>
+        const filteredCenters = responseData.filter((complaintstype) =>
           Object.values(complaintstype).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
@@ -84,7 +86,7 @@ const ComplaintType = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
-              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={toggleModal}>
+              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={()=>setIsModal(true)}>
                 <FaPlus /> Add Complaint Type
               </button>
               </div>

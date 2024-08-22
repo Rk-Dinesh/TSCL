@@ -1,6 +1,7 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit"
 import axios from "axios"
 import { API } from "../../../Host"
+import decryptData from "../../../Decrypt"
 
 export const fetchPublic_User = createAsyncThunk("fetchPublic_User",async ()=>{
     const token =sessionStorage.getItem('token')
@@ -9,7 +10,7 @@ export const fetchPublic_User = createAsyncThunk("fetchPublic_User",async ()=>{
         Authorization: `Bearer ${token}`,
       },
     })
-    const responseData = response.data.data
+    const responseData = decryptData(response.data.data)
     return responseData;
 })
 

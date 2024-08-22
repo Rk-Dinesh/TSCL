@@ -7,6 +7,7 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
+import decryptData from "../../Decrypt";
 
 const Grivences = () => {
   const [isModal, setIsModal] = useState(false);
@@ -31,9 +32,10 @@ const Grivences = () => {
         }
       })
       .then((response) => {
-        setGrievance(response.data.data);
+        const responseData = decryptData(response.data.data)
+        setGrievance(responseData);
 
-        const filteredCenters = response.data.data.filter((grievances) =>
+        const filteredCenters = responseData.filter((grievances) =>
           Object.values(grievances).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )

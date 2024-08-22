@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { API } from "../../Host";
 import { useLocation } from "react-router-dom";
+import decryptData from "../../Decrypt";
 
 const ViewRequest = () => {
   const [data, setData] = useState(null);
@@ -21,8 +22,9 @@ const ViewRequest = () => {
             }
           }
         );
-        setData(response.data.data);
-        // console.log(response.data.data);
+        const responseData = decryptData(response.data.data)
+        setData(responseData);
+        
       } catch (err) {
         setError(err);
       } finally {

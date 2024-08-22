@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import AddAdmin from "./AddAdmin";
 import axios from "axios";
 import { API } from "../../Host";
+import decryptData from "../../Decrypt";
 
 const Admin = () => {
   const [isModal, setIsModal] = useState(false);
@@ -22,6 +23,8 @@ const Admin = () => {
 
   useEffect(() => {
     handlerefresh();
+    fetchExistingRoles()
+    fetchExistingDepts()
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -39,9 +42,10 @@ const Admin = () => {
         },
       })
       .then((response) => {
-        setAdmin(response.data.data);
+        const responseData = decryptData(response.data.data)
+        setAdmin(responseData);
 
-        const filteredCenters = response.data.data.filter((admins) =>
+        const filteredCenters = responseData.filter((admins) =>
           Object.values(admins).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
@@ -52,8 +56,7 @@ const Admin = () => {
         const firstIndex = lastIndex - itemsPerPage;
 
         setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-        fetchExistingRoles()
-        fetchExistingDepts()
+       
       })
       .catch((error) => {
         console.error(error);
@@ -70,7 +73,7 @@ const Admin = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const responseData = response.data.data;
+      const responseData = decryptData(response.data.data);
       setExistingRoles(responseData);
     } catch (error) {
       console.error("Error fetching existing Roles:", error);
@@ -84,7 +87,7 @@ const Admin = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const responseData = response.data.data;
+      const responseData = decryptData(response.data.data);
       setExistingDept(responseData);
     } catch (error) {
       console.error("Error fetching existing Department:", error);
@@ -136,7 +139,7 @@ const Admin = () => {
             <a href="#">
               <button
                 className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
-                onClick={toggleModal}
+                onClick={()=>setIsModal(true)}
               >
                 <FaPlus /> Add User
               </button>
