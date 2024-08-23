@@ -8,9 +8,12 @@ import AddStreet from "./AddSreet";
 import { API, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
+import EditStreet from "./EditStreet";
 
 const Street = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [streetId, setStreetId] = useState(null);
   const [ExistingWards, setExistingWards] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,7 +21,15 @@ const Street = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [street, setStreet] = useState([])
+  const [dropdownOpen, setDropdownOpen] = useState(null);
   const token = sessionStorage.getItem('token'); 
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
+ 
 
   useEffect(() => {
    handlerefresh()
@@ -56,6 +67,11 @@ const Street = () => {
 
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setStreetId(null);
   };
 
   const toggleCloseModal = () => {
@@ -211,10 +227,32 @@ const Street = () => {
                   </p>
                 </td>
                 <td>
-                  <p className=" flex justify-center  mx-1.5 my-3">
-                    <BsThreeDotsVertical />
-                  </p>
-                </td>
+                        <p className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setStreetId(streets.street_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                // onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </p>
+                      </td>
               </tr>
               ))}
             </tbody>
@@ -305,6 +343,14 @@ const Street = () => {
           toggleCloseModal={toggleCloseModal}
           ExistingWards={ExistingWards}
           handlerefresh={handlerefresh}
+        />
+      )}
+      {editModal && (
+        <EditStreet
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          ExistingWards={ExistingWards}
+          streetId={streetId}
         />
       )}
     </Fragment>

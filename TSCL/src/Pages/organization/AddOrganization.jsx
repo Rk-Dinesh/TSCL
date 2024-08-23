@@ -22,6 +22,8 @@ const AddOrganization = (props) => {
     mode: "all",
   });
 
+
+
   const onSubmit = async (data) => {
     const token = sessionStorage.getItem('token');
    

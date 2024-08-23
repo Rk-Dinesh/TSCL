@@ -11,9 +11,12 @@ import axios from "axios";
 import { API, formatDate } from "../../Host";
 import logo from "../../assets/images/logo1.png"
 import decryptData from "../../Decrypt";
+import EditDepartment from "./EditDepartment";
 
 const Department = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [deptId, setDeptId] = useState(null);
   const [ExistingOrganiZations, setExistingOrganiZations] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +24,14 @@ const Department = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [department, setDepartmnent] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
   const token = sessionStorage.getItem('token'); 
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
    handlerefresh()
@@ -59,6 +69,10 @@ const Department = () => {
 
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setDeptId(null);
   };
 
   const toggleCloseModal = () => {
@@ -225,10 +239,32 @@ const Department = () => {
                       </p>
                     </td>
                     <td>
-                      <p className="flex justify-center mx-1.5 my-3">
-                        <BsThreeDotsVertical />
-                      </p>
-                    </td>
+                        <p className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setDeptId(dept.dept_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                // onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </p>
+                      </td>
                   </tr>
                 ))}
               </tbody>
@@ -323,6 +359,15 @@ const Department = () => {
           handlerefresh={handlerefresh}
         />
       )}
+       {editModal && (
+        <EditDepartment
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          ExistingOrganiZations={ExistingOrganiZations}
+          deptId={deptId}
+        />
+      )}
+  
     </Fragment>
   );
 };

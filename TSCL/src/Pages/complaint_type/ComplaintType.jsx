@@ -7,17 +7,28 @@ import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
 import AddComplaintType from "./AddComplaintType";
 import decryptData from "../../Decrypt";
+import EditComplaintType from "./EditComplainType";
 
 
 const ComplaintType = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [comptId, setComptId] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [complaint, setComplaint] = useState([]);
-  const token = sessionStorage.getItem('token');
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem("token");
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
+
 
   useEffect(() => {
     handlerefresh();
@@ -58,6 +69,11 @@ const ComplaintType = () => {
   };
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setComptId(null);
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -163,10 +179,32 @@ const ComplaintType = () => {
                     </p>
                   </td>
                   <td>
-                    <p className="flex justify-center mx-1.5 my-2 whitespace-nowrap">
-                      <BsThreeDotsVertical />
-                    </p>
-                  </td>
+                        <p className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setComptId(type.compliant_type_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                //onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </p>
+                      </td>
                 </tr>
                 ))}
               </tbody>
@@ -252,6 +290,13 @@ const ComplaintType = () => {
         </div>
       </div>
       {isModal && <AddComplaintType toggleModal={toggleModal} handlerefresh={handlerefresh}/>}
+      {editModal && (
+        <EditComplaintType
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          comptId={comptId}
+        />
+      )}
     </Fragment>
   );
 };

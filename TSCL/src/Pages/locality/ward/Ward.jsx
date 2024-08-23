@@ -8,11 +8,14 @@ import AddWard from "./AddWard";
 import { API, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
+import EditWard from "./EditWard";
 
 
 
 const Ward = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [wardId, setWardId] = useState(null);
   const [ExistingZones, setExistingZones] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +23,14 @@ const Ward = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [ward, setWard] = useState([])
-  const token = sessionStorage.getItem('token');
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem('token'); 
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
 
   useEffect(() => {
@@ -65,6 +75,11 @@ const Ward = () => {
 
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setWardId(null);
   };
 
   const toggleCloseModal = () => {
@@ -211,10 +226,32 @@ const Ward = () => {
                   </p>
                 </td>
                 <td>
-                  <p className=" flex justify-center mx-1.5 my-3">
-                    <BsThreeDotsVertical />
-                  </p>
-                </td>
+                        <p className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setWardId(wards.ward_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                // onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </p>
+                      </td>
               </tr>
               ))}
             </tbody>
@@ -305,6 +342,14 @@ const Ward = () => {
           toggleCloseModal={toggleCloseModal}
           ExistingZones={ExistingZones}
           handlerefresh={handlerefresh}
+        />
+      )}
+       {editModal && (
+        <EditWard
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          ExistingZones={ExistingZones}
+          wardId={wardId}
         />
       )}
     </Fragment>
