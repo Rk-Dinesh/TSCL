@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Request from './Pages/request/Request';
+import Login from "./Pages/auth/Login";
+import Layout from "./Pages/layout.jsx/Layout"
 
-const Layout = lazy(() => import('./Pages/layout.jsx/Layout'));
+// const Layout = lazy(() => import('./Pages/layout.jsx/Layout'));
 const Organization = lazy(() => import('./Pages/organization/Organization'));
 const Department = lazy(() => import('./Pages/department/Department'));
 const Zone = lazy(() => import('./Pages/locality/zone/Zone'));
@@ -17,7 +19,7 @@ const Admin = lazy(() => import('./Pages/adminuser/Admin'));
 const User = lazy(() => import('./Pages/publicuser/User'));
 const Settings = lazy(() => import('./Pages/setting/Setting'));
 const ViewRequest = lazy(() => import('./Pages/request/ViewRequest'));
-const Login = lazy(() => import('./Pages/auth/Login'));
+// const Login = lazy(() => import('./Pages/auth/Login'));
 const OTP = lazy(() => import('./Pages/auth/OTP'));
 const SignUp = lazy(() => import('./Pages/auth/SignUp'));
 const Expire = lazy(() => import('./Pages/expiresToken/Expire'));
@@ -28,7 +30,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+       
           <Routes>
             <Route path='/signup' element={<SignUp />} />
             <Route path='' element={<Login />} />
@@ -51,7 +53,7 @@ function App() {
               <Route path='/requestview' element={<Request />}/>
             </Route>
           </Routes>
-        </Suspense>
+       
       </BrowserRouter>
       <ToastContainer
         position="top-right"

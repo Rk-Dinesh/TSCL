@@ -44,21 +44,21 @@ const GrievanceDetailsSchema = yup.object().shape({
   complaint_details: yup.string().required("Description is required"),
 });
 
-const AttachmentSchema = yup.object().shape({
-  file: yup.mixed().test("fileSize", "File size is too large", (value) => {
-    if (value && value[0]) {
-      return value[0].size <= 5000000; // 5MB
-    }
-    return true; // Allow no file
-  }),
-});
+// const AttachmentSchema = yup.object().shape({
+//   file: yup.mixed().test("fileSize", "File size is too large", (value) => {
+//     if (value && value[0]) {
+//       return value[0].size <= 5000000; // 5MB
+//     }
+//     return true; // Allow no file
+//   }),
+// });
 
 const CombinedSchema = yup
   .object()
   .shape({
     ...UserInfoSchema.fields,
     ...GrievanceDetailsSchema.fields,
-    ...AttachmentSchema.fields,
+    // ...AttachmentSchema.fields,
   })
   .required();
 
@@ -69,6 +69,7 @@ const GrievanceForm = () => {
   const [filteredWards, setFilteredWards] = useState([]);
   const [filteredStreets, setFilteredStreets] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const [files, setFiles] = useState([]);
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
@@ -147,7 +148,11 @@ const GrievanceForm = () => {
       async function fetchAutoFillData() {
         try {
           const response = await axios.get(
-            `${API}/public-user/getbyphone?phone=${contactNumber}`
+            `${API}/public-user/getbyphone?phone=${contactNumber}`,{
+              headers:{
+                Authorization:`Bearer ${token}`
+              }
+            }
           );
           const responseData= decryptData(response.data.data)
           const autoFillData = responseData;
@@ -169,6 +174,15 @@ const GrievanceForm = () => {
       setAutoFillData(null);
     }
   }, [contactNumber]);
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    if (files.length > 5) {
+      toast.error("Maximum 5 files allowed");
+      e.target.value = null; 
+    } else {
+      setFiles(files);
+    }
+  }
 
   const onSubmit = async (data) => {
     const userInfo = {
@@ -216,12 +230,6 @@ const GrievanceForm = () => {
       priority: getPriorityFromComplaintType(data.complaint_type_title),
     };
 
-    const attachmentData = data.file
-      ? {
-          file: data.file[0],
-        }
-      : null;
-
     try {
       const response1 = await axios.post(
         `${API}/new-grievance/post`,
@@ -233,39 +241,44 @@ const GrievanceForm = () => {
         }
       );
       
-      
-
       const grievanceId = await response1.data.data;
       
-      
-
       if (response1.status === 200) {
         toast.success("Grievance created Successfully");
       }
 
-      if (attachmentData) {
-        const fileInput = document.getElementById("file");
-        const file = fileInput.files ? fileInput.files[0] : null;
-        if (file) {
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("grievance_id", grievanceId);
-          formData.append("created_by_user", "admin");
-
-          const response3 = await axios.post(
-            `${API}/new-grievance-attachment/post`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
+     
+      if (files.length > 0) {
+        if (files.length > 5) {
+          toast.error("File limit exceeded. Maximum 5 files allowed.");
+        } else {
+          try {
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+              formData.append('files', files[i]);
             }
-          );
-          if (response3.status === 200) {
-            toast.success("Attachment created Successfully");
+            formData.append("grievance_id", grievanceId);
+            formData.append("created_by_user", "admin");
+            const response3 = await axios.post(
+              `${API}/new-grievance-attachment/post`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            if (response3.status === 200) {
+              setFiles([])
+              toast.success("Attachment created Successfully");
+            }
+          } catch (error) {
+            console.error(error);
+            toast.error("Error creating attachment");
           }
         }
       }
+      
 
       reset();
      
@@ -665,20 +678,19 @@ const GrievanceForm = () => {
                     className="block text-black text-lg  font-medium mb-2 md:col-span-1"
                     htmlFor="file"
                   >
-                    Attachment <p className="text-xs ">(optional)</p>
+                    Attachment <p className="text-xs ">(optional / <br /> upto 5 files allowed)</p>
                   </label>
                   <div className="flex flex-col md:col-span-2">
                     <input
                       type="file"
                       id="file"
+                      multiple
                       className=" w-full py-2 px-2 rounded-lg outline-none"
-                      {...register("file")}
+                      onChange={handleFileChange}
+                    
                     />
-                    {errors.file && (
-                      <p className="text-red-500 text-xs text-start px-2">
-                        {errors.file.message}
-                      </p>
-                    )}
+                    {files.length >= 5 && <p className="text-red-500 text-sm">Maximum 5 files allowed</p>}
+                  
                   </div>
                 </div>
               </div>
