@@ -7,17 +7,28 @@ import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
 import decryptData from "../../Decrypt";
+import EditRole from "./EditRole";
 
 
 const Settings = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [roleId, setRoleId] = useState(null);
+
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [role, setRole] = useState([]);
-  const token = sessionStorage.getItem('token');
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem("token");
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
     handlerefresh();
@@ -58,6 +69,11 @@ const Settings = () => {
   };
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setRoleId(null);
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -173,10 +189,32 @@ const Settings = () => {
                     </p>
                   </td>
                   <td>
-                    <p className="flex justify-center mx-1.5 my-2 whitespace-nowrap">
-                      <BsThreeDotsVertical />
-                    </p>
-                  </td>
+                        <div className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setRoleId(roles.role_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                //onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
                 </tr>
                 ))}
               </tbody>
@@ -262,6 +300,13 @@ const Settings = () => {
         </div>
       </div>
       {isModal && <AddRole toggleModal={toggleModal} handlerefresh={handlerefresh}/>}
+      {editModal && (
+        <EditRole
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          roleId={roleId}
+        />
+      )}
     </Fragment>
   );
 };

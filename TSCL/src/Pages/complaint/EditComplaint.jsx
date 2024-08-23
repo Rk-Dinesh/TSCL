@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { IoMdClose } from "react-icons/io";
 import { API } from "../../Host";
 import axios from "axios";
+import decryptData from "../../Decrypt";
 
 
 const steps = [
@@ -61,10 +62,12 @@ const escdetailSchema = yup.object().shape({
   role_l3: yup.string().optional(), 
 });
 
-const AddComplaint = (props) => {
+const EditComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
+  const [deptName, setDeptName] = useState(null)
+  const token = sessionStorage.getItem('token'); 
 
-  const {ExistingDept,ExistingRoles} = props
+  const {ExistingDept,ExistingRoles,comptId} = props
   
 
   let currentStepSchema;
@@ -85,10 +88,41 @@ const AddComplaint = (props) => {
     register,
     formState: { errors },
     handleSubmit,
+    setValue
   } = useForm({
     resolver: yupResolver(currentStepSchema),
     mode: "all",
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API}/complaint/getbyid?complaint_id=${comptId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        const data = decryptData(response.data.data); 
+        setValue("complaint_type_title", data.complaint_type_title);
+        setValue("dept_name", data.dept_name);
+        setDeptName(data.dept_name);
+        setValue("tat_type", data.tat_type);
+        setValue("tat_duration", data.tat_duration);
+        setValue("priority", data.priority);
+        setValue("escalation_type", data.escalation_type);
+        setValue("escalation_l1", data.escalation_l1);
+        setValue("role_l1", data.role_l1);
+        setValue("escalation_l2", data.escalation_l2);
+        setValue("role_l2", data.role_l2);
+        setValue("escalation_l3", data.escalation_l3);
+        setValue("role_l3", data.role_l3);
+        setValue("status", data.status);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, [comptId, setValue]);
 
   const onSubmit = async (data) => {
     if (stepNumber !== steps.length - 1) {
@@ -96,22 +130,20 @@ const AddComplaint = (props) => {
     } else {
       const formData = {
         ...data,
-        status: "active",
-        created_by_user: "admin",
+        
       };
   
-      // console.log(formData);
-  
+    
       try {
-        const token = sessionStorage.getItem('token'); 
-        const response = await axios.post(`${API}/complaint/post`, formData,{
+      
+        const response = await axios.post(`${API}/complaint/update?complaint_id=${comptId}`, formData,{
           headers:{
             Authorization:`Bearer ${token}`
           }
         });
   
         if (response.status === 200) {
-          toast.success("Complaint created Successfully");
+          toast.success("Complaint Updated Successfully");
           props.toggleModal();
           props.handlerefresh();
         } else {
@@ -204,7 +236,7 @@ const AddComplaint = (props) => {
                             {...register("dept_name")}
                             id="dept_name"
                           >
-                            <option value="">Select an Department</option>
+                            <option value={deptName}>{deptName}</option>
                             {ExistingDept.map((dept) => (
                             <option key={dept.dept_id} value={dept.dept_name}>
                               {dept.dept_name}
@@ -485,4 +517,4 @@ const AddComplaint = (props) => {
   );
 };
 
-export default AddComplaint;
+export default EditComplaint;

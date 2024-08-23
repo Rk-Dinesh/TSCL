@@ -8,16 +8,27 @@ import AddUser from "./AddUser";
 import axios from "axios";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
+import EditUser from "./EditUser";
 
 
 const User = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [userId, setUserId] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [user, setUser] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem("token");
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
     handlerefresh();
@@ -32,7 +43,7 @@ const User = () => {
 
   const handlerefresh = () => {
 
-    const token = sessionStorage.getItem('token'); 
+ 
     
     axios
       .get(`${API}/public-user/get`,{
@@ -63,6 +74,11 @@ const User = () => {
   };
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setUserId(null);
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -113,7 +129,7 @@ const User = () => {
                 className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm "
                 onClick={()=>setIsModal(true)}
               >
-                <FaPlus /> Add User 
+                <FaPlus /> Add PublicUser 
               </button>
             </a>
           </div>
@@ -203,10 +219,32 @@ const User = () => {
                   </td>
 
                   <td>
-                    <p className="flex justify-center mx-1 my-3 whitespace-nowrap">
-                      <BsThreeDotsVertical />
-                    </p>
-                  </td>
+                        <div className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setUserId(users.public_user_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                //onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
                 </tr>
 ))}
                 
@@ -293,6 +331,13 @@ const User = () => {
         </div>
       </div>
       {isModal && <AddUser toggleModal={toggleModal} handlerefresh={handlerefresh} />}
+      {editModal && (
+        <EditUser
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          userId={userId}
+        />
+      )}
     </Fragment>
   );
 };

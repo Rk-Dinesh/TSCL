@@ -8,9 +8,12 @@ import AddComplaint from "./AddComplaint";
 import { API } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
+import EditComplaint from "./EditComplaint";
 
 const Complaint = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [comptId, setComptId] = useState(null);
   const [ExistingRoles, setExistingRoles] = useState(null);
   const [ExistingDept, setExistingDept] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -19,7 +22,14 @@ const Complaint = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [complaint, setComplaint] = useState([]);
-  const token = sessionStorage.getItem('token'); 
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem("token");
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
     handlerefresh();
@@ -91,6 +101,11 @@ const Complaint = () => {
 
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setComptId(null);
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -249,10 +264,10 @@ const Complaint = () => {
                 <td >
                   <div className="mx-1.5 my-3 flex gap-3 items-center justify-start  font-lexend">  
                   <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm">
-                  {complaints.escalation_l2} 
+                  {complaints && complaints.escalation_l2 ? complaints.escalation_l2 : '---'}
                   </p>
                   <p className=" whitespace-nowrap text-sm ">
-                  {complaints.role_l2}
+                  {complaints && complaints.role_l2 ? complaints.role_l2 : '---'}
                   </p>
                   </div>
                 </td>
@@ -260,10 +275,10 @@ const Complaint = () => {
                 <td >
                   <div className="mx-1.5 my-3 flex gap-3 items-center justify-start  font-lexend">  
                   <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm ">
-                  {complaints.escalation_l3} 
+                  {complaints && complaints.escalation_l3 ? complaints.escalation_l3 : '---'} 
                   </p>
                   <p className=" whitespace-nowrap text-start text-sm ">
-                  {complaints.role_l3}
+                  {complaints && complaints.role_l3 ? complaints.role_l3 : '---'}
                   </p>
                   </div>
                 </td>
@@ -280,10 +295,32 @@ const Complaint = () => {
                   </p>
                 </td>
                 <td>
-                  <p className="mx-1.5 my-3 flex justify-center whitespace-nowrap">
-                    <BsThreeDotsVertical />
-                  </p>
-                </td>
+                        <div className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setComptId(complaints.complaint_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                               // onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
               </tr>
               ))}
           </tbody>
@@ -368,6 +405,14 @@ const Complaint = () => {
       </div>
     </div>
     {isModal && <AddComplaint toggleModal={toggleModal} handlerefresh={handlerefresh} ExistingDept={ExistingDept} ExistingRoles={ExistingRoles}/>}
+    {editModal && (
+        <EditComplaint
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          ExistingDept={ExistingDept} ExistingRoles={ExistingRoles}
+          comptId={comptId}
+        />
+      )}
     </Fragment>
   );
 };

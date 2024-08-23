@@ -8,9 +8,12 @@ import AddAdmin from "./AddAdmin";
 import axios from "axios";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
+import EditAdmin from "./EditAdmin";
 
 const Admin = () => {
   const [isModal, setIsModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [adminId, setAdminId] = useState(null);
   const [ExistingRoles, setExistingRoles] = useState(null);
   const [ExistingDept, setExistingDept] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -19,7 +22,14 @@ const Admin = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [admin, setAdmin] = useState([]);
-  const token = sessionStorage.getItem('token'); 
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const token = sessionStorage.getItem("token");
+
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? null : index);
+  };
+
+  const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
     handlerefresh();
@@ -64,6 +74,10 @@ const Admin = () => {
   };
   const toggleModal = () => {
     setIsModal(!isModal);
+  };
+  const toggleEModal = () => {
+    setEditModal(!editModal);
+    setAdminId(null);
   };
 
   const fetchExistingRoles = async () => {
@@ -252,10 +266,32 @@ const Admin = () => {
                       </p>
                     </td>
                     <td>
-                      <div className="flex justify-center mx-3 my-3 whitespace-nowrap">
-                        <BsThreeDotsVertical />
-                      </div>
-                    </td>
+                        <div className="flex justify-start mx-1.5 my-3">
+                          <BsThreeDotsVertical
+                            onClick={() => toggleDropdown(index)}
+                          />
+                          {isDropdownOpen(index) && (
+                            <div className=" bg-white shadow-md rounded-lg ml-1">
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                onClick={() => {
+                                  setEditModal(true);
+                                  setAdminId(admins.user_id);
+                                  toggleDropdown();
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                //onClick={() => handleDelete(org.org_id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
                   </tr>
                 ))}
               </tbody>
@@ -341,6 +377,14 @@ const Admin = () => {
       </div>
       {isModal && (
         <AddAdmin toggleModal={toggleModal} handlerefresh={handlerefresh} ExistingRoles={ExistingRoles} ExistingDept={ExistingDept}/>
+      )}
+      {editModal && (
+        <EditAdmin
+          toggleModal={toggleEModal}
+          handlerefresh={handlerefresh}
+          ExistingRoles={ExistingRoles} ExistingDept={ExistingDept}
+          adminId={adminId}
+        />
       )}
     </Fragment>
   );

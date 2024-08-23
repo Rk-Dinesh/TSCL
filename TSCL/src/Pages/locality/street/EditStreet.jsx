@@ -53,6 +53,7 @@ const EditStreet = (props) => {
         
         
         setWardName(data.ward_name);
+        setValue("ward_name",data.ward_name)
         setValue("street_name", data.street_name); 
         setValue("status", data.status);
       } catch (error) {

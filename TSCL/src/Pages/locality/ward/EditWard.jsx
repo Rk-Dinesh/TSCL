@@ -54,6 +54,7 @@ const EditWard = (props) => {
         setZoneName(data.zone_name);
         setValue("ward_name", data.ward_name); 
         setValue("status", data.status);
+        setValue("zone_name", data.zone_name);
       } catch (error) {
         console.error("Error fetching data", error);
       }

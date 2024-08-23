@@ -226,7 +226,7 @@ const Ward = () => {
                   </p>
                 </td>
                 <td>
-                        <p className="flex justify-start mx-1.5 my-3">
+                        <div className="flex justify-start mx-1.5 my-3">
                           <BsThreeDotsVertical
                             onClick={() => toggleDropdown(index)}
                           />
@@ -250,7 +250,7 @@ const Ward = () => {
                               </button>
                             </div>
                           )}
-                        </p>
+                        </div>
                       </td>
               </tr>
               ))}
