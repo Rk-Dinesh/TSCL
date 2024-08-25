@@ -7,7 +7,7 @@ import decryptData from "../../Decrypt";
 
 const RoleAccessLevelEdit = () => {
   const location = useLocation();
-  const roleId = location.state.role_id;
+  const roleId = location.state?.role_id; // Use optional chaining in case location.state is undefined
 
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
@@ -52,7 +52,6 @@ const RoleAccessLevelEdit = () => {
           setAccessLevels(roleData.accessLevels || []);
           setGrievanceType(roleData.grievanceType || "");
           setGrievancePermissions(roleData.grievancePermissions || []);
-          // Update features based on fetched data
           const updatedFeatures = features.map((feature) => ({
             ...feature,
             checked: roleData.accessLevels.some(
@@ -70,7 +69,7 @@ const RoleAccessLevelEdit = () => {
     };
 
     fetchRoleData();
-  }, [roleId, token, features]);
+  }, [roleId, token]);
 
   const handleRoleNameChange = (event) => {
     setRoleName(event.target.value);
@@ -81,15 +80,13 @@ const RoleAccessLevelEdit = () => {
     newFeatures[index].checked = !newFeatures[index].checked;
 
     if (newFeatures[index].checked) {
-      setAccessLevels([
-        ...accessLevels,
+      setAccessLevels((prev) => [
+        ...prev,
         { feature: newFeatures[index].value, permissions: [] },
       ]);
     } else {
-      setAccessLevels(
-        accessLevels.filter(
-          (level) => level.feature !== newFeatures[index].value
-        )
+      setAccessLevels((prev) =>
+        prev.filter((level) => level.feature !== newFeatures[index].value)
       );
     }
 
@@ -102,14 +99,17 @@ const RoleAccessLevelEdit = () => {
       (level) => level.feature === features[index].value
     );
 
-    if (newAccessLevels[featureIndex].permissions.includes(permission)) {
-      newAccessLevels[featureIndex].permissions = newAccessLevels[
-        featureIndex
-      ].permissions.filter((p) => p !== permission);
-    } else {
-      newAccessLevels[featureIndex].permissions.push(permission);
+    if (featureIndex !== -1) {
+      const permissions = newAccessLevels[featureIndex].permissions;
+      if (permissions.includes(permission)) {
+        newAccessLevels[featureIndex].permissions = permissions.filter(
+          (p) => p !== permission
+        );
+      } else {
+        newAccessLevels[featureIndex].permissions.push(permission);
+      }
+      setAccessLevels(newAccessLevels);
     }
-    setAccessLevels(newAccessLevels);
   };
 
   const handleAllPermissionChange = (index) => {
@@ -118,12 +118,13 @@ const RoleAccessLevelEdit = () => {
       (level) => level.feature === features[index].value
     );
 
-    if (newAccessLevels[featureIndex].permissions.length === 3) {
-      newAccessLevels[featureIndex].permissions = [];
-    } else {
-      newAccessLevels[featureIndex].permissions = ["view", "edit", "delete"];
+    if (featureIndex !== -1) {
+      newAccessLevels[featureIndex].permissions =
+        newAccessLevels[featureIndex].permissions.length === 3
+          ? []
+          : ["view", "edit", "delete"];
+      setAccessLevels(newAccessLevels);
     }
-    setAccessLevels(newAccessLevels);
   };
 
   const handleGrievanceTypeChange = (event) => {
@@ -132,21 +133,17 @@ const RoleAccessLevelEdit = () => {
   };
 
   const handleGrievancePermissionChange = (permission) => {
-    if (grievancePermissions.includes(permission)) {
-      setGrievancePermissions(
-        grievancePermissions.filter((p) => p !== permission)
-      );
-    } else {
-      setGrievancePermissions([...grievancePermissions, permission]);
-    }
+    setGrievancePermissions((prev) =>
+      prev.includes(permission)
+        ? prev.filter((p) => p !== permission)
+        : [...prev, permission]
+    );
   };
 
   const handleAllGrievancePermissionChange = () => {
-    if (grievancePermissions.length === 3) {
-      setGrievancePermissions([]);
-    } else {
-      setGrievancePermissions(["view", "edit", "delete"]);
-    }
+    setGrievancePermissions((prev) =>
+      prev.length === 3 ? [] : ["view", "edit", "delete"]
+    );
   };
 
   const handleSubmit = async (event) => {
@@ -158,13 +155,11 @@ const RoleAccessLevelEdit = () => {
       grievancePermissions: "",
     };
 
-    // Validation for role name
     if (roleName.trim() === "") {
       newErrors.roleName = "Role name is required.";
       formIsValid = false;
     }
 
-    // Validation for feature permissions
     accessLevels.forEach((level) => {
       if (level.permissions.length === 0) {
         newErrors.featurePermissions =
@@ -173,7 +168,6 @@ const RoleAccessLevelEdit = () => {
       }
     });
 
-    // Validation for grievance type and permissions
     if (grievanceType !== "" && grievancePermissions.length === 0) {
       newErrors.grievancePermissions =
         "Please select at least one permission for the selected grievance type.";
@@ -216,7 +210,6 @@ const RoleAccessLevelEdit = () => {
         toast.success("Role updated successfully");
         navigate("/setting");
       } else {
-        console.error("Error updating data", response);
         toast.error("Failed to update role");
       }
     } catch (error) {
@@ -235,7 +228,7 @@ const RoleAccessLevelEdit = () => {
               type="text"
               value={roleName}
               onChange={handleRoleNameChange}
-              className="w-80 text-start border  rounded-lg ml-2 px-3 py-1 outline-none"
+              className="w-80 text-start border rounded-lg ml-2 px-3 py-1 outline-none"
             />
           </div>
           {errors.roleName && (
@@ -267,9 +260,7 @@ const RoleAccessLevelEdit = () => {
                         value="view"
                         checked={
                           accessLevels
-                            .find(
-                              (level) => level.feature === features[index].value
-                            )
+                            .find((level) => level.feature === feature.value)
                             ?.permissions.includes("view") || false
                         }
                         onChange={() => handlePermissionChange(index, "view")}
@@ -282,9 +273,7 @@ const RoleAccessLevelEdit = () => {
                         value="edit"
                         checked={
                           accessLevels
-                            .find(
-                              (level) => level.feature === features[index].value
-                            )
+                            .find((level) => level.feature === feature.value)
                             ?.permissions.includes("edit") || false
                         }
                         onChange={() => handlePermissionChange(index, "edit")}
@@ -297,9 +286,7 @@ const RoleAccessLevelEdit = () => {
                         value="delete"
                         checked={
                           accessLevels
-                            .find(
-                              (level) => level.feature === features[index].value
-                            )
+                            .find((level) => level.feature === feature.value)
                             ?.permissions.includes("delete") || false
                         }
                         onChange={() => handlePermissionChange(index, "delete")}
@@ -311,12 +298,12 @@ const RoleAccessLevelEdit = () => {
                         type="checkbox"
                         checked={
                           accessLevels.find(
-                            (level) => level.feature === features[index].value
-                          )?.permissions.length === 3 || false
+                            (level) => level.feature === feature.value
+                          )?.permissions.length === 3
                         }
                         onChange={() => handleAllPermissionChange(index)}
                       />
-                      <label>All </label>
+                      <label>All</label>
                     </div>
                   </div>
                 )}
@@ -324,16 +311,14 @@ const RoleAccessLevelEdit = () => {
             ))}
           </div>
           {errors.featurePermissions && (
-            <p className="error mt-3 text-red-500">
-              {errors.featurePermissions}
-            </p>
+            <p className="error text-red-500">{errors.featurePermissions}</p>
           )}
           <div className="mb-2">
-            <h3 className="mt-6 mb-3 text-base">Grievance Type:</h3>
+            <h3 className="mt-6 mb-3 text-base ">Grievance Type:</h3>
             <select
+              className="w-80 text-start border rounded-lg ml-2 px-3 py-1 outline-none"
               value={grievanceType}
               onChange={handleGrievanceTypeChange}
-              className="border rounded-lg p-2"
             >
               <option value="">Select Grievance Type</option>
               <option value="grievance">Super Admin</option>
@@ -342,21 +327,22 @@ const RoleAccessLevelEdit = () => {
               <option value="viewrequest2">Junior Engineer</option>
               <option value="viewrequest1">Operator</option>
             </select>
-            {grievanceType && (
-              <div className="flex gap-3 mt-3">
-                <div className="flex items-center gap-2 text-sm">
+          </div>
+          {grievanceType && (
+            <div className="mb-2">
+              <h3 className="mt-6 mb-3 text-base">Permissions:</h3>
+              <div className="flex gap-3">
+                <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    value="view"
                     checked={grievancePermissions.includes("view")}
                     onChange={() => handleGrievancePermissionChange("view")}
                   />
-                  <label>View</label>
+                  <label className="text-sm">View</label>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
-                    value="edit"
                     checked={grievancePermissions.includes("edit")}
                     onChange={() => handleGrievancePermissionChange("edit")}
                   />
@@ -365,7 +351,6 @@ const RoleAccessLevelEdit = () => {
                 <div className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
-                    value="delete"
                     checked={grievancePermissions.includes("delete")}
                     onChange={() => handleGrievancePermissionChange("delete")}
                   />
@@ -377,22 +362,22 @@ const RoleAccessLevelEdit = () => {
                     checked={grievancePermissions.length === 3}
                     onChange={handleAllGrievancePermissionChange}
                   />
-                  <label>All </label>
+                  <label>All</label>
                 </div>
               </div>
-            )}
-            {errors.grievancePermissions && (
-              <p className="error mt-3 text-red-500">
-                {errors.grievancePermissions}
-              </p>
-            )}
-          </div>
+            </div>
+          )}
+          {errors.grievancePermissions && (
+            <p className="error text-red-500">{errors.grievancePermissions}</p>
+          )}
+          <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            className="mt-6 px-4 py-2 bg-blue-500 text-white  rounded-lg"
           >
             Save Changes
           </button>
+          </div>
         </form>
       </div>
     </div>
