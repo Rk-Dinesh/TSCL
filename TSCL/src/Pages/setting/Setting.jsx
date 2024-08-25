@@ -6,7 +6,6 @@ import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
 import decryptData from "../../Decrypt";
-import EditRole from "./EditRole";
 import DeleteModal from "../Modal/DeleteModal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,9 +13,6 @@ import { toast } from "react-toastify";
 
 const Settings = () => {
  
-  const [editModal, setEditModal] = useState(false);
-  const [roleId, setRoleId] = useState(null);
-
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [deleteId, setdeleteId] = useState(null);
 
@@ -73,12 +69,6 @@ const Settings = () => {
       .catch((error) => {
         console.error(error);
       });
-  };
-
-
-  const toggleEModal = () => {
-    setEditModal(!editModal);
-    setRoleId(null);
   };
 
   const toggleDeleteCloseModal = () => {
@@ -223,11 +213,7 @@ const Settings = () => {
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setEditModal(true);
-                                  setRoleId(roles.role_id);
-                                  toggleDropdown();
-                                }}
+                                onClick={() => navigate('/editrole', { state: { role_id: roles.role_id } })}
                               >
                                 Edit
                               </button>
@@ -330,13 +316,7 @@ const Settings = () => {
           </div>
         </div>
       </div>
-      {editModal && (
-        <EditRole
-          toggleModal={toggleEModal}
-          handlerefresh={handlerefresh}
-          roleId={roleId}
-        />
-      )}
+     
       {isDeleteModal && (
         <DeleteModal 
         toggleDeleteModal={toggleDeleteCloseModal}

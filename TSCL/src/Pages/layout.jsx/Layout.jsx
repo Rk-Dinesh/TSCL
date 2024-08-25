@@ -17,34 +17,32 @@ import { LuUserCircle2 } from "react-icons/lu";
 import Header from "./Header";
 import logo from "../../assets/images/logo1.png"
 
-const Layout = () => {
+const Layout = ({ permissions }) => {
   const location = useLocation();
   const [open, setOpen] = useState(true);
   const [submenuopen, Setsubmenuopen] = useState(false);
  
   const Menus = [
-    { title: "Dashboard", icon: <RxHome />,to: "/dashboard" },
-    { title: "Organization", icon: <GoOrganization />, to: "/organization" },
-    { title: "Department", icon: <SiAwsorganizations />, to: "/department" },
-    {
+    permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },
+    permissions["organization"] && { title: "Organization", icon: <GoOrganization />, to: "/organization" },
+    permissions["department"] && { title: "Department", icon: <SiAwsorganizations />, to: "/department" },
+    permissions["zone"] || permissions["ward"] || permissions["street"] ? {
       title: "Locality",
       icon: <FaMapLocationDot />,
       submenu: true,
-     
       submenuItems: [
-        { title: "Zone", to: "/zone" },
-        { title: "Ward", to: "/ward" },
-        { title: "Street", to: "/street"},
-      ],
-    },
-    { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
-    { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
-    { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
-    { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
-    { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
-    { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
-   
-  ];
+        permissions["zone"] && { title: "Zone", to: "/zone" },
+        permissions["ward"] && { title: "Ward", to: "/ward" },
+        permissions["street"] && { title: "Street", to: "/street" }
+      ].filter(Boolean) // Remove null or undefined values
+    } : null,
+    permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
+    permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
+    permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
+    permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
+    permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
+    permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" }
+  ].filter(Boolean); // Remove null or undefined values
   
 
 
