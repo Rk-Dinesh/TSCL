@@ -96,7 +96,7 @@ const Ward = () => {
 
   const fetchExistingZones = async () => {
     try {
-      const response = await axios.get(`${API}/zone/get`,{
+      const response = await axios.get(`${API}/zone/getactive`,{
         headers:{
           Authorization:`Bearer ${token}`
         }
@@ -195,6 +195,11 @@ const Ward = () => {
                     Zone <RiExpandUpDownLine />
                   </p>
                 </th>
+                <th className="">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
+                   Status <RiExpandUpDownLine />
+                  </p>
+                </th>
                 <th>
                   <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
@@ -234,6 +239,9 @@ const Ward = () => {
                 </td>
                 <td className="">
                   <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.zone_name}</p>
+                </td>
+                <td className="">
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.status}</p>
                 </td>
                 <td>
                   <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">{wards.created_by_user}</p>

@@ -90,7 +90,7 @@ const Department = () => {
 
   const fetchExistingOrganiZations = async () => {
     try {
-      const response = await axios.get(`${API}/organization/get`,{
+      const response = await axios.get(`${API}/organization/getactive`,{
         headers:{
           Authorization:`Bearer ${token}`
         }

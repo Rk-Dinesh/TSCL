@@ -88,14 +88,12 @@ const Street = () => {
 
   const fetchExistingWards = async () => {
     try {
-      const response = await axios.get(`${API}/ward/get`,{
+      const response = await axios.get(`${API}/ward/getactive`,{
         headers:{
           Authorization:`Bearer ${token}`
         }
       });
       const responseData = decryptData(response.data.data);
-      
-
       setExistingWards(responseData);
     } catch (error) {
       console.error("Error fetching existing roles:", error);
@@ -194,6 +192,11 @@ const Street = () => {
                     Zone <RiExpandUpDownLine />
                   </p>
                 </th>
+                <th className="">
+                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
+                    Status <RiExpandUpDownLine />
+                  </p>
+                </th>
                 <th>
                   <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
@@ -236,6 +239,9 @@ const Street = () => {
                 </td>
                 <td>
                   <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
+                </td>
+                <td>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.status}</p>
                 </td>
                 <td>
                   <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>

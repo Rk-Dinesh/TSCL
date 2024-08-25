@@ -5,7 +5,7 @@ import decryptData from "../../../Decrypt"
 
 export const fetchWard = createAsyncThunk("fetchWard",async ()=>{
   const token =sessionStorage.getItem('token')
-    const response = await axios.get(`${API}/ward/get`,{
+    const response = await axios.get(`${API}/ward/getactive`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },

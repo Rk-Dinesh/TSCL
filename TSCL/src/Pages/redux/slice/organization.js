@@ -5,7 +5,7 @@ import decryptData from "../../../Decrypt"
 
 export const fetchOrganization = createAsyncThunk("fetchOrganization",async ()=>{
     const token =sessionStorage.getItem('token')
-    const response = await axios.get(`${API}/organization/get`,{
+    const response = await axios.get(`${API}/organization/getactive`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },

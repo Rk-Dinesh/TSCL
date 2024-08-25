@@ -78,7 +78,7 @@ const Complaint = () => {
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(`${API}/role/get`,{
+      const response = await axios.get(`${API}/role/getactive`,{
         headers:{
           Authorization:`Bearer ${token}`
         }
@@ -92,7 +92,7 @@ const Complaint = () => {
 
   const fetchExistingDepts = async () => {
     try {
-      const response = await axios.get(`${API}/department/get`,{
+      const response = await axios.get(`${API}/department/getactive`,{
         headers:{
           Authorization:`Bearer ${token}`
         }

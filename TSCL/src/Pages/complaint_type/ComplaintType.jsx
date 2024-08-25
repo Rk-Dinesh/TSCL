@@ -153,6 +153,12 @@ const ComplaintType = () => {
                       </p>
                     </th>
                     <th>
+                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
+                         Status
+                        <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
                         CreatedBy <RiExpandUpDownLine />
                       </p>
@@ -187,6 +193,11 @@ const ComplaintType = () => {
                       <td>
                         <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
                           {type.complaint_type}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                          {type.status}
                         </p>
                       </td>
                       <td>

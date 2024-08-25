@@ -5,7 +5,7 @@ import decryptData from "../../../Decrypt"
 
 export const fetchStreet = createAsyncThunk("fetchStreet",async ()=>{
   const token =sessionStorage.getItem('token')
-    const response = await axios.get(`${API}/street/get`,{
+    const response = await axios.get(`${API}/street/getactive`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },

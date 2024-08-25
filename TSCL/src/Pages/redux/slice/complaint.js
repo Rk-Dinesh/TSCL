@@ -5,7 +5,7 @@ import decryptData from "../../../Decrypt"
 
 export const fetchComplaint = createAsyncThunk("fetchComplaint",async ()=>{
   const token =sessionStorage.getItem('token')
-    const response = await axios.get(`${API}/complaint/get`,{
+    const response = await axios.get(`${API}/complaint/getactive`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },

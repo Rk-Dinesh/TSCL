@@ -164,6 +164,11 @@ const Zone = () => {
                   </p>
                 </th>
                 <th>
+                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold  whitespace-nowrap">
+                      Status <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                <th>
                   <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
                     CreatedBy <RiExpandUpDownLine />
                   </p>
@@ -200,6 +205,11 @@ const Zone = () => {
                 <td className="">
                   <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{zones.zone_name}</p>
                 </td>
+                <td>
+                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                        {zones.status}
+                      </p>
+                    </td>
                 <td>
                   <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">{zones.created_by_user}</p>
                 </td>
