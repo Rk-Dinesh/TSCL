@@ -10,9 +10,11 @@ const RoleAccessLevelForm = () => {
   const [grievanceType, setGrievanceType] = useState("");
   const [grievancePermissions, setGrievancePermissions] = useState([]);
   const [features, setFeatures] = useState([
-    { name: "Dashboard", checked: false },
-    { name: "Department", checked: false },
+    { name: "Dashboard",value:"dashboard", checked: false },
+    { name: "Department",value:"department", checked: false },
   ]);
+
+  const [errors, setErrors] = useState({ roleName: "", featurePermissions: "", grievancePermissions: "" });
 
   const handleRoleNameChange = (event) => {
     setRoleName(event.target.value);
@@ -70,6 +72,7 @@ const RoleAccessLevelForm = () => {
 
   const handleGrievanceTypeChange = (event) => {
     setGrievanceType(event.target.value);
+    setGrievancePermissions([]);
   };
 
   const handleGrievancePermissionChange = (permission) => {
@@ -92,18 +95,49 @@ const RoleAccessLevelForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let formIsValid = true;
+    const newErrors = { roleName: "", featurePermissions: "", grievancePermissions: "" };
+
+    // Validation for role name
+    if (roleName.trim() === "") {
+      newErrors.roleName = "Role name is required.";
+      formIsValid = false;
+    }
+
+    // Validation for feature permissions
+    accessLevels.forEach((level) => {
+      if (level.permissions.length === 0) {
+        newErrors.featurePermissions = "Please select at least one permission for each selected feature.";
+        formIsValid = false;
+      }
+    });
+
+    // Validation for grievance type and permissions
+    if (grievanceType !== "" && grievancePermissions.length === 0) {
+      newErrors.grievancePermissions = "Please select at least one permission for the selected grievance type.";
+      formIsValid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (!formIsValid) {
+      return;
+    }
+
     const newAccessLevels = [...accessLevels];
-    
+
     if (grievanceType) {
       newAccessLevels.push({
         feature: grievanceType,
         permissions: grievancePermissions,
       });
     }
+
     const roleAccessLevel = {
       role_name: roleName,
       accessLevels: newAccessLevels,
     };
+
     console.log(roleAccessLevel);
     // try {
     //   const response = await axios.post(`${API}/roleaccess/post`, roleAccessLevel, {
@@ -127,6 +161,7 @@ const RoleAccessLevelForm = () => {
       <div>
         <label>Role Name:</label>
         <input type="text" value={roleName} onChange={handleRoleNameChange} />
+        {errors.roleName && <span className="error">{errors.roleName}</span>}
       </div>
       <div>
         <h3>Access Levels</h3>
@@ -145,10 +180,9 @@ const RoleAccessLevelForm = () => {
                   type="checkbox"
                   value="view"
                   checked={
-                    accessLevels[index] &&
                     accessLevels.find(
                       (level) => level.feature === features[index].name
-                    )?.permissions.includes("view")
+                    )?.permissions.includes("view") || false
                   }
                   onChange={() => handlePermissionChange(index, "view")}
                 />
@@ -157,10 +191,9 @@ const RoleAccessLevelForm = () => {
                   type="checkbox"
                   value="edit"
                   checked={
-                    accessLevels[index] &&
                     accessLevels.find(
                       (level) => level.feature === features[index].name
-                    )?.permissions.includes("edit")
+                    )?.permissions.includes("edit") || false
                   }
                   onChange={() => handlePermissionChange(index, "edit")}
                 />
@@ -169,10 +202,9 @@ const RoleAccessLevelForm = () => {
                   type="checkbox"
                   value="delete"
                   checked={
-                    accessLevels[index] &&
                     accessLevels.find(
                       (level) => level.feature === features[index].name
-                    )?.permissions.includes("delete")
+                    )?.permissions.includes("delete") || false
                   }
                   onChange={() => handlePermissionChange(index, "delete")}
                 />
@@ -181,10 +213,9 @@ const RoleAccessLevelForm = () => {
                   type="checkbox"
                   value="all"
                   checked={
-                    accessLevels[index] &&
                     accessLevels.find(
                       (level) => level.feature === features[index].name
-                    )?.permissions.length === 3
+                    )?.permissions.length === 3 || false
                   }
                   onChange={() => handleAllPermissionChange(index)}
                 />
@@ -193,6 +224,9 @@ const RoleAccessLevelForm = () => {
             )}
           </div>
         ))}
+        {errors.featurePermissions && (
+          <span className="error">{errors.featurePermissions}</span>
+        )}
       </div>
       <h3>Grievance Type</h3>
       <select value={grievanceType} onChange={handleGrievanceTypeChange}>
@@ -203,8 +237,6 @@ const RoleAccessLevelForm = () => {
         <option value="viewrequest2">Junior Engineer</option>
         <option value="viewrequest1">Operator</option>
       </select>
-      
-      {/* Render Grievance Permissions only if a grievanceType is selected */}
       {grievanceType && (
         <div>
           <h3>Grievance Permissions</h3>
@@ -234,10 +266,13 @@ const RoleAccessLevelForm = () => {
             type="checkbox"
             value="all"
             checked={grievancePermissions.length === 3}
-            onChange={() => handleAllGrievancePermissionChange()}
+            onChange={handleAllGrievancePermissionChange}
           />
           <label>All</label>
         </div>
+      )}
+      {errors.grievancePermissions && (
+        <span className="error">{errors.grievancePermissions}</span>
       )}
       <button type="submit">Save Role Access Level</button>
     </form>
