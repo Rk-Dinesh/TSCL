@@ -10,11 +10,16 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
 import EditOrganization from "./EditOrganization";
+import DeleteModal from "../Modal/DeleteModal";
 
 const Organization = () => {
   const [isModal, setIsModal] = useState(false);
+
   const [editModal, setEditModal] = useState(false);
   const [orgId, setOrgId] = useState(null);
+
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,6 +83,12 @@ const Organization = () => {
     setEditModal(!editModal);
     setOrgId(null);
   };
+
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = organization.filter((org) =>
@@ -88,15 +99,15 @@ const Organization = () => {
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
-  const handleDelete = async (deleteId) => {
+  const handleDelete = async () => {
     try {
       await axios.delete(`${API}/organization/delete?org_id=${deleteId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      toggleDeleteCloseModal()
       handlerefresh();
-      toggleDropdown();
       setOrganization(
         organization.filter((status) => organization.org_id !== deleteId)
       );
@@ -245,7 +256,12 @@ const Organization = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(org.org_id);
+                                  toggleDropdown();
+                                  
+                                }}
                               >
                                 Delete
                               </button>
@@ -351,6 +367,12 @@ const Organization = () => {
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
           orgId={orgId}
+        />
+      )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
         />
       )}
     </Fragment>

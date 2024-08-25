@@ -12,10 +12,14 @@ import { API, formatDate } from "../../Host";
 import logo from "../../assets/images/logo1.png"
 import decryptData from "../../Decrypt";
 import EditDepartment from "./EditDepartment";
+import DeleteModal from "../Modal/DeleteModal";
 
 const Department = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
+
   const [deptId, setDeptId] = useState(null);
   const [ExistingOrganiZations, setExistingOrganiZations] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -79,6 +83,11 @@ const Department = () => {
     setIsModal(!isModal);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const fetchExistingOrganiZations = async () => {
     try {
       const response = await axios.get(`${API}/organization/get`,{
@@ -103,6 +112,25 @@ const Department = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/department/delete?dept_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      setDepartmnent(
+        department.filter((status) => department.dept_id !== deleteId)
+      );
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
 
   return (
     <Fragment>
@@ -257,7 +285,12 @@ const Department = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                // onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(dept.dept_id);
+                                  toggleDropdown();
+                                  
+                                }}
                               >
                                 Delete
                               </button>
@@ -365,6 +398,12 @@ const Department = () => {
           handlerefresh={handlerefresh}
           ExistingOrganiZations={ExistingOrganiZations}
           deptId={deptId}
+        />
+      )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
         />
       )}
   

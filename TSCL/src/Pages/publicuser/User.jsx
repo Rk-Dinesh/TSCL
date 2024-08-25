@@ -9,12 +9,16 @@ import axios from "axios";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 import EditUser from "./EditUser";
+import DeleteModal from "../Modal/DeleteModal";
 
 
 const User = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
+
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
@@ -81,6 +85,12 @@ const User = () => {
     setUserId(null);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
+
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = user.filter((users) =>
@@ -90,6 +100,21 @@ const User = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/public-user/delete?public_user_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
 
   return (
     <Fragment>
@@ -237,7 +262,12 @@ const User = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                //onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(users.public_user_id);
+                                  toggleDropdown();
+                                  
+                                }}
                               >
                                 Delete
                               </button>
@@ -336,6 +366,12 @@ const User = () => {
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
           userId={userId}
+        />
+      )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
         />
       )}
     </Fragment>

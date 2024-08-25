@@ -9,12 +9,16 @@ import axios from "axios";
 import { API, formatDate } from "../../../Host";
 import decryptData from "../../../Decrypt";
 import EditZone from "./EditZone";
+import DeleteModal from "../../Modal/DeleteModal";
 
 
 const Zone = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [zoneId, setZoneId] = useState(null);
+
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,6 +78,11 @@ const Zone = () => {
     setZoneId(null);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = zone.filter((org) =>
@@ -83,6 +92,21 @@ const Zone = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/zone/delete?zone_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
 
   return (
     <Fragment>
@@ -208,7 +232,12 @@ const Zone = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                //onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(zones.zone_id);
+                                  toggleDropdown();
+                                  
+                                }}
                               >
                                 Delete
                               </button>
@@ -306,6 +335,12 @@ const Zone = () => {
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
           zoneId={zoneId}
+        />
+      )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
         />
       )}
     </Fragment>

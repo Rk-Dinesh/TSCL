@@ -9,6 +9,7 @@ import { API, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
 import EditWard from "./EditWard";
+import DeleteModal from "../../Modal/DeleteModal";
 
 
 
@@ -16,6 +17,8 @@ const Ward = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [wardId, setWardId] = useState(null);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
   const [ExistingZones, setExistingZones] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,6 +89,11 @@ const Ward = () => {
     setIsModal(!isModal);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const fetchExistingZones = async () => {
     try {
       const response = await axios.get(`${API}/zone/get`,{
@@ -109,6 +117,21 @@ const Ward = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/ward/delete?ward_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
 
 
   return (
@@ -244,7 +267,12 @@ const Ward = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                // onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(wards.ward_id);
+                                  toggleDropdown();
+                                  
+                                }}
                               >
                                 Delete
                               </button>
@@ -352,6 +380,13 @@ const Ward = () => {
           wardId={wardId}
         />
       )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
+        />
+      )}
+
     </Fragment>
   );
 };

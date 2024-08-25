@@ -9,10 +9,15 @@ import { API } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import EditComplaint from "./EditComplaint";
+import DeleteModal from "../Modal/DeleteModal";
 
 const Complaint = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
+
   const [comptId, setComptId] = useState(null);
   const [ExistingRoles, setExistingRoles] = useState(null);
   const [ExistingDept, setExistingDept] = useState(null);
@@ -108,6 +113,11 @@ const Complaint = () => {
     setComptId(null);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = complaint.filter((comp) =>
@@ -117,6 +127,23 @@ const Complaint = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/complaint/delete?complaint_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+
   return (
     <Fragment>
     <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
@@ -313,7 +340,13 @@ const Complaint = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                               // onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(complaints.complaint_id);
+                                  toggleDropdown();
+                                  
+                                }}
+
                               >
                                 Delete
                               </button>
@@ -413,6 +446,13 @@ const Complaint = () => {
           comptId={comptId}
         />
       )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
+        />
+      )}
+
     </Fragment>
   );
 };

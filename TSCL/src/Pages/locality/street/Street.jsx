@@ -9,11 +9,14 @@ import { API, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
 import EditStreet from "./EditStreet";
+import DeleteModal from "../../Modal/DeleteModal";
 
 const Street = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [streetId, setStreetId] = useState(null);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
   const [ExistingWards, setExistingWards] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,6 +81,11 @@ const Street = () => {
     setIsModal(!isModal);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const fetchExistingWards = async () => {
     try {
       const response = await axios.get(`${API}/ward/get`,{
@@ -103,6 +111,22 @@ const Street = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/street/delete?street_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
 
   return (
     <Fragment>
@@ -245,7 +269,13 @@ const Street = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                // onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(streets.street_id);
+                                  toggleDropdown();
+                                  
+                                }}
+
                               >
                                 Delete
                               </button>
@@ -351,6 +381,12 @@ const Street = () => {
           handlerefresh={handlerefresh}
           ExistingWards={ExistingWards}
           streetId={streetId}
+        />
+      )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
         />
       )}
     </Fragment>

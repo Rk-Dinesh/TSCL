@@ -8,12 +8,16 @@ import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
 import decryptData from "../../Decrypt";
 import EditRole from "./EditRole";
+import DeleteModal from "../Modal/DeleteModal";
 
 
 const Settings = () => {
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [roleId, setRoleId] = useState(null);
+
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteId, setdeleteId] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -76,6 +80,11 @@ const Settings = () => {
     setRoleId(null);
   };
 
+  const toggleDeleteCloseModal = () => {
+    setIsDeleteModal(!isDeleteModal);
+    setdeleteId(null)
+  };
+
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = role.filter((roles) =>
@@ -85,6 +94,22 @@ const Settings = () => {
   );
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API}/role/delete?role_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toggleDeleteCloseModal()
+      handlerefresh();
+      toast.success("Deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
@@ -207,7 +232,12 @@ const Settings = () => {
                               </button>
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                //onClick={() => handleDelete(org.org_id)}
+                                onClick={() => {
+                                  setIsDeleteModal(true);
+                                  setdeleteId(roles.role_id);
+                                  toggleDropdown();
+                                  
+                                }}
                               >
                                 Delete
                               </button>
@@ -305,6 +335,12 @@ const Settings = () => {
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
           roleId={roleId}
+        />
+      )}
+      {isDeleteModal && (
+        <DeleteModal 
+        toggleDeleteModal={toggleDeleteCloseModal}
+        delete={handleDelete}
         />
       )}
     </Fragment>
