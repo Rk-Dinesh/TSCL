@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { API } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const RoleAccessLevelForm = () => {
   const token = sessionStorage.getItem("token");
+  const navigate = useNavigate()
   const [roleName, setRoleName] = useState("");
   const [accessLevels, setAccessLevels] = useState([]);
   const [grievanceType, setGrievanceType] = useState("");
@@ -155,12 +157,14 @@ const RoleAccessLevelForm = () => {
     const roleAccessLevel = {
       role_name: roleName,
       accessLevels: newAccessLevels,
+      status:'active',
+      created_by_user:"admin"
     };
 
     console.log(roleAccessLevel);
     try {
       const response = await axios.post(
-        `${API}/roleaccess/post`,
+        `${API}/role/post`,
         roleAccessLevel,
         {
           headers: {
@@ -170,6 +174,7 @@ const RoleAccessLevelForm = () => {
       );
       if (response.status === 200) {
         toast.success("Role created Successfully");
+        navigate('/setting')
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");

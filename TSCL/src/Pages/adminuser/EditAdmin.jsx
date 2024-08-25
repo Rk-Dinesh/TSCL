@@ -35,7 +35,9 @@ const EditAdmin = (props) => {
 
   const { ExistingRoles,ExistingDept,adminId } = props;
   const [deptName, setDeptName] = useState(null);
-  const [roleName, setRoleName] = useState(null)
+  const [roleName, setRoleName] = useState(null);
+  const [roleId, setRoleId] = useState(null);
+  
   
   const token = sessionStorage.getItem('token');
 
@@ -67,6 +69,7 @@ const EditAdmin = (props) => {
         setValue("address", data.address);
         setValue("pincode", data.pincode);
         setRoleName( data.role);
+        setValue("role_id",data.role_id)
         setValue("role", data.role);
         setValue("status", data.status);
       } catch (error) {
@@ -76,9 +79,19 @@ const EditAdmin = (props) => {
     fetchData();
   }, [adminId, setValue]);
 
+  const onRoleChange = (event) => {
+    const selectedRoleName = event.target.value;
+    const role = ExistingRoles.find((role) => role.role_name === selectedRoleName);
+    if (role) {
+      setRoleId(role.role_id);
+    }
+  };
+
+
   const onSubmit = async (data) => {
     const formData = {
       ...data,
+      role_id:roleId
      
     };
 
@@ -287,6 +300,7 @@ const EditAdmin = (props) => {
               <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
               id="role"
                {...register("role")}
+               onChange={onRoleChange}
                >
                 <option value={roleName}>{roleName}</option>
                 {ExistingRoles.map((role) => (

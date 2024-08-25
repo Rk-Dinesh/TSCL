@@ -55,6 +55,7 @@ const Login = ({ setToken }) => {
     }
     if ( isRegularUserLoggedIn === true) {
       const tokenExpirationDuration = getTokenExpirationDuration(token);
+      setToken(token);
       sessionStorage.setItem('token', token);
       toast.success("Logged in successfully");
       navigate("/organization");

@@ -2,17 +2,18 @@ import React, { Fragment, useState,useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import AddRole from "./AddRole";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { IoMdSearch } from "react-icons/io";
 import decryptData from "../../Decrypt";
 import EditRole from "./EditRole";
 import DeleteModal from "../Modal/DeleteModal";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 const Settings = () => {
-  const [isModal, setIsModal] = useState(false);
+ 
   const [editModal, setEditModal] = useState(false);
   const [roleId, setRoleId] = useState(null);
 
@@ -27,6 +28,8 @@ const Settings = () => {
   const [role, setRole] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const token = sessionStorage.getItem("token");
+
+  const navigate = useNavigate()
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -71,9 +74,7 @@ const Settings = () => {
         console.error(error);
       });
   };
-  const toggleModal = () => {
-    setIsModal(!isModal);
-  };
+
 
   const toggleEModal = () => {
     setEditModal(!editModal);
@@ -127,7 +128,7 @@ const Settings = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
-              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={()=>setIsModal(true)}>
+              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={()=>navigate('/roleform')}>
                 <FaPlus /> Add Role
               </button>
               </div>
@@ -329,7 +330,6 @@ const Settings = () => {
           </div>
         </div>
       </div>
-      {isModal && <AddRole toggleModal={toggleModal} handlerefresh={handlerefresh}/>}
       {editModal && (
         <EditRole
           toggleModal={toggleEModal}
