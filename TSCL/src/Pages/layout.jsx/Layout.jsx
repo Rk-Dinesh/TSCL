@@ -23,7 +23,7 @@ const Layout = () => {
   const [submenuopen, Setsubmenuopen] = useState(false);
  
   const Menus = [
-    { title: "Dashboard", icon: <RxHome /> },
+    { title: "Dashboard", icon: <RxHome />,to: "/dashboard" },
     { title: "Organization", icon: <GoOrganization />, to: "/organization" },
     { title: "Department", icon: <SiAwsorganizations />, to: "/department" },
     {
