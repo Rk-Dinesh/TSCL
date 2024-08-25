@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 
 const ViewAttachment = (props) => {
     const {attachmentFile} = props;
+
+    
     const [imageUrl, setImageUrl] = useState(null);
 
     useEffect(() => {

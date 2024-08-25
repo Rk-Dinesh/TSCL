@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import { API, downloadFiles, downloadZip, fetchAndDecodeZip } from "../../Host";
+import { API } from "../../Host";
 import { useLocation } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "./ViewAttachment";

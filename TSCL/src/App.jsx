@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Request from './Pages/request/Request';
 import Login from "./Pages/auth/Login";
 import Layout from "./Pages/layout.jsx/Layout"
+import YourComponent from './Pages/adminuser/AddLanguage';
 
 // const Layout = lazy(() => import('./Pages/layout.jsx/Layout'));
 const Organization = lazy(() => import('./Pages/organization/Organization'));
@@ -51,6 +52,7 @@ function App() {
               <Route path='/token' element={<Expire />} />
               <Route path='/complainttype' element={<ComplaintType />} />
               <Route path='/requestview' element={<Request />}/>
+              <Route path='/lan' element={<YourComponent />}/>
             </Route>
           </Routes>
        
