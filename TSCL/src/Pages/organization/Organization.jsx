@@ -13,8 +13,10 @@ import EditOrganization from "./EditOrganization";
 import DeleteModal from "../Modal/DeleteModal";
 
 const Organization = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
   const hasEditPermission = permissions?.includes('edit');
   const hasDeletePermission = permissions?.includes('delete');
+  
 
 
   const [isModal, setIsModal] = useState(false);
@@ -136,7 +138,7 @@ const Organization = ({ permissions }) => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
-            {hasEditPermission && (
+            {hasCreatePermission && (
             <a href="#">
               <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full py-1.5 px-3 justify-center">
                 {" "}
@@ -157,7 +159,7 @@ const Organization = ({ permissions }) => {
               {" "}
               Organization
             </h1>
-            {hasEditPermission && (
+            {hasCreatePermission && (
             <button
               className="flex flex-row  gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm"
               onClick={() => setIsModal(true)}

@@ -9,7 +9,11 @@ import { API, formatDate } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 
-const Grivences = () => {
+const Grivences = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [isModal, setIsModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -84,6 +88,7 @@ const Grivences = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
               </p>
+              {hasCreatePermission && (
               <a href="#">
                 <button className="flex gap-2 items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
                   {" "}
@@ -91,6 +96,7 @@ const Grivences = () => {
                   Bulk Upload
                 </button>
               </a>
+              )}
               <a href="#">
                 <button className="flex gap-2 items-center border-2 font-lexend bg-slate-100 text-black rounded-full px-3  py-1.5 w-28 justify-between">
                   {" "}
@@ -101,14 +107,14 @@ const Grivences = () => {
           </div>
           <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
           <h1 className="md:text-xl text-lg font-medium whitespace-nowrap"> New Grievances</h1>
-             
+              {hasCreatePermission && (
                 <button
                   className="flex flex-row-2 gap-2 items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
                   onClick={handleform}
                 >
                   <FaPlus /> Add Grievances
                 </button>
-           
+           )}
            
           </div>
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">

@@ -11,7 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 
-const Settings = () => {
+const Settings = ({ permissions }) => {
+
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
  
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [deleteId, setdeleteId] = useState(null);
@@ -117,10 +121,13 @@ const Settings = () => {
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
+             
             </div>
+            {hasCreatePermission && (
               <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={()=>navigate('/roleform')}>
                 <FaPlus /> Add Role
               </button>
+              )}
               </div>
            
           </div>
@@ -211,12 +218,15 @@ const Settings = () => {
                           />
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
+                              {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => navigate('/editrole', { state: { role_id: roles.role_id } })}
                               >
                                 Edit
                               </button>
+                              )}
+                              {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -228,6 +238,7 @@ const Settings = () => {
                               >
                                 Delete
                               </button>
+                              )}
                             </div>
                           )}
                         </div>

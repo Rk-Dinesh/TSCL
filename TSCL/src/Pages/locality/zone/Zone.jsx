@@ -12,7 +12,11 @@ import EditZone from "./EditZone";
 import DeleteModal from "../../Modal/DeleteModal";
 
 
-const Zone = () => {
+const Zone = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [zoneId, setZoneId] = useState(null);
@@ -123,6 +127,7 @@ const Zone = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
+            {hasCreatePermission && (
           <a href="#">
             <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
               {" "}
@@ -130,6 +135,7 @@ const Zone = () => {
               Bulk Upload
             </button>
           </a>
+          )}
           <a href="#">
             <button className="flex gap-2 items-center border-2 bg-slate-100  font-lexend text-black rounded-full py-1.5 px-3 w-28 justify-between">
               {" "}
@@ -139,12 +145,14 @@ const Zone = () => {
         </div>
         <div className="flex justify-between items-center my-2 mx-8 flex-wrap gap-1">
           <h1 className="md:text-xl text-lg font-medium ">Zone</h1>
+          {hasCreatePermission && (
           <button
             className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
             onClick={()=>setIsModal(true)}
           >
             <FaPlus /> Add Zone
           </button>
+          )}
         </div>
 
         <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
@@ -230,6 +238,7 @@ const Zone = () => {
                           />
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
+                              {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -240,6 +249,8 @@ const Zone = () => {
                               >
                                 Edit
                               </button>
+                              )}
+                              {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -251,6 +262,7 @@ const Zone = () => {
                               >
                                 Delete
                               </button>
+                              )}
                             </div>
                           )}
                         </div>

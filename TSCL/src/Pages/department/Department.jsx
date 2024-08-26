@@ -14,7 +14,11 @@ import decryptData from "../../Decrypt";
 import EditDepartment from "./EditDepartment";
 import DeleteModal from "../Modal/DeleteModal";
 
-const Department = () => {
+const Department = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [isDeleteModal, setIsDeleteModal] = useState(false);
@@ -147,6 +151,7 @@ const Department = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
+            {hasCreatePermission && (
             <a href="#">
               <button className="flex gap-2  items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
                 {" "}
@@ -154,6 +159,7 @@ const Department = () => {
                 Bulk Upload
               </button>
             </a>
+            )}
             <a href="#">
               <button className="flex gap-2 items-center border-2 font-lexend bg-slate-100 text-black rounded-full p-2 w-32 justify-between">
                 {" "}
@@ -165,14 +171,14 @@ const Department = () => {
             <h1 className="md:text-xl text-lg font-medium  font-lexend">
               Department
             </h1>
-          
+              {hasCreatePermission && (
               <button
                 className="flex  gap-2  items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2 w-fit justify-between"
                 onClick={()=>setIsModal(true)}
               >
                 <FaPlus /> Add Department
               </button>
-  
+              )}
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
@@ -273,6 +279,7 @@ const Department = () => {
                           />
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
+                              {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -283,6 +290,8 @@ const Department = () => {
                               >
                                 Edit
                               </button>
+                              )}
+                              {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -294,7 +303,9 @@ const Department = () => {
                               >
                                 Delete
                               </button>
+                              )}
                             </div>
+                            
                           )}
                         </div>
                       </td>

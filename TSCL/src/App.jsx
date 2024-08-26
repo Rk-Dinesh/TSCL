@@ -97,14 +97,6 @@ function App() {
                 }
               />
             )}
-            {memoizedFeatures["center"] && (
-              <Route
-                path="/centers"
-                element={
-                  <Organization permissions={memoizedFeatures["center"]} />
-                }
-              />
-            )}
             {memoizedFeatures["admin"] && (
               <Route
                 path="/admin"

@@ -12,7 +12,11 @@ import EditUser from "./EditUser";
 import DeleteModal from "../Modal/DeleteModal";
 
 
-const User = () => {
+const User = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -131,6 +135,7 @@ const User = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
+            {hasCreatePermission && (
             <a href="#">
               <button className="flex gap-2 items-center border-2 border-blue-500  font-lexend bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
                 {" "}
@@ -138,6 +143,7 @@ const User = () => {
                 Bulk Upload
               </button>
             </a>
+            )}
             <a href="#">
               <button className="flex gap-2 items-center border-2 bg-slate-100  font-lexend text-black rounded-full px-3 py-1.5 w-28 justify-between">
                 {" "}
@@ -149,6 +155,7 @@ const User = () => {
             <h1 className="md:text-2xl text-xl font-medium  items-center font-lexend">
             Public User 
             </h1>
+            {hasCreatePermission && (
             <a href="#">
               <button
                 className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm "
@@ -157,6 +164,7 @@ const User = () => {
                 <FaPlus /> Add PublicUser 
               </button>
             </a>
+            )}
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
@@ -250,6 +258,7 @@ const User = () => {
                           />
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
+                              {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -260,6 +269,8 @@ const User = () => {
                               >
                                 Edit
                               </button>
+                              )}
+                              {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -271,6 +282,7 @@ const User = () => {
                               >
                                 Delete
                               </button>
+                              )}
                             </div>
                           )}
                         </div>

@@ -11,7 +11,11 @@ import decryptData from "../../Decrypt";
 import EditComplaint from "./EditComplaint";
 import DeleteModal from "../Modal/DeleteModal";
 
-const Complaint = () => {
+const Complaint = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
@@ -159,6 +163,7 @@ const Complaint = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
         </p>
+        {hasCreatePermission && (
         <a href="#">
           <button className="flex gap-2 items-center border-2 border-blue-500 font-lexend bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
             {" "}
@@ -166,6 +171,7 @@ const Complaint = () => {
             Bulk Upload
           </button>
         </a>
+        )}
         <a href="#">
           <button className="flex gap-2 items-center border-2 bg-slate-100  font-lexend text-black rounded-full px-3 py-1.5 w-28 justify-between">
             {" "}
@@ -175,11 +181,11 @@ const Complaint = () => {
       </div>
       <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
         <h1 className="md:text-xl text-lg font-medium ">Complaint </h1>
-       
+          {hasCreatePermission && (
           <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm" onClick={()=>setIsModal(true)}>
             <FaPlus /> Add Complaint
           </button>
-       
+       )}
       </div>
       <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
         <table className="w-full  ">
@@ -328,6 +334,7 @@ const Complaint = () => {
                           />
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
+                              {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -338,6 +345,8 @@ const Complaint = () => {
                               >
                                 Edit
                               </button>
+                              )}
+                              {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -350,6 +359,7 @@ const Complaint = () => {
                               >
                                 Delete
                               </button>
+                              )}
                             </div>
                           )}
                         </div>
