@@ -120,9 +120,9 @@ const RoleAccessLevelEdit = () => {
 
     if (featureIndex !== -1) {
       newAccessLevels[featureIndex].permissions =
-        newAccessLevels[featureIndex].permissions.length === 3
+        newAccessLevels[featureIndex].permissions.length === 4
           ? []
-          : ["view", "edit", "delete"];
+          : ["view","create", "edit", "delete"];
       setAccessLevels(newAccessLevels);
     }
   };
@@ -142,7 +142,7 @@ const RoleAccessLevelEdit = () => {
 
   const handleAllGrievancePermissionChange = () => {
     setGrievancePermissions((prev) =>
-      prev.length === 3 ? [] : ["view", "edit", "delete"]
+      prev.length === 4 ? [] : ["view","create", "edit", "delete"]
     );
   };
 
@@ -270,6 +270,19 @@ const RoleAccessLevelEdit = () => {
                     <div className="flex items-center gap-2 text-sm">
                       <input
                         type="checkbox"
+                        value="create"
+                        checked={
+                          accessLevels
+                            .find((level) => level.feature === feature.value)
+                            ?.permissions.includes("create") || false
+                        }
+                        onChange={() => handlePermissionChange(index, "create")}
+                      />
+                      <label>Create</label>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
                         value="edit"
                         checked={
                           accessLevels
@@ -299,7 +312,7 @@ const RoleAccessLevelEdit = () => {
                         checked={
                           accessLevels.find(
                             (level) => level.feature === feature.value
-                          )?.permissions.length === 3
+                          )?.permissions.length === 4
                         }
                         onChange={() => handleAllPermissionChange(index)}
                       />
@@ -343,6 +356,14 @@ const RoleAccessLevelEdit = () => {
                 <div className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
+                    checked={grievancePermissions.includes("create")}
+                    onChange={() => handleGrievancePermissionChange("create")}
+                  />
+                  <label>Create</label>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
                     checked={grievancePermissions.includes("edit")}
                     onChange={() => handleGrievancePermissionChange("edit")}
                   />
@@ -359,7 +380,7 @@ const RoleAccessLevelEdit = () => {
                 <div className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
-                    checked={grievancePermissions.length === 3}
+                    checked={grievancePermissions.length === 4}
                     onChange={handleAllGrievancePermissionChange}
                   />
                   <label>All</label>
