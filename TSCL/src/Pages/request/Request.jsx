@@ -17,6 +17,7 @@ const Request = () => {
   const [report, setReport] = useState([]);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
+  const [complainttype, setComplainttype] = useState([])
 
   useEffect(() => {
     axios
@@ -46,6 +47,8 @@ const Request = () => {
       .catch((error) => {
         console.error(error);
       });
+
+      fetchComplaintType()
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -53,40 +56,6 @@ const Request = () => {
       setCurrentPage(pageNumber);
     }
   };
-
-  // const handleStatus = (value, report) => { //added
-  //   const formData = {
-  //     newgrievances: report,
-  //     status: value,
-  //   };
-  //   // axios
-  //   //   .put(`${API}/admin/updatestatus?user_id=${userId}`, formData)
-  //   //   .then((response) => {
-  //   //     console.log(`Status updated  for user ID ${userId}`, response);
-  //   //     handlerefresh();
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     console.error(error);
-  //   //   });
-  // }; 
-
-  // const handlerefresh =() =>{ //added
-  //   axios.get(`${API}/admin/getall`).then((response) => {
-  //     setUsers(response.data);
-  //     // Recalculate filtered and paginated data
-  //     const filteredCenters = response.data.filter((user) =>
-  //       Object.values(user).some((value) =>
-  //         value.toString().toLowerCase().includes(searchValue.toLowerCase())
-  //       )
-  //     );
-  //     setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-  //     const lastIndex = currentPage * itemsPerPage;
-  //     const firstIndex = lastIndex - itemsPerPage;
-  //     setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-  //   });
-  // }
-
-
 
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -98,11 +67,25 @@ const Request = () => {
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
+  const fetchComplaintType = async () => {
+    try {
+      const response = await axios.get(`${API}/complainttype/getactive`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
+      const responseData = decryptData(response.data.data);
+      setComplainttype(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Complainttype:", error);
+    }
+  };
+
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-        <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
-          <h1 className="md:text-xl text-lg font-bold">Dashboard</h1>
+        <div className="flex justify-between items-center my-4 mx-8 gap-1 flex-wrap">
+          <h1 className="md:text-lg text-sm ">New Grievance</h1>
 
           <button
             className="flex flex-row-2 gap-2 font-medium font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
@@ -114,71 +97,53 @@ const Request = () => {
           </button>
         </div>
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-5  p-3">
-          <div className="flex justify-between gap-6 mt-4 mx-3">
+          <div className="flex justify-between items-center gap-6 mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
-              <p className="text-lg font-semibold whitespace-nowrap">
+              <p className="text-lg  whitespace-nowrap">
                 View Report
               </p>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              <div className="flex flex-col">
-                <select
-                  className="block w-full  px-3 py-2  text-sm font-bold text-black border border-black rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                  //  value={report.status}
-                  //             onChange={(e) =>
-                  //               handleStatus(e.newgrievances, report.status)
-                  //             }
-                  //   {...register("grievance_mode")}
-                >
-                  <option value="" disabled>
-                    Status
-                  </option>
-                  <option value="New">New</option>
-                  <option value="InProgress">Inprogress</option>
-                  <option value="Closed">Closed</option>
-                  <option value="Onhold">Onhold</option>
-                  <option value="Resolve">Resolve</option>
-                </select>
-                {/* {errors.grievance_mode && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.grievance_mode.message}
-                      </p>
-                    )} */}
+            <div className="flex flex-wrap gap-2">
+              {complainttype.map((type,index)=>(
+              <div key={index}>
+                <button className="px-2 py-1.5 bg-primary text-white hover:text-primary hover:bg-blue-100 rounded-full">{type.complaint_type}</button>
               </div>
+            ))}
             </div>
+            
           </div>
           <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
-            <table className="w-full mt-3 ">
+            <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
                   <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-semibold whitespace-nowrap">
+                    <p className="mx-1.5 my-2 text-start font-lexend  whitespace-nowrap">
                       Complaint No
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Date and Time <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Raised by <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Department
                       <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Action
                     </p>
                   </th>
@@ -188,7 +153,7 @@ const Request = () => {
                 {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td>
-                      <p className="border-2 w-28 border-black rounded-lg text-center py-1 my-1  ">
+                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1  ">
                         {report.grievance_id}
                       </p>
                     </td>
@@ -211,7 +176,7 @@ const Request = () => {
                     </td>
                     <td>
                       {" "}
-                      <p className="border-2 w-28 border-black rounded-full text-center py-1 tex-sm  ">
+                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm  ">
                         {report.status}
                       </p>
                     </td>
