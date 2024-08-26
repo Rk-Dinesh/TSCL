@@ -29,7 +29,7 @@ const OTP = () => {
         toast.error("Please fill in the complete OTP");
         return;
       }
-      console.log("OTP Value:", otpValue);
+      // console.log("OTP Value:", otpValue);
       
       // const otpVerification = {
       //   otp: otpValue,

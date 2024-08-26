@@ -113,14 +113,14 @@ const ViewRequest2 = () => {
     const assignUserId = selectedOption.getAttribute("data-user-id");
     const assignUserPhone = selectedOption.getAttribute("data-user-phone");
 
-    console.log(assignUserId, assignUserPhone);
+    
 
     const formData = {
       ...data,
       assign_user: assignUserId,
       assign_userphone: assignUserPhone,
     };
-    console.log(formData);
+   
 
     try {
       const response = await axios.post(

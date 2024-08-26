@@ -162,7 +162,7 @@ const RoleAccessLevelForm = () => {
       created_by_user:"admin"
     };
 
-    console.log(roleAccessLevel);
+   
     try {
       const response = await axios.post(
         `${API}/role/post`,
