@@ -4,6 +4,7 @@ import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { BsChevronDown } from "react-icons/bs";
 import { TiThMenu } from "react-icons/ti";
 import { FaUser } from "react-icons/fa";
+import { FaAlignRight } from "react-icons/fa6";
 import { SiAwsorganizations } from "react-icons/si";
 import { RxHome } from "react-icons/rx";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -39,13 +40,14 @@ const Layout = ({ permissions }) => {
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
-    permissions["grievance"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
-    permissions["grievance"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
-    permissions["grievance"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
+    permissions["requestview1"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
+    permissions["requestview2"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
+    permissions["requestview3"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
+    permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
-    permissions["grievance"] && { title: "Status", icon: <IoMdSettings />, to: "/status" }
+   
   ].filter(Boolean); 
   
 

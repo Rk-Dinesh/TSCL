@@ -16,7 +16,7 @@ const RequestAdmin = () => {
   const [report, setReport] = useState([]);
   const token = sessionStorage.getItem("token");
   const dept = sessionStorage.getItem("dept");
-  console.log(dept);
+ 
   
   const navigate = useNavigate();
   const [complainttype, setComplainttype] = useState([]);
@@ -31,7 +31,7 @@ const RequestAdmin = () => {
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
-        console.log(responseData);
+       
         
         setReport(responseData);
 
@@ -97,7 +97,7 @@ const RequestAdmin = () => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-        <div className="flex justify-between items-center my-4 mx-8 gap-1 flex-wrap">
+        {/* <div className="flex justify-between items-center my-4 mx-8 gap-1 flex-wrap">
           <h1 className="md:text-lg text-sm ">New Grievance</h1>
 
           <button
@@ -110,8 +110,8 @@ const RequestAdmin = () => {
           >
             <FaPlus /> Add Report
           </button>
-        </div>
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-5  p-3">
+        </div> */}
+        <div className="bg-white h-4/5 mx-3 rounded-lg mt-8  p-3">
           <div className="flex justify-between items-center gap-6 mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>

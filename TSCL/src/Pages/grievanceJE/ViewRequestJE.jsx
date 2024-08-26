@@ -9,9 +9,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 
-const GrievanceSchema = yup.object().shape({
-  assign_username: yup.string().required(" required "),
-});
+
 
 const ViewRequestJE = () => {
   const [data, setData] = useState(null);
@@ -27,16 +25,6 @@ const ViewRequestJE = () => {
   const [attachmentFile, setAttachmentFile] = useState(null);
   const navigate = useNavigate();
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    watch,
-  } = useForm({
-    resolver: yupResolver(GrievanceSchema),
-    mode: "all",
-  });
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,7 +38,7 @@ const ViewRequestJE = () => {
         );
         const responseData = decryptData(response.data.data);
         setData(responseData);
-        console.log(responseData);
+      
       } catch (err) {
         setError(err);
       } finally {
@@ -65,7 +53,7 @@ const ViewRequestJE = () => {
           },
         });
         const responseData = decryptData(response.data.data);
-        console.log(responseData);
+       
 
         setDataStatus(responseData);
       } catch (err) {
@@ -104,9 +92,9 @@ const ViewRequestJE = () => {
     setAttachmentFile(null);
   };
 
-  const onSubmit = async (data) => {
+  const handleStatus = async (data) => {
     const formData = {
-      ...data,
+     status:data
     };
 
     try {
@@ -146,12 +134,17 @@ const ViewRequestJE = () => {
                   <p>+91 {data.phone}</p>{" "}
                 </div>
                 <div className="flex flex-col mx-3">
+                  
                   <div className="flex  gap-3 mb-3 items-center">
                     <p>Status: </p>
-                    <span className="text-sm border-2 border-gray-500 px-4 py-0.5 rounded-full">
-                      <select className="col-span-2 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none">
-                        <option value="" disabled>
-                          Status
+                    <span className="text-sm border-2 border-gray-500 px-3 py-0.5 rounded-full">
+                      <select className="col-span-2 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none" 
+                        onChange={(e) =>
+                            handleStatus(e.target.value)
+                          }
+                       >
+                        <option value={data.status}>
+                         { data.status}
                         </option>
 
                         {dataStatus &&
@@ -166,6 +159,7 @@ const ViewRequestJE = () => {
                       </select>
                     </span>
                   </div>
+              
 
                   <div className="flex gap-3 items-center">
                     <p>Priority: </p>

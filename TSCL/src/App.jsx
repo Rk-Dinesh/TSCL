@@ -15,7 +15,6 @@ import RequestJE from "./Pages/grievanceJE/RequestJE";
 import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
 import Status from "./Pages/status/Status";
 
-
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
 const Dashboard = lazy(() => import("./Pages/dashboard/Dashboard"));
@@ -34,7 +33,9 @@ const Settings = lazy(() => import("./Pages/setting/Setting"));
 const RoleAccessLevelForm = lazy(() =>
   import("./Pages/setting/RoleAccessForm")
 );
-const RoleAccessLevelEdit = lazy(() => import("./Pages/setting/RoleAccessEdit"));
+const RoleAccessLevelEdit = lazy(() =>
+  import("./Pages/setting/RoleAccessEdit")
+);
 const Request = lazy(() => import("./Pages/request/Request"));
 const ViewRequest = lazy(() => import("./Pages/request/ViewRequest"));
 const OTP = lazy(() => import("./Pages/auth/OTP"));
@@ -91,7 +92,11 @@ function App() {
           <Route
             path="/"
             element={
-              !sessionStorage.getItem("token") ? <Navigate to="" /> : <Layout permissions={memoizedFeatures} />
+              !sessionStorage.getItem("token") ? (
+                <Navigate to="" />
+              ) : (
+                <Layout permissions={memoizedFeatures} />
+              )
             }
           >
             {memoizedFeatures["dashboard"] && (
@@ -180,23 +185,27 @@ function App() {
                 />
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
-
-                <Route path="/requestview1" element={<Request />} />
-
-                <Route path="/requestview2" element={<RequestAdmin />} />
-                <Route path="/view2" element={<ViewRequest2 />} />
-
-                <Route path="/requestview3" element={<RequestJE />} />
-                <Route path="/view3" element={<ViewRequestJE />} />
-
-                <Route path="/status" element={<Status />} />
-                
-               
               </>
             )}
             {memoizedFeatures["requestview1"] && (
               <>
                 <Route path="/requestview1" element={<Request />} />
+                <Route path="/view" element={<ViewRequest />} />
+                <Route path="/form" element={<GrievanceForm />} />
+              </>
+            )}
+
+            {memoizedFeatures["requestview2"] && (
+              <>
+                <Route path="/requestview2" element={<RequestAdmin />} />
+                <Route path="/view2" element={<ViewRequest2 />} />
+              </>
+            )}
+
+            {memoizedFeatures["requestview3"] && (
+              <>
+                <Route path="/requestview3" element={<RequestJE />} />
+                <Route path="/view3" element={<ViewRequestJE />} />
               </>
             )}
 
@@ -211,6 +220,12 @@ function App() {
                 <Route path="/roleform" element={<RoleAccessLevelForm />} />
                 <Route path="/editrole" element={<RoleAccessLevelEdit />} />
               </>
+            )}
+            {memoizedFeatures["status"] && (
+              <Route
+                path="/status"
+                element={<Status permissions={memoizedFeatures["grievance"]} />}
+              />
             )}
             <Route path="/token" element={<Expire />} />
           </Route>

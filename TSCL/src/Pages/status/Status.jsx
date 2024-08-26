@@ -13,7 +13,12 @@ import AddStatus from "./AddStatus";
 import EditStatus from "./EditStatus";
 
 
-const Status = () => {
+const Status = ({ permissions }) => {
+
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [status_id, setstatusId] = useState(null);
@@ -130,12 +135,14 @@ const Status = () => {
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
               </div>
+              {hasCreatePermission && (
               <button
                 className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm"
                 onClick={() => setIsModal(true)}
               >
                 <FaPlus /> Add Status
               </button>
+              )}
             </div>
           </div>
 
@@ -214,6 +221,7 @@ const Status = () => {
                           />
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
+                              {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -224,6 +232,8 @@ const Status = () => {
                               >
                                 Edit
                               </button>
+                              )}
+                              {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -234,6 +244,7 @@ const Status = () => {
                               >
                                 Delete
                               </button>
+                              )}
                             </div>
                           )}
                         </div>
