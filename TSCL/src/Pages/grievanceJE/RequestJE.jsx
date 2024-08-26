@@ -7,7 +7,7 @@ import axios from "axios";
 import { FaPlus } from "react-icons/fa6";
 import decryptData from "../../Decrypt";
 
-const Request = () => {
+const RequestJE = () => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -15,19 +15,24 @@ const Request = () => {
   const [currentItems, setCurrentItems] = useState([]);
   const [report, setReport] = useState([]);
   const token = sessionStorage.getItem("token");
+  const code = sessionStorage.getItem("code");
+  console.log(code);
+  
   const navigate = useNavigate();
   const [complainttype, setComplainttype] = useState([]);
   const [selectedComplaintType, setSelectedComplaintType] = useState("All");
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/get`, {
+      .get(`${API}/new-grievance/getbyassign?assign_user=${code}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
+        console.log(responseData);
+        
         setReport(responseData);
 
         const filteredCenters = responseData.filter((report) =>
@@ -210,8 +215,11 @@ const Request = () => {
                         <div
                           className="mx-3 my-3 whitespace-nowrap"
                           onClick={() =>
-                            navigate(`/view`, {
-                              state: { grievanceId: report.grievance_id },
+                            navigate(`/view3`, {
+                              state: {
+                                grievanceId: report.grievance_id,
+                                
+                              }
                             })
                           }
                         >
@@ -305,4 +313,4 @@ const Request = () => {
       );
     };
     
-    export default Request;  
+    export default RequestJE;  

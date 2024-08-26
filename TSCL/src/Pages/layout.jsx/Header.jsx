@@ -19,6 +19,8 @@ const Header = () => {
 
   const handleLogoutClick = () => {
     sessionStorage.removeItem('token');
+    sessionStorage.removeItem('dept');
+    sessionStorage.removeItem("code");
     navigate('/');
     setIsDropdownOpen(false); 
   };

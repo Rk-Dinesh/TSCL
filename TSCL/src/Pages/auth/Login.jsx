@@ -49,6 +49,9 @@ const Login = ({ setToken }) => {
       if (response.status === 200) {
         isRegularUserLoggedIn = true;
         token = response.data.token;
+        const decodedToken = jwtDecode(token);
+        sessionStorage.setItem("dept",decodedToken.dept);
+        sessionStorage.setItem("code",decodedToken.code)
       }
     } catch (error) {
       // console.error("Error logging in as user", error);

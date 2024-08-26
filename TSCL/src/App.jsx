@@ -9,6 +9,11 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
+import RequestAdmin from "./Pages/grievancesadmin/RequestAdmin";
+import ViewRequest2 from "./Pages/grievancesadmin/ViewRequest2";
+import RequestJE from "./Pages/grievanceJE/RequestJE";
+import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
+import Status from "./Pages/status/Status";
 
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -177,6 +182,15 @@ function App() {
                 <Route path="/view" element={<ViewRequest />} />
 
                 <Route path="/requestview1" element={<Request />} />
+
+                <Route path="/requestview2" element={<RequestAdmin />} />
+                <Route path="/view2" element={<ViewRequest2 />} />
+
+                <Route path="/requestview3" element={<RequestJE />} />
+                <Route path="/view3" element={<ViewRequestJE />} />
+
+                <Route path="/status" element={<Status />} />
+                
                
               </>
             )}

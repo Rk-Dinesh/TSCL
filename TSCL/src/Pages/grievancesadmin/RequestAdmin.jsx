@@ -7,7 +7,7 @@ import axios from "axios";
 import { FaPlus } from "react-icons/fa6";
 import decryptData from "../../Decrypt";
 
-const Request = () => {
+const RequestAdmin = () => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -15,19 +15,24 @@ const Request = () => {
   const [currentItems, setCurrentItems] = useState([]);
   const [report, setReport] = useState([]);
   const token = sessionStorage.getItem("token");
+  const dept = sessionStorage.getItem("dept");
+  console.log(dept);
+  
   const navigate = useNavigate();
   const [complainttype, setComplainttype] = useState([]);
   const [selectedComplaintType, setSelectedComplaintType] = useState("All");
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/get`, {
+      .get(`${API}/new-grievance/getbydept?dept_name=${dept}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
+        console.log(responseData);
+        
         setReport(responseData);
 
         const filteredCenters = responseData.filter((report) =>
@@ -149,6 +154,12 @@ const Request = () => {
                     </th>
                     <th>
                       <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                        Department
+                        <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                         Date and Time <RiExpandUpDownLine />
                       </p>
                     </th>
@@ -159,10 +170,10 @@ const Request = () => {
                     </th>
                     <th>
                       <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
-                        Department
-                        <RiExpandUpDownLine />
+                        Assigned JE <RiExpandUpDownLine />
                       </p>
                     </th>
+                    
                     <th>
                       <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                         Status <RiExpandUpDownLine />
@@ -184,6 +195,12 @@ const Request = () => {
                         </p>
                       </td>
                       <td>
+                        {" "}
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                          {report.dept_name}
+                        </p>
+                      </td>
+                      <td>
                         <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                           {formatDate(report.createdAt)}
                         </p>
@@ -197,9 +214,10 @@ const Request = () => {
                       <td>
                         {" "}
                         <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
-                          {report.dept_name}
+                          {report.assign_username?report.assign_username:"yet to be assigned"}
                         </p>
                       </td>
+                   
                       <td>
                         {" "}
                         <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm  ">
@@ -210,8 +228,11 @@ const Request = () => {
                         <div
                           className="mx-3 my-3 whitespace-nowrap"
                           onClick={() =>
-                            navigate(`/view`, {
-                              state: { grievanceId: report.grievance_id },
+                            navigate(`/view2`, {
+                              state: {
+                                grievanceId: report.grievance_id,
+                                deptName: report.dept_name
+                              }
                             })
                           }
                         >
@@ -305,4 +326,4 @@ const Request = () => {
       );
     };
     
-    export default Request;  
+    export default RequestAdmin;  

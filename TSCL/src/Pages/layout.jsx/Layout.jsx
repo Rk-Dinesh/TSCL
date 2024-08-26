@@ -34,16 +34,19 @@ const Layout = ({ permissions }) => {
         permissions["zone"] && { title: "Zone", to: "/zone" },
         permissions["ward"] && { title: "Ward", to: "/ward" },
         permissions["street"] && { title: "Street", to: "/street" }
-      ].filter(Boolean) // Remove null or undefined values
+      ].filter(Boolean) 
     } : null,
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
     permissions["grievance"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
+    permissions["grievance"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
+    permissions["grievance"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
-    permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" }
-  ].filter(Boolean); // Remove null or undefined values
+    permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
+    permissions["grievance"] && { title: "Status", icon: <IoMdSettings />, to: "/status" }
+  ].filter(Boolean); 
   
 
 
