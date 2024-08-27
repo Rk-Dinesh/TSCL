@@ -8,7 +8,6 @@ import { API } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 
-
 const steps = [
   {
     id: 1,
@@ -23,55 +22,61 @@ const steps = [
 const complaintdetailSchema = yup.object().shape({
   complaint_type_title: yup.string().required("complaint_type is required"),
   dept_name: yup
-  .string()
-  .test(
-    "not-select",
-    "select an Department",
-    (value) => value !== "" && value !== "Select an Department"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "select an Department",
+      (value) => value !== "" && value !== "Select an Department"
+    ),
   tat_type: yup
-  .string()
-  .test(
-    "not-select",
-    "select an TAT Type",
-    (value) => value !== "" && value !== "Select Type"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "select an TAT Type",
+      (value) => value !== "" && value !== "Select Type"
+    ),
   tat_duration: yup.string().required("Duration is required"),
   priority: yup.string().required("Priority is required"),
 });
 
 const escdetailSchema = yup.object().shape({
-  escalation_type:yup
-  .string()
-  .test(
-    "not-select",
-    "select an Type",
-    (value) => value !== "" && value !== "Select Type"
-  ),
+  escalation_type: yup
+    .string()
+    .test(
+      "not-select",
+      "select an Type",
+      (value) => value !== "" && value !== "Select Type"
+    ),
   escalation_l1: yup.string().required("L1 duration is required"),
   role_l1: yup
-  .string()
-  .test(
-    "not-select",
-    "select an L1 role",
-    (value) => value !== "" && value !== "Select an Role"
-  ),
-  escalation_l2: yup.string().optional(), 
-  role_l2: yup.string().optional(), 
-  escalation_l3: yup.string().optional(), 
-  role_l3: yup.string().optional(), 
+    .string()
+    .test(
+      "not-select",
+      "select an L1 role",
+      (value) => value !== "" && value !== "Select an Role"
+    ),
+  escalation_l2: yup.string().optional(),
+  role_l2: yup.string().optional(),
+  escalation_l3: yup.string().optional(),
+  role_l3: yup.string().optional(),
+  status: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select an Status",
+      (value) => value !== "" && value !== "Status"
+    ),
 });
 
 const EditComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
-  const [deptName, setDeptName] = useState(null)
-  const [role1, setRole1] = useState(null)
-  const [role2, setRole2] = useState(null)
-  const [role3, setRole3] = useState(null)
-  const token = sessionStorage.getItem('token'); 
+  const [deptName, setDeptName] = useState(null);
+  const [role1, setRole1] = useState(null);
+  const [role2, setRole2] = useState(null);
+  const [role3, setRole3] = useState(null);
+  const token = sessionStorage.getItem("token");
 
-  const {ExistingDept,ExistingRoles,comptId} = props
-  
+  const { ExistingDept, ExistingRoles, comptId } = props;
 
   let currentStepSchema;
   switch (stepNumber) {
@@ -91,7 +96,7 @@ const EditComplaint = (props) => {
     register,
     formState: { errors },
     handleSubmit,
-    setValue
+    setValue,
   } = useForm({
     resolver: yupResolver(currentStepSchema),
     mode: "all",
@@ -100,14 +105,16 @@ const EditComplaint = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/complaint/getbyid?complaint_id=${comptId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.get(
+          `${API}/complaint/getbyid?complaint_id=${comptId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        const data = decryptData(response.data.data); 
-       
-        
+        );
+        const data = decryptData(response.data.data);
+
         setValue("complaint_type_title", data.complaint_type_title);
         setValue("dept_name", data.dept_name);
         setDeptName(data.dept_name);
@@ -117,13 +124,13 @@ const EditComplaint = (props) => {
         setValue("escalation_type", data.escalation_type);
         setValue("escalation_l1", data.escalation_l1);
         setValue("role_l1", data.role_l1);
-        setRole1(data.role_l1)
+        setRole1(data.role_l1);
         setValue("escalation_l2", data.escalation_l2);
         setValue("role_l2", data.role_l2);
-        setRole2(data.role_l2)
+        setRole2(data.role_l2);
         setValue("escalation_l3", data.escalation_l3);
         setValue("role_l3", data.role_l3);
-        setRole3(data.role_l3)
+        setRole3(data.role_l3);
         setValue("status", data.status);
       } catch (error) {
         console.error("Error fetching data", error);
@@ -138,18 +145,19 @@ const EditComplaint = (props) => {
     } else {
       const formData = {
         ...data,
-        
       };
-  
-    
+
       try {
-      
-        const response = await axios.post(`${API}/complaint/update?complaint_id=${comptId}`, formData,{
-          headers:{
-            Authorization:`Bearer ${token}`
+        const response = await axios.post(
+          `${API}/complaint/update?complaint_id=${comptId}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-  
+        );
+
         if (response.status === 200) {
           toast.success("Complaint Updated Successfully");
           props.toggleModal();
@@ -175,7 +183,7 @@ const EditComplaint = (props) => {
                 <IoMdClose className="text-2xl" />
               </button>
             </div>
-            <div >
+            <div>
               <div className="flex items-center gap-9 relative justify-center mx-60 py-1 rounded-full bg-slate-200 mt-4">
                 {steps.map((item, i) => (
                   <div
@@ -217,7 +225,7 @@ const EditComplaint = (props) => {
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="complaint_type_title"
                           >
-                            Complaint 
+                            Complaint
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline  col-span-2"
@@ -240,16 +248,16 @@ const EditComplaint = (props) => {
                             Department
                           </label>
                           <select
-                            className="col-span-2  block outline-none px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2  block outline-none px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("dept_name")}
                             id="dept_name"
                           >
-                            <option value={deptName} >{deptName}</option>
+                            <option value={deptName}>{deptName}</option>
                             {ExistingDept.map((dept) => (
-                            <option key={dept.dept_id} value={dept.dept_name}>
-                              {dept.dept_name}
-                            </option>
-                             ))}
+                              <option key={dept.dept_id} value={dept.dept_name}>
+                                {dept.dept_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.dept_name && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -265,11 +273,13 @@ const EditComplaint = (props) => {
                             TAT Type
                           </label>
                           <select
-                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("tat_type")}
                             id="tat_type"
                           >
-                            <option value="" hidden>Select Type</option>
+                            <option value="" hidden>
+                              Select Type
+                            </option>
                             <option value="Month">Month</option>
                             <option value="Days">Days</option>
                           </select>
@@ -307,11 +317,13 @@ const EditComplaint = (props) => {
                             Priority
                           </label>
                           <select
-                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("priority")}
                             id="priority"
                           >
-                            <option value="" hidden>Select Priority</option>
+                            <option value="" hidden>
+                              Select Priority
+                            </option>
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
                             <option value="Low">Low</option>
@@ -342,11 +354,13 @@ const EditComplaint = (props) => {
                             Escalation Type
                           </label>
                           <select
-                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("escalation_type")}
                             id="escalation_type"
                           >
-                            <option value="" hidden>Select Type</option>
+                            <option value="" hidden>
+                              Select Type
+                            </option>
                             <option value="Month">Month</option>
                             <option value="days">Days</option>
                           </select>
@@ -384,16 +398,18 @@ const EditComplaint = (props) => {
                             L1 Role
                           </label>
                           <select
-                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("role_l1")}
                             id="role_l1"
                           >
-                            <option value={role1} disabled>{role1}</option>
+                            <option value={role1} disabled>
+                              {role1}
+                            </option>
                             {ExistingRoles.map((role) => (
-                  <option key={role.role_id} value={role.role_name}>
-                    {role.role_name}
-                  </option>
-                ))}
+                              <option key={role.role_id} value={role.role_name}>
+                                {role.role_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.role_l1 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -429,16 +445,18 @@ const EditComplaint = (props) => {
                             L2 Role
                           </label>
                           <select
-                            className="col-span-2  outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2  outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("role_l2")}
                             id="role_l2"
                           >
-                             <option value={role2} disabled>{role2}</option>
+                            <option value={role2} disabled>
+                              {role2}
+                            </option>
                             {ExistingRoles.map((role) => (
-                  <option key={role.role_id} value={role.role_name}>
-                    {role.role_name}
-                  </option>
-                ))}
+                              <option key={role.role_id} value={role.role_name}>
+                                {role.role_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.role_l2 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -474,20 +492,46 @@ const EditComplaint = (props) => {
                             L3 Role
                           </label>
                           <select
-                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50 dark:bg-white dark:border-gray-200 dark:placeholder-gray-400 dark:text-black hover:border-gray-200"
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
                             {...register("role_l3")}
                             id="role_l3"
                           >
-                             <option value={role3} disabled>{role3}</option>
+                            <option value={role3} disabled>
+                              {role3}
+                            </option>
                             {ExistingRoles.map((role) => (
-                  <option key={role.role_id} value={role.role_name}>
-                    {role.role_name}
-                  </option>
-                ))}
+                              <option key={role.role_id} value={role.role_name}>
+                                {role.role_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.role_l3 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
                               {errors.role_l3.message}
+                            </p>
+                          )}
+                        </div>
+                        <div className=" grid grid-cols-3 items-center gap-3">
+                          <label
+                            className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
+                            htmlFor="status"
+                          >
+                            Status:
+                          </label>
+                          <select
+                            className="col-span-2 outline-none block px-1 py-3 text-sm text-black border border-gray-200 rounded-lg bg-gray-50     hover:border-gray-200"
+                            id="status"
+                            {...register("status")}
+                          >
+                            <option value="" hidden>
+                              Status
+                            </option>
+                            <option value="active">Active</option>
+                            <option value="inactive">InActive</option>
+                          </select>
+                          {errors.status && (
+                            <p className="text-red-500 text-xs text-center mb-3 ">
+                              {errors.status.message}
                             </p>
                           )}
                         </div>
