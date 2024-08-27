@@ -120,7 +120,7 @@ console.log(formData);
               id="status"
                {...register("status")}
                >
-                <option value="">Status</option>
+                <option value="" hidden>Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>

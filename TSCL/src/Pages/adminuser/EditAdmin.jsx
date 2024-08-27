@@ -158,7 +158,7 @@ const EditAdmin = (props) => {
               id="dept_name"
                {...register("dept_name")}
                >
-                <option value={deptName}>{deptName}</option>
+                <option value={deptName} hidden>{deptName}</option>
                 {ExistingDept.map((dept) => (
                   <option key={dept.dept_id} value={dept.dept_name}>
                     {dept.dept_name}
@@ -277,7 +277,7 @@ const EditAdmin = (props) => {
               id="status"
                {...register("status")}
                >
-                <option value="">Status</option>
+                <option value="" hidden>Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>
@@ -302,7 +302,7 @@ const EditAdmin = (props) => {
                {...register("role")}
                onChange={onRoleChange}
                >
-                <option value={roleName}>{roleName}</option>
+                <option value={roleName} hidden>{roleName}</option>
                 {ExistingRoles.map((role) => (
                   <option key={role.role_name} value={role.role_name}>
                     {role.role_name}

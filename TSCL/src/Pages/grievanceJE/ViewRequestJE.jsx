@@ -143,7 +143,7 @@ const ViewRequestJE = () => {
                             handleStatus(e.target.value)
                           }
                        >
-                        <option value={data.status}>
+                        <option value={data.status} hidden>
                          { data.status}
                         </option>
 

@@ -236,7 +236,7 @@ const EditComplaint = (props) => {
                             {...register("dept_name")}
                             id="dept_name"
                           >
-                            <option value={deptName}>{deptName}</option>
+                            <option value={deptName} hidden>{deptName}</option>
                             {ExistingDept.map((dept) => (
                             <option key={dept.dept_id} value={dept.dept_name}>
                               {dept.dept_name}
@@ -261,7 +261,7 @@ const EditComplaint = (props) => {
                             {...register("tat_type")}
                             id="tat_type"
                           >
-                            <option value="">Select Type</option>
+                            <option value="" hidden>Select Type</option>
                             <option value="Month">Month</option>
                             <option value="Days">Days</option>
                           </select>
@@ -303,7 +303,7 @@ const EditComplaint = (props) => {
                             {...register("priority")}
                             id="priority"
                           >
-                            <option value="">Select Priority</option>
+                            <option value="" hidden>Select Priority</option>
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
                             <option value="Low">Low</option>
@@ -338,7 +338,7 @@ const EditComplaint = (props) => {
                             {...register("escalation_type")}
                             id="escalation_type"
                           >
-                            <option value="">Select Type</option>
+                            <option value="" hidden>Select Type</option>
                             <option value="Month">Month</option>
                             <option value="days">Days</option>
                           </select>
@@ -380,7 +380,7 @@ const EditComplaint = (props) => {
                             {...register("role_l1")}
                             id="role_l1"
                           >
-                            <option value="">Select an Role</option>
+                            <option value=''>Select an Role</option>
                             {ExistingRoles.map((role) => (
                   <option key={role.role_id} value={role.role_name}>
                     {role.role_name}

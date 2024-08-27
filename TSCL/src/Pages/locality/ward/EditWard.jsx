@@ -124,7 +124,7 @@ const EditWard = (props) => {
                 {...register("zone_name")}
                 onChange={(e) => setZoneName(e.target.value)}
               >
-                <option value={ZoneName} >{ZoneName}</option>
+                <option value={ZoneName} hidden>{ZoneName}</option>
                 {ExistingZones.map((zone) => (
                   <option key={zone.zone_id} value={zone.zone_name}>
                     {zone.zone_name}
@@ -166,7 +166,7 @@ const EditWard = (props) => {
               id="status"
                {...register("status")}
                >
-                <option value="">Status</option>
+                <option value="" hidden>Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>

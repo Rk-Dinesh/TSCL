@@ -133,7 +133,7 @@ const EditStreet = (props) => {
                 {...register("ward_name")}
                 onChange={(e) => setWardName(e.target.value)}
               >
-                <option value={WardName}>{WardName}</option>
+                <option value={WardName} hidden>{WardName}</option>
                 {ExistingWards.map((ward) => (
                   <option key={ward.ward_id} value={ward.ward_name}>
                     {ward.ward_name}
@@ -174,7 +174,7 @@ const EditStreet = (props) => {
               id="status"
                {...register("status")}
                >
-                <option value="">Status</option>
+                <option value="" hidden>Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>

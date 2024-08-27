@@ -166,8 +166,11 @@ const RequestAdmin = () => {
                 }
                 value={selectedAssign || ""}
                 >
-                  <option value='All'>
-                   Assign
+                  <option hidden  >
+                   Select Assign
+                  </option>
+                  <option value='All'  >
+                  All
                   </option>
                   <option value={'Yet to be Assigned'}>
                    Yet to be Assigned
@@ -192,8 +195,11 @@ const RequestAdmin = () => {
                   }
                   value={selectedPrior || ""}
                 >
-                  <option value='All' >
+                  <option hidden >
                    Priority
+                  </option>
+                  <option value='All' >
+                   All
                   </option>
                   <option value="High">High</option>
                   <option value="Medium">Medium</option>
@@ -208,8 +214,11 @@ const RequestAdmin = () => {
                 }
                 value={selectedStatus || ""}
                 >
-                  <option value='All' >
+                  <option hidden >
                    Status
+                  </option>
+                  <option value='All' >
+                  All
                   </option>
                   {status &&
                           status.map((option) => (

@@ -180,7 +180,7 @@ const ViewRequest2 = () => {
                         defaultValue=""
                         {...register("assign_username")}
                       >
-                        <option value={data.assign_username?data.assign_username:""} >
+                        <option value={data.assign_username?data.assign_username:""} hidden>
                         {data.assign_username?data.assign_username:"Assign User"}
                         </option>
 
