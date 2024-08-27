@@ -135,7 +135,7 @@ const Request = () => {
                 </div>
               ))}
               <button
-                className={`w-24 py-1.5 ${
+                className={`w-20 py-1.5 ${
                   selectedComplaintType === "All"
                     ? "bg-primary text-white"
                     : "bg-blue-100 text-primary"

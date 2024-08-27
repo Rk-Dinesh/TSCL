@@ -13,13 +13,18 @@ const RequestAdmin = () => {
   const [itemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
+  const [status, setStatus] = useState([])
   const [report, setReport] = useState([]);
+  const [dataUsers, setDataUsers] = useState([]);
   const token = sessionStorage.getItem("token");
   const dept = sessionStorage.getItem("dept");
 
   const navigate = useNavigate();
-  const [complainttype, setComplainttype] = useState([]);
-  const [selectedComplaintType, setSelectedComplaintType] = useState("All");
+  
+  const [selected, setSelected] = useState("All");
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedPrior, setSelectedPrior] = useState(null);
+  const [selectedAssign, setSelectedAssign] = useState(null);
 
   useEffect(() => {
     axios
@@ -49,8 +54,41 @@ const RequestAdmin = () => {
         console.error(error);
       });
 
-    fetchComplaintType();
+    fetchActiveStatus();
+    fetchDeptUser();
   }, [searchValue, currentPage]);
+
+  const fetchActiveStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/status/getactive`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setStatus(responseData);
+    } catch (err) {
+      console.error("Error fetching existing ActiveStatus:", err);
+    } 
+  };
+
+  const fetchDeptUser = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/user/getbydept?dept_name=${dept}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const responseData = decryptData(response.data.data);
+
+      setDataUsers(responseData);
+    } catch (err) {
+      sconsole.error("Error fetching existing ActiveStatus:", err);
+    } 
+  };
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -66,78 +104,137 @@ const RequestAdmin = () => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
-  const fetchComplaintType = async () => {
-    try {
-      const response = await axios.get(`${API}/complainttype/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const responseData = decryptData(response.data.data);
-      setComplainttype(responseData);
-    } catch (error) {
-      console.error("Error fetching existing Complainttype:", error);
+
+  const handleComplaintTypeClick = (Type) => {
+    setSelected(Type);
+    setSelectedStatus(null);
+    setSelectedPrior(null);
+    setSelectedAssign(null);
+    paginate(1)
+  };
+  const handleStatus = (status) => {
+    if (status === "All") {
+      setSelectedStatus(null);
+    } else {
+      setSelectedStatus(status);
     }
+    paginate(1);
   };
+  const handlePriority = (prior) => {
+    if(prior === 'All') {
+      setSelectedPrior(null);
+    }else{
+      setSelectedPrior(prior);
+    }
+    paginate(1)
+  }
+  const handleAssign = (assign) => {
+    if(assign === "All"){
+      setSelectedAssign(null);
+    }else{
+      setSelectedAssign(assign);
+    }
+    paginate(1)
+  }
 
-  const handleComplaintTypeClick = (complaintType) => {
-    setSelectedComplaintType(complaintType);
-    const filteredReports = report.filter((report) =>
-      complaintType === "All" ? true : report.complaint === complaintType
-    );
-    setCurrentItems(filteredReports.slice(firstIndex, lastIndex));
-  };
+  const currentItemsOnPage = filteredCenters
+  .filter((report) => {
+    const complaintTypeMatch = selected === "All" ? true : '';
+    const statusMatch = selectedStatus === null ? true : report.status === selectedStatus;
+    const priorityMatch = selectedPrior === null ? true : report.priority === selectedPrior;
+    const assignMatch = selectedAssign === null ? true : 
+      (selectedAssign === 'Yet to be Assigned' ? !report.assign_username : report.assign_username === selectedAssign);
+
+    return complaintTypeMatch && statusMatch && priorityMatch && assignMatch;
+  })
+  .slice(firstIndex, lastIndex);
 
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-        {/* <div className="flex justify-between items-center my-4 mx-8 gap-1 flex-wrap">
-          <h1 className="md:text-lg text-sm ">New Grievance</h1>
-
-          <button
-            className="flex flex-row-2 gap-2 font-medium font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
-            onClick={() =>
-              navigate(`/form`, {
-                state: { grievanceId: report.grievance_id },
-              })
-            }
-          >
-            <FaPlus /> Add Report
-          </button>
-        </div> */}
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-8  p-3">
           <div className="flex justify-between items-center gap-6 mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
             </div>
-            {/* <div className="flex flex-wrap gap-2">
-              {complainttype.map((type, index) => (
-                <div key={index}>
-                  <button
-                    className={`px-2 py-1.5 ${
-                      selectedComplaintType === type.complaint_type
-                        ? "bg-primary text-white"
-                        : "bg-white text-black"
-                    } rounded-full`}
-                    onClick={() => handleComplaintTypeClick(type.complaint_type)}
-                    >
-                      {type.complaint_type}
-                    </button>
-                  </div>
-                ))}
-                <button
-                  className={`px-2 py-1.5 ${
-                    selectedComplaintType === "All"
-                      ? "bg-primary text-white"
-                      : "bg-white text-black"
-                  } rounded-full`}
-                  onClick={() => handleComplaintTypeClick("All")}
+            <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2 flex-wrap">
+                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                 onChange={(e) =>
+                  handleAssign(e.target.value)
+                }
+                value={selectedAssign || ""}
                 >
-                  All
-                </button>
-              </div> */}
+                  <option value='All'>
+                   Assign
+                  </option>
+                  <option value={'Yet to be Assigned'}>
+                   Yet to be Assigned
+                  </option>
+                  {dataUsers &&
+                          dataUsers.map((option) => (
+                            <option
+                              key={option.user_name}
+                              value={option.user_name}
+                            >
+                              {option.user_name}
+                            </option>
+                          ))}
+                </select>
+                
+              </div>
+
+            <div className="flex gap-2 flex-wrap">
+                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                  onChange={(e) =>
+                    handlePriority(e.target.value)
+                  }
+                  value={selectedPrior || ""}
+                >
+                  <option value='All' >
+                   Priority
+                  </option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+                
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                 onChange={(e) =>
+                  handleStatus(e.target.value)
+                }
+                value={selectedStatus || ""}
+                >
+                  <option value='All' >
+                   Status
+                  </option>
+                  {status &&
+                          status.map((option) => (
+                            <option
+                              key={option.status_name}
+                              value={option.status_name}
+                            >
+                              {option.status_name}
+                            </option>
+                          ))}
+                </select>
+                
+              </div>
+              <button
+                className={`w-20 py-1.5 ${
+                  selected === "All"
+                    ? "bg-primary text-white"
+                    : "bg-white text-black"
+                } rounded-full`}
+                onClick={() => handleComplaintTypeClick("All")}
+              >
+                All
+              </button>
+              
+            </div>
           </div>
           <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
             <table className="w-full mt-2 ">
@@ -156,6 +253,12 @@ const RequestAdmin = () => {
                   <th>
                     <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Complaint
+                      <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                      Department
                       <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -211,6 +314,12 @@ const RequestAdmin = () => {
                       {" "}
                       <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                         {report.complaint}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                        {report.dept_name}
                       </p>
                     </td>
                     <td>
