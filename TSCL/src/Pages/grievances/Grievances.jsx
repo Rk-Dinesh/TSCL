@@ -198,12 +198,12 @@ const Grivences = ({ permissions }) => {
                   </td>
                   <td>
                     <div className=" mx-3  my-3 font-lexend whitespace-nowrap  text-start text-sm">
-                    {grievances.complaint}
+                   {grievances.complaint_type_title}
                     </div>
                   </td>
                   <td>
                     <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
-                    {grievances.complaint_type_title}
+                    {grievances.complaint}
                     </div>
                   </td>
                   <td>

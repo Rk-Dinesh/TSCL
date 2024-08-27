@@ -29,7 +29,8 @@ const RequestJE = () => {
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
-
+        console.log(responseData);
+        
         setReport(responseData);
 
         const filteredCenters = responseData.filter((report) =>
@@ -92,21 +93,8 @@ const RequestJE = () => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-        <div className="flex justify-between items-center my-4 mx-8 gap-1 flex-wrap">
-          <h1 className="md:text-lg text-sm ">New Grievance</h1>
-
-          <button
-            className="flex flex-row-2 gap-2 font-medium font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
-            onClick={() =>
-              navigate(`/form`, {
-                state: { grievanceId: report.grievance_id },
-              })
-            }
-          >
-            <FaPlus /> Add Report
-          </button>
-        </div>
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-5  p-3">
+   
+        <div className="bg-white h-4/5 mx-3 rounded-lg mt-6  p-3">
           <div className="flex justify-between items-center gap-6 mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>

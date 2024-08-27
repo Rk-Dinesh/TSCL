@@ -209,18 +209,18 @@ const GrievanceForm = () => {
       public_user_id = autoFillData.public_user_id;
     } else {
       const response = await axios.post(`${API}/public-user/post`, userInfo);
-      public_user_id = response.data.data.public_user_id;
+      public_user_id =decryptData( response.data.data)
+    
     }
-
     const grievanceDetails = {
       grievance_mode: data.grievance_mode,
-      complaint_type_title: data.complaint_type_title,
+      complaint_type_title: data.complaint,
       dept_name: data.dept_name,
       zone_name: data.zone_name,
       ward_name: data.ward_name,
       street_name: data.street_name,
       pincode: data.pincode,
-      complaint: data.complaint,
+      complaint: data.complaint_type_title,
       complaint_details: data.complaint_details,
       public_user_id: public_user_id,
       public_user_name: data.public_user_name,

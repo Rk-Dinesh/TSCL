@@ -187,7 +187,7 @@ function App() {
                 <Route path="/view" element={<ViewRequest />} />
               </>
             )}
-            {memoizedFeatures["requestview1"] && (
+            {memoizedFeatures["grievance"] && (
               <>
                 <Route path="/requestview1" element={<Request />} />
                 <Route path="/view" element={<ViewRequest />} />
@@ -195,14 +195,14 @@ function App() {
               </>
             )}
 
-            {memoizedFeatures["requestview2"] && (
+            {memoizedFeatures["grievance"] && (
               <>
                 <Route path="/requestview2" element={<RequestAdmin />} />
                 <Route path="/view2" element={<ViewRequest2 />} />
               </>
             )}
 
-            {memoizedFeatures["requestview3"] && (
+            {memoizedFeatures["grievance"] && (
               <>
                 <Route path="/requestview3" element={<RequestJE />} />
                 <Route path="/view3" element={<ViewRequestJE />} />

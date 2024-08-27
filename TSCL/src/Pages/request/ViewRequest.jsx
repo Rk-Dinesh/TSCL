@@ -117,16 +117,17 @@ const ViewRequest = () => {
                     <p className="col-span-2">: {data.grievance_mode}</p>
                   </div>
                   <div className="grid grid-cols-4">
+                    <p className="col-span-2">Complaint Type </p>
+                    <p className="col-span-2">: {data.complaint_type_title}</p>
+                  </div>
+                  <div className="grid grid-cols-4">
                     <p className="col-span-2">Department </p>
                     <p className="col-span-2">: {data.dept_name}</p>
                   </div>
-                  <div className="grid grid-cols-4">
-                    <p className="col-span-2">Complaint Type </p>
-                    <p className="col-span-2">: {data.complaint}</p>
-                  </div>
+                 
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Complaint </p>
-                    <p className="col-span-2">: {data.complaint_type_title}</p>
+                    <p className="col-span-2">: {data.complaint}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Zone </p>

@@ -20,32 +20,49 @@ const Request = () => {
   const [selectedComplaintType, setSelectedComplaintType] = useState("All");
 
   useEffect(() => {
-    axios
-      .get(`${API}/new-grievance/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const responseData = decryptData(response.data.data);
-        setReport(responseData);
+      const fetchgrievance = async() => {
+        try {
+          const response = await    axios
+          .get(`${API}/new-grievance/get`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            const responseData = decryptData(response.data.data);
+            setReport(responseData);
+    
+            const filteredCenters = responseData.filter((report) =>
+              Object.values(report).some((value) =>
+                value.toString().toLowerCase().includes(searchValue.toLowerCase())
+              )
+            );
+    
+            setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+            const lastIndex = currentPage * itemsPerPage;
+            const firstIndex = lastIndex - itemsPerPage;
+    
+            setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+          
+        } catch (error) {
+          
+        }
+      }
 
-        const filteredCenters = responseData.filter((report) =>
-          Object.values(report).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
+      const fetchComplaintType = async () => {
+        try {
+          const response = await axios.get(`${API}/complainttype/getactive`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const responseData = decryptData(response.data.data);
+          setComplainttype(responseData);
+        } catch (error) {
+          console.error("Error fetching existing Complainttype:", error);
+        }
+      };
 
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
+    fetchgrievance()
     fetchComplaintType();
   }, [searchValue, currentPage]);
 
@@ -65,29 +82,11 @@ const Request = () => {
 
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
-  const fetchComplaintType = async () => {
-    try {
-      const response = await axios.get(`${API}/complainttype/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const responseData = decryptData(response.data.data);
-      setComplainttype(responseData);
-    } catch (error) {
-      console.error("Error fetching existing Complainttype:", error);
-    }
-  };
-
   const handleComplaintTypeClick = (complaintType) => {
     setSelectedComplaintType(complaintType);
-    const filteredReports = report.filter((report) =>
-      complaintType === "All"
-        ? true
-        : report.complaint === complaintType
-    );
-    setCurrentItems(filteredReports.slice(firstIndex, lastIndex));
   };
+
+  
 
   return (
     <div className="overflow-y-auto no-scrollbar">
@@ -111,7 +110,7 @@ const Request = () => {
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
             </div>
-            {/* <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               {complainttype.map((type, index) => (
                 <div key={index}>
                   <button
@@ -127,16 +126,16 @@ const Request = () => {
                   </div>
                 ))}
                 <button
-                  className={`px-2 py-1.5 ${
+                  className={`w-24 py-1.5 ${
                     selectedComplaintType === "All"
                       ? "bg-primary text-white"
                       : "bg-white text-black"
                   } rounded-full`}
-                  onClick={() => handleComplaintTypeClick("All")}
+                  onClick={() => handleComplaintTypeClick(type.complaint_type)}
                 >
                   All
                 </button>
-              </div> */}
+              </div>
             </div>
             <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
               <table className="w-full mt-2 ">

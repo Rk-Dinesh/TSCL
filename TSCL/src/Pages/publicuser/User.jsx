@@ -9,6 +9,7 @@ import axios from "axios";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 import EditUser from "./EditUser";
+import { toast } from "react-toastify";
 import DeleteModal from "../Modal/DeleteModal";
 
 
