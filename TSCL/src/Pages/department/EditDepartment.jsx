@@ -119,7 +119,7 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
                 
                 onChange={(e) => setOrgName(e.target.value)}
               >
-                <option value={orgName} hidden>{orgName}</option>
+                <option value={orgName} disabled>{orgName}</option>
                 {ExistingOrganiZations.map((org) => (
                   <option key={org.org_id} value={org.org_name}>
                     {org.org_name}

@@ -133,7 +133,7 @@ const EditStreet = (props) => {
                 {...register("ward_name")}
                 onChange={(e) => setWardName(e.target.value)}
               >
-                <option value={WardName} hidden>{WardName}</option>
+                <option value={WardName} disabled>{WardName}</option>
                 {ExistingWards.map((ward) => (
                   <option key={ward.ward_id} value={ward.ward_name}>
                     {ward.ward_name}

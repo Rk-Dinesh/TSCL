@@ -124,7 +124,7 @@ const EditWard = (props) => {
                 {...register("zone_name")}
                 onChange={(e) => setZoneName(e.target.value)}
               >
-                <option value={ZoneName} hidden>{ZoneName}</option>
+                <option value={ZoneName} disabled>{ZoneName}</option>
                 {ExistingZones.map((zone) => (
                   <option key={zone.zone_id} value={zone.zone_name}>
                     {zone.zone_name}

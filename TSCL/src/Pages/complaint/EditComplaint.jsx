@@ -65,6 +65,9 @@ const escdetailSchema = yup.object().shape({
 const EditComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
   const [deptName, setDeptName] = useState(null)
+  const [role1, setRole1] = useState(null)
+  const [role2, setRole2] = useState(null)
+  const [role3, setRole3] = useState(null)
   const token = sessionStorage.getItem('token'); 
 
   const {ExistingDept,ExistingRoles,comptId} = props
@@ -103,6 +106,8 @@ const EditComplaint = (props) => {
           }
         });
         const data = decryptData(response.data.data); 
+       
+        
         setValue("complaint_type_title", data.complaint_type_title);
         setValue("dept_name", data.dept_name);
         setDeptName(data.dept_name);
@@ -112,10 +117,13 @@ const EditComplaint = (props) => {
         setValue("escalation_type", data.escalation_type);
         setValue("escalation_l1", data.escalation_l1);
         setValue("role_l1", data.role_l1);
+        setRole1(data.role_l1)
         setValue("escalation_l2", data.escalation_l2);
         setValue("role_l2", data.role_l2);
+        setRole2(data.role_l2)
         setValue("escalation_l3", data.escalation_l3);
         setValue("role_l3", data.role_l3);
+        setRole3(data.role_l3)
         setValue("status", data.status);
       } catch (error) {
         console.error("Error fetching data", error);
@@ -236,7 +244,7 @@ const EditComplaint = (props) => {
                             {...register("dept_name")}
                             id="dept_name"
                           >
-                            <option value={deptName} hidden>{deptName}</option>
+                            <option value={deptName} >{deptName}</option>
                             {ExistingDept.map((dept) => (
                             <option key={dept.dept_id} value={dept.dept_name}>
                               {dept.dept_name}
@@ -380,7 +388,7 @@ const EditComplaint = (props) => {
                             {...register("role_l1")}
                             id="role_l1"
                           >
-                            <option value=''>Select an Role</option>
+                            <option value={role1} disabled>{role1}</option>
                             {ExistingRoles.map((role) => (
                   <option key={role.role_id} value={role.role_name}>
                     {role.role_name}
@@ -425,7 +433,7 @@ const EditComplaint = (props) => {
                             {...register("role_l2")}
                             id="role_l2"
                           >
-                            <option value="">Select an Role</option>
+                             <option value={role2} disabled>{role2}</option>
                             {ExistingRoles.map((role) => (
                   <option key={role.role_id} value={role.role_name}>
                     {role.role_name}
@@ -470,7 +478,7 @@ const EditComplaint = (props) => {
                             {...register("role_l3")}
                             id="role_l3"
                           >
-                            <option value="">Select an Role</option>
+                             <option value={role3} disabled>{role3}</option>
                             {ExistingRoles.map((role) => (
                   <option key={role.role_id} value={role.role_name}>
                     {role.role_name}
