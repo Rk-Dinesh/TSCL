@@ -17,6 +17,7 @@ const Request = () => {
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const [complainttype, setComplainttype] = useState([]);
+  const [Showing, setShowing] = useState([])
   const [selectedComplaintType, setSelectedComplaintType] = useState("All");
 
   useEffect(() => {
@@ -57,10 +58,12 @@ const Request = () => {
         console.error("Error fetching existing Complainttype:", error);
       }
     };
-
+   
     fetchgrievance();
     fetchComplaintType();
-  }, [searchValue, currentPage]);
+  }, [searchValue, currentPage,selectedComplaintType]);
+
+  
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -76,11 +79,21 @@ const Request = () => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+  .filter((report) =>
+    selectedComplaintType === "All"
+      ? true
+      : report.complaint_type_title === selectedComplaintType
+  )
+  .slice(firstIndex, lastIndex);
+  
 
   const handleComplaintTypeClick = (complaintType) => {
     setSelectedComplaintType(complaintType);
+    paginate(1)
   };
+
+
 
   return (
     <div className="overflow-y-auto no-scrollbar">
