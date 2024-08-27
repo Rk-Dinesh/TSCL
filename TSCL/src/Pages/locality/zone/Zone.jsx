@@ -211,23 +211,23 @@ const Zone = ({ permissions }) => {
                       </div>
                     </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{zones.zone_name}</p>
+                  <p className="capitalize text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{zones.zone_name}</p>
                 </td>
                 <td>
-                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize">
                         {zones.status}
                       </p>
                     </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">{zones.created_by_user}</p>
+                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize ">{zones.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm">
+                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize">
                   {formatDate(zones.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                   {formatDate(zones.updatedAt)}
                   </p>
                 </td>

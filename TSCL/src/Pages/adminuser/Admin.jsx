@@ -217,7 +217,7 @@ const Admin = ({ permissions }) => {
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                       Phone
                       <RiExpandUpDownLine />
                     </div>
@@ -265,37 +265,37 @@ const Admin = ({ permissions }) => {
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm">
+                      <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                         {admins.user_name}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap capitalize">
                         {admins.dept_name}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap capitalize">
                         {admins.phone}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
                         {admins.email}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
                         {admins.status}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
                         {admins.role}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap ">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
                         {admins.created_by_user}
                       </p>
                     </td>

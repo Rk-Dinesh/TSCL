@@ -10,9 +10,9 @@ import axios from "axios";
 import decryptData from "../../Decrypt";
 
 const Grivences = ({ permissions }) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
 
   const [isModal, setIsModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -21,22 +21,21 @@ const Grivences = ({ permissions }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
-  const token = sessionStorage.getItem('token'); 
+  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const handleform = () => {
     navigate("/form");
   };
- 
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/get`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      .get(`${API}/new-grievance/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((response) => {
-        const responseData = decryptData(response.data.data)
+        const responseData = decryptData(response.data.data);
         setGrievance(responseData);
 
         const filteredCenters = responseData.filter((grievances) =>
@@ -77,18 +76,17 @@ const Grivences = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row  gap-3 p-2 mt-3 mx-8 flex-wrap md:justify-end ">
-            
-              <p className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
-                <IoMdSearch className="text-xl" />
-                <input
+            <p className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
+              <IoMdSearch className="text-xl" />
+              <input
                 type="search"
                 className="outline-none bg-transparent text-base"
                 placeholder="Search Grievances"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
-              </p>
-              {hasCreatePermission && (
+            </p>
+            {hasCreatePermission && (
               <a href="#">
                 <button className="flex gap-2 items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
                   {" "}
@@ -96,146 +94,157 @@ const Grivences = ({ permissions }) => {
                   Bulk Upload
                 </button>
               </a>
-              )}
-              <a href="#">
-                <button className="flex gap-2 items-center border-2 font-lexend bg-slate-100 text-black rounded-full px-3  py-1.5 w-28 justify-between">
-                  {" "}
-                  CSV <RiArrowDropDownLine />
-                </button>
-              </a>
-           
+            )}
+            <a href="#">
+              <button className="flex gap-2 items-center border-2 font-lexend bg-slate-100 text-black rounded-full px-3  py-1.5 w-28 justify-between">
+                {" "}
+                CSV <RiArrowDropDownLine />
+              </button>
+            </a>
           </div>
           <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
-          <h1 className="md:text-xl text-lg font-medium whitespace-nowrap"> New Grievances</h1>
-              {hasCreatePermission && (
-                <button
-                  className="flex flex-row-2 gap-2 items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
-                  onClick={handleform}
-                >
-                  <FaPlus /> Add Grievances
-                </button>
-           )}
-           
+            <h1 className="md:text-xl text-lg font-medium whitespace-nowrap">
+              {" "}
+              New Grievances
+            </h1>
+            {hasCreatePermission && (
+              <button
+                className="flex flex-row-2 gap-2 items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
+                onClick={handleform}
+              >
+                <FaPlus /> Add Grievances
+              </button>
+            )}
           </div>
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
-            <table className="w-full  ">
-              <thead>
-                <tr className="border-b-2 border-gray-300 ">
+          <table className="w-full mt-2 ">
+              <thead className=" border-b border-gray-300  ">
+                <tr className="">
                   <th className="">
-                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                      # 
+                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      #
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Name <RiExpandUpDownLine />
+                    <p className="mx-1.5 my-2 text-start font-lexend  whitespace-nowrap">
+                      Complaint No
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                     Phone <RiExpandUpDownLine />
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                      Raised by <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Origin
-                      <RiExpandUpDownLine />
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                      Complaint Type <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Complaint type
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Complaint
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                
-                 
-                  
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Department
                       <RiExpandUpDownLine />
                     </p>
                   </th>
-                 
                   <th>
-                    <p className="mx-3 my-3 font-lexend font-semibold whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                      Assigned JE <RiExpandUpDownLine />
+                    </p>
+                  </th>
+
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                      Date and Time <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend  whitespace-nowrap">
+                      Priority <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                      Status <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Action
                     </p>
                   </th>
                 </tr>
               </thead>
               <tbody>
-              {currentItemsOnPage.map((grievances, index) => (
-                <tr className="border-b-2 border-gray-300" key={index}>
-                  <td className="">
-                    <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
-                    {firstIndex + index + 1 < 10
-                            ? `0${firstIndex + index + 1}`
-                            : firstIndex + index + 1}
-                    </div>
-                  </td>
-                  <td>
-                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
-                     {grievances.public_user_name}
-                    </div>
-                  </td>
-                  <td>
-                    <div className=" mx-3  my-3  font-lexend whitespace-nowrap text-start text-sm">
-                    {grievances.phone}
-                    </div>
-                  </td>
-                  <td>
-                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
-                    {grievances.grievance_mode}
-                    </div>
-                  </td>
-                  <td>
-                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap  text-start text-sm">
-                   {grievances.complaint_type_title}
-                    </div>
-                  </td>
-                  <td>
-                    <div className=" mx-3  my-3 font-lexend whitespace-nowrap text-start text-sm">
-                    {grievances.complaint}
-                    </div>
-                  </td>
-                  <td>
-                    <div className=" mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm">
-                    {grievances.dept_name}
-                    </div>
-                  </td>
-                  {/* <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
-                    {grievances.zone_name}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
-                    {grievances.ward_name}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2 items-center mx-3  my-2 font-lexend whitespace-nowrap justify-center">
-                    {grievances.street_name}
-                    </div>
-                  </td> */}
-                 
-                  <td>
-                    <div className="mx-3 my-3 whitespace-nowrap" onClick={() =>
-                      navigate(`/view`, {
-                        state: { grievanceId: grievances.grievance_id }
-                      })}>
-                      <BsThreeDotsVertical />
-                    </div>
-                  </td>
-                </tr>
+                {currentItemsOnPage.map((report, index) => (
+                  <tr className=" border-b border-gray-300  " key={index}>
+                    <td className="">
+                      <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
+                        {firstIndex + index + 1 < 10
+                          ? `0${firstIndex + index + 1}`
+                          : firstIndex + index + 1}
+                      </div>
+                    </td>
+                    <td>
+                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1  ">
+                        {report.grievance_id}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                        {report.public_user_name}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                        {report.complaint_type_title}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                        {report.dept_name}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                        {report.assign_username
+                          ? report.assign_username
+                          : "Yet to be assigned"}
+                      </p>
+                    </td>
+                    <td>
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                        {formatDate(report.createdAt)}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 mx-2 tex-sm capitalize">
+                        {report.priority}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className=" capitalize border w-28 border-gray-500 rounded-full text-center py-1 tex-sm  ">
+                        {report.status}
+                      </p>
+                    </td>
+                    <td>
+                      <div
+                        className="mx-3 my-3 whitespace-nowrap"
+                        onClick={() =>
+                          navigate(`/view`, {
+                            state: { grievanceId: report.grievance_id },
+                          })
+                        }
+                      >
+                        <BsThreeDotsVertical />
+                      </div>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>

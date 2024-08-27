@@ -242,24 +242,24 @@ const Ward = ({ permissions }) => {
                       </div>
                     </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.ward_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.ward_name}</p>
                 </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.zone_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.zone_name}</p>
                 </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{wards.status}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.status}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">{wards.created_by_user}</p>
+                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm">
+                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize">
                     {formatDate(wards.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                   {formatDate(wards.updatedAt)}
                   </p>
                 </td>

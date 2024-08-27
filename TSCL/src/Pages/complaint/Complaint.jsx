@@ -263,32 +263,32 @@ const Complaint = ({ permissions }) => {
                             </p>
                 </td>
                 <td>
-                  <p className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm">{complaints.complaint_type_title}</p>
+                  <p className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">{complaints.complaint_type_title}</p>
                 </td>
                 <td>
-                  <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm">{complaints.dept_name}</p>
+                  <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm capitalize">{complaints.dept_name}</p>
                 </td>
                 <td>
-                <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm">
+                <p className="mx-1.5  my-2  font-lexend whitespace-nowrap text-start text-sm capitalize">
                 {complaints.tat_type} 
                   </p>
                 </td>
                 <td>
-                  <p className=" mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm">
+                  <p className=" mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                   {complaints.tat_duration}
                   </p>
                 </td>
                 <td>
-                  <p className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm">
+                  <p className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                   {complaints.priority}
                   </p>
                 </td>
                 <td >
                   <div className="mx-1.5 my-3 flex gap-3 items-center justify-start text-sm font-lexend">  
-                  <p className=" whitespace-nowrap  bg-gray-100 px-2 py-1 rounded-full">
+                  <p className=" whitespace-nowrap  bg-gray-100 px-2 py-1 rounded-full capitalize">
                   {complaints.escalation_l1} 
                   </p>
-                  <p className="  whitespace-nowrap text-start text-sm ">
+                  <p className="  whitespace-nowrap text-start text-sm capitalize ">
                   {complaints.role_l1}
                   </p>
                   </div>
@@ -296,10 +296,10 @@ const Complaint = ({ permissions }) => {
                 
                 <td >
                   <div className="mx-1.5 my-3 flex gap-3 items-center justify-start  font-lexend">  
-                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm">
+                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm capitalize">
                   {complaints && complaints.escalation_l2 ? complaints.escalation_l2 : '---'}
                   </p>
-                  <p className=" whitespace-nowrap text-sm ">
+                  <p className=" whitespace-nowrap text-sm capitalize">
                   {complaints && complaints.role_l2 ? complaints.role_l2 : '---'}
                   </p>
                   </div>
@@ -307,10 +307,10 @@ const Complaint = ({ permissions }) => {
 
                 <td >
                   <div className="mx-1.5 my-3 flex gap-3 items-center justify-start  font-lexend">  
-                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm ">
+                  <p className=" whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full text-start text-sm capitalize">
                   {complaints && complaints.escalation_l3 ? complaints.escalation_l3 : '---'} 
                   </p>
-                  <p className=" whitespace-nowrap text-start text-sm ">
+                  <p className=" whitespace-nowrap text-start text-sm capitalize">
                   {complaints && complaints.role_l3 ? complaints.role_l3 : '---'}
                   </p>
                   </div>
@@ -318,12 +318,12 @@ const Complaint = ({ permissions }) => {
 
 
                 <td>
-                  <div className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm">
+                  <div className="mx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                   {complaints.status}
                   </div>
                 </td>
                 <td>
-                  <p className="fmx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm">
+                  <p className="fmx-1.5  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                   {complaints.created_by_user}
                   </p>
                 </td>

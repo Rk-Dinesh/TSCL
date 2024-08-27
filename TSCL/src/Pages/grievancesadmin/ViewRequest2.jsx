@@ -155,19 +155,19 @@ const ViewRequest2 = () => {
               <p className="px-5 py-2 text-lg">Request By :</p>
               <div className="md:grid md:grid-cols-12 grid grid-cols-12 items-center gap-6 mx-3 my-3">
                 <div className="md:col-span-3 col-span-6 flex-col-2 px-5 pb-3">
-                  <p>{data.public_user_name}</p>
+                  <p className="capitalize">{data.public_user_name}</p>
                   <p>+91 {data.phone}</p>{" "}
                 </div>
                 <div className="md:col-span-3 col-span-6 ">
                   <div className="flex gap-3 mb-2  items-center">
                     <p>Status: </p>
-                    <span className="text-sm border-2 border-black px-4 py-0.5 rounded-full">
+                    <span className="text-sm border border-gray-500 w-24 py-1 text-center rounded-full capitalize">
                       {data.status}
                     </span>
                   </div>
                   <div className="flex gap-3 items-center">
-                    <p>Priority: </p>
-                    <span className="text-sm text-white bg-orange-400 px-4 py-1 rounded-full">
+                    <p className="-ml-1">Priority: </p>
+                    <span className="text-sm text-white bg-orange-400 w-24 text-center py-1 rounded-full capitalize">
                       {data.priority}
                     </span>
                   </div>
@@ -176,7 +176,7 @@ const ViewRequest2 = () => {
                   <div className=" flex gap-4 items-center">
                     <div className="md:col-span-4 col-span-6">
                       <select
-                        className="col-span-2 block px-6 py-1.5 text-sm text-black border rounded-lg border-gray-500 outline-none"
+                        className="col-span-2 block px-6 py-1.5 text-sm text-black border rounded-lg border-gray-500 outline-none capitalize"
                         defaultValue=""
                         {...register("assign_username")}
                       >
@@ -198,7 +198,7 @@ const ViewRequest2 = () => {
                       </select>
                     </div>
                     <div className="md:col-span-2 col-span-6">
-                      <button className="bg-primary px-3 py-1.5 text-white rounded-full">
+                      <button className="bg-primary px-4 py-1.5 text-sm text-white rounded-full">
                         Submit
                       </button>
                     </div>
@@ -218,42 +218,42 @@ const ViewRequest2 = () => {
                   <div className="flex flex-col gap-3 mx-2 text-base">
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Origin </p>
-                      <p className="col-span-2">: {data.grievance_mode}</p>
+                      <p className="col-span-2 capitalize">: {data.grievance_mode}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint Type </p>
-                      <p className="col-span-2">: {data.complaint_type_title}</p>
+                      <p className="col-span-2 capitalize">: {data.complaint_type_title}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Department </p>
-                      <p className="col-span-2">: {data.dept_name}</p>
+                      <p className="col-span-2 capitalize">: {data.dept_name}</p>
                     </div>
                    
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint </p>
-                      <p className="col-span-2">
+                      <p className="col-span-2 capitalize">
                         : {data.complaint}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Zone </p>
-                      <p className="col-span-2">: {data.zone_name}</p>
+                      <p className="col-span-2 capitalize">: {data.zone_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Ward </p>
-                      <p className="col-span-2">: {data.ward_name}</p>
+                      <p className="col-span-2 capitalize">: {data.ward_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Street </p>
-                      <p className="col-span-2">: {data.street_name}</p>
+                      <p className="col-span-2 capitalize">: {data.street_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Pincode </p>
-                      <p className="col-span-2">: {data.pincode}</p>
+                      <p className="col-span-2 capitalize">: {data.pincode}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Description: </p>
-                      <p className="col-start-1 col-span-4 mt-2">
+                      <p className="col-start-1 col-span-4 mt-2 capitalize">
                         {data.complaint_details}
                       </p>
                     </div>

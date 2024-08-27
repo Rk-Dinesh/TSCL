@@ -28,9 +28,7 @@ const RequestJE = () => {
         },
       })
       .then((response) => {
-        const responseData = decryptData(response.data.data);
-        console.log(responseData);
-        
+        const responseData = decryptData(response.data.data);        
         setReport(responseData);
 
         const filteredCenters = responseData.filter((report) =>
@@ -130,6 +128,11 @@ const RequestJE = () => {
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
+                <th className="">
+                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                      # 
+                    </p>
+                  </th>
                   <th>
                     <p className="mx-1.5 my-2 text-start font-lexend  whitespace-nowrap">
                       Complaint No
@@ -146,13 +149,13 @@ const RequestJE = () => {
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
-                      Department
+                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                     Priority
                       <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend  whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -166,31 +169,38 @@ const RequestJE = () => {
               <tbody>
                 {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
+                    <td className="">
+                    <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
+                    {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                    </div>
+                  </td>
                     <td>
-                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1  ">
+                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1 capitalize ">
                         {report.grievance_id}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                         {formatDate(report.createdAt)}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                         {report.public_user_name}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
-                        {report.dept_name}
+                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 tex-sm capitalize">
+                        {report.priority}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm  ">
+                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm capitalize  ">
                         {report.status}
                       </p>
                     </td>

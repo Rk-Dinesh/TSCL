@@ -185,7 +185,7 @@ const User = ({ permissions }) => {
                     </div>
                   </th>
                   <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                    <div className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
                       Phone
                       <RiExpandUpDownLine />
                     </div>
@@ -227,27 +227,27 @@ const User = ({ permissions }) => {
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm ">
+                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                      {users.public_user_name}
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm ">
+                    <p className=" mx-3  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                     {users.phone}
                     </p>
                   </td>
                   <td>
-                    <p className="text-start text-sm mx-1  my-2 font-lexend  whitespace-nowrap ">
+                    <p className="text-start text-sm mx-1  my-2 font-lexend  whitespace-nowrap capitalize">
                     {users.email}
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm ">
+                    <p className=" mx-2  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
                     {users.user_status}
                     </p>
                   </td>
                   <td>
-                    <p className="text-start mx-1  my-2 font-lexend whitespace-nowrap text-sm  ">
+                    <p className="text-start mx-1  my-2 font-lexend whitespace-nowrap text-sm  capitalize">
                     {users.verification_status}
                     </p>
                   </td>

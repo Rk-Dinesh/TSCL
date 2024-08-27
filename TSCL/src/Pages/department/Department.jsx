@@ -244,31 +244,31 @@ const Department = ({ permissions }) => {
                           alt="logo"
                           className="w-8 h-8"
                         />
-                        <p className="font-lexend whitespace-nowrap  "> {dept.dept_name}</p>
+                        <p className="font-lexend whitespace-nowrap capitalize  "> {dept.dept_name}</p>
                       </div>
                     </td>
                     <td className="">
-                      <p className=" mx-3 my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className="capitalize mx-3 my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className="capitalize mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
                         {dept.status}
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
+                      <p className="capitalize mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
                         {dept.created_by_user}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
                         {formatDate(dept.createdAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                         {formatDate(dept.updatedAt)}
                       </p>
                     </td>

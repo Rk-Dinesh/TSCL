@@ -241,27 +241,27 @@ const Street = ({ permissions }) => {
                       </div>
                     </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.street_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.street_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.ward_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.ward_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.zone_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap">{streets.status}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.status}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap">{streets.created_by_user}</p>
+                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap capitalize">{streets.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2  font-lexend whitespace-nowrap">
+                  <p className="text-start text-sm mx-1.5 my-2  font-lexend whitespace-nowrap capitalize">
                    {formatDate(streets.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap">
+                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap capitalize">
                   {formatDate(streets.updatedAt)}
                   </p>
                 </td>

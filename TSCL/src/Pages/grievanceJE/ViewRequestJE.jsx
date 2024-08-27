@@ -130,7 +130,7 @@ const ViewRequestJE = () => {
               <p className="px-5 py-2 text-lg">Request By :</p>
               <div className="flex justify-between gap-3 mx-3 my-3">
                 <div className="col-span-4 px-5 pb-3">
-                  <p>{data.public_user_name}</p>
+                  <p className="capitalize">{data.public_user_name}</p>
                   <p>+91 {data.phone}</p>{" "}
                 </div>
                 <div className="flex flex-col mx-3">
@@ -138,7 +138,7 @@ const ViewRequestJE = () => {
                   <div className="flex  gap-3 mb-3 items-center">
                     <p>Status: </p>
                     <span className="text-sm border-2 border-gray-500 px-3 py-0.5 rounded-full">
-                      <select className="col-span-2 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none" 
+                      <select className="col-span-2 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none capitalize" 
                         onChange={(e) =>
                             handleStatus(e.target.value)
                           }
@@ -164,7 +164,7 @@ const ViewRequestJE = () => {
                   <div className="flex gap-3 items-center">
                     <p>Priority: </p>
                     <span className="text-sm text-white bg-orange-400 px-12 py-1.5 rounded-full">
-                      High
+                     {data.priority}
                     </span>
                   </div>
                 </div>
@@ -177,41 +177,41 @@ const ViewRequestJE = () => {
                   <div className="flex flex-col gap-3 mx-2 text-base">
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Origin </p>
-                      <p className="col-span-2">: {data.grievance_mode}</p>
+                      <p className="col-span-2 capitalize">: {data.grievance_mode}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Department </p>
-                      <p className="col-span-2">: {data.dept_name}</p>
+                      <p className="col-span-2 capitalize">: {data.dept_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint Type </p>
-                      <p className="col-span-2">: {data.complaint}</p>
+                      <p className="col-span-2 capitalize">: {data.complaint}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint </p>
-                      <p className="col-span-2">
+                      <p className="col-span-2 capitalize">
                         : {data.complaint_type_title}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Zone </p>
-                      <p className="col-span-2">: {data.zone_name}</p>
+                      <p className="col-span-2 capitalize">: {data.zone_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Ward </p>
-                      <p className="col-span-2">: {data.ward_name}</p>
+                      <p className="col-span-2 capitalize">: {data.ward_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Street </p>
-                      <p className="col-span-2">: {data.street_name}</p>
+                      <p className="col-span-2 capitalize">: {data.street_name}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Pincode </p>
-                      <p className="col-span-2">: {data.pincode}</p>
+                      <p className="col-span-2 capitalize">: {data.pincode}</p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Description: </p>
-                      <p className="col-start-1 col-span-4 mt-2">
+                      <p className="col-start-1 col-span-4 mt-2 capitalize">
                         {data.complaint_details}
                       </p>
                     </div>

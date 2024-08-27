@@ -74,38 +74,40 @@ const ViewRequest = () => {
           <p>Complaint Details #{data.grievance_id}</p>
           <div className="bg-white mt-2 pb-3">
             <p className="px-5 py-2 text-lg">Request By :</p>
-            <div className="md:grid md:grid-cols-12 flex gap-3 mx-3 my-1">
-              <div className="md:col-span-4 px-5 pb-3">
-                <p>{data.public_user_name}</p>
-                <p>+91 {data.phone}</p>{" "}
+            <div className="flex justify-between gap-3 mx-3 my-3 items-center flex-wrap">
+                <div className="col-span-4 px-5 pb-3">
+                  <p className="capitalize">{data.public_user_name}</p>
+                  <p>+91 {data.phone}</p>{" "}
+                </div>
+                <div className="flex flex-row gap-2 items-center flex-wrap">
+                  
+                  <div className="flex  gap-3  items-center">
+                  <p>Status: </p>
+                    <span className="text-sm border border-gray-500 w-24 text-center py-1.5 rounded-full capitalize">
+                    {data.status}
+                    </span>
+                  </div>
+              
+
+                  <div className="flex gap-3 items-center ">
+                    <p className="">Priority: </p>
+                    <span className="text-sm text-center text-white bg-orange-400 w-24 py-1.5 rounded-full capitalize">
+                    {data.priority}
+                    </span>
+                  </div>
+                </div>
+                {data.assign_username?(
+                <div className="flex flex-col mx-3">
+                  
+                  <div className="flex   gap-3 items-center">
+                  <p>Assigned to </p>
+                    <span className="text-sm border border-gray-500 px-3 text-center py-1.5 rounded-full capitalize whitespace-nowrap">
+                    {data.assign_username}
+                    </span>
+                  </div>
+                </div>
+                ):''} 
               </div>
-              {/* <div className="col-span-4">
-              <div className="flex gap-3 mb-3 items-center">
-                <p>Status: </p>
-                <span className="text-sm border-2 border-black px-4 py-0.5 rounded-full">
-                  New
-                </span>
-              </div>
-              <div className="flex gap-3 items-center">
-                <p>Priority: </p>
-                <span className="text-sm text-white bg-orange-400 px-4 py-1 rounded-full">
-                  High
-                </span>
-              </div>
-            </div>
-            <div className="col-span-3">
-              <select className="col-span-2 block px-4 py-3 text-sm text-black border rounded-lg border-none outline-none">
-                <option hidden>Assign Emp</option>
-                <option value="Ravi">Ravi</option>
-                <option value="Kumar">Kumar</option>
-              </select>
-            </div>
-            <div className="col-span-2">
-              <button className="bg-primary px-4 py-1.5 text-white rounded-full">
-                Submit
-              </button>
-            </div> */}
-            </div>
             <hr />
             <div className="grid grid-cols-12 gap-2 mx-3 my-4">
               <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded">
@@ -114,40 +116,40 @@ const ViewRequest = () => {
                 <div className="flex flex-col gap-3 mx-2 text-base">
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Origin </p>
-                    <p className="col-span-2">: {data.grievance_mode}</p>
+                    <p className="col-span-2 capitalize">: {data.grievance_mode}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Complaint Type </p>
-                    <p className="col-span-2">: {data.complaint_type_title}</p>
+                    <p className="col-span-2 capitalize">: {data.complaint_type_title}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Department </p>
-                    <p className="col-span-2">: {data.dept_name}</p>
+                    <p className="col-span-2 capitalize">: {data.dept_name}</p>
                   </div>
                  
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Complaint </p>
-                    <p className="col-span-2">: {data.complaint}</p>
+                    <p className="col-span-2 capitalize">: {data.complaint}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Zone </p>
-                    <p className="col-span-2">: {data.zone_name}</p>
+                    <p className="col-span-2 capitalize">: {data.zone_name}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Ward </p>
-                    <p className="col-span-2">: {data.ward_name}</p>
+                    <p className="col-span-2 capitalize">: {data.ward_name}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Street </p>
-                    <p className="col-span-2">: {data.street_name}</p>
+                    <p className="col-span-2 capitalize">: {data.street_name}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Pincode </p>
-                    <p className="col-span-2">: {data.pincode}</p>
+                    <p className="col-span-2 capitalize">: {data.pincode}</p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Description: </p>
-                    <p className="col-start-1 col-span-4 mt-2">
+                    <p className="col-start-1 col-span-4 mt-2 capitalize">
                       {data.complaint_details}
                     </p>
                   </div>

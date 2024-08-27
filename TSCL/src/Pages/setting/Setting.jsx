@@ -187,27 +187,27 @@ const Settings = ({ permissions }) => {
                     </p>
                   </td>
                   <td>
-                    <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                    <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize">
                      {roles.role_name}
                     </p>
                   </td>
                   <td>
-                    <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
+                    <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm capitalize">
                     {roles.status}
                     </p>
                   </td>
                   <td>
-                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                     {roles.created_by_user}
                     </p>
                   </td>
                   <td>
-                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                      {formatDate(roles.createdAt)}
                     </p>
                   </td>
                   <td>
-                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                    <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
                     {formatDate(roles.updatedAt)}
                     </p>
                   </td>

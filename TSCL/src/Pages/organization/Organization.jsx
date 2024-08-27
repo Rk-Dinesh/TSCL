@@ -222,27 +222,27 @@ const Organization = ({ permissions }) => {
                         </div>
                       </td>
                       <td className="">
-                        <p className=" mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm">
+                        <p className="capitalize mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm">
                           {org.org_name}
                         </p>
                       </td>
                       <td>
-                        <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                        <p className="capitalize mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
                           {org.status}
                         </p>
                       </td>
                       <td>
-                        <p className=" mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
+                        <p className="capitalize mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
                           {org.created_by_user}
                         </p>
                       </td>
                       <td>
-                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
+                        <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
                           {formatDate(org.createdAt)}
                         </p>
                       </td>
                       <td>
-                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                        <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
                           {formatDate(org.updatedAt)}
                         </p>
                       </td>
