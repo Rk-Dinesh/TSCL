@@ -14,6 +14,7 @@ import ViewRequest2 from "./Pages/grievancesadmin/ViewRequest2";
 import RequestJE from "./Pages/grievanceJE/RequestJE";
 import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
 import Status from "./Pages/status/Status";
+import RequestHead from "./Pages/grievanceHead/RequestHead";
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
@@ -206,6 +207,13 @@ function App() {
               <>
                 <Route path="/requestview3" element={<RequestJE />} />
                 <Route path="/view3" element={<ViewRequestJE />} />
+              </>
+            )}
+
+{memoizedFeatures["grievance"] && (
+              <>
+                <Route path="/requestview4" element={<RequestHead />} />
+                <Route path="/view" element={<ViewRequest />} />
               </>
             )}
 
