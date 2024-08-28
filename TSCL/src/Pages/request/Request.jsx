@@ -113,7 +113,7 @@ const Request = () => {
           </button>
         </div>
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-5  p-3">
-          <div className="flex justify-between items-center gap-6 mt-2 mx-3">
+          <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
             </div>

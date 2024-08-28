@@ -13,7 +13,8 @@ const RequestHead = () => {
   const [itemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
-  const [status, setStatus] = useState([])
+  const [status, setStatus] = useState([]);
+  const [Complainttype, setComplainttype] = useState([])
   const [report, setReport] = useState([]);
   const [dataUsers, setDataUsers] = useState([]);
   const token = sessionStorage.getItem("token");
@@ -23,6 +24,7 @@ const RequestHead = () => {
   
   const [selected, setSelected] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedComplainttype, setSelectedComplainttype] = useState(null);
   const [selectedPrior, setSelectedPrior] = useState(null);
   const [selectedAssign, setSelectedAssign] = useState(null);
 
@@ -55,12 +57,13 @@ const RequestHead = () => {
       });
 
     fetchActiveStatus();
+    fetchComplaintType();
     fetchDeptUser();
   }, [searchValue, currentPage]);
 
   const fetchActiveStatus = async () => {
     try {
-      const response = await axios.get(`${API}/status/getactive`, {
+      const response = await axios.get(`${API}/status/get`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,6 +93,20 @@ const RequestHead = () => {
     } 
   };
 
+  const fetchComplaintType = async () => {
+    try {
+      const response = await axios.get(`${API}/complainttype/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setComplainttype(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Complainttype:", error);
+    }
+  };
+
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -109,6 +126,7 @@ const RequestHead = () => {
   const handleComplaintTypeClick = (Type) => {
     setSelected(Type);
     setSelectedStatus(null);
+    setSelectedComplainttype(null);
     setSelectedPrior(null);
     setSelectedAssign(null);
     paginate(1)
@@ -118,6 +136,14 @@ const RequestHead = () => {
       setSelectedStatus(null);
     } else {
       setSelectedStatus(status);
+    }
+    paginate(1);
+  };
+  const handleType = (type) => {
+    if (type === "All") {
+      setSelectedComplainttype(null);
+    } else {
+        setSelectedComplainttype(type);
     }
     paginate(1);
   };
@@ -142,11 +168,12 @@ const RequestHead = () => {
   .filter((report) => {
     const complaintTypeMatch = selected === "All" ? true : '';
     const statusMatch = selectedStatus === null ? true : report.status === selectedStatus;
+    const CTypeMatch = selectedComplainttype === null ? true : report.complaint_type_title === selectedComplainttype;
     const priorityMatch = selectedPrior === null ? true : report.priority === selectedPrior;
     const assignMatch = selectedAssign === null ? true : 
       (selectedAssign === 'Yet to be Assigned' ? !report.assign_username : report.assign_username === selectedAssign);
 
-    return complaintTypeMatch && statusMatch && priorityMatch && assignMatch;
+    return complaintTypeMatch && statusMatch && CTypeMatch && priorityMatch && assignMatch;
   })
   .slice(firstIndex, lastIndex);
 
@@ -154,13 +181,13 @@ const RequestHead = () => {
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-8  p-3">
-          <div className="flex justify-between items-center gap-6 mt-2 mx-3">
+          <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
-              <p className="text-lg  whitespace-nowrap">View Report</p>
+              <p className="md:text-lg text-sm whitespace-nowrap">View Report</p>
             </div>
             <div className="flex flex-wrap gap-2">
             <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                <select className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
                  onChange={(e) =>
                   handleAssign(e.target.value)
                 }
@@ -189,7 +216,7 @@ const RequestHead = () => {
               </div>
 
             <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                <select className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
                   onChange={(e) =>
                     handlePriority(e.target.value)
                   }
@@ -208,7 +235,7 @@ const RequestHead = () => {
                 
               </div>
               <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                <select className="block w-full  px-1md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
                  onChange={(e) =>
                   handleStatus(e.target.value)
                 }
@@ -232,8 +259,33 @@ const RequestHead = () => {
                 </select>
                 
               </div>
+              <div className="flex gap-2 flex-wrap">
+                <select className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                 onChange={(e) =>
+                  handleType(e.target.value)
+                }
+                value={selectedComplainttype || ""}
+                >
+                  <option hidden >
+                   Complaint Type
+                  </option>
+                  <option value='All' >
+                  All
+                  </option>
+                  {Complainttype &&
+                          Complainttype.map((option) => (
+                            <option
+                              key={option.complaint_type}
+                              value={option.complaint_type}
+                            >
+                              {option.complaint_type}
+                            </option>
+                          ))}
+                </select>
+                
+              </div>
               <button
-                className={`w-20 py-1.5 ${
+                className={`w-20  py-1 ${
                   selected === "All"
                     ? "bg-primary text-white"
                     : "bg-white text-black"
@@ -245,8 +297,8 @@ const RequestHead = () => {
               
             </div>
           </div>
-          <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
-            <table className="w-full mt-2 ">
+          <div className=" rounded-lg  md:py-3 py-1 overflow-x-auto no-scrollbar">
+            <table className="w-full md:mt-1 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
                   <th className="">
