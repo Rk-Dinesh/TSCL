@@ -15,6 +15,7 @@ import RequestJE from "./Pages/grievanceJE/RequestJE";
 import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
 import Status from "./Pages/status/Status";
 import RequestHead from "./Pages/grievanceHead/RequestHead";
+import Profile from "./Pages/layout.jsx/Profile";
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
@@ -100,6 +101,7 @@ function App() {
               )
             }
           >
+             <Route path="/profile" element={<Profile />} />
             {memoizedFeatures["dashboard"] && (
               <Route
                 path="/dashboard"
