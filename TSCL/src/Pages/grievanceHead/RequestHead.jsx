@@ -14,15 +14,23 @@ const RequestHead = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [status, setStatus] = useState([]);
-  const [Complainttype, setComplainttype] = useState([])
+
+  const [Complainttype, setComplainttype] = useState([]);
+  const [department, setDepartment] = useState([]);
+  const [zone, setZone] = useState([]);
   const [report, setReport] = useState([]);
   const [dataUsers, setDataUsers] = useState([]);
+
   const token = sessionStorage.getItem("token");
   const dept = sessionStorage.getItem("dept");
 
   const navigate = useNavigate();
-  
+
   const [selected, setSelected] = useState("All");
+
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedZone, setSelectedZone] = useState(null);
+
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedComplainttype, setSelectedComplainttype] = useState(null);
   const [selectedPrior, setSelectedPrior] = useState(null);
@@ -30,7 +38,7 @@ const RequestHead = () => {
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/getbydept?dept_name=${dept}`, {
+      .get(`${API}/new-grievance/get`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,10 +64,40 @@ const RequestHead = () => {
         console.error(error);
       });
 
+    fetchDepartment();
+    fetchZone();
     fetchActiveStatus();
     fetchComplaintType();
     fetchDeptUser();
   }, [searchValue, currentPage]);
+
+  const fetchZone = async () => {
+    try {
+      const response = await axios.get(`${API}/zone/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setZone(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Dept:", error);
+    }
+  };
+
+  const fetchDepartment = async () => {
+    try {
+      const response = await axios.get(`${API}/department/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setDepartment(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Dept:", error);
+    }
+  };
 
   const fetchActiveStatus = async () => {
     try {
@@ -72,7 +110,7 @@ const RequestHead = () => {
       setStatus(responseData);
     } catch (err) {
       console.error("Error fetching existing ActiveStatus:", err);
-    } 
+    }
   };
 
   const fetchDeptUser = async () => {
@@ -90,7 +128,7 @@ const RequestHead = () => {
       setDataUsers(responseData);
     } catch (err) {
       sconsole.error("Error fetching existing ActiveStatus:", err);
-    } 
+    }
   };
 
   const fetchComplaintType = async () => {
@@ -121,16 +159,31 @@ const RequestHead = () => {
     )
   );
 
-
-
   const handleComplaintTypeClick = (Type) => {
     setSelected(Type);
     setSelectedStatus(null);
     setSelectedComplainttype(null);
     setSelectedPrior(null);
     setSelectedAssign(null);
-    paginate(1)
+    paginate(1);
   };
+  const handleDept = (dept) => {
+    if (dept === "All") {
+      setSelectedDepartment(null);
+    } else {
+      setSelectedDepartment(dept);
+    }
+    paginate(1);
+  };
+  const handleZone = (zones) => {
+    if (zones === "All") {
+      setSelectedZone(null);
+    } else {
+      setSelectedZone(zones);
+    }
+    paginate(1);
+  };
+
   const handleStatus = (status) => {
     if (status === "All") {
       setSelectedStatus(null);
@@ -143,158 +196,228 @@ const RequestHead = () => {
     if (type === "All") {
       setSelectedComplainttype(null);
     } else {
-        setSelectedComplainttype(type);
+      setSelectedComplainttype(type);
     }
     paginate(1);
   };
   const handlePriority = (prior) => {
-    if(prior === 'All') {
+    if (prior === "All") {
       setSelectedPrior(null);
-    }else{
+    } else {
       setSelectedPrior(prior);
     }
-    paginate(1)
-  }
+    paginate(1);
+  };
   const handleAssign = (assign) => {
-    if(assign === "All"){
+    if (assign === "All") {
       setSelectedAssign(null);
-    }else{
+    } else {
       setSelectedAssign(assign);
     }
-    paginate(1)
-  }
+    paginate(1);
+  };
 
   const currentItemsOnPage = filteredCenters
-  .filter((report) => {
-    const complaintTypeMatch = selected === "All" ? true : '';
-    const statusMatch = selectedStatus === null ? true : report.status === selectedStatus;
-    const CTypeMatch = selectedComplainttype === null ? true : report.complaint_type_title === selectedComplainttype;
-    const priorityMatch = selectedPrior === null ? true : report.priority === selectedPrior;
-    const assignMatch = selectedAssign === null ? true : 
-      (selectedAssign === 'Yet to be Assigned' ? !report.assign_username : report.assign_username === selectedAssign);
+    .filter((report) => {
+      const complaintTypeMatch = selected === "All" ? true : "";
+      const deptMatch =
+        selectedDepartment === null
+          ? true
+          : report.dept_name === selectedDepartment;
+      const zoneMatch =
+        selectedZone === null ? true : report.zone_name === selectedZone;
+      const statusMatch =
+        selectedStatus === null ? true : report.status === selectedStatus;
+      const CTypeMatch =
+        selectedComplainttype === null
+          ? true
+          : report.complaint_type_title === selectedComplainttype;
+      const priorityMatch =
+        selectedPrior === null ? true : report.priority === selectedPrior;
+      const assignMatch =
+        selectedAssign === null
+          ? true
+          : selectedAssign === "Yet to be Assigned"
+          ? !report.assign_username
+          : report.assign_username === selectedAssign;
 
-    return complaintTypeMatch && statusMatch && CTypeMatch && priorityMatch && assignMatch;
-  })
-  .slice(firstIndex, lastIndex);
+      return (
+        complaintTypeMatch &&
+        statusMatch &&
+        deptMatch &&
+        zoneMatch &&
+        CTypeMatch &&
+        priorityMatch &&
+        assignMatch
+      );
+    })
+    .slice(firstIndex, lastIndex);
 
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-8  p-3">
+        <div className="flex flex-wrap gap-2 mt-3 mx-4">
+          <button
+            className={`w-20  py-1 ${
+              selected === "All"
+                ? "bg-primary text-white"
+                : "bg-white text-black"
+            } rounded-full`}
+            onClick={() => handleComplaintTypeClick("All")}
+          >
+            All
+          </button>
+
+          <div className="flex gap-2 flex-wrap">
+            <select
+              className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+              onChange={(e) => handleDept(e.target.value)}
+              value={selectedDepartment || ""}
+            >
+              <option hidden>Department</option>
+              <option value="All">All</option>
+              {department &&
+                department.map((option) => (
+                  <option key={option.dept_name} value={option.dept_name}>
+                    {option.dept_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            <select
+              className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+              onChange={(e) => handleZone(e.target.value)}
+              value={selectedZone || ""}
+            >
+              <option hidden>Zone</option>
+              <option value="All">All</option>
+              {zone &&
+                zone.map((option) => (
+                  <option key={option.zone_name} value={option.zone_name}>
+                    {option.zone_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            <select
+              className="block w-full  px-1md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+              onChange={(e) => handleStatus(e.target.value)}
+              value={selectedStatus || ""}
+            >
+              <option hidden>ward</option>
+              <option value="All">All</option>
+              {status &&
+                status.map((option) => (
+                  <option key={option.status_name} value={option.status_name}>
+                    {option.status_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            <select
+              className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+              onChange={(e) => handleType(e.target.value)}
+              value={selectedComplainttype || ""}
+            >
+              <option hidden>Area</option>
+              <option value="All">All</option>
+              {Complainttype &&
+                Complainttype.map((option) => (
+                  <option
+                    key={option.complaint_type}
+                    value={option.complaint_type}
+                  >
+                    {option.complaint_type}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </div>
+        <div className="bg-white h-4/5 mx-3 rounded-lg mt-4  p-3">
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
-              <p className="md:text-lg text-sm whitespace-nowrap">View Report</p>
+              <p className="md:text-lg text-sm whitespace-nowrap">
+                View Report
+              </p>
             </div>
             <div className="flex flex-wrap gap-2">
-            <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
-                 onChange={(e) =>
-                  handleAssign(e.target.value)
-                }
-                value={selectedAssign || ""}
+              <div className="flex gap-2 flex-wrap">
+                <select
+                  className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                  onChange={(e) => handleAssign(e.target.value)}
+                  value={selectedAssign || ""}
                 >
-                  <option hidden  >
-                   Select Assign
-                  </option>
-                  <option value='All'  >
-                  All
-                  </option>
-                  <option value={'Yet to be Assigned'}>
-                   Yet to be Assigned
+                  <option hidden>Select Assign</option>
+                  <option value="All">All</option>
+                  <option value={"Yet to be Assigned"}>
+                    Yet to be Assigned
                   </option>
                   {dataUsers &&
-                          dataUsers.map((option) => (
-                            <option
-                              key={option.user_name}
-                              value={option.user_name}
-                            >
-                              {option.user_name}
-                            </option>
-                          ))}
+                    dataUsers.map((option) => (
+                      <option key={option.user_name} value={option.user_name}>
+                        {option.user_name}
+                      </option>
+                    ))}
                 </select>
-                
               </div>
 
-            <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
-                  onChange={(e) =>
-                    handlePriority(e.target.value)
-                  }
+              <div className="flex gap-2 flex-wrap">
+                <select
+                  className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                  onChange={(e) => handlePriority(e.target.value)}
                   value={selectedPrior || ""}
                 >
-                  <option hidden >
-                   Priority
-                  </option>
-                  <option value='All' >
-                   All
-                  </option>
+                  <option hidden>Priority</option>
+                  <option value="All">All</option>
                   <option value="High">High</option>
                   <option value="Medium">Medium</option>
                   <option value="Low">Low</option>
                 </select>
-                
               </div>
               <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
-                 onChange={(e) =>
-                  handleStatus(e.target.value)
-                }
-                value={selectedStatus || ""}
+                <select
+                  className="block w-full  px-1md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                  onChange={(e) => handleStatus(e.target.value)}
+                  value={selectedStatus || ""}
                 >
-                  <option hidden >
-                   Status
-                  </option>
-                  <option value='All' >
-                  All
-                  </option>
+                  <option hidden>Status</option>
+                  <option value="All">All</option>
                   {status &&
-                          status.map((option) => (
-                            <option
-                              key={option.status_name}
-                              value={option.status_name}
-                            >
-                              {option.status_name}
-                            </option>
-                          ))}
+                    status.map((option) => (
+                      <option
+                        key={option.status_name}
+                        value={option.status_name}
+                      >
+                        {option.status_name}
+                      </option>
+                    ))}
                 </select>
-                
               </div>
               <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
-                 onChange={(e) =>
-                  handleType(e.target.value)
-                }
-                value={selectedComplainttype || ""}
+                <select
+                  className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                  onChange={(e) => handleType(e.target.value)}
+                  value={selectedComplainttype || ""}
                 >
-                  <option hidden >
-                   Complaint Type
-                  </option>
-                  <option value='All' >
-                  All
-                  </option>
+                  <option hidden>Complaint Type</option>
+                  <option value="All">All</option>
                   {Complainttype &&
-                          Complainttype.map((option) => (
-                            <option
-                              key={option.complaint_type}
-                              value={option.complaint_type}
-                            >
-                              {option.complaint_type}
-                            </option>
-                          ))}
+                    Complainttype.map((option) => (
+                      <option
+                        key={option.complaint_type}
+                        value={option.complaint_type}
+                      >
+                        {option.complaint_type}
+                      </option>
+                    ))}
                 </select>
-                
               </div>
-              <button
-                className={`w-20  py-1 ${
-                  selected === "All"
-                    ? "bg-primary text-white"
-                    : "bg-white text-black"
-                } rounded-full`}
-                onClick={() => handleComplaintTypeClick("All")}
-              >
-                All
-              </button>
-              
             </div>
           </div>
           <div className=" rounded-lg  md:py-3 py-1 overflow-x-auto no-scrollbar">
@@ -341,17 +464,17 @@ const RequestHead = () => {
                   </th>
                   <th>
                     <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
-                       Zone <RiExpandUpDownLine />
+                      Zone <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
                     <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
-                       Ward <RiExpandUpDownLine />
+                      Ward <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
                     <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
-                       Street <RiExpandUpDownLine />
+                      Street <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
@@ -464,7 +587,7 @@ const RequestHead = () => {
                       <div
                         className="mx-3 my-3 whitespace-nowrap"
                         onClick={() =>
-                          navigate(`/view2`, {
+                          navigate(`/view`, {
                             state: {
                               grievanceId: report.grievance_id,
                               deptName: report.dept_name,
