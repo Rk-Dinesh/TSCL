@@ -150,7 +150,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-3 mx-3 my-4">
+    <div className="grid grid-cols-12 gap-3 mx-3 my-4 overflow-y-auto no-scrollbar">
       <div className="md:col-span-6 col-span-12  border w-full px-2 py-3 rounded-lg  bg-white">
         {data && (
           <div className="md:col-span-4 col-span-6 ">
@@ -167,7 +167,7 @@ const Profile = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-center">
+            <div className="md:flex md:justify-center">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="col-span-4 my-4 pr-3">
                   <input
@@ -274,7 +274,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center mt-8">
+        <div className="md:flex md:justify-center mt-8">
         <form onSubmit={handleSubmitPassword(onChangePassword)}>
        
           <div className="col-span-4 my-4  px-3">
