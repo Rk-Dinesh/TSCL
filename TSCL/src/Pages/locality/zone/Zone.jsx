@@ -204,30 +204,30 @@ const Zone = ({ permissions }) => {
               {currentItemsOnPage.map((zones,index)=>(
               <tr className="border-b-2 border-gray-300 " key={index}>
                 <td className="">
-                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-cente text-gray-700">
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
                           : firstIndex + index + 1}
                       </div>
                     </td>
                 <td className="">
-                  <p className="capitalize text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm">{zones.zone_name}</p>
+                  <p className="capitalize text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm text-gray-700">{zones.zone_name}</p>
                 </td>
                 <td>
-                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize">
+                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize text-gray-700">
                         {zones.status}
                       </p>
                     </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize ">{zones.created_by_user}</p>
+                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize  text-gray-700">{zones.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize">
+                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                   {formatDate(zones.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                   {formatDate(zones.updatedAt)}
                   </p>
                 </td>

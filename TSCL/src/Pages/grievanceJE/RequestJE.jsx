@@ -231,37 +231,37 @@ const RequestJE = () => {
                 {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td className="">
-                    <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
+                    <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowraptext-gray-700">
                     {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}
                     </div>
                   </td>
                     <td>
-                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1 capitalize ">
+                      <p className="border-2 w-28 border-green-600 rounded-lg text-center py-1 my-1 capitalizetext-green-600 ">
                         {report.grievance_id}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
                         {formatDate(report.createdAt)}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
                         {report.public_user_name}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 tex-sm capitalize">
+                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 tex-sm capitalizetext-gray-900">
                         {report.priority}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm capitalize  ">
+                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm capitalize text-gray-900 ">
                         {report.status}
                       </p>
                     </td>

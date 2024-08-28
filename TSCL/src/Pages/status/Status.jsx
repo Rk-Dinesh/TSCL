@@ -188,29 +188,29 @@ const Status = ({ permissions }) => {
                   {currentItemsOnPage.map((type, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
-                        <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap text-sm">
+                        <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap text-sm text-gray-700">
                           {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}
                         </p>
                       </td>
                       <td>
-                        <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize">
+                        <p className="mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize text-gray-700">
                           {type.status_name}
                         </p>
                       </td>
                       <td>
-                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                           {type.created_by_user}
                         </p>
                       </td>
                       <td>
-                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                           {formatDate(type.createdAt)}
                         </p>
                       </td>
                       <td>
-                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                           {formatDate(type.updatedAt)}
                         </p>
                       </td>

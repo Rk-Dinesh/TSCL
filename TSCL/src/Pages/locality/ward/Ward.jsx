@@ -235,31 +235,31 @@ const Ward = ({ permissions }) => {
               {currentItemsOnPage.map((wards,index)=>(
               <tr className="border-b-2 border-gray-300" key={index}>
                 <td className="">
-                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
                           : firstIndex + index + 1}
                       </div>
                     </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.ward_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">{wards.ward_name}</p>
                 </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.zone_name}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">{wards.zone_name}</p>
                 </td>
                 <td className="">
-                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.status}</p>
+                  <p className="text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">{wards.status}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">{wards.created_by_user}</p>
+                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">{wards.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize">
+                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                     {formatDate(wards.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                   {formatDate(wards.updatedAt)}
                   </p>
                 </td>

@@ -234,34 +234,34 @@ const Street = ({ permissions }) => {
               {currentItemsOnPage.map((streets,index)=>(
               <tr className="border-b-2 border-gray-300">
                 <td className="">
-                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
                           : firstIndex + index + 1}
                       </div>
                     </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.street_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize text-gray-700">{streets.street_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.ward_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize text-gray-700">{streets.ward_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.zone_name}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize text-gray-700">{streets.zone_name}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize">{streets.status}</p>
+                  <p className="text-start text-sm mx-1.5 my-2 font-lexend whitespace-nowrap capitalize text-gray-700">{streets.status}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap capitalize">{streets.created_by_user}</p>
+                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">{streets.created_by_user}</p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5 my-2  font-lexend whitespace-nowrap capitalize">
+                  <p className="text-start text-sm mx-1.5 my-2  font-lexend whitespace-nowrap capitalize text-gray-700">
                    {formatDate(streets.createdAt)}
                   </p>
                 </td>
                 <td>
-                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap capitalize">
+                  <p className="text-start text-sm mx-1.5  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
                   {formatDate(streets.updatedAt)}
                   </p>
                 </td>

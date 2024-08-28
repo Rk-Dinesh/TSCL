@@ -178,57 +178,57 @@ const Grivences = ({ permissions }) => {
                 {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td className="">
-                      <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
+                      <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700">
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
                           : firstIndex + index + 1}
                       </div>
                     </td>
                     <td>
-                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1  ">
+                      <p className="border-2 w-28 border-green-600 rounded-lg text-center py-1 my-1   text-green-600">
                         {report.grievance_id}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
                         {report.public_user_name}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
                         {report.complaint_type_title}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
                         {report.dept_name}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {report.assign_username
                           ? report.assign_username
                           : "Yet to be assigned"}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
                         {formatDate(report.createdAt)}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 mx-2 tex-sm capitalize">
+                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 mx-2 tex-sm capitalize text-gray-900">
                         {report.priority}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" capitalize border w-28 border-gray-500 rounded-full text-center py-1 tex-sm  ">
+                      <p className=" capitalize border w-28 border-gray-500 rounded-full text-center py-1 tex-sm text-gray-900  ">
                         {report.status}
                       </p>
                     </td>

@@ -38,6 +38,7 @@ const AddZone = (props) => {
       });
 
       if (response.status === 200) { 
+      
         toast.success("Zone created Successfully");
         props.toggleModal();
         props.handlerefresh();

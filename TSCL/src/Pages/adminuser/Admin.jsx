@@ -257,7 +257,7 @@ const Admin = ({ permissions }) => {
                 {currentItemsOnPage.map((admins, index) => (
                   <tr className="border-b-2 border-gray-300" key={index}>
                     <td className="">
-                      <p className="text-center text-sm mx-4 my-2 font-lexend whitespace-nowrap">
+                      <p className="text-center text-sm mx-4 my-2 font-lexend whitespace-nowrap  text-gray-700">
                         {" "}
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
@@ -265,37 +265,37 @@ const Admin = ({ permissions }) => {
                       </p>
                     </td>
                     <td>
-                      <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize">
+                      <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize text-gray-700">
                         {admins.user_name}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap capitalize">
+                      <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap capitalize text-gray-700">
                         {admins.dept_name}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap capitalize">
+                      <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
                         {admins.phone}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
                         {admins.email}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
                         {admins.status}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
                         {admins.role}
                       </p>
                     </td>
                     <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize">
+                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
                         {admins.created_by_user}
                       </p>
                     </td>

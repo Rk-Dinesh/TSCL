@@ -231,44 +231,44 @@ const Department = ({ permissions }) => {
                 {currentItemsOnPage.map((dept, index) => (
                   <tr className="border-b-2 border-gray-300" key={index}>
                     <td className="">
-                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-800">
                         {firstIndex + index + 1 < 10
                           ? `0${firstIndex + index + 1}`
                           : firstIndex + index + 1}
                       </div>
                     </td>
                     <td>
-                      <div className="flex  gap-2 items-center justify-start mx-5 my-3  text-sm">
+                      <div className="flex  gap-2 items-center justify-start mx-5 my-3  text-sm text-gray-800">
                         <img
                           src={logo}
                           alt="logo"
                           className="w-8 h-8"
                         />
-                        <p className="font-lexend whitespace-nowrap capitalize  "> {dept.dept_name}</p>
+                        <p className="font-lexend whitespace-nowrap capitalize   text-gray-800"> {dept.dept_name}</p>
                       </div>
                     </td>
                     <td className="">
-                      <p className="capitalize mx-3 my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className="capitalize mx-3 my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
                         {dept.org_name}
                       </p>
                     </td>
                     <td>
-                      <p className="capitalize mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm">
+                      <p className="capitalize mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
                         {dept.status}
                       </p>
                     </td>
                     <td>
-                      <p className="capitalize mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm">
+                      <p className="capitalize mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm text-gray-800">
                         {dept.created_by_user}
                       </p>
                     </td>
                     <td>
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm ">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-800 ">
                         {formatDate(dept.createdAt)}
                       </p>
                     </td>
                     <td>
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm">
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-800">
                         {formatDate(dept.updatedAt)}
                       </p>
                     </td>

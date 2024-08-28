@@ -315,36 +315,36 @@ const RequestAdmin = () => {
                       </div>
                     </td>
                     <td>
-                      <p className="border-2 w-28 border-gray-500 rounded-lg text-center py-1 my-1  capitalize">
+                      <p className="border-2 w-28 border-green-600 rounded-lg text-center py-1 my-1  capitalize text-green-600">
                         {report.grievance_id}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {report.complaint}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {report.dept_name}
                       </p>
                     </td>
                     <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {formatDate(report.createdAt)}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {report.public_user_name}
                       </p>
                     </td>
                     <td>
                       {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize">
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {report.assign_username
                           ? report.assign_username
                           : "Yet to be assigned"}
@@ -352,14 +352,14 @@ const RequestAdmin = () => {
                     </td>
                     <td>
                       {" "}
-                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 mx-2 tex-sm capitalize">
+                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 mx-2 tex-sm capitalize text-gray-900 ">
                         {report.priority}
                       </p>
                     </td>
 
                     <td>
                       {" "}
-                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm mx-2 capitalize">
+                      <p className="border w-28 border-gray-500 rounded-full text-center py-1 tex-sm mx-2 capitalize text-gray-900">
                         {report.status}
                       </p>
                     </td>
