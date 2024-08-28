@@ -18,6 +18,8 @@ const RequestHead = () => {
   const [Complainttype, setComplainttype] = useState([]);
   const [department, setDepartment] = useState([]);
   const [zone, setZone] = useState([]);
+  const [ward, setWard] = useState([]);
+  const [Street, setStreet] = useState([]);
   const [report, setReport] = useState([]);
   const [dataUsers, setDataUsers] = useState([]);
 
@@ -30,6 +32,8 @@ const RequestHead = () => {
 
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedZone, setSelectedZone] = useState(null);
+  const [selectedWard, setSelectedWard] = useState(null);
+  const [selectedStreet, setSelectedStreet] = useState(null);
 
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedComplainttype, setSelectedComplainttype] = useState(null);
@@ -66,6 +70,8 @@ const RequestHead = () => {
 
     fetchDepartment();
     fetchZone();
+    fetchWard();
+    fetchStreet();
     fetchActiveStatus();
     fetchComplaintType();
     fetchDeptUser();
@@ -80,6 +86,34 @@ const RequestHead = () => {
       });
       const responseData = decryptData(response.data.data);
       setZone(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Dept:", error);
+    }
+  };
+
+  const fetchWard = async () => {
+    try {
+      const response = await axios.get(`${API}/ward/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setWard(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Dept:", error);
+    }
+  };
+
+  const fetchStreet = async () => {
+    try {
+      const response = await axios.get(`${API}/street/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setStreet(responseData);
     } catch (error) {
       console.error("Error fetching existing Dept:", error);
     }
@@ -161,6 +195,9 @@ const RequestHead = () => {
 
   const handleComplaintTypeClick = (Type) => {
     setSelected(Type);
+    setSelectedDepartment(null);
+    setSelectedZone(null);
+    setSelectedWard(null);
     setSelectedStatus(null);
     setSelectedComplainttype(null);
     setSelectedPrior(null);
@@ -180,6 +217,27 @@ const RequestHead = () => {
       setSelectedZone(null);
     } else {
       setSelectedZone(zones);
+      setSelectedWard(null);
+      setSelectedStreet(null);
+    }
+    paginate(1);
+  };
+
+  const handleWard = (wards) => {
+    if (wards === "All") {
+      setSelectedWard(null);
+    } else {
+        setSelectedWard(wards);
+        setSelectedStreet(null);
+    }
+    paginate(1);
+  };
+
+  const handleStreet = (streets) => {
+    if (streets === "All") {
+      setSelectedStreet(null);
+    } else {
+        setSelectedStreet(streets);
     }
     paginate(1);
   };
@@ -226,6 +284,10 @@ const RequestHead = () => {
           : report.dept_name === selectedDepartment;
       const zoneMatch =
         selectedZone === null ? true : report.zone_name === selectedZone;
+        const wardMatch =
+        selectedWard === null ? true : report.ward_name === selectedWard;
+        const streetMatch =
+        selectedStreet === null ? true : report.street_name === selectedStreet;
       const statusMatch =
         selectedStatus === null ? true : report.status === selectedStatus;
       const CTypeMatch =
@@ -246,6 +308,8 @@ const RequestHead = () => {
         statusMatch &&
         deptMatch &&
         zoneMatch &&
+        wardMatch &&
+        streetMatch &&
         CTypeMatch &&
         priorityMatch &&
         assignMatch
@@ -305,15 +369,15 @@ const RequestHead = () => {
           <div className="flex gap-2 flex-wrap">
             <select
               className="block w-full  px-1md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
-              onChange={(e) => handleStatus(e.target.value)}
-              value={selectedStatus || ""}
+              onChange={(e) => handleWard(e.target.value)}
+              value={selectedWard || ""}
             >
               <option hidden>ward</option>
               <option value="All">All</option>
-              {status &&
-                status.map((option) => (
-                  <option key={option.status_name} value={option.status_name}>
-                    {option.status_name}
+              {ward &&
+                ward.filter(ward=>ward.zone_name === selectedZone).map((option) => (
+                  <option key={option.ward_name} value={option.ward_name}>
+                    {option.ward_name}
                   </option>
                 ))}
             </select>
@@ -322,18 +386,18 @@ const RequestHead = () => {
           <div className="flex gap-2 flex-wrap">
             <select
               className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
-              onChange={(e) => handleType(e.target.value)}
-              value={selectedComplainttype || ""}
+              onChange={(e) => handleStreet(e.target.value)}
+              value={selectedStreet || ""}
             >
               <option hidden>Area</option>
               <option value="All">All</option>
-              {Complainttype &&
-                Complainttype.map((option) => (
+              {Street &&
+                Street.filter(streets=>streets.ward_name === selectedWard).map((option) => (
                   <option
-                    key={option.complaint_type}
-                    value={option.complaint_type}
+                    key={option.street_name}
+                    value={option.street_name}
                   >
-                    {option.complaint_type}
+                    {option.street_name}
                   </option>
                 ))}
             </select>
