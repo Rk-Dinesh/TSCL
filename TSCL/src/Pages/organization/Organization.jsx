@@ -18,6 +18,9 @@ import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
+const csvData = `org_name,status,created_by_user
+organization,active,admin`;
+
 const Organization = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes('create');
   const hasEditPermission = permissions?.includes('edit');
@@ -253,6 +256,16 @@ const Organization = ({ permissions }) => {
     }
   };
 
+  const handleDownload = () => {
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "bulkupload_template.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   return (
     <Fragment>
@@ -450,6 +463,14 @@ const Organization = ({ permissions }) => {
           </div>
 
           <div className=" my-3 mb-5 mx-7">
+          <div className="text-center">
+            <button
+              className="bg-primary px-3 py-2 rounded-full text-white text-sm font-alegerya"
+              onClick={handleDownload}
+            >
+              Bulk Upload Template
+            </button>
+          </div>
             <nav
               className="flex items-center flex-column flex-wrap md:flex-row md:justify-between justify-center pt-4"
               aria-label="Table navigation"
