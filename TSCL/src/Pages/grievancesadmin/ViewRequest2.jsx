@@ -456,7 +456,7 @@ const ViewRequest2 = () => {
 
                     <div className="grid grid-cols-3 divide-x-2 divide-black">
                       <p>
-                        {new Date(data.updatedAt).toLocaleDateString()}
+                       <span className="block"> {new Date(data.updatedAt).toLocaleDateString()}</span>
                         {new Date(data.updatedAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
