@@ -6,9 +6,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { API } from "../../Host";
 
-
+const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
 const StatusSchema = yup.object().shape({
   status_name: yup.string().required("status is required"),
+  color: yup
+    .string()
+    .matches(hexColorRegex, "Enter a valid hex color code")
+    .required("Color is required"),
 });
 
 const AddStatus = (props) => {
@@ -59,7 +63,7 @@ const AddStatus = (props) => {
         </div>
        
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mx-6 my-10">
+          <div className="mx-6 my-2">
             <label
               className="block text-gray-900 text-base font-normal mb-4"
               htmlFor="status_name"
@@ -77,6 +81,24 @@ const AddStatus = (props) => {
               <p className="text-red-500">{errors.status_name.message}</p>
             )}
           </div>
+          <div className="mx-6 my-3">
+            <label
+              className="block text-gray-900 text-base font-normal mb-3"
+              htmlFor="color"
+            >
+              Color
+            </label>
+            <input
+              className=""
+              id="color"
+              type="color"
+              {...register("color")}
+            />
+            {errors.color && (
+              <p className="text-red-500">{errors.color.message}</p>
+            )}
+          </div>
+          
           <div className="flex justify-end  mx-10 gap-5 ">
             <div
               className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"

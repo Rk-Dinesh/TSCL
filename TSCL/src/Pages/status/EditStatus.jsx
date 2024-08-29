@@ -7,9 +7,13 @@ import * as yup from "yup";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 
-
+const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
 const StatusSchema = yup.object().shape({
   status_name: yup.string().required("status is required"),
+  color: yup
+  .string()
+  .matches(hexColorRegex, "Enter a valid hex color code")
+  .required("Color is required"),
   status: yup
   .string()
   .test(
@@ -47,7 +51,9 @@ const token = sessionStorage.getItem('token');
        
         
         setValue("status_name", data.status_name);
+        setValue("color",data.color);
         setValue("status", data.status);
+
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -60,7 +66,7 @@ const token = sessionStorage.getItem('token');
     const formData = {
       ...data,
     };
-console.log(formData);
+
 
     try {
       
@@ -86,13 +92,13 @@ console.log(formData);
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
       <div className="bg-white w-[522px] h-[330px]  font-lexend m-2">
         <div className="border-b-2 border-gray-300 mx-10">
-          <h1 className="text-xl font-medium pt-10 pb-2">Edit status</h1>
+          <h1 className="text-xl font-medium pt-10 ">Edit status</h1>
         </div>
        
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mx-6 my-4">
+          <div className="mx-6 my-2">
             <label
-              className="block text-gray-900 text-base font-normal mb-4"
+              className="block text-gray-900 text-base font-normal mb-2"
               htmlFor="status_name"
             >
            Status
@@ -106,6 +112,23 @@ console.log(formData);
             />
             {errors.status_name && (
               <p className="text-red-500">{errors.status_name.message}</p>
+            )}
+          </div>
+          <div className="mx-6 my-1">
+            <label
+              className="block text-gray-900 text-base font-normal mb-1"
+              htmlFor="color"
+            >
+              Color
+            </label>
+            <input
+              className=""
+              id="color"
+              type="color"
+              {...register("color")}
+            />
+            {errors.color && (
+              <p className="text-red-500">{errors.color.message}</p>
             )}
           </div>
           <div>
