@@ -23,6 +23,7 @@ const ViewRequestJE = () => {
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
+  const [logData, setLogData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,10 +82,29 @@ const ViewRequestJE = () => {
         setLoading(false);
       }
     };
+    const fetchLog = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/grievance-log/getbyid?grievance_id=${grievanceId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const responseData = decryptData(response.data.data);
+        setLogData(responseData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchData();
     fetchDeptStatus();
     fetchDataFile();
+    fetchLog();
   }, []);
 
   const toggleModal = () => {
@@ -96,6 +116,8 @@ const ViewRequestJE = () => {
     const formData = {
      status:data
     };
+
+    const workStatus = data;
 
     try {
       const response = await axios.post(
@@ -111,6 +133,19 @@ const ViewRequestJE = () => {
       if (response.status === 200) {
         toast.success("Status Updated Successfully");
         navigate("/requestview3");
+        const response = await axios.post(
+          `${API}/grievance-log/post`,
+          {
+            grievance_id : grievanceId,
+            log_details: ` Assigned work is ${workStatus}`,
+            created_by_user:'admin'
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");
@@ -285,65 +320,99 @@ const ViewRequestJE = () => {
               </div>
               <div className="mx-3 my-3">
                 <p className="mb-2 mx-1 text-lg">Complaint History</p>
-                <div className="bg-gray-100 py-3">
-                  <div className="mx-8">
+                <div className="bg-gray-100 py-3 h-[530px]">
+                  <div className="mx-8 ">
                     <p className="py-3 font-semibold">
                       Complaint No {data.grievance_id}
                     </p>
-                    <p className="py-2">
-                      {new Date(data.createdAt).toLocaleDateString()}
-                    </p>
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
+                    <div className="h-[280px]  overflow-x-auto no-scrollbar mb-3">
+                      {logData &&
+                        logData.slice().reverse().map((logEntry, index) => (
+                          <div key={index}>
+                            <p className="py-1">
+                              {new Date(
+                                logEntry.createdAt
+                              ).toLocaleDateString()}
+                            </p>
+                            <div className="grid grid-cols-3 divide-x-2 divide-black">
+                              <p>
+                                {new Date(
+                                  logEntry.createdAt
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                })}
+                              </p>
+                              <p className="pl-5 col-span-2">
+                                {logEntry.log_details}
+                              </p>
+                            </div>
+                            <br />
+                          </div>
+                        ))}
+
+                      <p className="py-2">
+                        {new Date(data.createdAt).toLocaleDateString()}
                       </p>
-                      <p className="pl-5 col-span-2">Logged In</p>
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">Logged In</p>
+                      </div>
+                      <br />
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">
+                          Ticket Raised {data.grievance_id}
+                        </p>
+                      </div>
+                      <br />
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">
+                          Assigned To Particular Department
+                        </p>
+                      </div>
                     </div>
-                    <br />
+
+                    <p className="mb-2">Work StatusFlow :</p>
+
                     <div className="grid grid-cols-3 divide-x-2 divide-black">
                       <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </p>
-                      <p className="pl-5 col-span-2">
-                        Ticket Raised {data.grievance_id}
-                      </p>
-                    </div>
-                    <br />
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </p>
-                      <p className="pl-5 col-span-2">
-                        Assigned To Particular Department
-                      </p>
-                    </div>
-                    <br />
-                    <p className="mb-2">
-                      {new Date(data.updatedAt).toLocaleDateString()}
-                    </p>
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
+                        {new Date(data.updatedAt).toLocaleDateString()}
                         {new Date(data.updatedAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                           hour12: true,
                         })}
                       </p>
+
                       <div className="col-span-2">
                         <p className="pl-5">Status:</p>
-                        <p className="pl-5 text-gray-500">{data.statusflow}/</p>
+                        <p className="pl-5 text-gray-500">
+                          {data.statusflow
+                            .split("/")
+                            .join(" / ")
+                            .replace(/(?: \/ ){5}/g, " / \n")}
+                        </p>
                       </div>
                     </div>
                     <hr className="my-3" />

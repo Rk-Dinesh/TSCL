@@ -17,6 +17,7 @@ const ViewRequest2 = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
   const [dataUsers, setDataUsers] = useState([]);
+  const [logData, setLogData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -97,9 +98,29 @@ const ViewRequest2 = () => {
       }
     };
 
+    const fetchLog = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/grievance-log/getbyid?grievance_id=${grievanceId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const responseData = decryptData(response.data.data);
+        setLogData(responseData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
     fetchDeptUser();
     fetchDataFile();
+    fetchLog();
   }, []);
 
   const toggleModal = () => {
@@ -112,15 +133,13 @@ const ViewRequest2 = () => {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const assignUserId = selectedOption.getAttribute("data-user-id");
     const assignUserPhone = selectedOption.getAttribute("data-user-phone");
-
-    
+    const assignUserName = selectedOption.getAttribute("data-user-name");
 
     const formData = {
       ...data,
       assign_user: assignUserId,
       assign_userphone: assignUserPhone,
     };
-   
 
     try {
       const response = await axios.post(
@@ -136,6 +155,19 @@ const ViewRequest2 = () => {
       if (response.status === 200) {
         toast.success("Work Assigned Successfully");
         navigate("/requestview2");
+        const response = await axios.post(
+          `${API}/grievance-log/post`,
+          {
+            grievance_id: grievanceId,
+            log_details: `Work Assigned to ${assignUserName}`,
+            created_by_user: "admin",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");
@@ -180,8 +212,15 @@ const ViewRequest2 = () => {
                         defaultValue=""
                         {...register("assign_username")}
                       >
-                        <option value={data.assign_username?data.assign_username:""} hidden>
-                        {data.assign_username?data.assign_username:"Assign User"}
+                        <option
+                          value={
+                            data.assign_username ? data.assign_username : ""
+                          }
+                          hidden
+                        >
+                          {data.assign_username
+                            ? data.assign_username
+                            : "Assign User"}
                         </option>
 
                         {dataUsers &&
@@ -191,6 +230,7 @@ const ViewRequest2 = () => {
                               value={option.user_name}
                               data-user-id={option.user_id}
                               data-user-phone={option.phone}
+                              data-user-name={option.user_name}
                             >
                               {option.user_name}
                             </option>
@@ -218,17 +258,23 @@ const ViewRequest2 = () => {
                   <div className="flex flex-col gap-3 mx-2 text-base">
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Origin </p>
-                      <p className="col-span-2 capitalize">: {data.grievance_mode}</p>
+                      <p className="col-span-2 capitalize">
+                        : {data.grievance_mode}
+                      </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint Type </p>
-                      <p className="col-span-2 capitalize">: {data.complaint_type_title}</p>
+                      <p className="col-span-2 capitalize">
+                        : {data.complaint_type_title}
+                      </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Department </p>
-                      <p className="col-span-2 capitalize">: {data.dept_name}</p>
+                      <p className="col-span-2 capitalize">
+                        : {data.dept_name}
+                      </p>
                     </div>
-                   
+
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint </p>
                       <p className="col-span-2 capitalize">
@@ -237,15 +283,21 @@ const ViewRequest2 = () => {
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Zone </p>
-                      <p className="col-span-2 capitalize">: {data.zone_name}</p>
+                      <p className="col-span-2 capitalize">
+                        : {data.zone_name}
+                      </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Ward </p>
-                      <p className="col-span-2 capitalize">: {data.ward_name}</p>
+                      <p className="col-span-2 capitalize">
+                        : {data.ward_name}
+                      </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Street </p>
-                      <p className="col-span-2 capitalize">: {data.street_name}</p>
+                      <p className="col-span-2 capitalize">
+                        : {data.street_name}
+                      </p>
                     </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Pincode </p>
@@ -325,67 +377,101 @@ const ViewRequest2 = () => {
                   </div>
                 </div>
               </div>
-              <div className="mx-3 my-3">
+              <div className="mx-3 my-3 ">
                 <p className="mb-2 mx-1 text-lg">Complaint History</p>
-                <div className="bg-gray-100 py-3">
-                  <div className="mx-8">
+                <div className="bg-gray-100 py-3 h-[530px]">
+                  <div className="mx-8 ">
                     <p className="py-3 font-semibold">
                       Complaint No {data.grievance_id}
                     </p>
-                    <p className="py-2">
-                      {new Date(data.createdAt).toLocaleDateString()}
-                    </p>
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
+                    <div className="h-[280px]  overflow-x-auto no-scrollbar mb-3">
+                      {logData &&
+                        logData.slice().reverse().map((logEntry, index) => (
+                          <div key={index}>
+                            <p className="py-1">
+                              {new Date(
+                                logEntry.createdAt
+                              ).toLocaleDateString()}
+                            </p>
+                            <div className="grid grid-cols-3 divide-x-2 divide-black">
+                              <p>
+                                {new Date(
+                                  logEntry.createdAt
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                })}
+                              </p>
+                              <p className="pl-5 col-span-2">
+                                {logEntry.log_details}
+                              </p>
+                            </div>
+                            <br />
+                          </div>
+                        ))}
+
+                      <p className="py-2">
+                        {new Date(data.createdAt).toLocaleDateString()}
                       </p>
-                      <p className="pl-5 col-span-2">Logged In</p>
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">Logged In</p>
+                      </div>
+                      <br />
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">
+                          Ticket Raised {data.grievance_id}
+                        </p>
+                      </div>
+                      <br />
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">
+                          Assigned To Particular Department
+                        </p>
+                      </div>
                     </div>
-                    <br />
+
+                    <p className="mb-2">Work StatusFlow :</p>
+
                     <div className="grid grid-cols-3 divide-x-2 divide-black">
                       <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </p>
-                      <p className="pl-5 col-span-2">
-                        Ticket Raised {data.grievance_id}
-                      </p>
-                    </div>
-                    <br />
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </p>
-                      <p className="pl-5 col-span-2">
-                        Assigned To Particular Department
-                      </p>
-                    </div>
-                    <br />
-                    <p className="mb-2">
-                      {new Date(data.updatedAt).toLocaleDateString()}
-                    </p>
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
+                        {new Date(data.updatedAt).toLocaleDateString()}
                         {new Date(data.updatedAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                           hour12: true,
                         })}
                       </p>
+
                       <div className="col-span-2">
                         <p className="pl-5">Status:</p>
-                        <p className="pl-5 text-gray-500">{data.statusflow}/</p>
+                        <p className="pl-5 text-gray-500">
+                          {data.statusflow
+                            .split("/")
+                            .join(" / ")
+                            .replace(/(?: \/ ){5}/g, " / \n")}
+                        </p>
                       </div>
                     </div>
                     <hr className="my-3" />
