@@ -271,6 +271,7 @@ const Organization = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen ">
+
           <div className="flex flex-row md:justify-end gap-2 p-2 mt-3 mx-8 flex-wrap items-center">
             <div className="flex items-center gap-3 bg-white py-2 px-3 rounded-full">
               <IoMdSearch className="text-xl" />
