@@ -18,6 +18,8 @@
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "file-saver": "^2.0.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "jszip": "^3.10.1",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",

@@ -145,7 +145,7 @@ const Profile = () => {
       }
     } catch (error) {
        // console.error("Error in posting data", error);
-        toast.error("Old Password is wrong");
+        toast.error("Old Password is Incorrect");
       }
   };
 
@@ -157,7 +157,7 @@ const Profile = () => {
             <div className="flex flex-row justify-center gap-4 items-center my-4">
               <div className="flex mb-3 items-center">
                 <p className="text-5xl bg-blue-200 text-gray-600 px-7 py-5 rounded-full">
-                  {data.user_name ? data.user_name.slice(0, 1) : "P"}
+                  {data.user_name ? data.user_name.slice(0, 1) : "T"}
                 </p>
               </div>
 
