@@ -298,8 +298,8 @@ const RoleAccessLevelForm = () => {
         <select value={grievanceType} onChange={handleGrievanceTypeChange} className="block   px-4 py-1.5  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none">
           <option value="">Select Grievance Type</option>
           <option value="grievance">Super Admin</option>
-          <option value="viewrequest1">Commissioner</option>
-          <option value="requestview2">Department Head</option>
+          <option value="viewrequest4">Commissioner</option>
+          <option value="requestview2">Department Admin</option>
           <option value="requestview3">Junior Engineer</option>
           <option value="requestview1">Operator</option>
         </select>

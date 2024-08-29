@@ -337,7 +337,7 @@ const RoleAccessLevelEdit = () => {
               <option value="">Select Grievance Type</option>
               <option value="grievance">Super Admin</option>
               <option value="viewrequest4">Commissioner</option>
-              <option value="viewrequest3">Department Head</option>
+              <option value="viewrequest3">Department Admin</option>
               <option value="viewrequest2">Junior Engineer</option>
               <option value="viewrequest1">Operator</option>
             </select>
