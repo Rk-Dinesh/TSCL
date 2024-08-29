@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import { API } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "../request/ViewAttachment";
@@ -18,6 +18,7 @@ const ViewRequest2 = () => {
   const [dataFile, setDataFile] = useState(null);
   const [dataUsers, setDataUsers] = useState([]);
   const [logData, setLogData] = useState([]);
+  const [matchData, setMatchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -53,6 +54,15 @@ const ViewRequest2 = () => {
         );
         const responseData = decryptData(response.data.data);
         setData(responseData);
+        const responsefilter = await axios.get(
+          `${API}/new-grievance/filter?zone_name=${responseData.zone_name}&ward_name=${responseData.ward_name}&street_name=${responseData.street_name}&dept_name=${responseData.dept_name}&complaint=${responseData.complaint}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMatchData(responsefilter.data.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -350,28 +360,30 @@ const ViewRequest2 = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-300">
-                        <tr className="border-b-2  border-gray-300">
-                          <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                            15-05-2024 / 12:00 AM
-                          </td>
-                          <td className="text-center  mx-3 py-2.5 whitespace-nowrap">
-                            R-0001122
-                          </td>
-                          <td className="text-center  mx-3 py-2.5 text-green-600 whitespace-nowrap">
-                            In Progress
-                          </td>
-                        </tr>
-                        <tr className="border-b-2 border-gray-300">
-                          <td className="text-center mx-2 my-2 whitespace-nowrap">
-                            15-05-2024 / 12:00 AM
-                          </td>
-                          <td className="text-center  mx-2 my-2 whitespace-nowrap">
-                            R-0001122
-                          </td>
-                          <td className="text-center  mx-2 my-2 text-green-600 whitespace-nowrap">
-                            In Progress
-                          </td>
-                        </tr>
+                        {matchData.length > 0 ? (
+                          matchData.map((data, index) => (
+                            <tr
+                              className="border-b-2 border-gray-300"
+                              key={index}
+                            >
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                                {formatDate1(data.createdAt)}
+                              </td>
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                                {data.grievance_id}
+                              </td>
+                              <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
+                                {data.status}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td className="text-center py-2.5" colSpan="3">
+                              No matching data found
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -386,30 +398,33 @@ const ViewRequest2 = () => {
                     </p>
                     <div className="h-[280px]  overflow-x-auto no-scrollbar mb-3">
                       {logData &&
-                        logData.slice().reverse().map((logEntry, index) => (
-                          <div key={index}>
-                            <p className="py-1">
-                              {new Date(
-                                logEntry.createdAt
-                              ).toLocaleDateString()}
-                            </p>
-                            <div className="grid grid-cols-3 divide-x-2 divide-black">
-                              <p>
+                        logData
+                          .slice()
+                          .reverse()
+                          .map((logEntry, index) => (
+                            <div key={index}>
+                              <p className="py-1">
                                 {new Date(
                                   logEntry.createdAt
-                                ).toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                })}
+                                ).toLocaleDateString()}
                               </p>
-                              <p className="pl-5 col-span-2">
-                                {logEntry.log_details}
-                              </p>
+                              <div className="grid grid-cols-3 divide-x-2 divide-black">
+                                <p>
+                                  {new Date(
+                                    logEntry.createdAt
+                                  ).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  })}
+                                </p>
+                                <p className="pl-5 col-span-2">
+                                  {logEntry.log_details}
+                                </p>
+                              </div>
+                              <br />
                             </div>
-                            <br />
-                          </div>
-                        ))}
+                          ))}
 
                       <p className="py-2">
                         {new Date(data.createdAt).toLocaleDateString()}
@@ -422,33 +437,34 @@ const ViewRequest2 = () => {
                             hour12: true,
                           })}
                         </p>
-                        <p className="pl-5 col-span-2">Logged In</p>
-                      </div>
-                      <br />
-                      <div className="grid grid-cols-3 divide-x-2 divide-black">
-                        <p>
-                          {new Date(data.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </p>
                         <p className="pl-5 col-span-2">
-                          Ticket Raised {data.grievance_id}
-                        </p>
-                      </div>
-                      <br />
-                      <div className="grid grid-cols-3 divide-x-2 divide-black">
-                        <p>
-                          {new Date(data.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </p>
-                        <p className="pl-5 col-span-2">
+                          {" "}
                           Assigned To Particular Department
                         </p>
+                      </div>
+                      <br />
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">
+                          Ticket Raised- {data.grievance_id}
+                        </p>
+                      </div>
+                      <br />
+                      <div className="grid grid-cols-3 divide-x-2 divide-black">
+                        <p>
+                          {new Date(data.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="pl-5 col-span-2">Logged In</p>
                       </div>
                     </div>
 
@@ -456,7 +472,10 @@ const ViewRequest2 = () => {
 
                     <div className="grid grid-cols-3 divide-x-2 divide-black">
                       <p>
-                       <span className="block"> {new Date(data.updatedAt).toLocaleDateString()}</span>
+                        <span className="block">
+                          {" "}
+                          {new Date(data.updatedAt).toLocaleDateString()}
+                        </span>
                         {new Date(data.updatedAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",

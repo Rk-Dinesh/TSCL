@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import { API } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import { useLocation } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "./ViewAttachment";
@@ -8,6 +8,7 @@ import ViewAttachment from "./ViewAttachment";
 const ViewRequest = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
+  const [matchData, setMatchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -30,6 +31,15 @@ const ViewRequest = () => {
         );
         const responseData = decryptData(response.data.data);
         setData(responseData);
+        const responsefilter = await axios.get(
+          `${API}/new-grievance/filter?zone_name=${responseData.zone_name}&ward_name=${responseData.ward_name}&street_name=${responseData.street_name}&dept_name=${responseData.dept_name}&complaint=${responseData.complaint}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMatchData(responsefilter.data.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -96,39 +106,38 @@ const ViewRequest = () => {
           <div className="bg-white mt-2 pb-3">
             <p className="px-5 py-2 text-lg">Request By :</p>
             <div className="flex justify-between gap-3 mx-3 my-3 items-center flex-wrap">
-                <div className="col-span-4 px-5 pb-3">
-                  <p className="capitalize">{data.public_user_name}</p>
-                  <p>+91 {data.phone}</p>{" "}
-                </div>
-                <div className="flex flex-row gap-2 items-center flex-wrap">
-                  
-                  <div className="flex  gap-3  items-center">
-                  <p>Status: </p>
-                    <span className="text-sm border border-gray-500 w-24 text-center py-1.5 rounded-full capitalize">
-                    {data.status}
-                    </span>
-                  </div>
-              
-
-                  <div className="flex gap-3 items-center ">
-                    <p className="">Priority: </p>
-                    <span className="text-sm text-center text-white bg-orange-400 w-24 py-1.5 rounded-full capitalize">
-                    {data.priority}
-                    </span>
-                  </div>
-                </div>
-                {data.assign_username?(
-                <div className="flex flex-col mx-3">
-                  
-                  <div className="flex   gap-3 items-center">
-                  <p>Assigned to </p>
-                    <span className="text-sm border border-gray-500 px-3 text-center py-1.5 rounded-full capitalize whitespace-nowrap">
-                    {data.assign_username}
-                    </span>
-                  </div>
-                </div>
-                ):''} 
+              <div className="col-span-4 px-5 pb-3">
+                <p className="capitalize">{data.public_user_name}</p>
+                <p>+91 {data.phone}</p>{" "}
               </div>
+              <div className="flex flex-row gap-2 items-center flex-wrap">
+                <div className="flex  gap-3  items-center">
+                  <p>Status: </p>
+                  <span className="text-sm border border-gray-500 w-24 text-center py-1.5 rounded-full capitalize">
+                    {data.status}
+                  </span>
+                </div>
+
+                <div className="flex gap-3 items-center ">
+                  <p className="">Priority: </p>
+                  <span className="text-sm text-center text-white bg-orange-400 w-24 py-1.5 rounded-full capitalize">
+                    {data.priority}
+                  </span>
+                </div>
+              </div>
+              {data.assign_username ? (
+                <div className="flex flex-col mx-3">
+                  <div className="flex   gap-3 items-center">
+                    <p>Assigned to </p>
+                    <span className="text-sm border border-gray-500 px-3 text-center py-1.5 rounded-full capitalize whitespace-nowrap">
+                      {data.assign_username}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
             <hr />
             <div className="grid grid-cols-12 gap-2 mx-3 my-4">
               <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded">
@@ -137,17 +146,21 @@ const ViewRequest = () => {
                 <div className="flex flex-col gap-3 mx-2 text-base">
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Origin </p>
-                    <p className="col-span-2 capitalize">: {data.grievance_mode}</p>
+                    <p className="col-span-2 capitalize">
+                      : {data.grievance_mode}
+                    </p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Complaint Type </p>
-                    <p className="col-span-2 capitalize">: {data.complaint_type_title}</p>
+                    <p className="col-span-2 capitalize">
+                      : {data.complaint_type_title}
+                    </p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Department </p>
                     <p className="col-span-2 capitalize">: {data.dept_name}</p>
                   </div>
-                 
+
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Complaint </p>
                     <p className="col-span-2 capitalize">: {data.complaint}</p>
@@ -162,7 +175,9 @@ const ViewRequest = () => {
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Street </p>
-                    <p className="col-span-2 capitalize">: {data.street_name}</p>
+                    <p className="col-span-2 capitalize">
+                      : {data.street_name}
+                    </p>
                   </div>
                   <div className="grid grid-cols-4">
                     <p className="col-span-2">Pincode </p>
@@ -215,28 +230,30 @@ const ViewRequest = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-300">
-                      <tr className="border-b-2  border-gray-300">
-                        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                          15-05-2024 / 12:00 AM
-                        </td>
-                        <td className="text-center  mx-3 py-2.5 whitespace-nowrap">
-                          R-0001122
-                        </td>
-                        <td className="text-center  mx-3 py-2.5 text-green-600 whitespace-nowrap">
-                          In Progress
-                        </td>
-                      </tr>
-                      <tr className="border-b-2 border-gray-300">
-                        <td className="text-center mx-2 my-2 whitespace-nowrap">
-                          15-05-2024 / 12:00 AM
-                        </td>
-                        <td className="text-center  mx-2 my-2 whitespace-nowrap">
-                          R-0001122
-                        </td>
-                        <td className="text-center  mx-2 my-2 text-green-600 whitespace-nowrap">
-                          In Progress
-                        </td>
-                      </tr>
+                      {matchData.length > 0 ? (
+                        matchData.map((data, index) => (
+                          <tr
+                            className="border-b-2 border-gray-300"
+                            key={index}
+                          >
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                              {formatDate1(data.createdAt)}
+                            </td>
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                              {data.grievance_id}
+                            </td>
+                            <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
+                              {data.status}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td className="text-center py-2.5" colSpan="3">
+                            No matching data found
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -245,13 +262,16 @@ const ViewRequest = () => {
             <div className="mx-3 my-3">
               <p className="mb-2 mx-1 text-lg">Complaint History</p>
               <div className="bg-gray-100 py-3 h-[530px]">
-                  <div className="mx-8 ">
-                    <p className="py-3 font-semibold">
-                      Complaint No {data.grievance_id}
-                    </p>
-                    <div className="h-[280px]  overflow-x-auto no-scrollbar mb-3">
-                      {logData &&
-                        logData.slice().reverse().map((logEntry, index) => (
+                <div className="mx-8 ">
+                  <p className="py-3 font-semibold">
+                    Complaint No {data.grievance_id}
+                  </p>
+                  <div className="h-[280px]  overflow-x-auto no-scrollbar mb-3">
+                    {logData &&
+                      logData
+                        .slice()
+                        .reverse()
+                        .map((logEntry, index) => (
                           <div key={index}>
                             <p className="py-1">
                               {new Date(
@@ -276,78 +296,81 @@ const ViewRequest = () => {
                           </div>
                         ))}
 
-                      <p className="py-2">
-                        {new Date(data.createdAt).toLocaleDateString()}
-                      </p>
-                      <div className="grid grid-cols-3 divide-x-2 divide-black">
-                        <p>
-                          {new Date(data.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </p>
-                        <p className="pl-5 col-span-2">Logged In</p>
-                      </div>
-                      <br />
-                      <div className="grid grid-cols-3 divide-x-2 divide-black">
-                        <p>
-                          {new Date(data.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </p>
-                        <p className="pl-5 col-span-2">
-                          Ticket Raised {data.grievance_id}
-                        </p>
-                      </div>
-                      <br />
-                      <div className="grid grid-cols-3 divide-x-2 divide-black">
-                        <p>
-                          {new Date(data.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </p>
-                        <p className="pl-5 col-span-2">
-                          Assigned To Particular Department
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="mb-2">Work StatusFlow :</p>
-
+                    <p className="py-2">
+                      {new Date(data.createdAt).toLocaleDateString()}
+                    </p>
                     <div className="grid grid-cols-3 divide-x-2 divide-black">
                       <p>
-                        <span className="block">{new Date(data.updatedAt).toLocaleDateString()}</span>
-                        {new Date(data.updatedAt).toLocaleTimeString([], {
+                        {new Date(data.createdAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                           hour12: true,
                         })}
                       </p>
-
-                      <div className="col-span-2">
-                        <p className="pl-5">Status:</p>
-                        <p className="pl-5 text-gray-500">
-                          {data.statusflow
-                            .split("/")
-                            .join(" / ")
-                            .replace(/(?: \/ ){5}/g, " / \n")}
-                        </p>
-                      </div>
+                      <p className="pl-5 col-span-2">
+                        {" "}
+                        Assigned To Particular Department
+                      </p>
                     </div>
-                    <hr className="my-3" />
-                    <div className="md:grid md:grid-cols-3 flex border-2 md:mx-20">
-                      <p className="text-center px-3 py-1.5">Status</p>
-                      <p className="text-center w-full bg-gray-800 md:col-span-2 text-white py-1.5">
-                        {data.status}
+                    <br />
+                    <div className="grid grid-cols-3 divide-x-2 divide-black">
+                      <p>
+                        {new Date(data.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </p>
+                      <p className="pl-5 col-span-2">
+                        Ticket Raised- {data.grievance_id}
+                      </p>
+                    </div>
+                    <br />
+                    <div className="grid grid-cols-3 divide-x-2 divide-black">
+                      <p>
+                        {new Date(data.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </p>
+                      <p className="pl-5 col-span-2">Logged In</p>
+                    </div>
+                  </div>
+
+                  <p className="mb-2">Work StatusFlow :</p>
+
+                  <div className="grid grid-cols-3 divide-x-2 divide-black">
+                    <p>
+                      <span className="block">
+                        {new Date(data.updatedAt).toLocaleDateString()}
+                      </span>
+                      {new Date(data.updatedAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </p>
+
+                    <div className="col-span-2">
+                      <p className="pl-5">Status:</p>
+                      <p className="pl-5 text-gray-500">
+                        {data.statusflow
+                          .split("/")
+                          .join(" / ")
+                          .replace(/(?: \/ ){5}/g, " / \n")}
                       </p>
                     </div>
                   </div>
+                  <hr className="my-3" />
+                  <div className="md:grid md:grid-cols-3 flex border-2 md:mx-20">
+                    <p className="text-center px-3 py-1.5">Status</p>
+                    <p className="text-center w-full bg-gray-800 md:col-span-2 text-white py-1.5">
+                      {data.status}
+                    </p>
+                  </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>
