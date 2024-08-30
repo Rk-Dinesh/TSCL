@@ -322,21 +322,21 @@ const ViewRequestJE = () => {
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
+                      <p className="col-span-2">Complaint Type </p>
+                      <p className="col-span-2 capitalize">
+                        : {data.complaint_type_title}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-4">
                       <p className="col-span-2">Department </p>
                       <p className="col-span-2 capitalize">
                         : {data.dept_name}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Complaint Type </p>
-                      <p className="col-span-2 capitalize">
-                        : {data.complaint}
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-4">
                       <p className="col-span-2">Complaint </p>
                       <p className="col-span-2 capitalize">
-                        : {data.complaint_type_title}
+                        : {data.complaint}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">

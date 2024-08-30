@@ -2,14 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   PieChart,
   Pie,
-  Line,
-  Legend,
   Cell,
-  ResponsiveContainer,
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
   Tooltip,
 } from "recharts";
 import { FaPlus } from "react-icons/fa6";
@@ -91,7 +84,7 @@ const Dashboard = () => {
   useEffect(() => {
     setFilterDept(filteredDataDept);
     setFilterStatus(filteredStatusData)
-  }, [department, report]);
+  }, [department, report,status]);
 
 
   const COLORS_1 = ["#5D72B8", "#9BE6C1", "#5991D3", "#D8B449","#b91c1c","#5b21b6","#4d7c0f","#500724","#a21caf","#0f172a"];
@@ -133,7 +126,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-12 gap-4 m-2 ">
           <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg">
             <p className="text-lg font-medium text-gray-700">
-             Number of request based on Department
+             Request based on Department
             </p>
             <div className="flex flex-col md:flex-row items-center py-4 gap-2">
               <PieChart
@@ -160,6 +153,7 @@ const Dashboard = () => {
                     />
                   ))}
                 </Pie>
+                <Tooltip />
               </PieChart>
               <div className="flex md:flex-col flex-row md:gap-2 gap-4 mr-1 flex-wrap justify-center">
                 {filterDept.map((entry, index) => (
@@ -213,6 +207,7 @@ const Dashboard = () => {
                     />
                   ))}
                 </Pie>
+                <Tooltip />
               </PieChart>
               <div className="flex md:flex-col flex-row md:gap-2 gap-4 mr-1 flex-wrap justify-center">
                 {filterStatus.map((entry, index) => (
