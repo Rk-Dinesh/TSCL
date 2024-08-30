@@ -12,6 +12,15 @@ import EditUser from "./EditUser";
 import { toast } from "react-toastify";
 import DeleteModal from "../Modal/DeleteModal";
 
+import { PiFileCsvLight } from "react-icons/pi";
+import { PiFilePdfDuotone } from "react-icons/pi";
+import { HiOutlineDocument } from "react-icons/hi";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+const csvData = `public_user_name,phone,email,address,pincode,login_password,verification_status,user_status,role
+vishva,1234567890,vishva202005@gmail.com,vinayagar st,605110,$2b$10$T8CiBELNPcXKGPf1K/v.AOULqdPXlGk4iQvng7xrfuMtUbefQ9OMy,verified,active,user`;
+
 
 const User = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes('create');
@@ -32,6 +41,10 @@ const User = ({ permissions }) => {
   const [user, setUser] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const token = sessionStorage.getItem("token");
+
+  const [file, setFile] = useState(null);
+  const [buttonText, setButtonText] = useState("Bulk Upload");
+  const [selectedDoc, setSelectedDoc] = useState(null)
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -121,12 +134,157 @@ const User = ({ permissions }) => {
     }
   };
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setButtonText("Upload");
+  };
+
+  const handleButtonClick = () => {
+    if (buttonText === "Bulk Upload") {
+      document.getElementById("fileInput").click();
+    } else {
+      // Call your API here to upload the file
+      uploadFile(file);
+    }
+  };
+
+  const uploadFile = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        // console.log("File uploaded successfully");
+        setButtonText("Bulk Upload");
+        setFile(null);
+        handlerefresh();
+        toast.success("Data Uploaded Successfully");
+      } else {
+        toast.error("Data failed to Upload");
+        //console.log("File upload failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const setDocs = (event) => {
+    setSelectedDoc(event.target.value);
+  };
+
+  const exportData = async (format) => {
+    if (format === "csv") {
+      // CSV Export
+      const exportedData = user.map((row) => ({
+        
+        public_user_id: row.public_user_id,
+        public_user_name: row.public_user_name,
+        phone: row.phone,
+        email: row.email,
+        address: row.address,
+        pincode:row.pincode,
+        login_password:row.login_password,
+        verification_status: row.verification_status,
+        user_status: row.user_status,
+        role: row.role,
+      }));
+  
+      const csvData = [
+        Object.keys(exportedData[0]).join(","),
+        ...exportedData.map((row) => Object.values(row).join(",")),
+      ].join("\n");
+  
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = window.URL.createObjectURL(blob);
+  
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "User_data.csv");
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === "pdf") {
+      try {
+        const rowsPerPage = 30;
+        const totalPages = Math.ceil(user.length / rowsPerPage);
+  
+        const pdf = new jsPDF("l", "mm", "a4");
+        let yOffset = 0;
+  
+        for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
+          const startIndex = (currentPage - 1) * rowsPerPage;
+          const endIndex = Math.min(startIndex + rowsPerPage, user.length);
+          const currentPageData = user.slice(startIndex, endIndex);
+  
+          const tableData = currentPageData.map((row) => [
+            
+         row.public_user_id,
+         row.public_user_name,
+         row.phone,
+         row.email,
+         row.address,
+        row.pincode,
+        row.login_password,
+         row.verification_status,
+         row.user_status,
+         row.role,
+          ]);
+  
+          pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
+          pdf.autoTable({
+            startY: yOffset + 15,
+            head: [
+              [
+                "UserId",
+                "UserName",
+               "Phone",
+                "Email",
+                "Address",
+                "Pincode",
+                "LoginPassword",
+                "VerificationStatus",
+                "Role",
+              ],
+            ],
+            body: tableData,
+            theme: "striped",
+          });
+  
+          if (currentPage < totalPages) {
+            pdf.addPage();
+            yOffset = 10; // Set yOffset for the new page
+          }
+        }
+  
+        pdf.save("User_data.pdf");
+      } catch (error) {
+        console.error("Error exporting data:", error);
+      }
+    }
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "bulkupload_template.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-          <div className="flex flex-row md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
-            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
+          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+            <div className="flex items-center gap-3 bg-white px-3 py-2 rounded-full">
               <IoMdSearch className="text-xl" />
               <input
                 type="search"
@@ -137,20 +295,48 @@ const User = ({ permissions }) => {
               />
             </div>
             {hasCreatePermission && (
-            <a href="#">
-              <button className="flex gap-2 items-center border-2 border-blue-500  font-lexend bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
-                {" "}
-                <FaPlus />
-                Bulk Upload
-              </button>
-            </a>
+               <div className="relative text-center   hover:text-white py-1.5 rounded-full">
+                
+               <input
+                 type="file"
+                 id="fileInput"
+                 className="hidden"
+                 onChange={handleFileChange}
+                 accept=".csv"
+               />
+               
+               <button
+                 className="flex items-center gap-2 justify-center border-primary border-2 font-normal text-base w-36 py-1.5  rounded-full text-primary hover:text-white hover:bg-primary  "
+                 onClick={handleButtonClick}
+               >
+                  <FaPlus />
+                 {buttonText}
+               </button>
+               
+             </div>
             )}
-            <a href="#">
-              <button className="flex gap-2 items-center border-2 bg-slate-100  font-lexend text-black rounded-full px-3 py-1.5 w-28 justify-between">
-                {" "}
-                CSV <RiArrowDropDownLine />
-              </button>
-            </a>
+            
+            <form>
+                <select
+                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
+                  onChange={setDocs}
+                 
+                >
+                  <option  hidden>
+                   Download
+                  </option>
+
+                  <option value="csv">CSV</option>
+                  <option value="pdf">PDF</option>
+                </select>
+              </form>
+              {selectedDoc === null && (
+                <HiOutlineDocument className="text-2xl text-gray-500" />
+              )}
+              {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
+              {selectedDoc === "pdf" && (
+                <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
+              )}
           </div>
           <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
             <h1 className="md:text-2xl text-xl font-medium  items-center font-lexend">
@@ -297,6 +483,14 @@ const User = ({ permissions }) => {
           </div>
 
           <div className=" my-3 mb-5 mx-7">
+          <div className="text-center">
+            <button
+              className="bg-primary px-3 py-2 rounded-full text-white text-sm font-alegerya"
+              onClick={handleDownload}
+            >
+              Bulk Upload Template
+            </button>
+          </div>
             <nav
               className="flex items-center flex-column flex-wrap md:flex-row md:justify-between justify-center pt-4"
               aria-label="Table navigation"
