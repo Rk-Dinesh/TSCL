@@ -98,7 +98,7 @@ const Status = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -185,7 +185,7 @@ const Status = ({ permissions }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItemsOnPage.slice().reverse().map((type, index) => (
+                  {currentItemsOnPage.map((type, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
                         <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap text-sm text-gray-700">

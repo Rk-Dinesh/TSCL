@@ -19,6 +19,8 @@ const Request = () => {
   const [complainttype, setComplainttype] = useState([]);
   const [Showing, setShowing] = useState([])
   const [selectedComplaintType, setSelectedComplaintType] = useState("All");
+  const [statusColors, setStatusColors] = useState({});
+  const [status, setStatus] = useState([])
 
   useEffect(() => {
     const fetchgrievance = async () => {
@@ -61,7 +63,28 @@ const Request = () => {
    
     fetchgrievance();
     fetchComplaintType();
+    fetchActiveStatus()
   }, [searchValue, currentPage,selectedComplaintType]);
+
+  const fetchActiveStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/status/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      const colorMapping = responseData.reduce((acc, status) => {
+        acc[status.status_name] = status.color;
+        return acc;
+      }, {});
+
+      setStatus(responseData);
+      setStatusColors(colorMapping);
+    } catch (err) {
+      console.error("Error fetching existing ActiveStatus:", err);
+    } 
+  };
 
   
 
@@ -79,7 +102,7 @@ const Request = () => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters
+  const currentItemsOnPage = filteredCenters.slice().reverse()
   .filter((report) =>
     selectedComplaintType === "All"
       ? true
@@ -151,61 +174,61 @@ const Request = () => {
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
                   <th className="">
-                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                    <p className=" mx-6 my-2 font-lexend  font-medium whitespace-nowrap">
                       #
                     </p>
                   </th>
                   <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend  whitespace-nowrap">
+                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
                       Complaint No
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Raised by <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Complaint Type <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Department
                       <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Assigned JE <RiExpandUpDownLine />
                     </p>
                   </th>
 
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Date and Time <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
                       Priority <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Action
                     </p>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {currentItemsOnPage.slice().reverse().map((report, index) => (
+                {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td className="">
                       <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700">
@@ -215,7 +238,7 @@ const Request = () => {
                       </div>
                     </td>
                     <td>
-                      <p className="border-2 w-28 border-green-600 rounded-lg text-center py-1 my-1  text-green-600 ">
+                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  text-slate-900 ">
                         {report.grievance_id}
                       </p>
                     </td>
@@ -251,14 +274,29 @@ const Request = () => {
                       </p>
                     </td>
                     <td>
-                      {" "}
-                      <p className=" border w-28 border-gray-500 rounded-full text-center py-1 mx-2 tex-sm capitalize text-gray-900">
+                      <p
+                        className={`border w-26 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                          report.priority === "High"
+                            ? "bg-red-500"
+                            : report.priority === "Medium"
+                            ? "bg-green-500"
+                            : report.priority === "Low"
+                            ? "bg-sky-500"
+                            : ""
+                        }`}
+                      >
                         {report.priority}
                       </p>
                     </td>
                     <td>
-                      {" "}
-                      <p className=" capitalize border w-28 border-gray-500 rounded-full text-center py-1 tex-sm text-gray-900  ">
+                      <p
+                        className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "
+                        style={{
+                          borderColor: statusColors[report.status] || "gray",
+                          color: statusColors[report.status] || "black",
+                          fontSize: 14,
+                        }}
+                      >
                         {report.status}
                       </p>
                     </td>

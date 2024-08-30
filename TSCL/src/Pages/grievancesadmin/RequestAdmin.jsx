@@ -62,7 +62,7 @@ const RequestAdmin = () => {
 
   const fetchActiveStatus = async () => {
     try {
-      const response = await axios.get(`${API}/status/getactive`, {
+      const response = await axios.get(`${API}/status/get`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -144,7 +144,7 @@ const RequestAdmin = () => {
     paginate(1);
   };
 
-  const currentItemsOnPage = filteredCenters
+  const currentItemsOnPage = filteredCenters.slice().reverse()
     .filter((report) => {
       const complaintTypeMatch = selected === "All" ? true : "";
       const statusMatch =
@@ -295,7 +295,7 @@ const RequestAdmin = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItemsOnPage.slice().reverse().map((report, index) => (
+                {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td className="">
                       <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
