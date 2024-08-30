@@ -408,7 +408,7 @@ const Ward = ({ permissions }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItemsOnPage.map((wards, index) => (
+                  {currentItemsOnPage.slice().reverse().map((wards, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
                         <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">

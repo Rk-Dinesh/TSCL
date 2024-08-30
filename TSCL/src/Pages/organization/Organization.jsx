@@ -386,7 +386,7 @@ const Organization = ({ permissions }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItemsOnPage.map((org, index) => (
+                  {currentItemsOnPage.slice().reverse().map((org, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
                         <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">

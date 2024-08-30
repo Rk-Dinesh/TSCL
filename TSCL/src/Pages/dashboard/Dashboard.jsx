@@ -12,6 +12,7 @@ import { VscGitPullRequestNewChanges } from "react-icons/vsc";
 import { API } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
+import Request from "../request/Request";
 
 const Dashboard = () => {
   const [report, setReport] = useState([]);
@@ -89,17 +90,46 @@ const Dashboard = () => {
 
   const COLORS_1 = ["#5D72B8", "#9BE6C1", "#5991D3", "#D8B449","#b91c1c","#5b21b6","#4d7c0f","#500724","#a21caf","#0f172a"];
 
+  const todayReports = report.filter((r) => {
+    const createdAt = new Date(r.createdAt);
+    const today = new Date();
+    return (
+      createdAt.getDate() === today.getDate() &&
+      createdAt.getMonth() === today.getMonth() &&
+      createdAt.getFullYear() === today.getFullYear()
+    );
+  });
+  
+  const thisWeekReports = report.filter((r) => {
+    const createdAt = new Date(r.createdAt);
+    const today = new Date();
+    const startOfWeek = today.getDate() - today.getDay() + 1;
+    const endOfWeek = startOfWeek + 6;
+    return createdAt.getDate() >= startOfWeek && createdAt.getDate() <= endOfWeek;
+  });
+  
+  const thisMonthReports = report.filter((r) => {
+    const createdAt = new Date(r.createdAt);
+    const today = new Date();
+    return createdAt.getMonth() === today.getMonth() && createdAt.getFullYear() === today.getFullYear();
+  });
+  
+  const requestByToday = todayReports.length;
+  const requestByWeek = thisWeekReports.length;
+  const requestByMonth = thisMonthReports.length;
+
 
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen mx-2 ">
         <div className="grid grid-cols-12 gap-4  my-4 ">
+         
           <div className="md:col-span-4 sm:col-span-6 px-4 col-span-12 bg-white p-4 rounded-lg">
             <p className="text-lg font-medium text-gray-700">
               Request By Today
             </p>
             <div className="flex mt-3 justify-between items-end">
-              <p className="text-3xl font-light ">10</p>
+              <p className="text-2xl font-light ">{requestByToday }</p>
               <VscGitPullRequestNewChanges className="text-3xl text-gray-800" />
             </div>
           </div>
@@ -107,7 +137,7 @@ const Dashboard = () => {
             {" "}
             <p className="text-lg font-medium text-gray-700">Request By Week</p>
             <div className="flex mt-3 justify-between items-end">
-              <p className="text-3xl font-light">5</p>
+              <p className="text-2xl font-light">{requestByWeek }</p>
               <BsCalendar2Week className="text-3xl text-gray-800" />
             </div>
           </div>
@@ -117,7 +147,7 @@ const Dashboard = () => {
               Request By Month
             </p>
             <div className="flex mt-3 justify-between items-end">
-              <p className="text-3xl font-light">7</p>
+              <p className="text-2xl font-light">{requestByMonth}</p>
               <FaCalendarAlt className="text-3xl text-gray-800" />
             </div>
           </div>
@@ -141,7 +171,7 @@ const Dashboard = () => {
                   cy={100}
                   innerRadius={60}
                   outerRadius={80}
-                  paddingAngle={5}
+                  paddingAngle={2}
                   fill="#8884d8"
                   label
                 >
@@ -155,7 +185,7 @@ const Dashboard = () => {
                 </Pie>
                 <Tooltip />
               </PieChart>
-              <div className="flex md:flex-col flex-row md:gap-2 gap-4 mr-1 flex-wrap justify-center">
+              <div className="flex md:flex-col flex-row md:gap-0 gap-4 mr-1 flex-wrap justify-center">
                 {filterDept.map((entry, index) => (
                   <div
                     key={entry.name}
@@ -185,7 +215,7 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row items-center py-4 gap-2">
               <PieChart
                 width={250}
-                height={225}
+                height={245}
                 className="flex md:flex-col items-center flex-row outline-none"
               >
                 <Pie
@@ -195,7 +225,7 @@ const Dashboard = () => {
                   cy={100}
                   innerRadius={60}
                   outerRadius={80}
-                  paddingAngle={5}
+                  paddingAngle={2}
                   fill="#8884d8"
                   label
                 >
@@ -209,7 +239,7 @@ const Dashboard = () => {
                 </Pie>
                 <Tooltip />
               </PieChart>
-              <div className="flex md:flex-col flex-row md:gap-2 gap-4 mr-1 flex-wrap justify-center">
+              <div className="flex md:flex-col flex-row md:gap-0 gap-4 mr-1 flex-wrap justify-center">
                 {filterStatus.map((entry, index) => (
                   <div
                     key={entry.name}
@@ -233,6 +263,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+       
       </div>
     </div>
   );

@@ -565,7 +565,7 @@ const RequestHead = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItemsOnPage.map((report, index) => (
+                {currentItemsOnPage.slice().reverse().map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td className="">
                       <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
