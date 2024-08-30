@@ -188,10 +188,8 @@ const User = ({ permissions }) => {
         email: row.email,
         address: row.address,
         pincode:row.pincode,
-        login_password:row.login_password,
         verification_status: row.verification_status,
         user_status: row.user_status,
-        role: row.role,
       }));
   
       const csvData = [
@@ -230,10 +228,8 @@ const User = ({ permissions }) => {
          row.email,
          row.address,
         row.pincode,
-        row.login_password,
          row.verification_status,
          row.user_status,
-         row.role,
           ]);
   
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
@@ -247,9 +243,7 @@ const User = ({ permissions }) => {
                 "Email",
                 "Address",
                 "Pincode",
-                "LoginPassword",
                 "VerificationStatus",
-                "Role",
               ],
             ],
             body: tableData,
