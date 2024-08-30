@@ -342,13 +342,13 @@ const RequestAdmin = () => {
                     </td>
                     <td>
                       <p
-                        className={`border w-26 rounded-full text-center py-1.5 mx-2 text-base font-normal capitalize text-white  ${
+                        className={`border w-26 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
                           report.priority === "High"
                             ? "bg-red-500"
                             : report.priority === "Medium"
                             ? "bg-green-500"
                             : report.priority === "Low"
-                            ? "bg-blue-600"
+                            ? "bg-sky-500"
                             : ""
                         }`}
                       >
