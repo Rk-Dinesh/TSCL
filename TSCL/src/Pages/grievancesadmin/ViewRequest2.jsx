@@ -62,7 +62,7 @@ const ViewRequest2 = () => {
             },
           }
         );
-        setMatchData(responsefilter.data.data);
+        setMatchData(decryptData(responsefilter.data.data));
       } catch (err) {
         setError(err);
       } finally {
@@ -360,31 +360,31 @@ const ViewRequest2 = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-300">
-                        {matchData.length > 0 ? (
-                          matchData.map((data, index) => (
-                            <tr
-                              className="border-b-2 border-gray-300"
-                              key={index}
-                            >
-                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                                {formatDate1(data.createdAt)}
-                              </td>
-                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                                {data.grievance_id}
-                              </td>
-                              <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
-                                {data.status}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td className="text-center py-2.5" colSpan="3">
-                              No matching data found
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
+  {matchData && matchData.length > 0 ? (
+    matchData.map((data, index) => (
+      <tr
+        className="border-b-2 border-gray-300"
+        key={index}
+      >
+        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+          {formatDate1(data.createdAt)}
+        </td>
+        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+          {data.grievance_id}
+        </td>
+        <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
+          {data.status}
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td className="text-center py-2.5" colSpan="3">
+        No matching data found
+      </td>
+    </tr>
+  )}
+</tbody>
                     </table>
                   </div>
                 </div>

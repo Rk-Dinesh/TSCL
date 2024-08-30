@@ -16,7 +16,6 @@ const StatusSchema = yup.object().shape({
 });
 
 const AddStatus = (props) => {
-
   const {
     register,
     formState: { errors },
@@ -28,22 +27,21 @@ const AddStatus = (props) => {
   });
 
   const onSubmit = async (data) => {
-   
     const formData = {
       ...data,
-      status:"active",
-      created_by_user:"admin"
+      status: "active",
+      created_by_user: "admin",
     };
 
     try {
-      const token = sessionStorage.getItem('token');
-      const response = await axios.post(`${API}/status/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const token = sessionStorage.getItem("token");
+      const response = await axios.post(`${API}/status/post`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (response.status === 200) { 
+      if (response.status === 200) {
         toast.success(" created Successfully");
         props.toggleModal();
         props.handlerefresh();
@@ -61,14 +59,14 @@ const AddStatus = (props) => {
         <div className="border-b-2 border-gray-300 mx-10">
           <h1 className="text-xl font-medium pt-10 pb-2">Add Status</h1>
         </div>
-       
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mx-6 my-2">
             <label
               className="block text-gray-900 text-base font-normal mb-4"
               htmlFor="status_name"
             >
-             Status
+              Status
             </label>
             <input
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
@@ -89,16 +87,25 @@ const AddStatus = (props) => {
               Color
             </label>
             <input
-              className=""
+              className="w-1/2 rounded-full outline-none bg-transparent"
               id="color"
               type="color"
+              list="allowed-colors"
               {...register("color")}
             />
+
+            <datalist id="allowed-colors">
+              <option value="#111827" />
+              <option value="#14532d" />
+              <option value="#eab308" />
+              <option value="#1e40af" />
+              <option value="#65a30d" />
+            </datalist>
             {errors.color && (
               <p className="text-red-500">{errors.color.message}</p>
             )}
           </div>
-          
+
           <div className="flex justify-end  mx-10 gap-5 ">
             <div
               className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
@@ -106,12 +113,14 @@ const AddStatus = (props) => {
             >
               cancel
             </div>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5"  type="submit">
+            <button
+              className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5"
+              type="submit"
+            >
               Save
             </button>
           </div>
         </form>
-       
       </div>
     </div>
   );

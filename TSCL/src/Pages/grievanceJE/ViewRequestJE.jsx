@@ -63,9 +63,8 @@ const ViewRequestJE = () => {
             },
           }
         );
-     
-       
-        setMatchData(responsefilter.data.data);
+
+        setMatchData(decryptData(responsefilter.data.data));
       } catch (err) {
         setError(err);
       } finally {
@@ -409,7 +408,7 @@ const ViewRequestJE = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-300">
-                        {matchData.length > 0 ? (
+                        {matchData && matchData.length > 0 ? (
                           matchData.map((data, index) => (
                             <tr
                               className="border-b-2 border-gray-300"

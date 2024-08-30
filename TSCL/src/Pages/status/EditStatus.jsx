@@ -114,19 +114,28 @@ const token = sessionStorage.getItem('token');
               <p className="text-red-500">{errors.status_name.message}</p>
             )}
           </div>
-          <div className="mx-6 my-1">
+          <div className="mx-6 my-3">
             <label
-              className="block text-gray-900 text-base font-normal mb-1"
+              className="block text-gray-900 text-base font-normal mb-3"
               htmlFor="color"
             >
               Color
             </label>
             <input
-              className=""
+              className="w-1/2 rounded-full outline-none bg-transparent"
               id="color"
               type="color"
+              list="allowed-colors"
               {...register("color")}
             />
+
+            <datalist id="allowed-colors">
+              <option value="#111827" />
+              <option value="#14532d" />
+              <option value="#eab308" />
+              <option value="#1e40af" />
+              <option value="#65a30d" />
+            </datalist>
             {errors.color && (
               <p className="text-red-500">{errors.color.message}</p>
             )}

@@ -342,13 +342,13 @@ const RequestAdmin = () => {
                     </td>
                     <td>
                       <p
-                        className={`border w-28 rounded-full text-center py-1.5 mx-2 text-base capitalize text-white  ${
+                        className={`border w-26 rounded-full text-center py-1.5 mx-2 text-base font-normal capitalize text-white  ${
                           report.priority === "High"
                             ? "bg-red-500"
                             : report.priority === "Medium"
-                            ? "bg-green-600"
+                            ? "bg-green-500"
                             : report.priority === "Low"
-                            ? "bg-blue-400"
+                            ? "bg-blue-600"
                             : ""
                         }`}
                       >
@@ -358,11 +358,11 @@ const RequestAdmin = () => {
 
                     <td>
                       <p
-                        className="border w-28 rounded-full text-center py-1 tex-sm mx-2 capitalize  "
+                        className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "
                         style={{
                           borderColor: statusColors[report.status] || "gray",
                           color: statusColors[report.status] || "black",
-                          fontSize: 16,
+                          fontSize: 14,
                         }}
                       >
                         {report.status}
