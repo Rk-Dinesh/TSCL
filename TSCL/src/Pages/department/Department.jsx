@@ -5,6 +5,7 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { toast } from 'react-toastify';
 import { IoMdSearch } from "react-icons/io";
 import AddDepartment from "./AddDepartment";
 import axios from "axios";
