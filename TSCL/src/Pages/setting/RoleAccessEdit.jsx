@@ -13,8 +13,6 @@ const RoleAccessLevelEdit = () => {
   const navigate = useNavigate();
   const [roleName, setRoleName] = useState("");
   const [accessLevels, setAccessLevels] = useState([]);
-  const [grievanceType, setGrievanceType] = useState("");
-  const [grievancePermissions, setGrievancePermissions] = useState([]);
   const [features, setFeatures] = useState([
     { name: "Dashboard", value: "dashboard", checked: false },
     { name: "Organization", value: "organization", checked: false },
@@ -29,12 +27,17 @@ const RoleAccessLevelEdit = () => {
     { name: "Status", value: "status", checked: false },
     { name: "Setting", value: "setting", checked: false },
     { name: "Escalation", value: "escalate", checked: false },
+    { name: "Grievance", title: true },
+    { name: "SuperAdmin", value: "grievance", checked: false },
+    { name: "Commisioner", value: "viewrequest4", checked: false },
+    { name: "Department Admin", value: "viewrequest2", checked: false },
+    { name: "Engineer", value: "viewrequest3", checked: false },
+    { name: "Operator", value: "viewrequest1", checked: false },
   ]);
 
   const [errors, setErrors] = useState({
     roleName: "",
     featurePermissions: "",
-    grievancePermissions: "",
   });
 
   useEffect(() => {
@@ -52,8 +55,6 @@ const RoleAccessLevelEdit = () => {
         if (response.status === 200) {
           setRoleName(roleData.role_name);
           setAccessLevels(roleData.accessLevels || []);
-          setGrievanceType(roleData.grievanceType || "");
-          setGrievancePermissions(roleData.grievancePermissions || []);
           const updatedFeatures = features.map((feature) => ({
             ...feature,
             checked: roleData.accessLevels.some(
@@ -129,32 +130,12 @@ const RoleAccessLevelEdit = () => {
     }
   };
 
-  const handleGrievanceTypeChange = (event) => {
-    setGrievanceType(event.target.value);
-    setGrievancePermissions([]);
-  };
-
-  const handleGrievancePermissionChange = (permission) => {
-    setGrievancePermissions((prev) =>
-      prev.includes(permission)
-        ? prev.filter((p) => p !== permission)
-        : [...prev, permission]
-    );
-  };
-
-  const handleAllGrievancePermissionChange = () => {
-    setGrievancePermissions((prev) =>
-      prev.length === 4 ? [] : ["view","create", "edit", "delete"]
-    );
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     let formIsValid = true;
     const newErrors = {
       roleName: "",
       featurePermissions: "",
-      grievancePermissions: "",
     };
 
     if (roleName.trim() === "") {
@@ -170,12 +151,6 @@ const RoleAccessLevelEdit = () => {
       }
     });
 
-    if (grievanceType !== "" && grievancePermissions.length === 0) {
-      newErrors.grievancePermissions =
-        "Please select at least one permission for the selected grievance type.";
-      formIsValid = false;
-    }
-
     setErrors(newErrors);
 
     if (!formIsValid) {
@@ -183,13 +158,6 @@ const RoleAccessLevelEdit = () => {
     }
 
     const newAccessLevels = [...accessLevels];
-
-    if (grievanceType) {
-      newAccessLevels.push({
-        feature: grievanceType,
-        permissions: grievancePermissions,
-      });
-    }
 
     const roleAccessLevel = {
       role_name: roleName,
@@ -239,167 +207,109 @@ const RoleAccessLevelEdit = () => {
           <div className="mb-2">
             <h3 className="mt-6 mb-3 text-base ">Access Levels:</h3>
             {features.map((feature, index) => (
-              <div
-                className="md:grid md:grid-cols-3 mb-3 text-base "
-                key={index}
-              >
-                <div className="col-span-1 flex gap-3">
-                  <input
-                    type="checkbox"
-                    checked={feature.checked}
-                    onChange={() => handleFeatureChange(index)}
-                  />
-                  <label>{feature.name}</label>
-                </div>
-                {feature.checked && (
-                  <div className="flex gap-3">
-                    <div className="flex items-center gap-2 ">
-                      <label className="mx-4 md:text-base text-sm ">
-                        Permissions:
-                      </label>
-                      <input
-                        type="checkbox"
-                        value="view"
-                        checked={
-                          accessLevels
-                            .find((level) => level.feature === feature.value)
-                            ?.permissions.includes("view") || false
-                        }
-                        onChange={() => handlePermissionChange(index, "view")}
-                      />
-                      <label className="text-sm">View</label>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        value="create"
-                        checked={
-                          accessLevels
-                            .find((level) => level.feature === feature.value)
-                            ?.permissions.includes("create") || false
-                        }
-                        onChange={() => handlePermissionChange(index, "create")}
-                      />
-                      <label>Create</label>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        value="edit"
-                        checked={
-                          accessLevels
-                            .find((level) => level.feature === feature.value)
-                            ?.permissions.includes("edit") || false
-                        }
-                        onChange={() => handlePermissionChange(index, "edit")}
-                      />
-                      <label>Edit</label>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        value="delete"
-                        checked={
-                          accessLevels
-                            .find((level) => level.feature === feature.value)
-                            ?.permissions.includes("delete") || false
-                        }
-                        onChange={() => handlePermissionChange(index, "delete")}
-                      />
-                      <label>Delete</label>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={
-                          accessLevels.find(
-                            (level) => level.feature === feature.value
-                          )?.permissions.length === 4
-                        }
-                        onChange={() => handleAllPermissionChange(index)}
-                      />
-                      <label>All</label>
-                    </div>
-                  </div>
-                )}
+              feature.title ? (
+                <div key={index} className=" flex gap-2 items-center mb-4">
+                <h3 className="text-base text-primary">{feature.name}</h3>
+                <p className="text-red-500 text-sm">( Select one option from the list )</p>
               </div>
+              ) : (
+                <div
+                  className="md:grid md:grid-cols-3 mb-3 text-base "
+                  key={index}
+                >
+                  <div className="col-span-1 flex gap-3">
+                    <input
+                      type="checkbox"
+                      checked={feature.checked}
+                      onChange={() => handleFeatureChange(index)}
+                    />
+                    <label>{feature.name}</label>
+                  </div>
+                  {feature.checked && (
+                    <div className="flex gap-3">
+                      <div className="flex items-center gap-2 ">
+                        <label className="mx-4 md:text-base text-sm ">
+                          Permissions:
+                        </label>
+                        <input
+                          type="checkbox"
+                          value="view"
+                          checked={
+                            accessLevels
+                              .find((level) => level.feature === feature.value)
+                              ?.permissions.includes("view") || false
+                          }
+                          onChange={() => handlePermissionChange(index, "view")}
+                        />
+                        <label className="text-sm">View</label>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          value="create"
+                          checked={
+                            accessLevels
+                              .find((level) => level.feature === feature.value)
+                              ?.permissions.includes("create") || false
+                          }
+                          onChange={() => handlePermissionChange(index, "create")}
+                        />
+                        <label>Create</label>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          value="edit"
+                          checked={
+                            accessLevels
+                              .find((level) => level.feature === feature.value)
+                              ?.permissions.includes("edit") || false
+                          }
+                          onChange={() => handlePermissionChange(index, "edit")}
+                        />
+                        <label>Edit</label>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          value="delete"
+                          checked={
+                            accessLevels
+                              .find((level) => level.feature === feature.value)
+                              ?.permissions.includes("delete") || false
+                          }
+                          onChange={() => handlePermissionChange(index, "delete")}
+                        />
+                        <label>Delete</label>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={
+                            accessLevels.find(
+                              (level) => level.feature === feature.value
+                            )?.permissions.length === 4
+                          }
+                          onChange={() => handleAllPermissionChange(index)}
+                        />
+                        <label>All</label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
             ))}
           </div>
           {errors.featurePermissions && (
             <p className="error text-red-500">{errors.featurePermissions}</p>
           )}
-          <div className="mb-2">
-            <h3 className="mt-6 mb-3 text-base ">Grievance Type:</h3>
-            <select
-              className="w-80 text-start border rounded-lg ml-2 px-3 py-1 outline-none"
-              value={grievanceType}
-              onChange={handleGrievanceTypeChange}
-            >
-              <option value="">Select Grievance Type</option>
-              <option value="grievance">Super Admin</option>
-              <option value="viewrequest4">Commissioner</option>
-              <option value="viewrequest3">Department Admin</option>
-              <option value="viewrequest2">Junior Engineer</option>
-              <option value="viewrequest1">Operator</option>
-            </select>
-          </div>
-          {grievanceType && (
-            <div className="mb-2">
-              <h3 className="mt-6 mb-3 text-base">Permissions:</h3>
-              <div className="flex gap-3">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={grievancePermissions.includes("view")}
-                    onChange={() => handleGrievancePermissionChange("view")}
-                  />
-                  <label className="text-sm">View</label>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={grievancePermissions.includes("create")}
-                    onChange={() => handleGrievancePermissionChange("create")}
-                  />
-                  <label>Create</label>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={grievancePermissions.includes("edit")}
-                    onChange={() => handleGrievancePermissionChange("edit")}
-                  />
-                  <label>Edit</label>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={grievancePermissions.includes("delete")}
-                    onChange={() => handleGrievancePermissionChange("delete")}
-                  />
-                  <label>Delete</label>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={grievancePermissions.length === 4}
-                    onChange={handleAllGrievancePermissionChange}
-                  />
-                  <label>All</label>
-                </div>
-              </div>
-            </div>
-          )}
-          {errors.grievancePermissions && (
-            <p className="error text-red-500">{errors.grievancePermissions}</p>
-          )}
           <div className="flex justify-center">
-          <button
-            type="submit"
-            className="mt-6 px-4 py-2 bg-blue-500 text-white  rounded-lg"
-          >
-            Save Changes
-          </button>
+            <button
+              type="submit"
+              className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
