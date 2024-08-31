@@ -17,6 +17,7 @@ import Status from "./Pages/status/Status";
 import RequestHead from "./Pages/grievanceHead/RequestHead";
 import Profile from "./Pages/layout.jsx/Profile";
 import Escalation from "./Pages/escalation/Escalation";
+import EscalationCommissioner from "./Pages/escalation/EscalationCommissioner";
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
@@ -191,34 +192,76 @@ function App() {
                 <Route path="/view" element={<ViewRequest />} />
               </>
             )}
-            {memoizedFeatures["grievance"] && (
+            {memoizedFeatures["requestview1"] && (
               <>
-                <Route path="/requestview1" element={<Request />} />
+               
+                <Route
+                  path="/requestview1"
+                  element={
+                    <Request permissions={memoizedFeatures["requestview1"]} />
+                  }
+                />
+                
                 <Route path="/view" element={<ViewRequest />} />
                 <Route path="/form" element={<GrievanceForm />} />
-                <Route path="/escalate" element={<Escalation />} />
+               
+                
               </>
             )}
 
-            {memoizedFeatures["grievance"] && (
+            {memoizedFeatures["requestview2"] && (
               <>
-                <Route path="/requestview2" element={<RequestAdmin />} />
+                <Route
+                  path="/requestview2"
+                  element={
+                    <RequestAdmin permissions={memoizedFeatures["requestview2"]} />
+                  }
+                />
                 <Route path="/view2" element={<ViewRequest2 />} />
               </>
             )}
 
-            {memoizedFeatures["grievance"] && (
+            {memoizedFeatures["requestview3"] && (
               <>
-                <Route path="/requestview3" element={<RequestJE />} />
+               
+                <Route
+                  path="/requestview3"
+                  element={
+                    <RequestJE permissions={memoizedFeatures["requestview3"]} />
+                  }
+                />
                 <Route path="/view3" element={<ViewRequestJE />} />
               </>
             )}
 
-            {memoizedFeatures["grievance"] && (
+            {memoizedFeatures["requestview4"] && (
               <>
-                <Route path="/requestview4" element={<RequestHead />} />
+                
+                <Route
+                  path="/requestview4"
+                  element={
+                    <RequestHead permissions={memoizedFeatures["requestview4"]} />
+                  }
+                />
                 <Route path="/view" element={<ViewRequest />} />
               </>
+            )}
+
+
+        
+            {memoizedFeatures["escalate"] && (
+              <Route
+                path="/escalate"
+                element={<Escalation permissions={memoizedFeatures["escalate"]} />}
+              />
+            )}
+         
+
+            {memoizedFeatures["escalation"] && (
+              <Route
+                path="/escalation"
+                element={<EscalationCommissioner permissions={memoizedFeatures["escalation"]} />}
+              />
             )}
 
             {memoizedFeatures["setting"] && (
@@ -236,7 +279,7 @@ function App() {
             {memoizedFeatures["status"] && (
               <Route
                 path="/status"
-                element={<Status permissions={memoizedFeatures["grievance"]} />}
+                element={<Status permissions={memoizedFeatures["status"]} />}
               />
             )}
             <Route path="/token" element={<Expire />} />

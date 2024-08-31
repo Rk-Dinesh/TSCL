@@ -28,6 +28,7 @@ const Department = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes('create');
   const hasEditPermission = permissions?.includes('edit');
   const hasDeletePermission = permissions?.includes('delete');
+  const hasDownloadPermission = permissions?.includes('download');
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -319,7 +320,8 @@ const Department = ({ permissions }) => {
                
              </div>
             )}
-            
+            {hasDownloadPermission && (
+            <div className="flex gap-2 items-center">
             <form>
                 <select
                   className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
@@ -340,6 +342,8 @@ const Department = ({ permissions }) => {
               {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
               {selectedDoc === "pdf" && (
                 <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
+              )}
+              </div>
               )}
           </div>
 

@@ -41,15 +41,16 @@ const Layout = ({ permissions }) => {
     } : null,
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
-    //permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
-    //permissions["grievance"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
-    permissions["grievance"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
-    permissions["grievance"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
-    permissions["grievance"] && { title: "Commissioner", icon: <BsShieldExclamation />, to: "/requestview4" },
+    permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
+    permissions["requestview1"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
+    permissions["requestview2"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
+    permissions["requestview3"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
+    permissions["requestview4"] && { title: "Commissioner", icon: <BsShieldExclamation />, to: "/requestview4" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
-    permissions["grievance"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
+    permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
+    permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
     
    
@@ -88,7 +89,7 @@ const Layout = ({ permissions }) => {
           </h1>
         </span>
 
-        <div className="row-span-10 mt-4 ">
+        <div className="row-span-10 mt-4  overflow-auto no-scrollbar">
           <ul className="pt-2">
             {Menus.map((menu, index) => (
               <React.Fragment key={index} >

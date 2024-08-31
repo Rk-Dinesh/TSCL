@@ -26,13 +26,15 @@ const RoleAccessLevelEdit = () => {
     { name: "PublicUser", value: "user", checked: false },
     { name: "Status", value: "status", checked: false },
     { name: "Setting", value: "setting", checked: false },
+    { name: "Escalation", title: true },
     { name: "Escalation", value: "escalate", checked: false },
+    { name: "Escalation Commissioner", value: "escalation", checked: false },
     { name: "Grievance", title: true },
     { name: "SuperAdmin", value: "grievance", checked: false },
-    { name: "Commisioner", value: "viewrequest4", checked: false },
-    { name: "Department Admin", value: "viewrequest2", checked: false },
-    { name: "Engineer", value: "viewrequest3", checked: false },
-    { name: "Operator", value: "viewrequest1", checked: false },
+    { name: "Commisioner", value: "requestview4", checked: false },
+    { name: "Department Admin", value: "requestview2", checked: false },
+    { name: "Engineer", value: "requestview3", checked: false },
+    { name: "Operator", value: "requestview1", checked: false },
   ]);
 
   const [errors, setErrors] = useState({
@@ -123,9 +125,9 @@ const RoleAccessLevelEdit = () => {
 
     if (featureIndex !== -1) {
       newAccessLevels[featureIndex].permissions =
-        newAccessLevels[featureIndex].permissions.length === 4
+        newAccessLevels[featureIndex].permissions.length === 5
           ? []
-          : ["view","create", "edit", "delete"];
+          : ["view","create", "edit", "delete","download"];
       setAccessLevels(newAccessLevels);
     }
   };
@@ -285,10 +287,23 @@ const RoleAccessLevelEdit = () => {
                       <div className="flex items-center gap-2 text-sm">
                         <input
                           type="checkbox"
+                          value="download"
+                          checked={
+                            accessLevels
+                              .find((level) => level.feature === feature.value)
+                              ?.permissions.includes("download") || false
+                          }
+                          onChange={() => handlePermissionChange(index, "download")}
+                        />
+                        <label>Download</label>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
                           checked={
                             accessLevels.find(
                               (level) => level.feature === feature.value
-                            )?.permissions.length === 4
+                            )?.permissions.length === 5
                           }
                           onChange={() => handleAllPermissionChange(index)}
                         />

@@ -23,6 +23,7 @@ const Escalation = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
+  const hasDownloadPermission = permissions?.includes('download');
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -190,16 +191,6 @@ const Escalation = ({ permissions }) => {
     }
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
@@ -220,6 +211,8 @@ const Escalation = ({ permissions }) => {
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
               </div>
+              {hasDownloadPermission && (
+              <div className="flex items-center gap-2">
               <form>
                 <select
                   className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
@@ -246,7 +239,10 @@ const Escalation = ({ permissions }) => {
                   onClick={() => exportData("pdf")}
                 />
               )}
+              </div>
+              )}
             </div>
+            
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
@@ -290,12 +286,12 @@ const Escalation = ({ permissions }) => {
                       </p>
                     </th>
                     <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
+                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                         Escalation Level <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
+                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
                         Status <RiExpandUpDownLine />
                       </p>
                     </th>

@@ -22,13 +22,15 @@ const RoleAccessLevelForm = () => {
     { name: "PublicUser", value: "user", checked: false },
     { name: "Status", value: "status", checked: false },
     { name: "Setting", value: "setting", checked: false },
+    { name: "Escalation", title: true },
     { name: "Escalation", value: "escalate", checked: false },
+    { name: "Escalation Commissioner", value: "escalation", checked: false },
     { name: "Grievance", title: true }, // Title without value, checkbox, etc.
     { name: "SuperAdmin", value: "grievance", checked: false },
-    { name: "Commisioner", value: "viewrequest4", checked: false },
-    { name: "Department Admin", value: "viewrequest2", checked: false },
-    { name: "Engineer", value: "viewrequest3", checked: false },
-    { name: "Operator", value: "viewrequest1", checked: false },
+    { name: "Commissioner", value: "requestview4", checked: false },
+    { name: "Department Admin", value: "requestview2", checked: false },
+    { name: "Engineer", value: "requestview3", checked: false },
+    { name: "Operator", value: "requestview1", checked: false },
   ]);
 
   const [errors, setErrors] = useState({
@@ -82,7 +84,7 @@ const RoleAccessLevelForm = () => {
       (level) => level.feature === features[index].value
     );
 
-    if (newAccessLevels[featureIndex].permissions.length === 4) {
+    if (newAccessLevels[featureIndex].permissions.length === 5) {
       newAccessLevels[featureIndex].permissions = [];
     } else {
       newAccessLevels[featureIndex].permissions = [
@@ -90,6 +92,7 @@ const RoleAccessLevelForm = () => {
         "create",
         "edit",
         "delete",
+        "download"
       ];
     }
     setAccessLevels(newAccessLevels);
@@ -274,12 +277,30 @@ const RoleAccessLevelForm = () => {
                       <div className="flex items-center gap-2 text-sm">
                         <input
                           type="checkbox"
+                          value="download"
+                          checked={
+                            accessLevels
+                              .find(
+                                (level) =>
+                                  level.feature === features[index].value
+                              )
+                              ?.permissions.includes("download") || false
+                          }
+                          onChange={() =>
+                            handlePermissionChange(index, "download")
+                          }
+                        />
+                        <label>Download</label>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
                           value="all"
                           checked={
                             accessLevels.find(
                               (level) =>
                                 level.feature === features[index].value
-                            )?.permissions.length === 4 || false
+                            )?.permissions.length === 5 || false
                           }
                           onChange={() => handleAllPermissionChange(index)}
                         />

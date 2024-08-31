@@ -7,7 +7,11 @@ import axios from "axios";
 import { FaPlus } from "react-icons/fa6";
 import decryptData from "../../Decrypt";
 
-const Request = () => {
+const Request = ({ permissions }) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -123,7 +127,7 @@ const Request = () => {
       <div className="  font-lexend h-screen ">
         <div className="flex justify-between items-center my-4 mx-8 gap-1 flex-wrap">
           <h1 className="md:text-lg text-sm ">New Grievance</h1>
-
+          {hasCreatePermission && (
           <button
             className="flex flex-row-2 gap-2 font-medium font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
             onClick={() =>
@@ -134,7 +138,9 @@ const Request = () => {
           >
             <FaPlus /> Add Report
           </button>
+          )}
         </div>
+          
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-5  p-3">
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
