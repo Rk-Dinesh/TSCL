@@ -280,8 +280,8 @@ const EditComplaint = (props) => {
                             <option value="" hidden>
                               Select Type
                             </option>
-                            <option value="Month">Month</option>
-                            <option value="Days">Days</option>
+                            <option value="month">Month</option>
+                            <option value="day">Days</option>
                           </select>
                           {errors.tat_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -361,8 +361,8 @@ const EditComplaint = (props) => {
                             <option value="" hidden>
                               Select Type
                             </option>
-                            <option value="Month">Month</option>
-                            <option value="days">Days</option>
+                            <option value="month">Month</option>
+                            <option value="day">Days</option>
                           </select>
                           {errors.escalation_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">

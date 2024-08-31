@@ -17,6 +17,7 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { LuUserCircle2 } from "react-icons/lu";
 import Header from "./Header";
 import logo from "../../assets/images/logo1.png"
+import Loading from "../../Loading";
 
 const Layout = ({ permissions }) => {
   const location = useLocation();
@@ -153,7 +154,7 @@ const Layout = ({ permissions }) => {
         }`}
       >
         <Header />
-        <Suspense >
+        <Suspense fallback={<Loading />} >
           <Outlet />
         </Suspense>
       </div>
