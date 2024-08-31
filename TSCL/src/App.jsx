@@ -16,6 +16,7 @@ import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
 import Status from "./Pages/status/Status";
 import RequestHead from "./Pages/grievanceHead/RequestHead";
 import Profile from "./Pages/layout.jsx/Profile";
+import Escalation from "./escalation/Escalation";
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
@@ -195,6 +196,7 @@ function App() {
                 <Route path="/requestview1" element={<Request />} />
                 <Route path="/view" element={<ViewRequest />} />
                 <Route path="/form" element={<GrievanceForm />} />
+                <Route path="/escalate" element={<Escalation />} />
               </>
             )}
 

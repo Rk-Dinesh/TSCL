@@ -49,6 +49,7 @@ const Layout = ({ permissions }) => {
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
+    permissions["grievance"] && { title: "Escalation", icon: <BsShieldExclamation />, to: "/escalate" },
    
   ].filter(Boolean); 
   

@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
 import { API, formatDate1 } from "../../Host";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "./ViewAttachment";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 const ViewRequest = () => {
   const [data, setData] = useState(null);
@@ -17,6 +18,7 @@ const ViewRequest = () => {
   const [isviewModal, setIsviewModal] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [logData, setLogData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -227,34 +229,51 @@ const ViewRequest = () => {
                         <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
                           Status
                         </th>
+                        {/* <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                         Action
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-300">
-  {matchData && matchData.length > 0 ? (
-    matchData.map((data, index) => (
-      <tr
-        className="border-b-2 border-gray-300"
-        key={index}
-      >
-        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-          {formatDate1(data.createdAt)}
-        </td>
-        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-          {data.grievance_id}
-        </td>
-        <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
-          {data.status}
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td className="text-center py-2.5" colSpan="3">
-        No matching data found
-      </td>
-    </tr>
-  )}
-</tbody>
+                      {matchData && matchData.length > 0 ? (
+                        matchData.map((data, index) => (
+                          <tr
+                            className="border-b-2 border-gray-300"
+                            key={index}
+                          >
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                              {formatDate1(data.createdAt)}
+                            </td>
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                              {data.grievance_id}
+                            </td>
+                            <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
+                              {data.status}
+                            </td>
+                            {/* <td>
+                              <div
+                                className="mx-3 my-3 whitespace-nowrap"
+                                onClick={() =>
+                                  navigate(`/view`, {
+                                    state: {
+                                      grievanceId: data.grievance_id,
+                                    },
+                                  })
+                                }
+                              >
+                                <BsThreeDotsVertical />
+                              </div>
+                            </td> */}
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td className="text-center py-2.5" colSpan="3">
+                            No matching data found
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
                   </table>
                 </div>
               </div>

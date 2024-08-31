@@ -21,6 +21,7 @@ const Header = () => {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('dept');
     sessionStorage.removeItem("code");
+    sessionStorage.removeItem("role");
     navigate('/');
     setIsDropdownOpen(false); 
   };
