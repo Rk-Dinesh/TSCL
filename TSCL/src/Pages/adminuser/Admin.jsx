@@ -10,7 +10,7 @@ import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 import EditAdmin from "./EditAdmin";
 import DeleteModal from "../Modal/DeleteModal";
-
+import { toast } from 'react-toastify';
 import { PiFileCsvLight } from "react-icons/pi";
 import { PiFilePdfDuotone } from "react-icons/pi";
 import { HiOutlineDocument } from "react-icons/hi";
