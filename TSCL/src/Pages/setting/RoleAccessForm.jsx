@@ -22,8 +22,9 @@ const RoleAccessLevelForm = () => {
     { name: "Complaint Type", value: "complainttype", checked: false },
     { name: "AdminUser", value: "admin", checked: false },
     { name: "PublicUser", value: "user", checked: false },
-    { name: "Setting", value: "setting", checked: false },
     { name: "Status", value: "status", checked: false },
+    { name: "Setting", value: "setting", checked: false },
+    { name: "Escalation", value: "escalate", checked: false },
   ]);
 
   const [errors, setErrors] = useState({
@@ -86,28 +87,28 @@ const RoleAccessLevelForm = () => {
     setAccessLevels(newAccessLevels);
   };
 
-  const handleGrievanceTypeChange = (event) => {
-    setGrievanceType(event.target.value);
-    setGrievancePermissions([]);
-  };
+  // const handleGrievanceTypeChange = (event) => {
+  //   setGrievanceType(event.target.value);
+  //   setGrievancePermissions([]);
+  // };
 
-  const handleGrievancePermissionChange = (permission) => {
-    if (grievancePermissions.includes(permission)) {
-      setGrievancePermissions(
-        grievancePermissions.filter((p) => p !== permission)
-      );
-    } else {
-      setGrievancePermissions([...grievancePermissions, permission]);
-    }
-  };
+  // const handleGrievancePermissionChange = (permission) => {
+  //   if (grievancePermissions.includes(permission)) {
+  //     setGrievancePermissions(
+  //       grievancePermissions.filter((p) => p !== permission)
+  //     );
+  //   } else {
+  //     setGrievancePermissions([...grievancePermissions, permission]);
+  //   }
+  // };
 
-  const handleAllGrievancePermissionChange = () => {
-    if (grievancePermissions.length === 4) {
-      setGrievancePermissions([]);
-    } else {
-      setGrievancePermissions(["view","create", "edit", "delete"]);
-    }
-  };
+  // const handleAllGrievancePermissionChange = () => {
+  //   if (grievancePermissions.length === 4) {
+  //     setGrievancePermissions([]);
+  //   } else {
+  //     setGrievancePermissions(["view","create", "edit", "delete"]);
+  //   }
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -133,12 +134,12 @@ const RoleAccessLevelForm = () => {
       }
     });
 
-    // Validation for grievance type and permissions
-    if (grievanceType !== "" && grievancePermissions.length === 0) {
-      newErrors.grievancePermissions =
-        "Please select at least one permission for the selected grievance type.";
-      formIsValid = false;
-    }
+    // // Validation for grievance type and permissions
+    // if (grievanceType !== "" && grievancePermissions.length === 0) {
+    //   newErrors.grievancePermissions =
+    //     "Please select at least one permission for the selected grievance type.";
+    //   formIsValid = false;
+    // }
 
     setErrors(newErrors);
 
@@ -148,12 +149,12 @@ const RoleAccessLevelForm = () => {
 
     const newAccessLevels = [...accessLevels];
 
-    if (grievanceType) {
-      newAccessLevels.push({
-        feature: grievanceType,
-        permissions: grievancePermissions,
-      });
-    }
+    // if (grievanceType) {
+    //   newAccessLevels.push({
+    //     feature: grievanceType,
+    //     permissions: grievancePermissions,
+    //   });
+    // }
 
     const roleAccessLevel = {
       role_name: roleName,
@@ -161,6 +162,9 @@ const RoleAccessLevelForm = () => {
       status:'active',
       created_by_user:"admin"
     };
+
+    console.log(roleAccessLevel);
+    
 
    
     try {
@@ -292,7 +296,7 @@ const RoleAccessLevelForm = () => {
             <p className="error text-center text-red-500 ">{errors.featurePermissions}</p>
           )}
         </div>
-        <div className="md:grid md:grid-cols-3 my-8">
+        {/* <div className="md:grid md:grid-cols-3 my-8">
         <div className="flex gap-3 items-center col-span-1">
         <h3 className=" text-base ">Grievance </h3>
         <select value={grievanceType} onChange={handleGrievanceTypeChange} className="block   px-4 py-1.5  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none">
@@ -364,7 +368,7 @@ const RoleAccessLevelForm = () => {
         </div>
         {errors.grievancePermissions && (
           <p className="error text-center text-red-500">{errors.grievancePermissions}</p>
-        )}
+        )} */}
        
        <div className="flex justify-center mt-3">
        <button className="text-center px-3 py-1.5 bg-primary text-white rounded-full" type="submit">Save Role Access Level</button>

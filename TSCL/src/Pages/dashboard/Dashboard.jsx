@@ -8,6 +8,7 @@ import { API, formatDate, formatDate1 } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import { RiExpandUpDownLine } from "react-icons/ri";
+import logo from "../../assets/images/logo1.png"
 
 const Dashboard = () => {
   const [report, setReport] = useState([]);
@@ -133,8 +134,8 @@ const Dashboard = () => {
   const requestByMonth = thisMonthReports.length;
 
   return (
-    <div className="overflow-y-auto no-scrollbar">
-      <div className="  font-lexend h-screen mx-2 my-5 ">
+    <div className="overflow-y-auto no-scrollbar ">
+      <div className="  font-lexend h-screen mx-2 my-3  ">
         <div className="grid grid-cols-12 gap-4  my-4 ">
           <div className="md:col-span-4 sm:col-span-6 px-4 col-span-12 bg-white p-4 rounded-lg">
             <p className="text-lg font-medium text-gray-700">
@@ -168,7 +169,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-12 gap-4 m-2 ">
           <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg">
             <p className="text-lg font-medium text-gray-700">
-              Request based on Department
+              Request based on Department :
             </p>
             <div className="flex flex-col md:flex-row items-center py-4 gap-2">
               <PieChart
@@ -222,7 +223,7 @@ const Dashboard = () => {
           </div>
           <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg">
             <p className="text-lg font-medium text-gray-700">
-              Control Request By Status
+              Control Request By Status :
             </p>
             <div className="flex flex-col md:flex-row items-center py-4 gap-2">
               <PieChart
@@ -275,10 +276,10 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-          <div className="bg-white h-2/5 mx-3 rounded-lg mt-3 mb-3  p-3">
-            
+          <div className="bg-white h-3/6 mx-3 rounded-lg mt-3  p-3">
+            <p className="text-lg font-lexend my-1 mx-2">Last 5 Grievances request :</p>
             <div className=" rounded-lg  py-1 overflow-x-auto no-scrollbar">
-              <table className="w-full mt-2 ">
+              <table className="w-full mt-1 ">
                 <thead className=" border-b border-gray-300  ">
                   <tr className="">
                     
@@ -321,11 +322,15 @@ const Dashboard = () => {
                         </p>
                       </td>
                       <td>
-                        {" "}
-                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
-                          {report.dept_name}
-                        </p>
-                      </td>
+                      <div className="flex  gap-2 items-center justify-start mx-5 my-3  text-sm text-gray-800">
+                        <img
+                          src={logo}
+                          alt="logo"
+                          className="w-8 h-8"
+                        />
+                        <p className="font-lexend whitespace-nowrap capitalize   text-gray-800"> {report.dept_name}</p>
+                      </div>
+                    </td>
                       <td>
                         {" "}
                         <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">

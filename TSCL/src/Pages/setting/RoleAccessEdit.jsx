@@ -26,8 +26,9 @@ const RoleAccessLevelEdit = () => {
     { name: "Complaint Type", value: "complainttype", checked: false },
     { name: "AdminUser", value: "admin", checked: false },
     { name: "PublicUser", value: "user", checked: false },
-    { name: "Setting", value: "setting", checked: false },
     { name: "Status", value: "status", checked: false },
+    { name: "Setting", value: "setting", checked: false },
+    { name: "Escalation", value: "escalate", checked: false },
   ]);
 
   const [errors, setErrors] = useState({

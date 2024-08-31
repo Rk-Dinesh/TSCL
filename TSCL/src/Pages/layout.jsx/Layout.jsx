@@ -15,6 +15,7 @@ import { MdOutlineContactSupport } from "react-icons/md";
 import { BsShieldExclamation } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { LuUserCircle2 } from "react-icons/lu";
+import { AiFillAlert } from "react-icons/ai";
 import Header from "./Header";
 import logo from "../../assets/images/logo1.png"
 import Loading from "../../Loading";
@@ -40,16 +41,17 @@ const Layout = ({ permissions }) => {
     } : null,
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
-    permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
+    //permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
     //permissions["grievance"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
     permissions["grievance"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
     permissions["grievance"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
-    //permissions["grievance"] && { title: "Commissioner", icon: <BsShieldExclamation />, to: "/requestview4" },
+    permissions["grievance"] && { title: "Commissioner", icon: <BsShieldExclamation />, to: "/requestview4" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
+    permissions["grievance"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
-    permissions["grievance"] && { title: "Escalation", icon: <BsShieldExclamation />, to: "/escalate" },
+    
    
   ].filter(Boolean); 
   
