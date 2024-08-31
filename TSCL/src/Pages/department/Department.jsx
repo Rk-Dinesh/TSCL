@@ -22,7 +22,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData=`dept_name,org_name,status,created_by_user
-PWD,Org_1,active,admin`;
+Department,Organization,active,admin`;
 
 const Department = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes('create');
@@ -171,7 +171,7 @@ const Department = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
+      const response = await axios.post(`${API}/department/uploadcsv`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

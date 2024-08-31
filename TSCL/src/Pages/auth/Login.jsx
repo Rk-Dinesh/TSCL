@@ -72,27 +72,7 @@ const Login = ({ setToken }) => {
     }
   };
 
-
-
-
-
-  function autoNavigateToTokenPage(token) {
-    const tokenExpirationDuration = getTokenExpirationDuration(token);
-    const navigateTimeout = setTimeout(() => {
-      navigate("/token");
-    }, tokenExpirationDuration * 1000);
-    
-    return navigateTimeout;
-  }
   
-
-
-  const handlesignUp = () => {
-    navigate("/signup");
-  };
-
-
-
   return (
     <div className="h-screen  bg-primary py-6 flex flex-col md:items-center gap-8 justify-center ">
       

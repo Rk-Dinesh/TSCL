@@ -16,7 +16,7 @@ import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
 import Status from "./Pages/status/Status";
 import RequestHead from "./Pages/grievanceHead/RequestHead";
 import Profile from "./Pages/layout.jsx/Profile";
-import Escalation from "./escalation/Escalation";
+import Escalation from "./Pages/escalation/Escalation";
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
@@ -102,7 +102,7 @@ function App() {
               )
             }
           >
-             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile />} />
             {memoizedFeatures["dashboard"] && (
               <Route
                 path="/dashboard"

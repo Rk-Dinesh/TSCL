@@ -5,6 +5,13 @@ import { useNavigate } from 'react-router-dom';
 
 const Expire = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+      window.history.pushState(null, null, null);
+      window.addEventListener('popstate', () => {
+        window.history.pushState(null, null, null);
+      });
+    }, []);
   
     const handleLogout = () => {
       sessionStorage.removeItem('token');

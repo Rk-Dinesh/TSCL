@@ -18,6 +18,7 @@ import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
+
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
 
@@ -425,6 +426,7 @@ const Organization = ({ permissions }) => {
                           <BsThreeDotsVertical
                             onClick={() => toggleDropdown(index)}
                           />
+                         
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (

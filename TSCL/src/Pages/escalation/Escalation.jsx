@@ -4,11 +4,10 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoMdSearch } from "react-icons/io";
-import { API, formatDate } from "../Host";
+import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
-import decryptData from "../Decrypt";
-
+import decryptData from "../../Decrypt";
 
 import { PiFileCsvLight } from "react-icons/pi";
 import { PiFilePdfDuotone } from "react-icons/pi";
@@ -25,7 +24,6 @@ const Escalation = ({ permissions }) => {
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
 
-  
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -41,8 +39,6 @@ const Escalation = ({ permissions }) => {
 
   const navigate = useNavigate();
 
-
-
   useEffect(() => {
     handlerefresh();
   }, [searchValue, currentPage]);
@@ -55,15 +51,18 @@ const Escalation = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/grievance-escalation/getbydeptrole?escalation_department=${dept}&escalation_to=${role}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `${API}/grievance-escalation/getbydeptrole?escalation_department=${dept}&escalation_to=${role}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         const reponseData = decryptData(response.data.data);
 
-        // const filteredEscalate = reponseData.filter((org) => 
+        // const filteredEscalate = reponseData.filter((org) =>
         //   org.escalation_to.toLowerCase() === role.toLowerCase()
         // );
 
@@ -86,7 +85,6 @@ const Escalation = ({ permissions }) => {
       });
   };
 
-
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = organization.filter((org) =>
@@ -100,7 +98,6 @@ const Escalation = ({ permissions }) => {
     .reverse()
     .slice(firstIndex, lastIndex);
 
- 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -110,12 +107,13 @@ const Escalation = ({ permissions }) => {
       // CSV Export
       const exportedData = organization.map((row) => ({
         grievance_id: row.grievance_id,
+        escalation_department: row.escalation_department,
+        escalation_complaint: row.escalation_complaint,
+        escalated_due: row.escalated_due,
+        escalated_user: row.escalated_user,
         escalation_details: row.escalation_details,
-        escalation_level: row.escalation_level,
-        escalation_to: row.escalation_to,
         status: row.status,
-        updatedAt: row.updatedAt,
-        created_at: row.created_at,
+        updatedAt: formatDate(row.updatedAt),
       }));
 
       const csvData = [
@@ -151,18 +149,30 @@ const Escalation = ({ permissions }) => {
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
+            row.escalation_department,
+            row.escalation_complaint,
+            row.escalated_due,
+            row.escalated_user,
             row.escalation_details,
-            row.escalation_level,
-            row.escalation_to,
             row.status,
-            row.updatedAt,
-            row.created_at,
+            formatDate(row.updatedAt),
           ]);
 
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
-            head: [["grievance_id", "escalation_details", "escalation_level", "escalation_to","status","updatedAt","created_at"]],
+            head: [
+              [
+                "grievance_id",
+                "Department",
+                "Complaint",
+                "Over Due",
+                "Escalated User",
+                "Escalation Details",
+                "status",
+                "LastUpdated",
+              ],
+            ],
             body: tableData,
             theme: "striped",
           });
@@ -256,17 +266,17 @@ const Escalation = ({ permissions }) => {
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                       Department <RiExpandUpDownLine />
+                        Department <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                       Complaint <RiExpandUpDownLine />
+                        Complaint <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
-                      Date <RiExpandUpDownLine />
+                        Date <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
@@ -281,19 +291,19 @@ const Escalation = ({ permissions }) => {
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                       Escalation Level <RiExpandUpDownLine />
+                        Escalation Level <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
+                        Status <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Action
-                    </p>
-                  </th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Action
+                      </p>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -307,10 +317,10 @@ const Escalation = ({ permissions }) => {
                         </div>
                       </td>
                       <td>
-                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 ">
-                        {escalate.grievance_id}
-                      </p>
-                    </td>
+                        <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 ">
+                          {escalate.grievance_id}
+                        </p>
+                      </td>
                       <td>
                         <p className="capitalize mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
                           {escalate.escalation_department}
@@ -336,7 +346,7 @@ const Escalation = ({ permissions }) => {
                           {escalate.escalated_user}
                         </p>
                       </td>
-                    
+
                       <td>
                         <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-800">
                           {escalate.escalation_details}
@@ -348,20 +358,19 @@ const Escalation = ({ permissions }) => {
                         </p>
                       </td>
                       <td>
-                      <div
-                        className="mx-3 my-3 whitespace-nowrap"
-                        onClick={() =>
-                          navigate(`/view`, {
-                            state: {
-                              grievanceId: escalate.grievance_id,
-                            },
-                          })
-                        }
-                      >
-                        <BsThreeDotsVertical />
-                      </div>
-                    </td>
-                     
+                        <div
+                          className="mx-3 my-3 whitespace-nowrap"
+                          onClick={() =>
+                            navigate(`/view`, {
+                              state: {
+                                grievanceId: escalate.grievance_id,
+                              },
+                            })
+                          }
+                        >
+                          <BsThreeDotsVertical />
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -449,7 +458,6 @@ const Escalation = ({ permissions }) => {
           </div>
         </div>
       </div>
-     
     </Fragment>
   );
 };
