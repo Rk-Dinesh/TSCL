@@ -18,7 +18,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData=`zone_name,status,created_by_user
-Zone 1,active,admin`;
+ZoneName,active,admin`;
 
 
 const Zone = ({ permissions }) => {
@@ -147,7 +147,7 @@ const Zone = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
+      const response = await axios.post(`${API}/zone/uploadcsv`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
