@@ -415,7 +415,7 @@ const Street = ({ permissions }) => {
             </thead>
             <tbody>
               {currentItemsOnPage.map((streets,index)=>(
-              <tr className="border-b-2 border-gray-300">
+              <tr className="border-b-2 border-gray-300" key={index}>
                 <td className="">
                       <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">
                         {firstIndex + index + 1 < 10

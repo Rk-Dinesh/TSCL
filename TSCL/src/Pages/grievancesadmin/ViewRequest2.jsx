@@ -207,9 +207,17 @@ const ViewRequest2 = () => {
                       {data.status}
                     </span>
                   </div>
-                  <div className="flex gap-3 items-center">
-                    <p className="-ml-1">Priority: </p>
-                    <span className="text-sm text-white bg-orange-400 w-24 text-center py-1 rounded-full capitalize">
+                  <div className="flex gap-1 items-center">
+                    <p className="-ml-2">Priority : </p>
+                    <span className={`border w-24 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                          data.priority === "High"
+                            ? "bg-red-500"
+                            : data.priority === "Medium"
+                            ? "bg-green-500"
+                            : data.priority === "Low"
+                            ? "bg-sky-500"
+                            : ""
+                        }`}>
                       {data.priority}
                     </span>
                   </div>

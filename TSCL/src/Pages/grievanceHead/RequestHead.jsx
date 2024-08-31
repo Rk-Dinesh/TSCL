@@ -349,7 +349,7 @@ const RequestHead = () => {
               <option value="All">All</option>
               {department &&
                 department.map((option) => (
-                  <option key={option.dept_name} value={option.dept_name}>
+                  <option key={option.dept_id} value={option.dept_name}>
                     {option.dept_name}
                   </option>
                 ))}
@@ -366,7 +366,7 @@ const RequestHead = () => {
               <option value="All">All</option>
               {zone &&
                 zone.map((option) => (
-                  <option key={option.zone_name} value={option.zone_name}>
+                  <option key={option.zone_id} value={option.zone_name}>
                     {option.zone_name}
                   </option>
                 ))}
@@ -383,7 +383,7 @@ const RequestHead = () => {
               <option value="All">All</option>
               {ward &&
                 ward.filter(ward=>ward.zone_name === selectedZone).map((option) => (
-                  <option key={option.ward_name} value={option.ward_name}>
+                  <option key={option.ward_id} value={option.ward_name}>
                     {option.ward_name}
                   </option>
                 ))}
@@ -401,7 +401,7 @@ const RequestHead = () => {
               {Street &&
                 Street.filter(streets=>streets.ward_name === selectedWard).map((option) => (
                   <option
-                    key={option.street_name}
+                    key={option.street_id}
                     value={option.street_name}
                   >
                     {option.street_name}
@@ -431,7 +431,7 @@ const RequestHead = () => {
                   </option>
                   {dataUsers &&
                     dataUsers.map((option) => (
-                      <option key={option.user_name} value={option.user_name}>
+                      <option key={option.user_id} value={option.user_name}>
                         {option.user_name}
                       </option>
                     ))}
@@ -462,7 +462,7 @@ const RequestHead = () => {
                   {status &&
                     status.map((option) => (
                       <option
-                        key={option.status_name}
+                        key={option.status_id}
                         value={option.status_name}
                       >
                         {option.status_name}
@@ -481,7 +481,7 @@ const RequestHead = () => {
                   {Complainttype &&
                     Complainttype.map((option) => (
                       <option
-                        key={option.complaint_type}
+                        key={option.compliant_type_id}
                         value={option.complaint_type}
                       >
                         {option.complaint_type}

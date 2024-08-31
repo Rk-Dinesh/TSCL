@@ -95,12 +95,12 @@ const Layout = ({ permissions }) => {
               <React.Fragment key={index} >
                 <NavLink to={menu.to}> 
                   <li
-                    className={` cursor-pointer text-md flex items-center gap-x-3 p-2 mt-1 pl-3 transition-all duration-700 hover:bg-gray-200 hover:text-primary  ${
+                    className={` cursor-pointer text-md flex items-center gap-x-3 p-2 mt-1 pl-3 transition-all duration-700 hover:bg-gray-200 hover:text-primary   ${
                       location.pathname === menu.to 
                         ? `${ open ?  "bg-gray-200 text-primary transition-all duration-500" : "md:bg-gray-200 md:text-primary md:transition-all md:duration-500 duration-75"}`
                         : "text-white  "
                     }`}
-                  
+                   
                   >
                     <div className="flex items-center gap-x-2">
                       <span
@@ -123,7 +123,7 @@ const Layout = ({ permissions }) => {
                       <BsChevronDown
                         className={`cursor-pointer transition-transform delay-100  ${
                           submenuopen && "rotate-180"
-                        }`}
+                        } `}
                         onClick={() => Setsubmenuopen(!submenuopen)}
                       />
                     )}
