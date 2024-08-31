@@ -18,7 +18,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData = `zone_id,zone_name,ward_name,status,created_by_user
-Z022,Zone 1,Ward 1,inactive,admin`;
+Z***,ZoneName,WardName,Status,admin`;
 
 const Ward = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -165,7 +165,7 @@ const Ward = ({ permissions }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-        `${API}/organization/uploadcsv`,
+        `${API}/ward/uploadcsv`,
         formData,
         {
           headers: {
@@ -197,7 +197,6 @@ const Ward = ({ permissions }) => {
       // CSV Export
       const exportedData = ward.map((row) => ({
         ward_id: row.ward_id,
-
         zone_id: row.zone_id,
         zone_name: row.zone_name,
         ward_name: row.ward_name,
@@ -235,7 +234,6 @@ const Ward = ({ permissions }) => {
 
           const tableData = currentPageData.map((row) => [
             row.ward_id,
-
             row.zone_id,
             row.zone_name,
             row.ward_name,
