@@ -18,7 +18,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData=`complaint_type_title,dept_name,tat_type,tat_duration,priority,escalation_type,escalation_l1,role_l1,escalation_l2,role_l2,escalation_l3,role_l3,status,created_by_user
-Street light not working,Electricity,Days,2 Month,High,days,2 days,Person_2,3 days,Person_3,4 days,Person_2,active,admin
+Title,Department,duration,Type,Priority,Type,duration1,role1,duration2,role2,duration3,role3,status,admin
 `;
 
 const Complaint = ({ permissions }) => {
@@ -183,7 +183,7 @@ const Complaint = ({ permissions }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-        `${API}/organization/uploadcsv`,
+        `${API}/complaint/uploadcsv`,
         formData,
         {
           headers: {

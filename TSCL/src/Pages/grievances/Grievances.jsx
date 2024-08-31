@@ -111,15 +111,7 @@ const Grivences = ({ permissions }) => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </p>
-            {hasCreatePermission && (
-              <a href="#">
-                <button className="flex gap-2 items-center border-2 font-lexend border-blue-500 bg-slate-100 text-blue-500 rounded-full px-3 py-1.5 justify-center">
-                  {" "}
-                  <FaPlus />
-                  Bulk Upload
-                </button>
-              </a>
-            )}
+          
             <a href="#">
               <button className="flex gap-2 items-center border-2 font-lexend bg-slate-100 text-black rounded-full px-3  py-1.5 w-28 justify-between">
                 {" "}

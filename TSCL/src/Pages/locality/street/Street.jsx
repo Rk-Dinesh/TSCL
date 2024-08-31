@@ -18,7 +18,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData=`street_name,ward_id,ward_name,zone_id,zone_name,status,created_by_user
-Vinayagar st,Ward033,Ward 1,Z022,Zone 1,active,admin`;
+ streetName,Ward***,WardName,Z***,ZoneName,Status,admin`;
 
 const Street = ({ permissions }) => {
 
@@ -162,7 +162,7 @@ const Street = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
+      const response = await axios.post(`${API}/street/uploadcsv`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

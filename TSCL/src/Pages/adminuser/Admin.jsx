@@ -18,7 +18,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData = `user_name,dept_name,phone,email,address,pincode,login_password,status,role,created_by_user
-Dinesh,Police,0987654321,dinesh123@gmail.com,Vanji Nandan st,123456,$2b$10$tA2PvTswIZ4FbccvNQcVeePfKZPX4UA./OJIkX19pHZV34yw1Gfxq,active,Person_2,admin`;
+UserName,Department,phone,email@gmail.com,Address,123456,passord,status,role,admin`;
 
 const Admin = ({ permissions }) => {
   const [isModal, setIsModal] = useState(false);
@@ -178,7 +178,7 @@ const Admin = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
+      const response = await axios.post(`${API}/user/uploadcsv`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

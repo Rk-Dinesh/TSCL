@@ -19,7 +19,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const csvData = `public_user_name,phone,email,address,pincode,login_password,verification_status,user_status,role
-vishva,1234567890,vishva202005@gmail.com,vinayagar st,605110,$2b$10$T8CiBELNPcXKGPf1K/v.AOULqdPXlGk4iQvng7xrfuMtUbefQ9OMy,verified,active,user`;
+user,1234567890,email@gmail.com, Address,123456,password,verified,status,user`;
 
 
 const User = ({ permissions }) => {
@@ -153,7 +153,7 @@ const User = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
+      const response = await axios.post(`${API}/public-user/uploadcsv`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
