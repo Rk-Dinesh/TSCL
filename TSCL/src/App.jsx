@@ -9,15 +9,7 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
-import RequestAdmin from "./Pages/grievancesadmin/RequestAdmin";
-import ViewRequest2 from "./Pages/grievancesadmin/ViewRequest2";
-import RequestJE from "./Pages/grievanceJE/RequestJE";
-import ViewRequestJE from "./Pages/grievanceJE/ViewRequestJE";
-import Status from "./Pages/status/Status";
-import RequestHead from "./Pages/grievanceHead/RequestHead";
-import Profile from "./Pages/layout.jsx/Profile";
-import Escalation from "./Pages/escalation/Escalation";
-import EscalationCommissioner from "./Pages/escalation/EscalationCommissioner";
+
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
@@ -45,6 +37,15 @@ const ViewRequest = lazy(() => import("./Pages/request/ViewRequest"));
 const OTP = lazy(() => import("./Pages/auth/OTP"));
 const SignUp = lazy(() => import("./Pages/auth/SignUp"));
 const Expire = lazy(() => import("./Pages/expiresToken/Expire"));
+const RequestAdmin = lazy(() => import("./Pages/grievancesadmin/RequestAdmin"));
+const ViewRequest2 = lazy(() => import("./Pages/grievancesadmin/ViewRequest2"));
+const RequestJE = lazy(() => import("./Pages/grievanceJE/RequestJE"));
+const ViewRequestJE = lazy(() => import("./Pages/grievanceJE/ViewRequestJE"));
+const Status = lazy(() => import("./Pages/status/Status"));
+const RequestHead = lazy(() => import("./Pages/grievanceHead/RequestHead"));
+const Profile = lazy(() => import("./Pages/layout.jsx/Profile"));
+const Escalation = lazy(() => import("./Pages/escalation/Escalation"));
+const EscalationCommissioner = lazy(() => import("./Pages/escalation/EscalationCommissioner"));
 
 function App() {
   const [token, setToken] = useState(sessionStorage.getItem("token") || "");
