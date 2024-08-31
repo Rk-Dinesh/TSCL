@@ -62,6 +62,11 @@ const Escalation = ({ permissions }) => {
       })
       .then((response) => {
         const reponseData = decryptData(response.data.data);
+
+        // const filteredEscalate = reponseData.filter((org) => 
+        //   org.escalation_to.toLowerCase() === role.toLowerCase()
+        // );
+
         setOrganization(reponseData);
 
         const filteredCenters = reponseData.filter((org) =>
@@ -338,7 +343,7 @@ const Escalation = ({ permissions }) => {
                         </p>
                       </td>
                       <td>
-                        <p className="border w-26 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize border-gray-800 text-gray-800">
+                        <p className="border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize border-gray-800 text-gray-800">
                           {escalate.status}
                         </p>
                       </td>
