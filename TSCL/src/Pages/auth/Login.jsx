@@ -53,6 +53,7 @@ const Login = ({ setToken }) => {
         sessionStorage.setItem("dept",decodedToken.dept);
         sessionStorage.setItem("code",decodedToken.code);
         sessionStorage.setItem("role",decodedToken.role);
+        sessionStorage.setItem("name",decodedToken.name);
       }
     } catch (error) {
       // console.error("Error logging in as user", error);

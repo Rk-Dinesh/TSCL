@@ -41,7 +41,7 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) =>
       ...data,
       org_id: orgId,
       status: 'active',
-      created_by_user: 'admin',
+      created_by_user: sessionStorage.getItem('name'),
     };
 
     try {

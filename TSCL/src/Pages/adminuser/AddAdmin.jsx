@@ -7,13 +7,13 @@ import { API } from "../../Host";
 import { toast } from "react-toastify";
 
 const AddAdminSchema = yup.object().shape({
-  user_name: yup.string().required("User Name is required"),
+  user_name: yup.string().trim().required("User Name is required"),
   dept_name: yup.string().required("Department is required"),
-  phone: yup.string().required("Phone Number is required"),
-  email: yup.string().required("Email Id  is required"),
+  phone: yup.string().test("len", "Phone Number must be 10 characters", (val) => val.length === 10).required("Phone Number is required"),
+  email: yup.string().email("Invalid Email Id").required("Email Id is required"),
   address: yup.string().required("Address is required"),
   login_password: yup.string().required("Password is required"),
-  pincode: yup.string().required("Pincode is required"),
+  pincode: yup.string().test("len", "Pincode must be 6 characters", (val) => val.length === 6).required("Pincode is required"),
   role: yup
     .string()
     .test(
@@ -48,7 +48,7 @@ const AddAdmin = (props) => {
     const formData = {
       ...data,
       status: "active",
-      created_by_user: "admin",
+      created_by_user: sessionStorage.getItem('name'),
       role_id: selectedRoleId,
     };
 

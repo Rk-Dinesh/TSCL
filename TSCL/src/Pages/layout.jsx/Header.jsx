@@ -22,6 +22,7 @@ const Header = () => {
     sessionStorage.removeItem('dept');
     sessionStorage.removeItem("code");
     sessionStorage.removeItem("role");
+    sessionStorage.removeItem("name");
     navigate('/');
     setIsDropdownOpen(false); 
   };

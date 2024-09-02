@@ -47,7 +47,7 @@ const AddWard = (props) => {
       ...data,
       zone_id:zoneId,
       status: "active",
-      created_by_user: "admin",
+      created_by_user: sessionStorage.getItem('name'),
     };
 
     // console.log(formData);

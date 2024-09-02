@@ -47,7 +47,7 @@ const escdetailSchema = yup.object().shape({
       "select an Type",
       (value) => value !== "" && value !== "Select Type"
     ),
-  escalation_l1: yup.string().required("L1 duration is required"),
+  escalation_l1: yup.number().required("L1 duration is required"),
   role_l1: yup
     .string()
     .test(
@@ -380,7 +380,7 @@ const EditComplaint = (props) => {
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
                             id="escalation_l1"
-                            type="text"
+                            type="number"
                             placeholder="L1 Duration"
                             {...register("escalation_l1")}
                           />
@@ -427,7 +427,7 @@ const EditComplaint = (props) => {
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
                             id="escalation_l2"
-                            type="text"
+                            type="number"
                             placeholder="L2 Duration"
                             {...register("escalation_l2")}
                           />
@@ -474,7 +474,7 @@ const EditComplaint = (props) => {
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline col-span-2"
                             id="escalation_l3"
-                            type="text"
+                            type="number"
                             placeholder="L3 Duration"
                             {...register("escalation_l3")}
                           />

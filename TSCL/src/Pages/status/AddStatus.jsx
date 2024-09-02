@@ -30,7 +30,7 @@ const AddStatus = (props) => {
     const formData = {
       ...data,
       status: "active",
-      created_by_user: "admin",
+      created_by_user: sessionStorage.getItem('name'),
     };
 
     try {

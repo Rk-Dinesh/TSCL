@@ -241,6 +241,7 @@ const Dashboard = () => {
                   paddingAngle={2}
                   fill="#8884d8"
                   label
+                  
                 >
                   {filterStatus.map((entry, index) => (
                     <Cell
@@ -276,6 +277,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        
           <div className="bg-white h-3/6 mx-3 rounded-lg mt-3  p-3">
             <p className="text-lg font-lexend my-1 mx-2">Last 5 Grievances request :</p>
             <div className=" rounded-lg  py-1 overflow-x-auto no-scrollbar">
@@ -344,7 +346,7 @@ const Dashboard = () => {
                         </p>
                       </td>
                       <td>
-                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                        <p className=" text-center mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
                           {formatDate1(report.createdAt)}
                         </p>
                       </td>

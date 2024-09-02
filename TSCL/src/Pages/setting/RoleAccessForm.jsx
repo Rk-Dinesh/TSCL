@@ -133,7 +133,7 @@ const RoleAccessLevelForm = () => {
       role_name: roleName,
       accessLevels: newAccessLevels,
       status: "active",
-      created_by_user: "admin",
+      created_by_user:sessionStorage.getItem('name'),
     };
 
   

@@ -49,7 +49,7 @@ const AddStreet = (props) => {
       ward_id:wardId,
       zone_name:zoneName,
       status: "active",
-      created_by_user: "admin",
+      created_by_user:sessionStorage.getItem('name'),
     };
 
 
