@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { BsEyeSlashFill } from "react-icons/bs";
+import { BsEyeFill } from "react-icons/bs";
 import decryptData from "../../Decrypt";
 import axios from "axios";
 import { API } from "../../Host";
@@ -20,27 +22,34 @@ const UserInfoSchema = yup.object().shape({
     .email("Invalid email format"),
   address: yup.string().required("Address is required"),
   pincode: yup
-  .string()
-  .required("Pincode is required")
-  .matches(/^[0-9]{6}$/, "Pincode must be 6 digits"),
+    .string()
+    .required("Pincode is required")
+    .matches(/^[0-9]{6}$/, "Pincode must be 6 digits"),
 });
 const passwordSchema = yup.object().shape({
-    old_password: yup.string().required("Old password is required"),
-    login_password: yup
-      .string()
-      .required("Confirm password is required")
-      .test("passwords-match", "New password and confirm password must match", function(value) {
+  old_password: yup.string().required("Old password is required"),
+  login_password: yup
+    .string()
+    .required("Confirm password is required")
+    .test(
+      "passwords-match",
+      "New password and confirm password must match",
+      function (value) {
         const newPassword = this.parent.new_password;
         return newPassword === value;
-      }),
-  });
-
+      }
+    ),
+});
 
 const Profile = () => {
   const code = sessionStorage.getItem("code");
   const token = sessionStorage.getItem("token");
   const [data, setData] = useState({});
   const [isPassword, setIsPassword] = useState(null);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const {
@@ -79,7 +88,7 @@ const Profile = () => {
         setData(responseData);
         setValue("user_name", responseData.user_name);
         setValue("phone", responseData.phone);
-        setIsPassword(responseData.phone)
+        setIsPassword(responseData.phone);
         setValue("email", responseData.email);
         setValue("address", responseData.address);
         setValue("pincode", responseData.pincode);
@@ -108,7 +117,7 @@ const Profile = () => {
 
       if (response.status === 200) {
         toast.success("Profile Updated Successfully");
-        setIsPassword(null)
+        setIsPassword(null);
         navigate("/dashboard");
       } else {
         console.error("Error in posting data", response);
@@ -123,7 +132,7 @@ const Profile = () => {
     const formData = {
       ...data,
     };
-  
+
     try {
       const response = await axios.post(
         `${API}/user/userchangepassword?phone=${isPassword}`,
@@ -134,19 +143,27 @@ const Profile = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         toast.success(response.data.message);
-        setIsPassword(null)
+        setIsPassword(null);
         navigate("/dashboard");
       } else {
         //console.error("Error in posting data", response);
-        toast.error(response.data.message); 
+        toast.error(response.data.message);
       }
     } catch (error) {
-       // console.error("Error in posting data", error);
-        toast.error("Old Password is Incorrect");
-      }
+      // console.error("Error in posting data", error);
+      toast.error("Old Password is Incorrect");
+    }
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleTogglePassword = () => {
+    setShowOldPassword(!showOldPassword);
   };
 
   return (
@@ -275,58 +292,85 @@ const Profile = () => {
           </div>
         </div>
         <div className="md:flex md:justify-center mt-8">
-        <form onSubmit={handleSubmitPassword(onChangePassword)}>
-       
-          <div className="col-span-4 my-4  px-3">
-            <input
-              type="password"
-              id="old_password"
-              className="w-full md:w-80 text-start border-2  rounded-lg mx-2  px-2 py-2 outline-none"
-              placeholder="Old Password"
-              {...registerPassword("old_password")}
-            />
-            {passwordErrors.old_password && (
+          <form onSubmit={handleSubmitPassword(onChangePassword)}>
+            <div className="col-span-4 my-4  px-3">
+              <div className="flex items-center border-2  rounded-lg mx-2  px-2 py-2 outline-none">
+                <input
+                  type={showOldPassword ? "text" : "password"}
+                  id="old_password"
+                  className="w-full md:w-72 text-start outline-none"
+                  placeholder="Old Password"
+                  {...registerPassword("old_password")}
+                />
+                <button
+                  type="button"
+                  className="text-gray-500 hover:text-gray-900 transition duration-300 outline-none"
+                  onClick={handleTogglePassword}
+                >
+                  {showOldPassword ? <BsEyeFill /> : <BsEyeSlashFill />}
+                </button>
+              </div>
+              {passwordErrors.old_password && (
                 <p className="text-red-500 text-xs text-start px-2 pt-2">
                   {passwordErrors.old_password.message}
                 </p>
               )}
-          </div>
+            </div>
 
-          <div className="col-span-4 my-4  px-3">
-            <input
-              type="password"
-              id="new_password"
-              className="w-full md:w-80 text-start border-2  rounded-lg mx-2  px-2 py-2 outline-none"
-              placeholder="New Password"
-              {...registerPassword("new_password")}
-            />
-          </div>
-
-          <div className="col-span-4 my-4  px-3">
-            <input
-              type="password"
-              id="login_password"
-              className="w-full md:w-80 text-start border-2  rounded-lg mx-2  px-2 py-2 outline-none"
-              placeholder="Confirm Password"
-              {...registerPassword("login_password")}
-            />
-            {passwordErrors.login_password && (
+            <div className="col-span-4 my-4  px-3">
+              <div className="flex items-center border-2  rounded-lg mx-2  px-2 py-2 outline-none">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="new_password"
+                  className="w-full md:w-72 text-start outline-none"
+                  placeholder="New Password"
+                  {...registerPassword("new_password")}
+                />
+                <button
+                  type="button"
+                  className="text-gray-500 hover:text-gray-900 transition duration-300 outline-none"
+                  onClick={handleTogglePasswordVisibility}
+                >
+                  {showPassword ? <BsEyeFill /> : <BsEyeSlashFill />}
+                </button>
+              </div>
+            </div>
+          
+            <div className="col-span-4 my-4  px-3">
+              <div className="flex items-center border-2  rounded-lg mx-2  px-2 py-2 outline-none">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="login_password"
+                  className="w-full md:w-72 text-start outline-none "
+                  placeholder="Confirm Password"
+                  {...registerPassword("login_password")}
+                />
+                <button
+                  type="button"
+                  className="text-gray-500 hover:text-gray-900 transition duration-300 outline-none"
+                  onClick={handleTogglePasswordVisibility}
+                >
+                  {showPassword ? <BsEyeFill /> : <BsEyeSlashFill />}
+                </button>
+              </div>
+              {passwordErrors.login_password && (
                 <p className="text-red-500 text-xs text-start px-2 pt-2">
                   {passwordErrors.login_password.message}
                 </p>
               )}
-          </div>
+            </div>
 
-          <div className=" text-center my-6 sm:py-5">
-            <button
-              type="submit"
-              className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 "
-            >
-              Change Password
-            </button>
-          </div>
-      
-        </form>
+            
+
+            <div className=" text-center my-6 sm:py-5">
+              <button
+                type="submit"
+                className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 "
+              >
+                Change Password
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

@@ -277,41 +277,49 @@ const ViewRequestJE = () => {
                   <p>+91 {data.phone}</p>{" "}
                 </div>
                 <div className="flex flex-col mx-3">
-                  <div className="flex  gap-3 mb-3 items-center">
+                  <div className="flex gap-3 mb-3 items-center">
                     <p>Status: </p>
-                    <span className="text-sm border-2 border-gray-500 px-3 py-0.5 rounded-full">
-                      <select
-                        className="col-span-2 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none capitalize"
-                        onChange={(e) => handleStatus(e.target.value)}
-                      >
-                        <option value={data.status} hidden>
-                          {data.status}
-                        </option>
+                    {data.status === "closed" ? (
+                      <span className="text-sm border-2 border-gray-500 w-28 text-center py-1.5 ml-3 rounded-full">
+                        Closed
+                      </span>
+                    ) : (
+                      <span className="text-sm border-2 border-gray-500 px-3 py-0.5 rounded-full">
+                        <select
+                          className="col-span-2 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none capitalize"
+                          onChange={(e) => handleStatus(e.target.value)}
+                        >
+                          <option value={data.status} hidden>
+                            {data.status}
+                          </option>
 
-                        {dataStatus &&
-                          dataStatus.map((option) => (
-                            <option
-                              key={option.status_name}
-                              value={option.status_name}
-                            >
-                              {option.status_name}
-                            </option>
-                          ))}
-                      </select>
-                    </span>
+                          {dataStatus &&
+                            dataStatus.map((option) => (
+                              <option
+                                key={option.status_name}
+                                value={option.status_name}
+                              >
+                                {option.status_name}
+                              </option>
+                            ))}
+                        </select>
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex gap-3 items-center ">
                     <p>Priority: </p>
-                    <span className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
-                          data.priority === "High"
-                            ? "bg-red-500"
-                            : data.priority === "Medium"
-                            ? "bg-green-500"
-                            : data.priority === "Low"
-                            ? "bg-sky-500"
-                            : ""
-                        }`}>
+                    <span
+                      className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                        data.priority === "High"
+                          ? "bg-red-500"
+                          : data.priority === "Medium"
+                          ? "bg-sky-500"
+                          : data.priority === "Low"
+                          ? "bg-green-500"
+                          : ""
+                      }`}
+                    >
                       {data.priority}
                     </span>
                   </div>

@@ -203,21 +203,21 @@ const ViewRequest2 = () => {
                 <div className="md:col-span-3 col-span-6 ">
                   <div className="flex gap-3 mb-2  items-center">
                     <p>Status: </p>
-                    <span className="text-sm border border-gray-500 w-24 py-1 text-center rounded-full capitalize">
+                    <span className=" ml-1 text-sm border border-gray-500 w-28 py-1 text-center rounded-full capitalize">
                       {data.status}
                     </span>
                   </div>
                   <div className="flex gap-1 items-center">
                     <p className="-ml-2">Priority : </p>
-                    <span className={`border w-24 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
-                          data.priority === "High"
-                            ? "bg-red-500"
-                            : data.priority === "Medium"
-                            ? "bg-green-500"
-                            : data.priority === "Low"
-                            ? "bg-sky-500"
-                            : ""
-                        }`}>
+                    <span className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                        data.priority === "High"
+                          ? "bg-red-500"
+                          : data.priority === "Medium"
+                          ? "bg-sky-500"
+                          : data.priority === "Low"
+                          ? "bg-green-500"
+                          : ""
+                      }`}>
                       {data.priority}
                     </span>
                   </div>

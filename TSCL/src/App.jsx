@@ -9,6 +9,7 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
+import Loading from "./Loading";
 
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -49,6 +50,8 @@ const EscalationCommissioner = lazy(() => import("./Pages/escalation/EscalationC
 
 function App() {
   const [token, setToken] = useState(sessionStorage.getItem("token") || "");
+  const [loading, setLoading] = useState(true);
+
   const decodedToken = useMemo(
     () => (token ? jwtDecode(token) : null),
     [token]
@@ -76,16 +79,29 @@ function App() {
             {}
           );
           setFeatures(featuresData);
+          setLoading(false);
         } catch (error) {
           console.error(error);
+          setLoading(false);
         }
       };
 
       fetchUserData();
+    }else {
+      setLoading(false); 
     }
   }, [decodedToken, token]);
 
   const memoizedFeatures = useMemo(() => features, [features]);
+
+  if (loading) {
+   
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>

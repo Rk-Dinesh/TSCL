@@ -281,13 +281,13 @@ const Request = ({ permissions }) => {
                     </td>
                     <td>
                       <p
-                        className={`border w-26 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                        className={`border-2 w-26 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
                           report.priority === "High"
-                            ? "bg-red-500"
+                            ? "text-red-500 border-red-500"
                             : report.priority === "Medium"
-                            ? "bg-green-500"
+                            ? "text-sky-500 border-sky-500"
                             : report.priority === "Low"
-                            ? "bg-sky-500"
+                            ? "text-green-500 border-green-500"
                             : ""
                         }`}
                       >
