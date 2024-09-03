@@ -123,7 +123,7 @@ const Layout = ({ permissions }) => {
                       <BsChevronDown
                         className={`cursor-pointer transition-transform delay-100  ${
                           submenuopen && "rotate-180"
-                        } `}
+                        }`}
                         onClick={() => Setsubmenuopen(!submenuopen)}
                       />
                     )}

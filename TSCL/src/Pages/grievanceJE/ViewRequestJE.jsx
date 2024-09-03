@@ -279,7 +279,7 @@ const ViewRequestJE = () => {
                 <div className="flex flex-col mx-3">
                   <div className="flex gap-3 mb-3 items-center">
                     <p>Status: </p>
-                    {data.status === "closed" ? (
+                    {data.status && data.status.toLowerCase() === "closed" ? (
                       <span className="text-sm border-2 border-gray-500 w-28 text-center py-1.5 ml-3 rounded-full">
                         Closed
                       </span>

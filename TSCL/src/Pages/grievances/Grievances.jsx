@@ -4,7 +4,6 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
@@ -138,7 +137,7 @@ const Grivences = ({ permissions }) => {
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
                   <th className="">
-                    <p className=" mx-6 my-2 font-lexend font-medium whitespace-nowrap">
+                    <p className=" mx-3 my-2 font-lexend font-medium whitespace-nowrap">
                       #
                     </p>
                   </th>
@@ -184,11 +183,7 @@ const Grivences = ({ permissions }) => {
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Action
-                    </p>
-                  </th>
+                 
                 </tr>
               </thead>
               <tbody>
@@ -202,7 +197,13 @@ const Grivences = ({ permissions }) => {
                       </div>
                     </td>
                     <td>
-                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1   text-slate-900">
+                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1   text-slate-900"
+                       onClick={() =>
+                        navigate(`/view`, {
+                          state: { grievanceId: report.grievance_id },
+                        })
+                      }
+                      >
                         {report.grievance_id}
                       </p>
                     </td>
@@ -264,18 +265,7 @@ const Grivences = ({ permissions }) => {
                         {report.status}
                       </p>
                     </td>
-                    <td>
-                      <div
-                        className="mx-3 my-3 whitespace-nowrap"
-                        onClick={() =>
-                          navigate(`/view`, {
-                            state: { grievanceId: report.grievance_id },
-                          })
-                        }
-                      >
-                        <BsThreeDotsVertical />
-                      </div>
-                    </td>
+                   
                   </tr>
                 ))}
               </tbody>

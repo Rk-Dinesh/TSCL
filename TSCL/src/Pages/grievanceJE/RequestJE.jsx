@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
-import { FaPlus } from "react-icons/fa6";
 import decryptData from "../../Decrypt";
 
 const RequestJE = () => {
@@ -228,11 +226,7 @@ const RequestJE = () => {
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Action
-                    </p>
-                  </th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -246,7 +240,15 @@ const RequestJE = () => {
                     </div>
                   </td>
                     <td>
-                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 ">
+                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
+                       onClick={() =>
+                        navigate(`/view3`, {
+                          state: {
+                            grievanceId: report.grievance_id,
+                          },
+                        })
+                      }
+                      >
                         {report.grievance_id}
                       </p>
                     </td>
@@ -288,20 +290,7 @@ const RequestJE = () => {
                         {report.status}
                       </p>
                     </td>
-                    <td>
-                      <div
-                        className="mx-3 my-3 whitespace-nowrap"
-                        onClick={() =>
-                          navigate(`/view3`, {
-                            state: {
-                              grievanceId: report.grievance_id,
-                            },
-                          })
-                        }
-                      >
-                        <BsThreeDotsVertical />
-                      </div>
-                    </td>
+                   
                   </tr>
                 ))}
               </tbody>
