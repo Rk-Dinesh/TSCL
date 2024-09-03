@@ -4,14 +4,20 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { API,  formatDate1 } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
+import { PiFileCsvLight } from "react-icons/pi";
+import { PiFilePdfDuotone } from "react-icons/pi";
+import { HiOutlineDocument } from "react-icons/hi";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const Grivences = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [isModal, setIsModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -28,6 +34,7 @@ const Grivences = ({ permissions }) => {
 
   const [status, setStatus] = useState([]);
   const [statusColors, setStatusColors] = useState({});
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     axios
@@ -56,7 +63,7 @@ const Grivences = ({ permissions }) => {
         console.error(error);
       });
 
-      fetchActiveStatus()
+    fetchActiveStatus();
   }, [searchValue, currentPage]);
 
   const fetchActiveStatus = async () => {
@@ -76,7 +83,7 @@ const Grivences = ({ permissions }) => {
       setStatusColors(colorMapping);
     } catch (err) {
       console.error("Error fetching existing ActiveStatus:", err);
-    } 
+    }
   };
 
   const paginate = (pageNumber) => {
@@ -93,7 +100,128 @@ const Grivences = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
+
+  const setDocs = (event) => {
+    setSelectedDoc(event.target.value);
+  };
+
+  const exportData = async (format) => {
+    if (format === "csv") {
+      // CSV Export
+      const exportedData = grievance.map((row) => ({
+        grievance_id: row.grievance_id,
+        grievance_mode: row.grievance_mode,
+        complaint_type_title: row.complaint_type_title,
+        dept_name: row.dept_name,
+        zone_name: row.zone_name,
+        ward_name: row.ward_name,
+        street_name: row.street_name,
+        pincode: row.pincode,
+        complaint: row.complaint,
+
+        public_user_id: row.public_user_id,
+        public_user_name: row.public_user_name,
+        phone: row.phone,
+        assign_user: row.assign_user,
+        assign_username: row.assign_username,
+        assign_userphone: row.assign_userphone,
+        status: row.status,
+        escalation_level: row.escalation_level,
+
+        priority: row.priority,
+      }));
+
+      const csvData = [
+        Object.keys(exportedData[0]).join(","),
+        ...exportedData.map((row) => Object.values(row).join(",")),
+      ].join("\n");
+
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "Grievance_data.csv");
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === "pdf") {
+      try {
+        const rowsPerPage = 30;
+        const totalPages = Math.ceil(grievance.length / rowsPerPage);
+
+        const pdf = new jsPDF("l", "mm", "a4");
+        let yOffset = 0;
+
+        for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
+          const startIndex = (currentPage - 1) * rowsPerPage;
+          const endIndex = Math.min(startIndex + rowsPerPage, grievance.length);
+          const currentPageData = grievance.slice(startIndex, endIndex);
+
+          const tableData = currentPageData.map((row) => [
+            row.grievance_id,
+            row.grievance_mode,
+            row.complaint_type_title,
+            row.dept_name,
+
+            row.pincode,
+            row.complaint,
+
+            row.public_user_name,
+            row.phone,
+
+            row.assign_username,
+            row.assign_userphone,
+            row.status,
+            row.escalation_level,
+
+            row.priority,
+          ]);
+
+          pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
+          pdf.autoTable({
+            startY: yOffset + 15,
+            head: [
+              [
+                "grievance_id",
+                "grievance_mode",
+                "complaintType",
+                "dept",
+
+                "pincode",
+                "complaint",
+                "publicUser",
+                "phone",
+
+                "assignUser",
+                "assignUserphone",
+                "status",
+                "Escalation",
+
+                "Priority",
+              ],
+            ],
+            body: tableData,
+            theme: "striped",
+          });
+
+          if (currentPage < totalPages) {
+            pdf.addPage();
+            yOffset = 10; // Set yOffset for the new page
+          }
+        }
+
+        pdf.save("Grievance_data.pdf");
+      } catch (error) {
+        console.error("Error exporting data:", error);
+      }
+    }
+  };
 
   return (
     <Fragment>
@@ -110,13 +238,37 @@ const Grivences = ({ permissions }) => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </p>
-          
-            <a href="#">
-              <button className="flex gap-2 items-center border-2 font-lexend bg-slate-100 text-black rounded-full px-3  py-1.5 w-28 justify-between">
-                {" "}
-                CSV <RiArrowDropDownLine />
-              </button>
-            </a>
+
+            {hasDownloadPermission && (
+              <div className="flex gap-2 items-center">
+                <form>
+                  <select
+                    className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
+                    onChange={setDocs}
+                  >
+                    <option hidden>Download</option>
+
+                    <option value="csv">CSV</option>
+                    <option value="pdf">PDF</option>
+                  </select>
+                </form>
+                {selectedDoc === null && (
+                  <HiOutlineDocument className="text-2xl text-gray-500" />
+                )}
+                {selectedDoc === "csv" && (
+                  <PiFileCsvLight
+                    className="text-3xl text-gray-500"
+                    onClick={() => exportData("csv")}
+                  />
+                )}
+                {selectedDoc === "pdf" && (
+                  <PiFilePdfDuotone
+                    className="text-3xl text-gray-500"
+                    onClick={() => exportData("pdf")}
+                  />
+                )}
+              </div>
+            )}
           </div>
           <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
             <h1 className="md:text-xl text-lg font-medium whitespace-nowrap">
@@ -133,7 +285,7 @@ const Grivences = ({ permissions }) => {
             )}
           </div>
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
-          <table className="w-full mt-2 ">
+            <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
                   <th className="">
@@ -183,7 +335,6 @@ const Grivences = ({ permissions }) => {
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
-                 
                 </tr>
               </thead>
               <tbody>
@@ -197,12 +348,13 @@ const Grivences = ({ permissions }) => {
                       </div>
                     </td>
                     <td>
-                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1   text-slate-900"
-                       onClick={() =>
-                        navigate(`/view`, {
-                          state: { grievanceId: report.grievance_id },
-                        })
-                      }
+                      <p
+                        className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1   text-slate-900"
+                        onClick={() =>
+                          navigate(`/view`, {
+                            state: { grievanceId: report.grievance_id },
+                          })
+                        }
                       >
                         {report.grievance_id}
                       </p>
@@ -265,7 +417,6 @@ const Grivences = ({ permissions }) => {
                         {report.status}
                       </p>
                     </td>
-                   
                   </tr>
                 ))}
               </tbody>
