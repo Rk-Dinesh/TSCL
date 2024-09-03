@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { API, formatDate } from "../../Host";
+import { API,formatDate1 } from "../../Host";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa6";
 import decryptData from "../../Decrypt";
@@ -276,7 +276,7 @@ const Request = ({ permissions }) => {
                     </td>
                     <td>
                       <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {formatDate(report.createdAt)}
+                        {formatDate1(report.createdAt)}
                       </p>
                     </td>
                     <td>

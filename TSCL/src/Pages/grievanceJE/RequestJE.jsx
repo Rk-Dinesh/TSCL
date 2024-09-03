@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { API, formatDate } from "../../Host";
+import { API,  formatDate1 } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 
@@ -206,6 +206,11 @@ const RequestJE = () => {
                     </p>
                   </th>
                   <th>
+                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                      Complaint 
+                    </p>
+                  </th>
+                  <th>
                     <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Date and Time <RiExpandUpDownLine />
                     </p>
@@ -253,8 +258,14 @@ const RequestJE = () => {
                       </p>
                     </td>
                     <td>
+                      {" "}
                       <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
-                        {formatDate(report.createdAt)}
+                        {report.complaint}
+                      </p>
+                    </td>
+                    <td>
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                        {formatDate1(report.createdAt)}
                       </p>
                     </td>
                     <td>

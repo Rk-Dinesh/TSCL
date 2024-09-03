@@ -63,8 +63,9 @@ const ViewRequestJE = () => {
             },
           }
         );
-
-        setMatchData(decryptData(responsefilter.data.data));
+        const data = decryptData(responsefilter.data.data);
+        const filteredData = data.filter(item => item.grievance_id !== grievanceId);
+        setMatchData(filteredData);
       } catch (err) {
         setError(err);
       } finally {
