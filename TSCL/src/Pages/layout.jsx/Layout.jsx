@@ -41,6 +41,7 @@ const Layout = ({ permissions }) => {
     } : null,
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
+    permissions["grievance"] && { title: "Designation", icon: <BsShieldExclamation />, to: "/designation" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
     permissions["requestview1"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
     permissions["requestview2"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },

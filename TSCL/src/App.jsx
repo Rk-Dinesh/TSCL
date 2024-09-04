@@ -10,6 +10,7 @@ import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
 import Loading from "./Loading";
+import Designation from "./Pages/designation/Designation";
 
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -110,6 +111,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="" element={<Login setToken={setToken} />} />
           <Route path="/auth" element={<OTP />} />
+          
           <Route
             path="/"
             element={
@@ -207,6 +209,7 @@ function App() {
                 />
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
+                <Route path="/designation" element={<Designation permissions={memoizedFeatures["grievance"]}  />} />
               </>
             )}
             {memoizedFeatures["requestview1"] && (

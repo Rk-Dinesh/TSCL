@@ -111,7 +111,7 @@ const Zone = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -252,7 +252,7 @@ const Zone = ({ permissions }) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "bulkupload_template.csv";
+    a.download = "Zone_bulkupload_template.csv";
     a.click();
     URL.revokeObjectURL(url);
   };
