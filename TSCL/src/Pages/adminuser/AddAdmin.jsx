@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -9,11 +9,24 @@ import { toast } from "react-toastify";
 const AddAdminSchema = yup.object().shape({
   user_name: yup.string().trim().required("User Name is required"),
   dept_name: yup.string().required("Department is required"),
-  phone: yup.string().test("len", "Phone Number must be 10 characters", (val) => val.length === 10).required("Phone Number is required"),
-  email: yup.string().email("Invalid Email Id").required("Email Id is required"),
+  phone: yup
+    .string()
+    .test(
+      "len",
+      "Phone Number must be 10 characters",
+      (val) => val.length === 10
+    )
+    .required("Phone Number is required"),
+  email: yup
+    .string()
+    .email("Invalid Email Id")
+    .required("Email Id is required"),
   address: yup.string().required("Address is required"),
   login_password: yup.string().required("Password is required"),
-  pincode: yup.string().test("len", "Pincode must be 6 characters", (val) => val.length === 6).required("Pincode is required"),
+  pincode: yup
+    .string()
+    .test("len", "Pincode must be 6 characters", (val) => val.length === 6)
+    .required("Pincode is required"),
   role: yup
     .string()
     .test(
@@ -21,20 +34,60 @@ const AddAdminSchema = yup.object().shape({
       "Please select a Role",
       (value) => value !== "" && value !== "Role"
     ),
+  zone_name: yup.string().optional(),
+  ward_name: yup.array().of(yup.string()).nullable().default([]),
 });
 
 const AddAdmin = (props) => {
-  const { ExistingRoles, ExistingDept } = props;
+  const { ExistingRoles, ExistingEmployees, isZone, isWard } = props;
   const [selectedRoleId, setSelectedRoleId] = useState("");
+  const [filteredWards, setFilteredWards] = useState([])
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
+    watch
   } = useForm({
     resolver: yupResolver(AddAdminSchema),
     mode: "all",
+    register: {
+      ward_name: {
+        multiple: true,
+      },
+    },
   });
+
+  const zoneName = watch("zone_name");
+
+  useEffect(() => {
+    if (zoneName) {
+      const filteredWards = isWard?.filter(
+        (ward) => ward.zone_name === zoneName
+      );
+      setFilteredWards(filteredWards || []);
+      setValue("ward_name", "");
+    } else {
+      setFilteredWards([]);
+    }
+  }, [zoneName, isWard]);
+
+  const handleEmployeeChange = (event) => {
+    const selectedEmployeeName = event.target.value;
+    const selectedEmployee = ExistingEmployees.find(
+      (emp) => emp.emp_name === selectedEmployeeName
+    );
+
+    if (selectedEmployee) {
+      setSelectedRoleId("");
+      setValue("dept_name", selectedEmployee.dept_name);
+      setValue("phone", selectedEmployee.phone);
+      setValue("email", selectedEmployee.email);
+      setValue("address", selectedEmployee.address);
+      setValue("pincode", selectedEmployee.pincode);
+    }
+  };
 
   const handleRoleChange = (event) => {
     const selectedRoleName = event.target.value;
@@ -48,11 +101,14 @@ const AddAdmin = (props) => {
     const formData = {
       ...data,
       status: "active",
-      created_by_user: sessionStorage.getItem('name'),
+      created_by_user: sessionStorage.getItem("name"),
       role_id: selectedRoleId,
     };
 
     const token = sessionStorage.getItem("token");
+
+   
+    
 
     try {
       const response = await axios.post(`${API}/user/post`, formData, {
@@ -81,18 +137,24 @@ const AddAdmin = (props) => {
           <div className="border-b-2 border-gray-300 mx-10 my-5">
             <div className="grid grid-cols-3 gap-3">
               <label
-                className="block text-black text-lg font-medium mb-2 col-span-1 whitespace-nowrap"
+                className="block text-black text-base font-medium mb-2 col-span-2 whitespace-nowrap"
                 htmlFor="user_name"
               >
                 Name:
               </label>
-              <input
-                type="text"
+              <select
+                className="text-sm text-black border border-gray-900 rounded-lg border-none outline-none"
                 id="user_name"
-                className="mx-2 font-lexend px-2 text-sm text-end outline-none col-span-2"
-                placeholder="User Name"
                 {...register("user_name")}
-              />
+                onChange={handleEmployeeChange}
+              >
+                <option value="">Employee Name</option>
+                {ExistingEmployees.map((emp) => (
+                  <option key={emp.emp_id} value={emp.emp_name}>
+                    {emp.emp_name}
+                  </option>
+                ))}
+              </select>
             </div>
             {errors.user_name && (
               <p className="text-red-500 text-xs text-end ">
@@ -101,27 +163,22 @@ const AddAdmin = (props) => {
             )}
           </div>
 
-          <div className="flex flex-col gap-3 mx-10 my-1">
+          <div className="flex flex-col gap-3 mx-10 ">
             <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-2"
+                  className="text-black text-base font-medium mb-2 col-span-1"
                   htmlFor="dept_name"
                 >
                   Department:
                 </label>
-                <select
-                  className="text-sm text-black border border-gray-900 rounded-lg border-none outline-none"
+                <input
+                  type="text"
                   id="dept_name"
+                  className="w-6/5 text-end outline-none col-span-2"
+                  placeholder="Department "
                   {...register("dept_name")}
-                >
-                  <option value="">Department</option>
-                  {ExistingDept.map((dept) => (
-                    <option key={dept.dept_id} value={dept.dept_name}>
-                      {dept.dept_name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
               {errors.dept_name && (
                 <p className="text-red-500 text-xs text-end ">
@@ -133,7 +190,7 @@ const AddAdmin = (props) => {
             <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-1"
+                  className="text-black text-base font-medium mb-2 col-span-1"
                   htmlFor="phone"
                 >
                   Phone:
@@ -156,7 +213,7 @@ const AddAdmin = (props) => {
             <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-1"
+                  className="text-black text-base font-medium mb-2 col-span-1"
                   htmlFor="email"
                 >
                   Email Id:
@@ -179,7 +236,7 @@ const AddAdmin = (props) => {
             <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-1"
+                  className="text-black text-base font-medium mb-2 col-span-1"
                   htmlFor="address"
                 >
                   Address:
@@ -202,7 +259,7 @@ const AddAdmin = (props) => {
             <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-1"
+                  className="text-black text-base font-medium mb-2 col-span-1"
                   htmlFor="pincode"
                 >
                   Pincode:
@@ -225,7 +282,7 @@ const AddAdmin = (props) => {
             <div>
               <div className="grid grid-cols-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-2"
+                  className="text-black text-base font-medium mb-2 col-span-2"
                   htmlFor="role"
                 >
                   Role:
@@ -254,7 +311,7 @@ const AddAdmin = (props) => {
             <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
-                  className="text-black text-lg font-medium mb-2 col-span-1"
+                  className="text-black text-base font-medium mb-2 col-span-1"
                   htmlFor="login_password"
                 >
                   Password:
@@ -270,6 +327,67 @@ const AddAdmin = (props) => {
               {errors.login_password && (
                 <p className="text-red-500 text-xs text-end ">
                   {errors.login_password.message}
+                </p>
+              )}
+            </div>
+            <p className="text-gray-500 my-1">Auto Assign Options :</p>
+
+            <div>
+              <div className="grid grid-cols-3">
+                <label
+                  className="text-black text-base font-medium mb-2 col-span-2"
+                  htmlFor="zone_name"
+                >
+                  Zone:
+                </label>
+                <select
+                  className="text-sm text-black border border-gray-900 rounded-lg border-none outline-none"
+                  id="zone_name"
+                  {...register("zone_name")}
+                >
+                  <option value=""  >Zone</option>
+                  {isZone.map((zones) => (
+                    <option key={zones.zone_id} value={zones.zone_name}>
+                      {zones.zone_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {errors.zone_name && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.zone_name.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <div className="grid grid-cols-3">
+                <label
+                  className="text-black text-base font-medium mb-2 col-span-2"
+                  htmlFor="ward_name"
+                >
+                  Ward:
+                </label>
+                <select
+                  className="text-sm text-black border border-gray-900 rounded-lg border-none outline-none"
+                  id="ward_name"
+                  {...register("ward_name")}
+                  multiple
+                  size={4}
+                >
+                  <option disabled>
+                    Ward Name
+                  </option>
+                  {filteredWards.map((wards) => (
+                    <option key={wards.ward_id} value={wards.ward_name} className="my-0.5 ">
+                      {wards.ward_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {errors.ward_name && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.ward_name.message}
                 </p>
               )}
             </div>

@@ -33,7 +33,7 @@ const Admin = ({ permissions }) => {
   const [deleteId, setdeleteId] = useState(null);
 
   const [ExistingRoles, setExistingRoles] = useState(null);
-  const [ExistingDept, setExistingDept] = useState(null);
+  const [ExistingEmployees, setExistingEmployees] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
@@ -45,7 +45,9 @@ const Admin = ({ permissions }) => {
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
-  const [selectedDoc, setSelectedDoc] = useState(null)
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [isZone, setIsZone] = useState([]);
+  const [isWard, setIsWard] = useState([]);
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -56,7 +58,9 @@ const Admin = ({ permissions }) => {
   useEffect(() => {
     handlerefresh();
     fetchExistingRoles()
-    fetchExistingDepts()
+    fetchExistingEmployees();
+    fetchZones();
+    fetchWards();
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -121,15 +125,42 @@ const Admin = ({ permissions }) => {
     }
   };
 
-  const fetchExistingDepts = async () => {
+  const fetchExistingEmployees = async () => {
     try {
-      const response = await axios.get(`${API}/department/getactive`,{
+      const response = await axios.get(`${API}/employee/getactive`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const responseData = decryptData(response.data.data);
-      setExistingDept(responseData);
+      setExistingEmployees(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Department:", error);
+    }
+  };
+
+  const fetchZones = async () => {
+    try {
+      const response = await axios.get(`${API}/zone/getactive`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setIsZone(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Department:", error);
+    }
+  };
+  const fetchWards = async () => {
+    try {
+      const response = await axios.get(`${API}/ward/getactive`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setIsWard(responseData);
     } catch (error) {
       console.error("Error fetching existing Department:", error);
     }
@@ -624,14 +655,16 @@ const Admin = ({ permissions }) => {
         </div>
       </div>
       {isModal && (
-        <AddAdmin toggleModal={toggleModal} handlerefresh={handlerefresh} ExistingRoles={ExistingRoles} ExistingDept={ExistingDept}/>
+        <AddAdmin toggleModal={toggleModal} handlerefresh={handlerefresh} ExistingRoles={ExistingRoles} ExistingEmployees={ExistingEmployees} isZone={isZone} isWard={isWard}/>
       )}
       {editModal && (
         <EditAdmin
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
-          ExistingRoles={ExistingRoles} ExistingDept={ExistingDept}
+          ExistingRoles={ExistingRoles} 
           adminId={adminId}
+          isZone={isZone} 
+          isWard={isWard}
         />
       )}
       {isDeleteModal && (
