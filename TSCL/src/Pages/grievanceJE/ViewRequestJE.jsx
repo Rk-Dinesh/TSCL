@@ -138,12 +138,22 @@ const ViewRequestJE = () => {
   };
 
   const handleStatus = async (data) => {
+    if (data.toLowerCase() === "closed" && !watch("worksheet_name")) {
+      toast.error("Please fill out the worksheet form before closing the request");
+      return;
+    }
+
+ 
+  
+  
     const formData = {
       status: data,
     };
-
-    const workStatus = data;
-
+  
+    if (data.toLowerCase() !== "closed") {
+      formData.worksheet_name = watch("worksheet_name");
+    }
+  
     try {
       const response = await axios.post(
         `${API}/new-grievance/updatestatus?grievance_id=${grievanceId}`,
@@ -154,16 +164,16 @@ const ViewRequestJE = () => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         toast.success("Status Updated Successfully");
-        navigate("/requestview3");
+  
         const response = await axios.post(
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: ` Assigned work is ${workStatus}`,
-            created_by_user: "admin",
+            log_details: ` Assigned work is ${data}`,
+            created_by_user: sessionStorage.getItem("name"),
           },
           {
             headers: {
@@ -171,6 +181,12 @@ const ViewRequestJE = () => {
             },
           }
         );
+        if (data.toLowerCase() === "closed") {
+          onSubmit({ worksheet_name: watch("worksheet_name")});
+          return;
+        }
+        navigate("/requestview3");
+
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");
@@ -191,11 +207,12 @@ const ViewRequestJE = () => {
   };
 
   const onSubmit = async (data) => {
+    
     const workSheet = data.worksheet_name;
     const formData = {
       ...data,
       grievance_id: grievanceId,
-      created_by_user: "admin",
+      created_by_user: sessionStorage.getItem("name"),
     };
 
     try {
@@ -215,8 +232,8 @@ const ViewRequestJE = () => {
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: ` WorkSheet: ${workSheet}`,
-            created_by_user: "admin",
+            log_details: ` WorkSheet given by ${sessionStorage.getItem("name")}: ${workSheet}`,
+            created_by_user: sessionStorage.getItem("name"),
           },
           {
             headers: {
@@ -299,6 +316,7 @@ const ViewRequestJE = () => {
                               <option
                                 key={option.status_name}
                                 value={option.status_name}
+                                disabled={option.status_name.toLowerCase() === "closed" && !watch("worksheet_name")}
                               >
                                 {option.status_name}
                               </option>

@@ -100,7 +100,7 @@ function App() {
    
     return (
       <div>
-        <Loading />
+       <p>Loading...</p>
       </div>
     );
   }

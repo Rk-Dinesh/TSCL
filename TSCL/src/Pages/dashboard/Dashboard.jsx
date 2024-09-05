@@ -4,7 +4,7 @@ import { FaPlus } from "react-icons/fa6";
 import { BsCalendar2Week } from "react-icons/bs";
 import { FaCalendarAlt } from "react-icons/fa";
 import { VscGitPullRequestNewChanges } from "react-icons/vsc";
-import { API, formatDate, formatDate1 } from "../../Host";
+import { API,  formatDate1 } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import { RiExpandUpDownLine } from "react-icons/ri";
@@ -181,7 +181,7 @@ const Dashboard = () => {
                   data={filterDept}
                   dataKey="value"
                   cx={120}
-                  cy={100}
+                  cy={120}
                   innerRadius={60}
                   outerRadius={80}
                   paddingAngle={2}
@@ -235,7 +235,7 @@ const Dashboard = () => {
                   data={filterStatus}
                   dataKey="value"
                   cx={120}
-                  cy={100}
+                  cy={120}
                   innerRadius={60}
                   outerRadius={80}
                   paddingAngle={2}
@@ -358,6 +358,8 @@ const Dashboard = () => {
               </table>
             </div>
           </div>
+
+         
         
       </div>
     </div>
