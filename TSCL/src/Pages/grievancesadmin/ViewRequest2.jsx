@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
+import TicketTransfer from "./TicketTransfer";
 
 const GrievanceSchema = yup.object().shape({
   assign_username: yup.string().required(" required "),
@@ -19,6 +20,8 @@ const ViewRequest2 = () => {
   const [dataUsers, setDataUsers] = useState([]);
   const [logData, setLogData] = useState([]);
   const [matchData, setMatchData] = useState([]);
+  const [transerId, setTranserId] = useState(null);
+  const [transferDept, setTransferDept] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -28,6 +31,7 @@ const ViewRequest2 = () => {
 
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
+  const [istransferModal, setIstransferModal] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const navigate = useNavigate();
 
@@ -138,6 +142,12 @@ const ViewRequest2 = () => {
     setAttachmentFile(null);
   };
 
+  const toggleTModal = () => {
+    setIstransferModal(!istransferModal);
+    setTranserId(null)
+    setTransferDept(null)
+  };
+
   const onSubmit = async (data) => {
     const selectElement = event.target.querySelector("select");
     const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -192,7 +202,19 @@ const ViewRequest2 = () => {
       <div className="h-screen overflow-y-auto no-scrollbar">
         {data && data.grievance_id && (
           <div className="md:mx-6 mx-2  my-5 font-lexend">
-            <p>Complaint Details #{data.grievance_id}</p>
+            <div className="flex gap-1 justify-between flex-wrap items-center">
+              <p>Complaint Details #{data.grievance_id}</p>
+              <button
+                className="bg-primary rounded-full px-3 py-1.5 text-white text-sm mr-3"
+                onClick={() => {
+                  setIstransferModal(true);
+                  setTranserId(data.grievance_id);
+                  setTransferDept([data.dept_name,data.complaint])
+                }}
+              >
+                Ticket Transfer
+              </button>
+            </div>
             <div className="bg-white mt-2 pb-3">
               <p className="px-5 py-2 text-lg">Request By :</p>
               <div className="md:grid md:grid-cols-12 grid grid-cols-12 items-center gap-6 mx-3 my-3">
@@ -209,7 +231,8 @@ const ViewRequest2 = () => {
                   </div>
                   <div className="flex gap-1 items-center">
                     <p className="-ml-2">Priority : </p>
-                    <span className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                    <span
+                      className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
                         data.priority === "High"
                           ? "bg-red-500"
                           : data.priority === "Medium"
@@ -217,7 +240,8 @@ const ViewRequest2 = () => {
                           : data.priority === "Low"
                           ? "bg-green-500"
                           : ""
-                      }`}>
+                      }`}
+                    >
                       {data.priority}
                     </span>
                   </div>
@@ -368,31 +392,31 @@ const ViewRequest2 = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-300">
-  {matchData && matchData.length > 0 ? (
-    matchData.map((data, index) => (
-      <tr
-        className="border-b-2 border-gray-300"
-        key={index}
-      >
-        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-          {formatDate1(data.createdAt)}
-        </td>
-        <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-          {data.grievance_id}
-        </td>
-        <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
-          {data.status}
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td className="text-center py-2.5" colSpan="3">
-        No matching data found
-      </td>
-    </tr>
-  )}
-</tbody>
+                        {matchData && matchData.length > 0 ? (
+                          matchData.map((data, index) => (
+                            <tr
+                              className="border-b-2 border-gray-300"
+                              key={index}
+                            >
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                                {formatDate1(data.createdAt)}
+                              </td>
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                                {data.grievance_id}
+                              </td>
+                              <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
+                                {data.status}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td className="text-center py-2.5" colSpan="3">
+                              No matching data found
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -521,6 +545,7 @@ const ViewRequest2 = () => {
           attachmentFile={attachmentFile}
         />
       )}
+      {istransferModal && <TicketTransfer toggleTModal={toggleTModal} transerId= {transerId} transferDept={transferDept} />}
     </Fragment>
   );
 };

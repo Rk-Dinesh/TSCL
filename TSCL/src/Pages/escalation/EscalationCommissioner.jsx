@@ -191,7 +191,19 @@ const EscalationCommissioner = ({ permissions }) => {
     }
   };
 
-
+  const handleEscalation = () => {
+    try {
+      axios
+        .post(`${API}/manual-escalation-check`)
+        .then((response) => {
+          //console.log(response.data);
+          toast.success("Manual Escalation Done!!!");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {}
+  };
 
   return (
     <Fragment>
@@ -202,6 +214,7 @@ const EscalationCommissioner = ({ permissions }) => {
               {" "}
               Escalation
             </h1>
+
             <div className="flex flex-row items-center gap-2">
               <div className="flex  items-center gap-3 bg-white py-2 px-3 rounded-full">
                 <IoMdSearch className="text-xl" />
@@ -213,6 +226,12 @@ const EscalationCommissioner = ({ permissions }) => {
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
               </div>
+              <button
+                className="bg-red-600 rounded-full px-3 py-2 text-white text-sm"
+                onClick={() => handleEscalation()}
+              >
+                Manual Cron
+              </button>
               {hasDownloadPermission && (
               <div className="flex items-center gap-2">
               <form>

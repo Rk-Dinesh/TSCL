@@ -23,7 +23,7 @@ const Escalation = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -191,6 +191,20 @@ const Escalation = ({ permissions }) => {
     }
   };
 
+  const handleEscalation = () => {
+    try {
+      axios
+        .post(`${API}/manual-escalation-check`)
+        .then((response) => {
+          //console.log(response.data);
+          toast.success("Manual Escalation Done!!!");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {}
+  };
+
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
@@ -211,38 +225,43 @@ const Escalation = ({ permissions }) => {
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
               </div>
+              <button
+                className="bg-red-600 rounded-full px-3 py-2 text-white text-sm"
+                onClick={() => handleEscalation()}
+              >
+                Manual Cron
+              </button>
               {hasDownloadPermission && (
-              <div className="flex items-center gap-2">
-              <form>
-                <select
-                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                  onChange={setDocs}
-                >
-                  <option hidden>Download</option>
+                <div className="flex items-center gap-2">
+                  <form>
+                    <select
+                      className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
+                      onChange={setDocs}
+                    >
+                      <option hidden>Download</option>
 
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </form>
-              {selectedDoc === null && (
-                <HiOutlineDocument className="text-2xl text-gray-500" />
-              )}
-              {selectedDoc === "csv" && (
-                <PiFileCsvLight
-                  className="text-3xl text-gray-500"
-                  onClick={() => exportData("csv")}
-                />
-              )}
-              {selectedDoc === "pdf" && (
-                <PiFilePdfDuotone
-                  className="text-3xl text-gray-500"
-                  onClick={() => exportData("pdf")}
-                />
-              )}
-              </div>
+                      <option value="csv">CSV</option>
+                      <option value="pdf">PDF</option>
+                    </select>
+                  </form>
+                  {selectedDoc === null && (
+                    <HiOutlineDocument className="text-2xl text-gray-500" />
+                  )}
+                  {selectedDoc === "csv" && (
+                    <PiFileCsvLight
+                      className="text-3xl text-gray-500"
+                      onClick={() => exportData("csv")}
+                    />
+                  )}
+                  {selectedDoc === "pdf" && (
+                    <PiFilePdfDuotone
+                      className="text-3xl text-gray-500"
+                      onClick={() => exportData("pdf")}
+                    />
+                  )}
+                </div>
               )}
             </div>
-            
           </div>
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
