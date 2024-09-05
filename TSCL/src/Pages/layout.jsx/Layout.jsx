@@ -48,7 +48,7 @@ const Layout = ({ permissions }) => {
     permissions["requestview1"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview1" },
     permissions["requestview2"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview2" },
     permissions["requestview3"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview3" },
-    permissions["requestview4"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview4" },
+    permissions["requestview4"] && { title: "Reports", icon: <BsShieldExclamation />, to: "/requestview4" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },

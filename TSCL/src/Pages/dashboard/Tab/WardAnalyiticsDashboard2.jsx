@@ -44,12 +44,12 @@ const WardAnalyticDashboard2 = () => {
 
       const responseData = response.data;
 
-      const mappedCount = Object.keys(responseData).reduce((acc, key) => {
-        acc[key] = responseData[key][0][Object.keys(responseData[key][0])[0]];
-        return acc;
-      }, {});
+      // const mappedCount = Object.keys(responseData).reduce((acc, key) => {
+      //   acc[key] = responseData[key][0][Object.keys(responseData[key][0])[0]];
+      //   return acc;
+      // }, {});
 
-      setCount(mappedCount);
+      setCount(responseData);
     } catch (error) {
       console.error("Error fetching existing Dept:", error);
     }
@@ -114,7 +114,7 @@ const WardAnalyticDashboard2 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.totalGrievances ? count.totalGrievances : 0}
+                {count.totalGrievances && count.totalGrievances[0] && count.totalGrievances[0].total ? count.totalGrievances[0].total : 0}
                 </p>
                 <HiClipboardList className="text-4xl text-sky-600" />
               </div>
@@ -126,7 +126,7 @@ const WardAnalyticDashboard2 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.resolvedGrievances ? count.resolvedGrievances : 0}
+                {count.resolvedGrievances && count.resolvedGrievances[0] && count.resolvedGrievances[0].resolved ? count.resolvedGrievances[0].resolved : 0}
                 </p>
                 <TbCheckupList className="text-4xl text-green-600" />
               </div>
@@ -138,7 +138,7 @@ const WardAnalyticDashboard2 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.pendingGrievances ? count.pendingGrievances : 0}
+                {count.pendingGrievances && count.pendingGrievances[0] && count.pendingGrievances[0].pending ? count.pendingGrievances[0].pending : 0}
                 </p>
                 <MdPendingActions className="text-4xl text-red-800" />
               </div>

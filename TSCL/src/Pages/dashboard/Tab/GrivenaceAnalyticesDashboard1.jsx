@@ -20,7 +20,7 @@ const GrivevanceAnalyticDashboard1 = () => {
   const [department, setDepartment] = useState([]);
   const token = sessionStorage.getItem("token");
   const [filterDept, setFilterDept] = useState([]);
-  const [count, setCount] = useState({});
+  const [count, setCount] = useState([]);
   const [prioritycounts, setPrioritycounts] = useState([]);
   const [zoneData, setZoneData] = useState([]);
   const [complaintData, setComplaintData] = useState([])
@@ -70,6 +70,7 @@ const GrivevanceAnalyticDashboard1 = () => {
       console.error("Error fetching existing Dept:", error);
     }
   };
+
   const fetchGrievanceCounts = async () => {
     try {
       const response = await axios.get(`${API}/new-grievance/grievancecounts`, {
@@ -80,16 +81,18 @@ const GrivevanceAnalyticDashboard1 = () => {
 
       const responseData = response.data;
 
-      const mappedCount = Object.keys(responseData).reduce((acc, key) => {
-        acc[key] = responseData[key][0][Object.keys(responseData[key][0])[0]];
-        return acc;
-      }, {});
+      // const mappedCount = Object.keys(responseData).reduce((acc, key) => {
+      //   acc[key] = responseData[key][0][Object.keys(responseData[key][0])[0]];
+      //   return acc;
+      // }, {});
 
-      setCount(mappedCount);
+      setCount(responseData);
     } catch (error) {
       console.error("Error fetching existing Dept:", error);
     }
   };
+
+  
   const fetchPriority = async () => {
     try {
       const response = await axios.get(`${API}/new-grievance/prioritycounts`, {
@@ -154,6 +157,9 @@ const GrivevanceAnalyticDashboard1 = () => {
 
   const COLORS_2 = ["#65a30d", "#0ea5e9", "#b91c1c"];
 
+
+  
+
   return (
     <div className="  font-lexend mx-2 my-3 h-screen  ">
       <div>
@@ -165,7 +171,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.totalGrievances ? count.totalGrievances : 0}
+                {count.totalGrievances && count.totalGrievances[0] && count.totalGrievances[0].total ? count.totalGrievances[0].total : 0}
                 </p>
                 <HiClipboardList className="text-4xl text-sky-600" />
               </div>
@@ -177,7 +183,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.resolvedGrievances ? count.resolvedGrievances : 0}
+                  {count.resolvedGrievances && count.resolvedGrievances[0] && count.resolvedGrievances[0].resolved ? count.resolvedGrievances[0].resolved : 0}
                 </p>
                 <TbCheckupList className="text-4xl text-green-600" />
               </div>
@@ -189,7 +195,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.pendingGrievances ? count.pendingGrievances : 0}
+                  {count.pendingGrievances && count.pendingGrievances[0] && count.pendingGrievances[0].pending ? count.pendingGrievances[0].pending : 0}
                 </p>
                 <MdPendingActions className="text-4xl text-red-800" />
               </div>
@@ -209,7 +215,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 text-gray-700 font-medium">
-                  {count.escalatedGrievances ? count.escalatedGrievances : 0}
+                  {count.escalatedGrievances && count.escalatedGrievances[0] && count.escalatedGrievances[0].escalated ? count.escalatedGrievances[0].escalated : 0}
                 </p>
                 <AiFillAlert className="text-3xl text-red-700" />
               </div>
@@ -220,9 +226,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               </p>
               <div className="flex mt-1 justify-between items-end">
                 <p className="text-3xl px-3 font-medium">
-                  {count.highPriorityGrievances
-                    ? count.highPriorityGrievances
-                    : 0}
+                     {count.highPriorityGrievances && count.highPriorityGrievances[0] && count.highPriorityGrievances[0].highPriority ? count.highPriorityGrievances[0].highPriority : 0}
                 </p>
                 <MdOutlinePriorityHigh className="text-4xl text-gray-800" />
               </div>
