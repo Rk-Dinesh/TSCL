@@ -84,7 +84,6 @@ const EditAdmin = (props) => {
         setValue("address", data.address);
         setValue("pincode", data.pincode);
         setRoleName(data.role);
-        setValue("role_id", data.role_id);
         setValue("role", data.role);
         setValue("status", data.status);
         setValue("zone_name", data.zone_name);
@@ -114,6 +113,8 @@ const EditAdmin = (props) => {
       role_id: roleId,
     };
 
+    // console.log(formData);
+  
     try {
       const response = await axios.post(
         `${API}/user/update?user_id=${adminId}`,

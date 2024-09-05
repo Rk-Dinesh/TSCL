@@ -61,7 +61,7 @@ function App() {
   const [features, setFeatures] = useState({});
 
   useEffect(() => {
-    if (decodedToken) {
+    if (decodedToken) { 
       const fetchUserData = async () => {
         try {
           const response = await axios.get(
