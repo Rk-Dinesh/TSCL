@@ -26,6 +26,7 @@ const Layout = ({ permissions }) => {
   const [submenuopen, Setsubmenuopen] = useState(false);
  
   const Menus = [
+    //permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },
     permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },
     permissions["organization"] && { title: "Organization", icon: <GoOrganization />, to: "/organization" },
     permissions["department"] && { title: "Department", icon: <SiAwsorganizations />, to: "/department" },
@@ -44,10 +45,10 @@ const Layout = ({ permissions }) => {
     permissions["grievance"] && { title: "Designation", icon: <BsShieldExclamation />, to: "/designation" },
     permissions["grievance"] && { title: "Employee", icon: <BsShieldExclamation />, to: "/emp" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
-    permissions["requestview1"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
-    permissions["requestview2"] && { title: "Admin", icon: <BsShieldExclamation />, to: "/requestview2" },
-    permissions["requestview3"] && { title: "Engineer", icon: <BsShieldExclamation />, to: "/requestview3" },
-    permissions["requestview4"] && { title: "Commissioner", icon: <BsShieldExclamation />, to: "/requestview4" },
+    permissions["requestview1"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview1" },
+    permissions["requestview2"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview2" },
+    permissions["requestview3"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview3" },
+    permissions["requestview4"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview4" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },

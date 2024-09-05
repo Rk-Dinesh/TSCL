@@ -12,6 +12,7 @@ import axios from "axios";
 import Loading from "./Loading";
 import Designation from "./Pages/designation/Designation";
 import Employee from "./Pages/Employees/Employee";
+import Tabs from "./Pages/dashboard/Tab/Tabs";
 
 
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -128,7 +129,7 @@ function App() {
               <Route
                 path="/dashboard"
                 element={
-                  <Dashboard permissions={memoizedFeatures["dashboard"]} />
+                  <Tabs permissions={memoizedFeatures["dashboard"]} />
                 }
               />
             )}
@@ -212,6 +213,7 @@ function App() {
                 <Route path="/view" element={<ViewRequest />} />
                 <Route path="/designation" element={<Designation permissions={memoizedFeatures["grievance"]}  />} />
                 <Route path="/emp" element={<Employee permissions={memoizedFeatures["grievance"]} />} />
+               
               </>
             )}
             {memoizedFeatures["requestview1"] && (

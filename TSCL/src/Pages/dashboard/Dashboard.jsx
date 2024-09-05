@@ -135,39 +135,39 @@ const Dashboard = () => {
 
   return (
     <div className="overflow-y-auto no-scrollbar ">
-      <div className="  font-lexend h-screen mx-2 my-3  ">
-        <div className="grid grid-cols-12 gap-4  my-4 ">
-          <div className="md:col-span-4 sm:col-span-6 px-4 col-span-12 bg-white p-4 rounded-lg">
+      <div className="  font-lexend h-screen mx-3 my-4  ">
+        <div className="grid grid-cols-12 gap-3  my-2 mx-3  ">
+          <div className="md:col-span-4 sm:col-span-6 px-4 col-span-12 bg-white p-4 rounded-lg shadow-md">
             <p className="text-lg font-medium text-gray-700">
               Request By Today
             </p>
             <div className="flex mt-3 justify-between items-end">
-              <p className="text-2xl font-light ">{requestByToday}</p>
-              <VscGitPullRequestNewChanges className="text-3xl text-gray-800" />
+              <p className="text-3xl font-medium mx-3 ">{requestByToday}</p>
+              <VscGitPullRequestNewChanges className="text-4xl text-green-600" />
             </div>
           </div>
-          <div className="md:col-span-4 sm:col-span-6 col-span-12 bg-white p-4 rounded-lg">
+          <div className="md:col-span-4 sm:col-span-6 col-span-12 bg-white p-4 rounded-lg shadow-md">
             {" "}
             <p className="text-lg font-medium text-gray-700">Request By Week</p>
             <div className="flex mt-3 justify-between items-end">
-              <p className="text-2xl font-light">{requestByWeek}</p>
-              <BsCalendar2Week className="text-3xl text-gray-800" />
+              <p className="text-3xl font-medium mx-3">{requestByWeek}</p>
+              <BsCalendar2Week className="text-4xl text-yellow-800" />
             </div>
           </div>
-          <div className="md:col-span-4 sm:col-span-12 col-span-12 bg-white p-4 rounded-lg">
+          <div className="md:col-span-4 sm:col-span-12 col-span-12 bg-white p-4 rounded-lg shadow-md">
             {" "}
             <p className="text-lg font-medium text-gray-700">
               Request By Month
             </p>
             <div className="flex mt-3 justify-between items-end">
-              <p className="text-2xl font-light">{requestByMonth}</p>
-              <FaCalendarAlt className="text-3xl text-gray-800" />
+              <p className="text-3xl font-medium mx-3">{requestByMonth}</p>
+              <FaCalendarAlt className="text-4xl text-sky-600" />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-4 m-2 ">
-          <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg">
+        <div className="grid grid-cols-12 gap-3 m-2 ">
+          <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg shadow-md">
             <p className="text-lg font-medium text-gray-700">
               Request based on Department :
             </p>
@@ -221,7 +221,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg">
+          <div className="md:col-span-6 col-span-12 p-3  bg-white rounded-lg shadow-md">
             <p className="text-lg font-medium text-gray-700">
               Control Request By Status :
             </p>
@@ -278,7 +278,7 @@ const Dashboard = () => {
           </div>
         </div>
         
-          <div className="bg-white h-3/6 mx-3 rounded-lg mt-3  p-3">
+          <div className="bg-white h-3/6 mx-3 rounded-lg mt-2  p-3 shadow-md">
             <p className="text-lg font-lexend my-1 mx-2">Last 5 Grievances request :</p>
             <div className=" rounded-lg  py-1 overflow-x-auto no-scrollbar">
               <table className="w-full mt-1 ">
