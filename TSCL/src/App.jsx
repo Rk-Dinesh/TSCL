@@ -9,15 +9,10 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
-import Loading from "./Loading";
-import Designation from "./Pages/designation/Designation";
-import Employee from "./Pages/Employees/Employee";
-import Tabs from "./Pages/dashboard/Tab/Tabs";
 
-
+const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
-const Dashboard = lazy(() => import("./Pages/dashboard/Dashboard"));
 const Zone = lazy(() => import("./Pages/locality/zone/Zone"));
 const Ward = lazy(() => import("./Pages/locality/ward/Ward"));
 const Street = lazy(() => import("./Pages/locality/street/Street"));
@@ -50,6 +45,8 @@ const RequestHead = lazy(() => import("./Pages/grievanceHead/RequestHead"));
 const Profile = lazy(() => import("./Pages/layout.jsx/Profile"));
 const Escalation = lazy(() => import("./Pages/escalation/Escalation"));
 const EscalationCommissioner = lazy(() => import("./Pages/escalation/EscalationCommissioner"));
+const Designation = lazy(() => import("./Pages/designation/Designation"));
+const Employee = lazy(() => import("./Pages/Employees/Employee"));
 
 function App() {
   const [token, setToken] = useState(sessionStorage.getItem("token") || "");
@@ -201,6 +198,26 @@ function App() {
                 }
               />
             )}
+            {memoizedFeatures["designation"] && (
+              <Route
+                path="/designation"
+                element={
+                  <Designation
+                    permissions={memoizedFeatures["designation"]}
+                  />
+                }
+              />
+            )}
+            {memoizedFeatures["emp"] && (
+              <Route
+                path="/emp"
+                element={
+                  <Employee
+                    permissions={memoizedFeatures["emp"]}
+                  />
+                }
+              />
+            )}
             {memoizedFeatures["grievance"] && (
               <>
                 <Route
@@ -211,8 +228,6 @@ function App() {
                 />
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
-                <Route path="/designation" element={<Designation permissions={memoizedFeatures["grievance"]}  />} />
-                <Route path="/emp" element={<Employee permissions={memoizedFeatures["grievance"]} />} />
                
               </>
             )}

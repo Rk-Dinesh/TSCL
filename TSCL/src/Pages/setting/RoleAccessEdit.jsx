@@ -22,6 +22,8 @@ const RoleAccessLevelEdit = () => {
     { name: "Street", value: "street", checked: false },
     { name: "Complaint", value: "complaint", checked: false },
     { name: "Complaint Type", value: "complainttype", checked: false },
+    { name: "Designation", value: "designation", checked: false },
+    { name: "Employee", value: "emp", checked: false },
     { name: "AdminUser", value: "admin", checked: false },
     { name: "PublicUser", value: "user", checked: false },
     { name: "Status", value: "status", checked: false },
