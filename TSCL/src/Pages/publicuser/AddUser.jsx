@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { API } from "../../Host";
 import { toast } from "react-toastify";
+import SaveCancel from "../../components/SavaCancel";
 
 const AddUserSchema = yup.object().shape({
   public_user_name: yup.string().required("User Name is required"),
@@ -185,66 +186,10 @@ const AddUser = (props) => {
                 </p>
               )}
             </div>
-
-            {/* <div>
-              <div className=" grid grid-cols-3">
-                <label
-                  className=" text-black text-lg font-medium mb-2 col-span-2"
-                  htmlFor="user_status"
-                >
-                  Status:
-                </label>
-                <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
-                id="user_status"
-                 {...register("user_status")}
-                 >
-                  <option value="">Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">InActive</option>
-                </select>
-              </div>
-              {errors.user_status && (
-                <p className="text-red-500 text-xs text-end ">
-                  {errors.user_status.message}
-                </p>
-              )}
-            </div> */}
-
-            {/* <div>
-              <div className="grid grid-cols-3 gap-3">
-                <label
-                  className=" text-black text-lg font-medium mb-2 col-span-1"
-                  htmlFor="login_password"
-                >
-                  Password:
-                </label>
-                <input
-                  type="password"
-                  id="login_password"
-                  className=" text-end outline-none col-span-2"
-                  placeholder="Password"
-                  {...register("login_password")}
-                />
-              </div>
-              {errors.login_password && (
-                <p className="text-red-500 text-xs text-end ">
-                  {errors.login_password.message}
-                </p>
-              )}
-            </div> */}
-
           </div>
 
-          <div className="flex justify-end  py-6 mx-10 my-3 gap-5 ">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleModal}
-            >
-              cancel
-            </div>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
+          <div className="py-6">
+            <SaveCancel onCancel={props.toggleModal} />
           </div>
         </form>
       </div>

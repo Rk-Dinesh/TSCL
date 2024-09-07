@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
+import SaveCancel from "../../components/SavaCancel";
 
 const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
 const StatusSchema = yup.object().shape({
@@ -163,17 +164,7 @@ const token = sessionStorage.getItem('token');
               </p>
             )}
           </div>
-          <div className="flex justify-end  mx-10 gap-5 ">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleModal}
-            >
-              cancel
-            </div>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5"  type="submit">
-              Save
-            </button>
-          </div>
+          <SaveCancel onCancel={props.toggleModal} />
         </form>
        
       </div>

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import SaveCancel from "../../../components/SavaCancel";
 
 const StreetSchema = yup.object().shape({
   ward_name: yup.string().test('not-select', 'Please select a ward', (value) => value !== '' && value !== 'Select Street'),
@@ -127,17 +128,7 @@ const AddStreet = (props) => {
               )}
             </div>
           </div>
-          <div className="flex justify-end mx-10  gap-5 ">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleCloseModal}
-            >
-              cancel
-            </div>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
-          </div>
+          <SaveCancel onCancel={props.toggleCloseModal} />
         </form>
       </div>
     </div>

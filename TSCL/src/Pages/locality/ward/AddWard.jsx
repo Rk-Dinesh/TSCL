@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { API } from "../../../Host";
+import SaveCancel from "../../../components/SavaCancel";
 
 
 const WardSchema = yup.object().shape({
@@ -125,17 +126,7 @@ const AddWard = (props) => {
               )}
             </div>
           </div>
-          <div className="flex justify-end mx-10 gap-5 ">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleCloseModal}
-            >
-              cancel
-            </div>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
-          </div>
+          <SaveCancel onCancel={props.toggleCloseModal} />
         </form>
       </div>
     </div>

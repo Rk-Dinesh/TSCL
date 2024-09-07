@@ -6,6 +6,7 @@ import axios from "axios";
 import { API } from "../../Host";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
+import SaveCancel from "../../components/SavaCancel";
 
 const AddEmployeeSchema = yup.object().shape({
     emp_name: yup.string().trim().required("Employee Name is required"),
@@ -305,19 +306,9 @@ const EditEmployee = (props) => {
             )}
             </div>
           </div>
-
-
-        <div className="flex justify-end  py-6 mx-10 my-3 gap-5 ">
-          <div
-            className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-            onClick={props.toggleModal}
-          >
-            cancel
+          <div className="py-6">
+            <SaveCancel onCancel={props.toggleModal} />
           </div>
-          <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-            Save
-          </button>
-        </div>
       </form>
     </div>
   </div>

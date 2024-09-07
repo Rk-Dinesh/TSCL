@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import SaveCancel from "../../../components/SavaCancel";
 
 const ZoneSchema = yup.object().shape({
   zone_name: yup.string().required("Zone_name is required"),
@@ -76,17 +77,7 @@ const AddZone = (props) => {
               <p className="text-red-500">{errors.zone_name.message}</p>
             )}
           </div>
-          <div className="flex justify-end  mx-10 gap-5 ">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleModal}
-            >
-              cancel
-            </div>
-            <button className=" text-white bg-primary font-lexend rounded-3xl px-5 py-1.5"  type="submit">
-              Save
-            </button>
-          </div>
+          <SaveCancel onCancel={props.toggleModal} />
         </form>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { API } from "../../Host";
 import { toast } from "react-toastify";
+import SaveCancel from "../../components/SavaCancel";
 
 const AddEmployeeSchema = yup.object().shape({
   emp_name: yup.string().trim().required("Employee Name is required"),
@@ -51,7 +52,6 @@ const AddEmployee = (props) => {
 
   const handleDesgnationChange = (event) => {
     const selectedDesginationName = event.target.value;
-   
 
     const selectedDesgn = ExistingDesignation.find(
       (desg) => desg.designation === selectedDesginationName
@@ -295,16 +295,8 @@ const AddEmployee = (props) => {
             </div>
           </div>
 
-          <div className="flex justify-end py-6 mx-10 my-3 gap-5">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleModal}
-            >
-              Cancel
-            </div>
-            <button className="text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
+          <div className="py-6">
+            <SaveCancel onCancel={props.toggleModal} />
           </div>
         </form>
       </div>

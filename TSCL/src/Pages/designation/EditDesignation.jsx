@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { API } from '../../Host';
 import decryptData from '../../Decrypt';
+import SaveCancel from '../../components/SavaCancel';
 
 
 const desginationSchema = yup.object().shape({
@@ -198,17 +199,7 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
             )}
             </div>
           </div>
-          <div className="flex justify-end mx-10 gap-5">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={toggleModal}
-            >
-              Cancel
-            </div>
-            <button className="text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
-          </div>
+          <SaveCancel onCancel={toggleModal} />
         </form>
       </div>
     </div>

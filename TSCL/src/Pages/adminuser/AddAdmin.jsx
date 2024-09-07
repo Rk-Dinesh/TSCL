@@ -1,10 +1,11 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { API } from "../../Host";
 import { toast } from "react-toastify";
+import SaveCancel from "../../components/SavaCancel";
 
 const AddAdminSchema = yup.object().shape({
   user_name: yup.string().trim().required("User Name is required"),
@@ -41,14 +42,14 @@ const AddAdminSchema = yup.object().shape({
 const AddAdmin = (props) => {
   const { ExistingRoles, ExistingEmployees, isZone, isWard } = props;
   const [selectedRoleId, setSelectedRoleId] = useState("");
-  const [filteredWards, setFilteredWards] = useState([])
+  const [filteredWards, setFilteredWards] = useState([]);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
-    watch
+    watch,
   } = useForm({
     resolver: yupResolver(AddAdminSchema),
     mode: "all",
@@ -106,9 +107,6 @@ const AddAdmin = (props) => {
     };
 
     const token = sessionStorage.getItem("token");
-
-   
-    
 
     try {
       const response = await axios.post(`${API}/user/post`, formData, {
@@ -345,7 +343,7 @@ const AddAdmin = (props) => {
                   id="zone_name"
                   {...register("zone_name")}
                 >
-                  <option value=""  >Zone</option>
+                  <option value="">Zone</option>
                   {isZone.map((zones) => (
                     <option key={zones.zone_id} value={zones.zone_name}>
                       {zones.zone_name}
@@ -375,11 +373,13 @@ const AddAdmin = (props) => {
                   multiple
                   size={4}
                 >
-                  <option disabled>
-                    Ward Name
-                  </option>
+                  <option disabled>Ward Name</option>
                   {filteredWards.map((wards) => (
-                    <option key={wards.ward_id} value={wards.ward_name} className="my-0.5 ">
+                    <option
+                      key={wards.ward_id}
+                      value={wards.ward_name}
+                      className="my-0.5 "
+                    >
                       {wards.ward_name}
                     </option>
                   ))}
@@ -392,17 +392,8 @@ const AddAdmin = (props) => {
               )}
             </div>
           </div>
-
-          <div className="flex justify-end py-6 mx-10 my-3 gap-5">
-            <div
-              className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
-              onClick={props.toggleModal}
-            >
-              Cancel
-            </div>
-            <button className="text-white bg-primary font-lexend rounded-3xl px-5 py-1.5">
-              Save
-            </button>
+          <div className="py-6">
+            <SaveCancel onCancel={props.toggleModal} />
           </div>
         </form>
       </div>
