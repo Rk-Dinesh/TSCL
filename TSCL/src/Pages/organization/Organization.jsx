@@ -120,7 +120,8 @@ const Organization = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(API_ENDPOINTS.DELETE_ORGANIZATION.url, {
+      const DELETEENDPOINT = API_ENDPOINTS.DELETE_ORGANIZATION(deleteId);
+      await axios.delete(DELETEENDPOINT.url, {
         headers: API_ENDPOINTS.DELETE_ORGANIZATION.headers
       });
       toggleDeleteCloseModal();
