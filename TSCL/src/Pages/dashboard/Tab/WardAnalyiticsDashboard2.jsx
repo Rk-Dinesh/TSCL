@@ -105,44 +105,47 @@ const WardAnalyticDashboard2 = () => {
 
   return (
     <div className="  font-lexend mx-2 my-5 h-screen  ">
-      <div>
+       <div>
         {count && (
-          <div className="grid grid-cols-12 gap-3  my-3 ">
-            <div className="md:col-span-4 sm:col-span-6 pl-3 col-span-12 border-2  bg-white p-4 rounded-lg shadow-md" onClick={handleNavigate}>
-              <p className="text-lg text-gray-700 font-medium">
-                Grievances Received
-              </p>
-              <div className="flex mt-1 justify-between items-end">
-                <p className="text-3xl px-3 text-gray-700 font-medium">
-                {count.totalGrievances && count.totalGrievances[0] && count.totalGrievances[0].total ? count.totalGrievances[0].total : 0}
+          <div className="grid grid-cols-12 gap-3 my-3">
+            {[
+              {
+                label: "Grievances Received",
+                value: count.totalGrievances?.[0]?.total ?? 0,
+                icon: HiClipboardList,
+                color: "sky-600",
+              },
+              {
+                label: "Grievances Resolved",
+                value: count.resolvedGrievances?.[0]?.resolved ?? 0,
+                icon: TbCheckupList,
+                color: "green-600",
+              },
+              {
+                label: "Pending Grievances",
+                value: count.pendingGrievances?.[0]?.pending ?? 0,
+                icon: MdPendingActions,
+                color: "red-800",
+              }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className={`md:col-span-4 sm:col-span-6 col-span-12 border-2 bg-white p-4 rounded-lg shadow-md ${
+                  item.onClick ? "cursor-pointer" : ""
+                }`}
+                onClick={item.onClick ?? handleNavigate}
+              >
+                <p className="text-lg text-gray-700 font-medium">
+                  {item.label}
                 </p>
-                <HiClipboardList className="text-4xl text-sky-600" />
+                <div className="flex mt-1 justify-between items-end">
+                  <p className="text-3xl px-3 text-gray-700 font-medium">
+                    {item.value}
+                  </p>
+                  <item.icon className={`text-4xl text-${item.color}`} />
+                </div>
               </div>
-            </div>
-            <div className="md:col-span-4 sm:col-span-6 col-span-12 border-2  bg-white p-4 rounded-lg shadow-md" onClick={handleNavigate}>
-              {" "}
-              <p className="text-lg text-gray-700   font-medium">
-                Grievances Resolved
-              </p>
-              <div className="flex mt-1 justify-between items-end">
-                <p className="text-3xl px-3 text-gray-700 font-medium">
-                {count.resolvedGrievances && count.resolvedGrievances[0] && count.resolvedGrievances[0].resolved ? count.resolvedGrievances[0].resolved : 0}
-                </p>
-                <TbCheckupList className="text-4xl text-green-600" />
-              </div>
-            </div>
-            <div className="md:col-span-4 sm:col-span-12 col-span-12 border-2  bg-white p-4 rounded-lg shadow-md" onClick={handleNavigate}>
-              {" "}
-              <p className="text-lg text-gray-700  font-medium">
-                Pending Grievances
-              </p>
-              <div className="flex mt-1 justify-between items-end">
-                <p className="text-3xl px-3 text-gray-700 font-medium">
-                {count.pendingGrievances && count.pendingGrievances[0] && count.pendingGrievances[0].pending ? count.pendingGrievances[0].pending : 0}
-                </p>
-                <MdPendingActions className="text-4xl text-red-800" />
-              </div>
-            </div>
+            ))}
           </div>
         )}
       </div>
