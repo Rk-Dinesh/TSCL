@@ -1,24 +1,21 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdSearch } from "react-icons/io";
 import axios from "axios";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
-
 import DeleteModal from "../Modal/DeleteModal";
 import { toast } from 'react-toastify';
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import AddEmployee from "./AddEmployee";
 import EditEmployee from "./EditEmployee";
 import BulkUploadButton from "../../components/BulkUploadButton";
 import Pagination from "../../components/Pagination";
+import SearchInput from "../../components/SearchInput";
+import FileUploadButton from "../../components/FileUploadButton";
+import DocumentDownload from "../../components/DocumentDownload";
+import HeaderButton from "../../components/HeaderButton";
 
 const csvData = `emp_name,designation_id,designation,dept_name,phone,email,address,pincode,status,created_by_user
 name,DE***,designation,Department,1234567890,abc@gmail.com,address,123456,active,admin`;
@@ -237,7 +234,7 @@ const Employee = ({ permissions }) => {
   
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", "Admin_data.csv");
+      link.setAttribute("download", "Employee_data.csv");
       link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
@@ -300,7 +297,7 @@ const Employee = ({ permissions }) => {
           }
         }
   
-        pdf.save("Admin_data.pdf");
+        pdf.save("Employee_data.pdf");
       } catch (error) {
         console.error("Error exporting data:", error);
       }
@@ -322,79 +319,33 @@ const Employee = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
-          <div className="flex items-center gap-3 bg-white py-2 px-3 rounded-full">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search Employee"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              </div>
+          <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Employee"
+            />
             {hasCreatePermission && (
-               <div className="relative text-center   hover:text-white py-1.5 rounded-full">
-                
-               <input
-                 type="file"
-                 id="fileInput"
-                 className="hidden"
-                 onChange={handleFileChange}
-                 accept=".csv"
-               />
-               
-               <button
-                 className="flex items-center gap-2 justify-center border-primary border-2 font-normal text-base w-36 py-1.5  rounded-full text-primary hover:text-white hover:bg-primary  "
-                 onClick={handleButtonClick}
-               >
-                  <FaPlus />
-                 {buttonText}
-               </button>
-               
-             </div>
+               <FileUploadButton
+               onChange={handleFileChange}
+               buttonText={buttonText}
+               accept=".csv"
+               onClick={handleButtonClick}
+             />
             )}
             
             {hasDownloadPermission && (
-            <div className="flex items-center gap-2">
-            <form>
-                <select
-                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                  onChange={setDocs}
-                 
-                >
-                  <option  hidden>
-                   Download
-                  </option>
-
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </form>
-              {selectedDoc === null && (
-                <HiOutlineDocument className="text-2xl text-gray-500" />
-              )}
-              {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
-              {selectedDoc === "pdf" && (
-                <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
-              )}
-              </div>
+             <DocumentDownload
+             selectedDoc={selectedDoc}
+             onChange={setDocs}
+             exportData={exportData}
+           />
               )}
           </div>
-          <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
-            <h1 className="md:text-2xl text-lg font-medium   font-lexend">
-              TSCL Employee
-            </h1>
-            { hasCreatePermission && (
-            <a href="#">
-              <button
-                className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
-                onClick={()=>setIsModal(true)}
-              >
-                <FaPlus /> Add Employee
-              </button>
-            </a>
-            )}
-          </div>
+          <HeaderButton
+            title="TSCL Employee"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => setIsModal(true)}
+          />
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
     

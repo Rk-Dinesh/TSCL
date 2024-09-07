@@ -1,15 +1,14 @@
 import React, { Fragment, useState,useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
-import { IoMdSearch } from "react-icons/io";
 import decryptData from "../../Decrypt";
 import DeleteModal from "../Modal/DeleteModal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "../../components/Pagination";
+import SearchHeader from "../../components/SearchHeader";
 
 
 const Settings = ({ permissions }) => {
@@ -110,28 +109,13 @@ const Settings = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen mt-10">
-          <div className="flex justify-between items-center my-2 mx-8 flex-wrap gap-3">
-            <h1 className="md:text-xl text-lg font-medium "> Roles</h1>
-            <div className="flex items-center  gap-3 flex-wrap">
-            <div className="flex items-center gap-3 bg-white px-2 py-1.5 rounded-full ">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search User"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-             
-            </div>
-            {hasCreatePermission && (
-              <button className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm" onClick={()=>navigate('/roleform')}>
-                <FaPlus /> Add Role
-              </button>
-              )}
-              </div>
-           
-          </div>
+        <SearchHeader
+            title="Role Access"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => navigate('/roleform')}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
 
           <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
             

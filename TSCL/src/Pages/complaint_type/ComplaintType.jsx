@@ -1,20 +1,19 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
-import { IoMdSearch } from "react-icons/io";
 import AddComplaintType from "./AddComplaintType";
 import decryptData from "../../Decrypt";
 import EditComplaintType from "./EditComplainType";
 import DeleteModal from "../Modal/DeleteModal";
 import Pagination from "../../components/Pagination";
+import SearchHeader from "../../components/SearchHeader";
 
 const ComplaintType = ({ permissions }) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -95,7 +94,10 @@ const ComplaintType = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -119,29 +121,13 @@ const ComplaintType = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen mt-10">
-          <div className="flex justify-between items-center my-2 mx-8 flex-wrap gap-3">
-            <h1 className="md:text-xl text-lg font-medium "> Complaint Type</h1>
-            <div className="flex items-center  gap-3 flex-wrap">
-              <div className="flex items-center gap-3 bg-white px-2 py-1.5 rounded-full ">
-                <IoMdSearch className="text-xl" />
-                <input
-                  type="search"
-                  className="outline-none bg-transparent text-base"
-                  placeholder="Search Type"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-              </div>
-              {hasCreatePermission && (
-              <button
-                className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm"
-                onClick={() => setIsModal(true)}
-              >
-                <FaPlus /> Add Complaint Type
-              </button>
-              )}
-            </div>
-          </div>
+          <SearchHeader
+            title="Complaint Type"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => setIsModal(true)}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
 
           <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
             <div className="overflow-x-auto  no-scrollbar">
@@ -161,7 +147,7 @@ const ComplaintType = ({ permissions }) => {
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                         Status
+                        Status
                         <RiExpandUpDownLine />
                       </p>
                     </th>
@@ -230,28 +216,28 @@ const ComplaintType = ({ permissions }) => {
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setEditModal(true);
-                                  setComptId(type.compliant_type_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Edit
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setEditModal(true);
+                                    setComptId(type.compliant_type_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Edit
+                                </button>
                               )}
                               {hasDeletePermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setIsDeleteModal(true);
-                                  setdeleteId(type.compliant_type_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Delete
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setIsDeleteModal(true);
+                                    setdeleteId(type.compliant_type_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Delete
+                                </button>
                               )}
                             </div>
                           )}
@@ -264,18 +250,16 @@ const ComplaintType = ({ permissions }) => {
             </div>
           </div>
 
-    
           <div className=" my-3 mb-5 mx-7">
-         
-          <Pagination 
-          Length={complaint.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}         
-          />
+            <Pagination
+              Length={complaint.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>

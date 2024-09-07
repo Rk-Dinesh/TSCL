@@ -1,33 +1,31 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdSearch } from "react-icons/io";
 import AddAdmin from "./AddAdmin";
 import axios from "axios";
 import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 import EditAdmin from "./EditAdmin";
 import DeleteModal from "../Modal/DeleteModal";
-import { toast } from 'react-toastify';
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
+import { toast } from "react-toastify";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import BulkUploadButton from "../../components/BulkUploadButton";
 import Pagination from "../../components/Pagination";
+import SearchInput from "../../components/SearchInput";
+import FileUploadButton from "../../components/FileUploadButton";
+import DocumentDownload from "../../components/DocumentDownload";
+import HeaderButton from "../../components/HeaderButton";
 
 const csvData = `user_name,dept_name,phone,email,address,pincode,login_password,status,role,created_by_user
 UserName,Department,phone,email@gmail.com,Address,123456,passord,status,role,admin`;
 
 const Admin = ({ permissions }) => {
   const [isModal, setIsModal] = useState(false);
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
+  const hasDownloadPermission = permissions?.includes("download");
   const [editModal, setEditModal] = useState(false);
   const [adminId, setAdminId] = useState(null);
 
@@ -59,7 +57,7 @@ const Admin = ({ permissions }) => {
 
   useEffect(() => {
     handlerefresh();
-    fetchExistingRoles()
+    fetchExistingRoles();
     fetchExistingEmployees();
     fetchZones();
     fetchWards();
@@ -72,15 +70,14 @@ const Admin = ({ permissions }) => {
   };
 
   const handlerefresh = () => {
-   
     axios
-      .get(`${API}/user/get`,{
+      .get(`${API}/user/get`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        const responseData = decryptData(response.data.data)
+        const responseData = decryptData(response.data.data);
         setAdmin(responseData);
 
         const filteredCenters = responseData.filter((admins) =>
@@ -94,7 +91,6 @@ const Admin = ({ permissions }) => {
         const firstIndex = lastIndex - itemsPerPage;
 
         setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-       
       })
       .catch((error) => {
         console.error(error);
@@ -110,12 +106,12 @@ const Admin = ({ permissions }) => {
 
   const toggleDeleteCloseModal = () => {
     setIsDeleteModal(!isDeleteModal);
-    setdeleteId(null)
+    setdeleteId(null);
   };
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(`${API}/role/getactive`,{
+      const response = await axios.get(`${API}/role/getactive`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -129,7 +125,7 @@ const Admin = ({ permissions }) => {
 
   const fetchExistingEmployees = async () => {
     try {
-      const response = await axios.get(`${API}/employee/getactive`,{
+      const response = await axios.get(`${API}/employee/getactive`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,7 +139,7 @@ const Admin = ({ permissions }) => {
 
   const fetchZones = async () => {
     try {
-      const response = await axios.get(`${API}/zone/getactive`,{
+      const response = await axios.get(`${API}/zone/getactive`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -156,7 +152,7 @@ const Admin = ({ permissions }) => {
   };
   const fetchWards = async () => {
     try {
-      const response = await axios.get(`${API}/ward/getactive`,{
+      const response = await axios.get(`${API}/ward/getactive`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -176,7 +172,10 @@ const Admin = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -185,7 +184,7 @@ const Admin = ({ permissions }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toggleDeleteCloseModal()
+      toggleDeleteCloseModal();
       handlerefresh();
       toast.success("Deleted successfully");
     } catch (error) {
@@ -240,29 +239,28 @@ const Admin = ({ permissions }) => {
     if (format === "csv") {
       // CSV Export
       const exportedData = admin.map((row) => ({
-        
         user_id: row.user_id,
         user_name: row.user_name,
-        dept_name:row.dept_name,
-        phone:row.phone,
-        email:row.email,
-        address:row.address,
-        pincode:row.pincode,
-       
+        dept_name: row.dept_name,
+        phone: row.phone,
+        email: row.email,
+        address: row.address,
+        pincode: row.pincode,
+
         status: row.status,
-       
-        role:row.role,
-        created_by_user: row.created_by_user
+
+        role: row.role,
+        created_by_user: row.created_by_user,
       }));
-  
+
       const csvData = [
         Object.keys(exportedData[0]).join(","),
         ...exportedData.map((row) => Object.values(row).join(",")),
       ].join("\n");
-  
+
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const url = window.URL.createObjectURL(blob);
-  
+
       const link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", "Admin_data.csv");
@@ -274,31 +272,30 @@ const Admin = ({ permissions }) => {
       try {
         const rowsPerPage = 30;
         const totalPages = Math.ceil(admin.length / rowsPerPage);
-  
+
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
-  
+
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
           const endIndex = Math.min(startIndex + rowsPerPage, admin.length);
           const currentPageData = admin.slice(startIndex, endIndex);
-  
+
           const tableData = currentPageData.map((row) => [
-            
             row.user_id,
-           row.user_name,
+            row.user_name,
             row.dept_name,
             row.phone,
             row.email,
             row.address,
             row.pincode,
-           
-             row.status,
-           
+
+            row.status,
+
             row.role,
-            row.created_by_user
+            row.created_by_user,
           ]);
-  
+
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
@@ -311,23 +308,23 @@ const Admin = ({ permissions }) => {
                 "Email",
                 "Address",
                 "Pincode",
-              
-               "Status",
-             
-               "Role",
+
+                "Status",
+
+                "Role",
                 "CreatedBy",
               ],
             ],
             body: tableData,
             theme: "striped",
           });
-  
+
           if (currentPage < totalPages) {
             pdf.addPage();
             yOffset = 10; // Set yOffset for the new page
           }
         }
-  
+
         pdf.save("Admin_data.pdf");
       } catch (error) {
         console.error("Error exporting data:", error);
@@ -350,186 +347,139 @@ const Admin = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
-          <div className="flex items-center gap-3 bg-white py-2 px-3 rounded-full">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search Admin"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              </div>
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Admin"
+            />
             {hasCreatePermission && (
-               <div className="relative text-center   hover:text-white py-1.5 rounded-full">
-                
-               <input
-                 type="file"
-                 id="fileInput"
-                 className="hidden"
-                 onChange={handleFileChange}
-                 accept=".csv"
-               />
-               
-               <button
-                 className="flex items-center gap-2 justify-center border-primary border-2 font-normal text-base w-36 py-1.5  rounded-full text-primary hover:text-white hover:bg-primary  "
-                 onClick={handleButtonClick}
-               >
-                  <FaPlus />
-                 {buttonText}
-               </button>
-               
-             </div>
+              <FileUploadButton
+                onChange={handleFileChange}
+                buttonText={buttonText}
+                accept=".csv"
+                onClick={handleButtonClick}
+              />
             )}
-            
-            {hasDownloadPermission && (
-            <div className="flex items-center gap-2">
-            <form>
-                <select
-                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                  onChange={setDocs}
-                 
-                >
-                  <option  hidden>
-                   Download
-                  </option>
 
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </form>
-              {selectedDoc === null && (
-                <HiOutlineDocument className="text-2xl text-gray-500" />
-              )}
-              {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
-              {selectedDoc === "pdf" && (
-                <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
-              )}
-              </div>
-              )}
-          </div>
-          <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
-            <h1 className="md:text-2xl text-lg font-medium   font-lexend">
-              TSCL User
-            </h1>
-            { hasCreatePermission && (
-            <a href="#">
-              <button
-                className="flex flex-row-2 gap-2  items-center border-2  font-lexend bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
-                onClick={()=>setIsModal(true)}
-              >
-                <FaPlus /> Add User
-              </button>
-            </a>
+            {hasDownloadPermission && (
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
             )}
           </div>
+          <HeaderButton
+            title="TSCL Admin"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => setIsModal(true)}
+          />
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
-    
-          <div className="overflow-x-auto no-scrollbar">
-            <table className="w-full  mt-3">
-              <thead>
-                <tr className="border-b-2 border-gray-300">
-                  <th className="py-2">
-                  <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                      # 
-                    </p>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Username <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Department
-                      <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Phone
-                      <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Email
-                      <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Status
-                      <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Role
-                      <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                      CreatedBy
-                      <RiExpandUpDownLine />
-                    </div>
-                  </th>
-                  <th>
-                    <div className="mx-1 my-3 text-start font-lexend font-semibold whitespace-nowrap">
-                      Action
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItemsOnPage.map((admins, index) => (
-                  <tr className="border-b-2 border-gray-300" key={index}>
-                    <td className="">
-                      <p className="text-center text-sm mx-4 my-2 font-lexend whitespace-nowrap  text-gray-700">
-                        {" "}
-                        {firstIndex + index + 1 < 10
-                          ? `0${firstIndex + index + 1}`
-                          : firstIndex + index + 1}
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full  mt-3">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="py-2">
+                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                        #
                       </p>
-                    </td>
-                    <td>
-                      <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize text-gray-700">
-                        {admins.user_name}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap capitalize text-gray-700">
-                        {admins.dept_name}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
-                        {admins.phone}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
-                        {admins.email}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
-                        {admins.status}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
-                        {admins.role}
-                      </p>
-                    </td>
-                    <td>
-                      <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
-                        {admins.created_by_user}
-                      </p>
-                    </td>
-                    <td>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                        Username <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                        Department
+                        <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
+                        Phone
+                        <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                        Email
+                        <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                        Status
+                        <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                        Role
+                        <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
+                        CreatedBy
+                        <RiExpandUpDownLine />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="mx-1 my-3 text-start font-lexend font-semibold whitespace-nowrap">
+                        Action
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItemsOnPage.map((admins, index) => (
+                    <tr className="border-b-2 border-gray-300" key={index}>
+                      <td className="">
+                        <p className="text-center text-sm mx-4 my-2 font-lexend whitespace-nowrap  text-gray-700">
+                          {" "}
+                          {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                        </p>
+                      </td>
+                      <td>
+                        <p className=" mx-1  my-2 font-lexend whitespace-nowrap text-start text-sm capitalize text-gray-700">
+                          {admins.user_name}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start text-sm  mx-1  my-2  font-lexend whitespace-nowrap capitalize text-gray-700">
+                          {admins.dept_name}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start text-sm mx-3  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
+                          {admins.phone}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
+                          {admins.email}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
+                          {admins.status}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
+                          {admins.role}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start text-sm mx-1  my-2 font-lexend whitespace-nowrap capitalize text-gray-700">
+                          {admins.created_by_user}
+                        </p>
+                      </td>
+                      <td>
                         <div className="flex justify-start mx-1.5 my-3">
                           <BsThreeDotsVertical
                             onClick={() => toggleDropdown(index)}
@@ -537,71 +487,77 @@ const Admin = ({ permissions }) => {
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setEditModal(true);
-                                  setAdminId(admins.user_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Edit
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setEditModal(true);
+                                    setAdminId(admins.user_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Edit
+                                </button>
                               )}
                               {hasDeletePermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setIsDeleteModal(true);
-                                  setdeleteId(admins.user_id);
-                                  toggleDropdown();
-                                  
-                                }}
-                              >
-                                Delete
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setIsDeleteModal(true);
+                                    setdeleteId(admins.user_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Delete
+                                </button>
                               )}
                             </div>
                           )}
                         </div>
                       </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <div className=" my-3 mb-5 mx-7">
-          <BulkUploadButton handleDownload={handleDownload}/>
-          <Pagination 
-          Length={admin.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <BulkUploadButton handleDownload={handleDownload} />
+            <Pagination
+              Length={admin.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>
       {isModal && (
-        <AddAdmin toggleModal={toggleModal} handlerefresh={handlerefresh} ExistingRoles={ExistingRoles} ExistingEmployees={ExistingEmployees} isZone={isZone} isWard={isWard}/>
+        <AddAdmin
+          toggleModal={toggleModal}
+          handlerefresh={handlerefresh}
+          ExistingRoles={ExistingRoles}
+          ExistingEmployees={ExistingEmployees}
+          isZone={isZone}
+          isWard={isWard}
+        />
       )}
       {editModal && (
         <EditAdmin
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
-          ExistingRoles={ExistingRoles} 
+          ExistingRoles={ExistingRoles}
           adminId={adminId}
-          isZone={isZone} 
+          isZone={isZone}
           isWard={isWard}
         />
       )}
       {isDeleteModal && (
-        <DeleteModal 
-        toggleDeleteModal={toggleDeleteCloseModal}
-        delete={handleDelete}
+        <DeleteModal
+          toggleDeleteModal={toggleDeleteCloseModal}
+          delete={handleDelete}
         />
       )}
     </Fragment>

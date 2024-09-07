@@ -1,9 +1,6 @@
-import React, { Fragment, useState,useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RiArrowDropDownLine } from "react-icons/ri";
+import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdSearch } from "react-icons/io";
 import AddZone from "./AddZone";
 import axios from "axios";
 import { API, formatDate } from "../../../Host";
@@ -11,23 +8,23 @@ import decryptData from "../../../Decrypt";
 import EditZone from "./EditZone";
 import DeleteModal from "../../Modal/DeleteModal";
 import { toast } from "react-toastify";
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import BulkUploadButton from "../../../components/BulkUploadButton";
 import Pagination from "../../../components/Pagination";
+import SearchInput from "../../../components/SearchInput";
+import FileUploadButton from "../../../components/FileUploadButton";
+import DocumentDownload from "../../../components/DocumentDownload";
+import HeaderButton from "../../../components/HeaderButton";
 
-const csvData=`zone_name,status,created_by_user
+const csvData = `zone_name,status,created_by_user
 ZoneName,active,admin`;
 
-
 const Zone = ({ permissions }) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -42,14 +39,13 @@ const Zone = ({ permissions }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
 
-  const [zone, setZone] = useState([])
+  const [zone, setZone] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem('token'); 
+  const token = sessionStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
-  const [selectedDoc, setSelectedDoc] = useState(null)
-
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -58,7 +54,7 @@ const Zone = ({ permissions }) => {
   const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
-   handlerefresh()
+    handlerefresh();
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -68,29 +64,29 @@ const Zone = ({ permissions }) => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/zone/get`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    }).then((response) => {
-      const responseData = decryptData(response.data.data)
-      setZone(responseData);
+    axios
+      .get(`${API}/zone/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setZone(responseData);
 
-      const filteredCenters = responseData.filter((org) =>
-        Object.values(org).some((value) =>
-          value.toString().toLowerCase().includes(searchValue.toLowerCase())
-        )
-      );
+        const filteredCenters = responseData.filter((org) =>
+          Object.values(org).some((value) =>
+            value.toString().toLowerCase().includes(searchValue.toLowerCase())
+          )
+        );
 
-      setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-      const lastIndex = currentPage * itemsPerPage;
-      const firstIndex = lastIndex - itemsPerPage;
+        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+        const lastIndex = currentPage * itemsPerPage;
+        const firstIndex = lastIndex - itemsPerPage;
 
-      setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-    });
+        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+      });
   };
-
-
 
   const toggleModal = () => {
     setIsModal(!isModal);
@@ -102,7 +98,7 @@ const Zone = ({ permissions }) => {
 
   const toggleDeleteCloseModal = () => {
     setIsDeleteModal(!isDeleteModal);
-    setdeleteId(null)
+    setdeleteId(null);
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -122,14 +118,13 @@ const Zone = ({ permissions }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toggleDeleteCloseModal()
+      toggleDeleteCloseModal();
       handlerefresh();
       toast.success("Deleted successfully");
     } catch (error) {
       toast.error("Failed to delete");
     }
   };
-
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -178,21 +173,20 @@ const Zone = ({ permissions }) => {
     if (format === "csv") {
       // CSV Export
       const exportedData = zone.map((row) => ({
-        
         zone_id: row.zone_id,
         zone_name: row.zone_name,
         status: row.status,
-        created_by_user: row.created_by_user
+        created_by_user: row.created_by_user,
       }));
-  
+
       const csvData = [
         Object.keys(exportedData[0]).join(","),
         ...exportedData.map((row) => Object.values(row).join(",")),
       ].join("\n");
-  
+
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const url = window.URL.createObjectURL(blob);
-  
+
       const link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", "Zone_data.csv");
@@ -204,44 +198,36 @@ const Zone = ({ permissions }) => {
       try {
         const rowsPerPage = 30;
         const totalPages = Math.ceil(zone.length / rowsPerPage);
-  
+
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
-  
+
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
           const endIndex = Math.min(startIndex + rowsPerPage, zone.length);
           const currentPageData = zone.slice(startIndex, endIndex);
-  
+
           const tableData = currentPageData.map((row) => [
-            
             row.zone_id,
             row.zone_name,
             row.status,
             row.created_by_user,
           ]);
-  
+
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
-            head: [
-              [
-                "Zone_Id",
-                "Zone_Name",
-               "Status",
-                "createdBy",
-              ],
-            ],
+            head: [["Zone_Id", "Zone_Name", "Status", "createdBy"]],
             body: tableData,
             theme: "striped",
           });
-  
+
           if (currentPage < totalPages) {
             pdf.addPage();
             yOffset = 10; // Set yOffset for the new page
           }
         }
-  
+
         pdf.save("Zone_data.pdf");
       } catch (error) {
         console.error("Error exporting data:", error);
@@ -263,153 +249,114 @@ const Zone = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen ">
-        <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
-        <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search Zone"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
+          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Zone"
+            />
             {hasCreatePermission && (
-               <div className="relative text-center   hover:text-white py-1.5 rounded-full">
-                
-               <input
-                 type="file"
-                 id="fileInput"
-                 className="hidden"
-                 onChange={handleFileChange}
-                 accept=".csv"
-               />
-               
-               <button
-                 className="flex items-center gap-2 justify-center border-primary border-2 font-normal text-base w-36 py-1.5  rounded-full text-primary hover:text-white hover:bg-primary  "
-                 onClick={handleButtonClick}
-               >
-                  <FaPlus />
-                 {buttonText}
-               </button>
-               
-             </div>
+              <FileUploadButton
+                onChange={handleFileChange}
+                buttonText={buttonText}
+                accept=".csv"
+                onClick={handleButtonClick}
+              />
             )}
             {hasDownloadPermission && (
-            <div className="flex items-center gap-2">
-            <form>
-                <select
-                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                  onChange={setDocs}
-                 
-                >
-                  <option  hidden>
-                   Download
-                  </option>
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
+            )}
+          </div>
+          <HeaderButton
+            title="Zone"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => setIsModal(true)}
+          />
 
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </form>
-              {selectedDoc === null && (
-                <HiOutlineDocument className="text-2xl text-gray-500" />
-              )}
-              {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
-              {selectedDoc === "pdf" && (
-                <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
-              )}
-              </div>
-              )}
-        </div>
-        <div className="flex justify-between items-center my-2 mx-8 flex-wrap gap-1">
-          <h1 className="md:text-xl text-lg font-medium ">Zone</h1>
-          {hasCreatePermission && (
-          <button
-            className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between md:text-base text-sm"
-            onClick={()=>setIsModal(true)}
-          >
-            <FaPlus /> Add Zone
-          </button>
-          )}
-        </div>
-
-        <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
-        
-          <div className="overflow-x-auto no-scrollbar ">
-          <table className="w-full mt-3 ">
-            <thead className=" border-b-2 border-gray-300">
-              <tr className="border-b-2 border-gray-300">
-              <th className="">
-                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                      # 
-                    </p>
-                  </th>
-                <th className="">
-                  <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
-                    Zone <RiExpandUpDownLine />
-                  </p>
-                </th>
-                <th>
-                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold  whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                <th>
-                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                    CreatedBy <RiExpandUpDownLine />
-                  </p>
-                </th>
-                <th>
-                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                    CreatedAt
-                    <RiExpandUpDownLine />
-                  </p>
-                </th>
-                <th>
-                  <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                    UpdatedAt
-                    <RiExpandUpDownLine />
-                  </p>
-                </th>
-                <th>
-                  <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
-                    Action
-                  </p>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItemsOnPage.map((zones,index)=>(
-              <tr className="border-b-2 border-gray-300 " key={index}>
-                <td className="">
-                      <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-cente text-gray-700">
-                        {firstIndex + index + 1 < 10
-                          ? `0${firstIndex + index + 1}`
-                          : firstIndex + index + 1}
-                      </div>
-                    </td>
-                <td className="">
-                  <p className="capitalize text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm text-gray-700">{zones.zone_name}</p>
-                </td>
-                <td>
-                      <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize text-gray-700">
-                        {zones.status}
+          <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
+            <div className="overflow-x-auto no-scrollbar ">
+              <table className="w-full mt-3 ">
+                <thead className=" border-b-2 border-gray-300">
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="">
+                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
+                        #
                       </p>
-                    </td>
-                <td>
-                  <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize  text-gray-700">{zones.created_by_user}</p>
-                </td>
-                <td>
-                  <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                  {formatDate(zones.createdAt)}
-                  </p>
-                </td>
-                <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                  {formatDate(zones.updatedAt)}
-                  </p>
-                </td>
-                <td>
+                    </th>
+                    <th className="">
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
+                        Zone <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold  whitespace-nowrap">
+                        Status <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
+                        CreatedBy <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
+                        CreatedAt
+                        <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
+                        UpdatedAt
+                        <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
+                        Action
+                      </p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItemsOnPage.map((zones, index) => (
+                    <tr className="border-b-2 border-gray-300 " key={index}>
+                      <td className="">
+                        <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-cente text-gray-700">
+                          {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                        </div>
+                      </td>
+                      <td className="">
+                        <p className="capitalize text-start mx-1.5 my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {zones.zone_name}
+                        </p>
+                      </td>
+                      <td>
+                        <p className=" mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm capitalize text-gray-700">
+                          {zones.status}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize  text-gray-700">
+                          {zones.created_by_user}
+                        </p>
+                      </td>
+                      <td>
+                        <p className="text-start mx-1.5  my-2  font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
+                          {formatDate(zones.createdAt)}
+                        </p>
+                      </td>
+                      <td>
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
+                          {formatDate(zones.updatedAt)}
+                        </p>
+                      </td>
+                      <td>
                         <div className="flex justify-start mx-1.5 my-3">
                           <BsThreeDotsVertical
                             onClick={() => toggleDropdown(index)}
@@ -417,55 +364,56 @@ const Zone = ({ permissions }) => {
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setEditModal(true);
-                                  setZoneId(zones.zone_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Edit
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setEditModal(true);
+                                    setZoneId(zones.zone_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Edit
+                                </button>
                               )}
                               {hasDeletePermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setIsDeleteModal(true);
-                                  setdeleteId(zones.zone_id);
-                                  toggleDropdown();
-                                  
-                                }}
-                              >
-                                Delete
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setIsDeleteModal(true);
+                                    setdeleteId(zones.zone_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Delete
+                                </button>
                               )}
                             </div>
                           )}
                         </div>
                       </td>
-              </tr>
-              ))}
-            </tbody>
-          </table>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <div className=" my-3 mb-5 mx-7">
-          <BulkUploadButton handleDownload={handleDownload}/>
-          <Pagination 
-          Length={zone.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+          <div className=" my-3 mb-5 mx-7">
+            <BulkUploadButton handleDownload={handleDownload} />
+            <Pagination
+              Length={zone.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>
-      {isModal && <AddZone toggleModal={toggleModal} handlerefresh={handlerefresh}/>}
+      {isModal && (
+        <AddZone toggleModal={toggleModal} handlerefresh={handlerefresh} />
+      )}
       {editModal && (
         <EditZone
           toggleModal={toggleEModal}
@@ -474,9 +422,9 @@ const Zone = ({ permissions }) => {
         />
       )}
       {isDeleteModal && (
-        <DeleteModal 
-        toggleDeleteModal={toggleDeleteCloseModal}
-        delete={handleDelete}
+        <DeleteModal
+          toggleDeleteModal={toggleDeleteCloseModal}
+          delete={handleDelete}
         />
       )}
     </Fragment>

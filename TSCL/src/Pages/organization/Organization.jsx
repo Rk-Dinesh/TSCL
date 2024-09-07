@@ -1,9 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdSearch } from "react-icons/io";
 import AddOrganization from "./AddOrganization";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
@@ -11,26 +8,23 @@ import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
 import EditOrganization from "./EditOrganization";
 import DeleteModal from "../Modal/DeleteModal";
-
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Pagination from "../../components/Pagination";
 import BulkUploadButton from "../../components/BulkUploadButton";
-
+import SearchInput from "../../components/SearchInput";
+import FileUploadButton from "../../components/FileUploadButton";
+import DocumentDownload from "../../components/DocumentDownload";
+import HeaderButton from "../../components/HeaderButton";
 
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
 
 const Organization = ({ permissions }) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
-  const hasDownloadPermission = permissions?.includes('download');
-  
-
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [isModal, setIsModal] = useState(false);
 
@@ -53,9 +47,7 @@ const Organization = ({ permissions }) => {
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
-  const [selectedDoc, setSelectedDoc] = useState(null)
-
-
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -111,7 +103,7 @@ const Organization = ({ permissions }) => {
 
   const toggleDeleteCloseModal = () => {
     setIsDeleteModal(!isDeleteModal);
-    setdeleteId(null)
+    setdeleteId(null);
   };
 
   const lastIndex = currentPage * itemsPerPage;
@@ -122,7 +114,10 @@ const Organization = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -131,7 +126,7 @@ const Organization = ({ permissions }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toggleDeleteCloseModal()
+      toggleDeleteCloseModal();
       handlerefresh();
       setOrganization(
         organization.filter((status) => organization.org_id !== deleteId)
@@ -161,11 +156,15 @@ const Organization = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/organization/uploadcsv`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${API}/organization/uploadcsv`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
         // console.log("File uploaded successfully");
@@ -189,21 +188,20 @@ const Organization = ({ permissions }) => {
     if (format === "csv") {
       // CSV Export
       const exportedData = organization.map((row) => ({
-        
         org_id: row.org_id,
         org_name: row.org_name,
         status: row.status,
-        created_by_user: row.created_by_user
+        created_by_user: row.created_by_user,
       }));
-  
+
       const csvData = [
         Object.keys(exportedData[0]).join(","),
         ...exportedData.map((row) => Object.values(row).join(",")),
       ].join("\n");
-  
+
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const url = window.URL.createObjectURL(blob);
-  
+
       const link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", "Organization_data.csv");
@@ -215,44 +213,39 @@ const Organization = ({ permissions }) => {
       try {
         const rowsPerPage = 30;
         const totalPages = Math.ceil(organization.length / rowsPerPage);
-  
+
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
-  
+
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, organization.length);
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            organization.length
+          );
           const currentPageData = organization.slice(startIndex, endIndex);
-  
+
           const tableData = currentPageData.map((row) => [
-            
             row.org_id,
             row.org_name,
             row.status,
             row.created_by_user,
           ]);
-  
+
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
-            head: [
-              [
-                "OrgID",
-                "OrgName",
-               "Status",
-                "createdBy",
-              ],
-            ],
+            head: [["OrgID", "OrgName", "Status", "createdBy"]],
             body: tableData,
             theme: "striped",
           });
-  
+
           if (currentPage < totalPages) {
             pdf.addPage();
             yOffset = 10; // Set yOffset for the new page
           }
         }
-  
+
         pdf.save("Organization_data.pdf");
       } catch (error) {
         console.error("Error exporting data:", error);
@@ -270,84 +263,37 @@ const Organization = ({ permissions }) => {
     URL.revokeObjectURL(url);
   };
 
-
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen ">
-
           <div className="flex flex-row md:justify-end gap-2 p-2 mt-3 mx-8 flex-wrap items-center">
-            <div className="flex items-center gap-3 bg-white py-2 px-3 rounded-full">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search Organization"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Organization"
+            />
             {hasCreatePermission && (
-               <div className="relative text-center   hover:text-white py-1.5 rounded-full">
-                
-               <input
-                 type="file"
-                 id="fileInput"
-                 className="hidden"
-                 onChange={handleFileChange}
-                 accept=".csv"
-               />
-               
-               <button
-                 className="flex items-center gap-2 justify-center border-primary border-2 font-normal text-base w-36 py-1.5  rounded-full text-primary hover:text-white hover:bg-primary  "
-                 onClick={handleButtonClick}
-               >
-                  <FaPlus />
-                 {buttonText}
-               </button>
-               
-             </div>
+              <FileUploadButton
+                onChange={handleFileChange}
+                buttonText={buttonText}
+                accept=".csv"
+                onClick={handleButtonClick}
+              />
             )}
             {hasDownloadPermission && (
-           <div className="flex gap-2 items-center">
-             <form>
-                <select
-                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                  onChange={setDocs}
-                 
-                >
-                  <option  hidden>
-                   Download
-                  </option>
-
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </form>
-              {selectedDoc === null && (
-                <HiOutlineDocument className="text-2xl text-gray-500" />
-              )}
-              {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
-              {selectedDoc === "pdf" && (
-                <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
-              )}
-           </div>
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
             )}
           </div>
-          <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
-            <h1 className="md:text-xl text-lg font-medium whitespace-nowrap">
-              {" "}
-              Organization
-            </h1>
-            {hasCreatePermission && (
-            <button
-              className="flex flex-row  gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm"
-              onClick={() => setIsModal(true)}
-            >
-              <FaPlus /> Add Organization
-            </button>
-            )}
-          </div>
+          <HeaderButton
+            title="Organization"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => setIsModal(true)}
+          />
 
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
             <div className="overflow-x-auto no-scrollbar my-3">
@@ -431,33 +377,32 @@ const Organization = ({ permissions }) => {
                           <BsThreeDotsVertical
                             onClick={() => toggleDropdown(index)}
                           />
-                         
+
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setEditModal(true);
-                                  setOrgId(org.org_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Edit
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setEditModal(true);
+                                    setOrgId(org.org_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Edit
+                                </button>
                               )}
                               {hasDeletePermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setIsDeleteModal(true);
-                                  setdeleteId(org.org_id);
-                                  toggleDropdown();
-                                  
-                                }}
-                              >
-                                Delete
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setIsDeleteModal(true);
+                                    setdeleteId(org.org_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Delete
+                                </button>
                               )}
                             </div>
                           )}
@@ -469,18 +414,18 @@ const Organization = ({ permissions }) => {
               </table>
             </div>
           </div>
-        
+
           <div className=" my-3 mb-5 mx-7">
-          <BulkUploadButton handleDownload={handleDownload}/>
-          <Pagination 
-          Length={organization.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <BulkUploadButton handleDownload={handleDownload} />
+            <Pagination
+              Length={organization.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>
@@ -498,9 +443,9 @@ const Organization = ({ permissions }) => {
         />
       )}
       {isDeleteModal && (
-        <DeleteModal 
-        toggleDeleteModal={toggleDeleteCloseModal}
-        delete={handleDelete}
+        <DeleteModal
+          toggleDeleteModal={toggleDeleteCloseModal}
+          delete={handleDelete}
         />
       )}
     </Fragment>

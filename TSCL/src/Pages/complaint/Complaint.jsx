@@ -1,25 +1,23 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdSearch } from "react-icons/io";
 import AddComplaint from "./AddComplaint";
 import { API } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import EditComplaint from "./EditComplaint";
 import DeleteModal from "../Modal/DeleteModal";
-import { toast } from 'react-toastify';
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
+import { toast } from "react-toastify";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Pagination from "../../components/Pagination";
 import BulkUploadButton from "../../components/BulkUploadButton";
+import SearchInput from "../../components/SearchInput";
+import FileUploadButton from "../../components/FileUploadButton";
+import DocumentDownload from "../../components/DocumentDownload";
+import HeaderButton from "../../components/HeaderButton";
 
-const csvData=`complaint_type_title,dept_name,tat_type,tat_duration,priority,escalation_type,escalation_l1,role_l1,escalation_l2,role_l2,escalation_l3,role_l3,status,created_by_user
+const csvData = `complaint_type_title,dept_name,tat_type,tat_duration,priority,escalation_type,escalation_l1,role_l1,escalation_l2,role_l2,escalation_l3,role_l3,status,created_by_user
 Title,Department,duration,Type,Priority,Type,duration1,role1,duration2,role2,duration3,role3,status,admin
 `;
 
@@ -27,7 +25,7 @@ const Complaint = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -49,9 +47,7 @@ const Complaint = ({ permissions }) => {
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
-  const [selectedDoc, setSelectedDoc] = useState(null)
-
-
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -149,7 +145,10 @@ const Complaint = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -283,22 +282,25 @@ const Complaint = ({ permissions }) => {
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
-            head: [[
-              "complaint_id", 
-              "complaint_type_title", 
-              "dept_name",
-              "tat_type",
-              "tat_duration",
-              "priority",
-              "escalation_type",
-              "escalation_l1",
-              "role_l1",
-              "escalation_l2",
-              "role_l2",
-              "escalation_l3",
-              "role_l3",
-              "Status", 
-              "createdBy"]],
+            head: [
+              [
+                "complaint_id",
+                "complaint_type_title",
+                "dept_name",
+                "tat_type",
+                "tat_duration",
+                "priority",
+                "escalation_type",
+                "escalation_l1",
+                "role_l1",
+                "escalation_l2",
+                "role_l2",
+                "escalation_l3",
+                "role_l3",
+                "Status",
+                "createdBy",
+              ],
+            ],
             body: tableData,
             theme: "striped",
           });
@@ -331,74 +333,32 @@ const Complaint = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
-            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search Complaint"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Complaint"
+            />
             {hasCreatePermission && (
-               <div className="relative text-center   hover:text-white py-1.5 rounded-full">
-                
-               <input
-                 type="file"
-                 id="fileInput"
-                 className="hidden"
-                 onChange={handleFileChange}
-                 accept=".csv"
-               />
-               
-               <button
-                 className="flex items-center gap-2 justify-center border-primary border-2 font-normal text-base w-36 py-1.5  rounded-full text-primary hover:text-white hover:bg-primary  "
-                 onClick={handleButtonClick}
-               >
-                  <FaPlus />
-                 {buttonText}
-               </button>
-               
-             </div>
+              <FileUploadButton
+                onChange={handleFileChange}
+                buttonText={buttonText}
+                accept=".csv"
+                onClick={handleButtonClick}
+              />
             )}
             {hasDownloadPermission && (
-            <div className="flex items-center gap-2">
-            <form>
-                <select
-                  className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                  onChange={setDocs}
-                 
-                >
-                  <option  hidden>
-                   Download
-                  </option>
-
-                  <option value="csv">CSV</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </form>
-              {selectedDoc === null && (
-                <HiOutlineDocument className="text-2xl text-gray-500" />
-              )}
-              {selectedDoc === "csv" && <PiFileCsvLight className="text-3xl text-gray-500" onClick={() => exportData("csv")}/>}
-              {selectedDoc === "pdf" && (
-                <PiFilePdfDuotone className="text-3xl text-gray-500" onClick={() => exportData("pdf")}/>
-              )}
-          </div>
-          )}
-          </div>
-          <div className="flex justify-between items-center my-2 mx-8 gap-1 flex-wrap">
-            <h1 className="md:text-xl text-lg font-medium ">Complaint </h1>
-            {hasCreatePermission && (
-              <button
-                className="flex flex-row-2 gap-2  font-lexend items-center border-2 bg-blue-500 text-white rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
-                onClick={() => setIsModal(true)}
-              >
-                <FaPlus /> Add Complaint
-              </button>
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
             )}
           </div>
+          <HeaderButton
+            title="Complaint"
+            hasCreatePermission={hasCreatePermission}
+            onClick={() => setIsModal(true)}
+          />
           <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
             <table className="w-full  ">
               <thead>
@@ -602,16 +562,16 @@ const Complaint = ({ permissions }) => {
             </table>
           </div>
           <div className=" my-3 mb-5 mx-7">
-          <BulkUploadButton handleDownload={handleDownload}/>
-          <Pagination 
-          Length={complaint.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}      
-          />
+            <BulkUploadButton handleDownload={handleDownload} />
+            <Pagination
+              Length={complaint.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>

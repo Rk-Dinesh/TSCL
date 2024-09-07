@@ -1,19 +1,16 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdSearch } from "react-icons/io";
 import { API, formatDate } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
-
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
+import SearchInput from "../../components/SearchInput";
+import DocumentDownload from "../../components/DocumentDownload";
 
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
@@ -214,16 +211,11 @@ const Escalation = ({ permissions }) => {
               Escalation
             </h1>
             <div className="flex flex-row items-center gap-2">
-              <div className="flex  items-center gap-3 bg-white py-2 px-3 rounded-full">
-                <IoMdSearch className="text-xl" />
-                <input
-                  type="search"
-                  className="outline-none bg-transparent text-base"
-                  placeholder="Search Escalation"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-              </div>
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Escalation"
+            />
               <button
                 className="bg-red-600 rounded-full px-3 py-2 text-white text-sm"
                 onClick={() => handleEscalation()}
@@ -231,34 +223,11 @@ const Escalation = ({ permissions }) => {
                 Manual Cron
               </button>
               {hasDownloadPermission && (
-                <div className="flex items-center gap-2">
-                  <form>
-                    <select
-                      className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                      onChange={setDocs}
-                    >
-                      <option hidden>Download</option>
-
-                      <option value="csv">CSV</option>
-                      <option value="pdf">PDF</option>
-                    </select>
-                  </form>
-                  {selectedDoc === null && (
-                    <HiOutlineDocument className="text-2xl text-gray-500" />
-                  )}
-                  {selectedDoc === "csv" && (
-                    <PiFileCsvLight
-                      className="text-3xl text-gray-500"
-                      onClick={() => exportData("csv")}
-                    />
-                  )}
-                  {selectedDoc === "pdf" && (
-                    <PiFilePdfDuotone
-                      className="text-3xl text-gray-500"
-                      onClick={() => exportData("pdf")}
-                    />
-                  )}
-                </div>
+                <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
               )}
             </div>
           </div>

@@ -1,18 +1,15 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RiArrowDropDownLine } from "react-icons/ri";
-import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
-import { PiFileCsvLight } from "react-icons/pi";
-import { PiFilePdfDuotone } from "react-icons/pi";
-import { HiOutlineDocument } from "react-icons/hi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Pagination from "../../components/Pagination";
+import SearchInput from "../../components/SearchInput";
+import DocumentDownload from "../../components/DocumentDownload";
+import HeaderButton from "../../components/HeaderButton";
 
 const Grivences = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -229,62 +226,25 @@ const Grivences = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row  gap-3 p-2 mt-3 mx-8 flex-wrap md:justify-end ">
-            <p className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full">
-              <IoMdSearch className="text-xl" />
-              <input
-                type="search"
-                className="outline-none bg-transparent text-base"
-                placeholder="Search Grievances"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </p>
+          <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Grievances"
+            />
 
             {hasDownloadPermission && (
-              <div className="flex gap-2 items-center">
-                <form>
-                  <select
-                    className="block w-full py-2 px-2  text-sm border-2 text-gray-400  border-gray-300 rounded-full bg-gray-50 outline-none"
-                    onChange={setDocs}
-                  >
-                    <option hidden>Download</option>
-
-                    <option value="csv">CSV</option>
-                    <option value="pdf">PDF</option>
-                  </select>
-                </form>
-                {selectedDoc === null && (
-                  <HiOutlineDocument className="text-2xl text-gray-500" />
-                )}
-                {selectedDoc === "csv" && (
-                  <PiFileCsvLight
-                    className="text-3xl text-gray-500"
-                    onClick={() => exportData("csv")}
-                  />
-                )}
-                {selectedDoc === "pdf" && (
-                  <PiFilePdfDuotone
-                    className="text-3xl text-gray-500"
-                    onClick={() => exportData("pdf")}
-                  />
-                )}
-              </div>
+              <DocumentDownload
+              selectedDoc={selectedDoc}
+              onChange={setDocs}
+              exportData={exportData}
+            />
             )}
           </div>
-          <div className="flex flex-row  gap-1 justify-between items-center my-2 mx-8 flex-wrap">
-            <h1 className="md:text-xl text-lg font-medium whitespace-nowrap">
-              {" "}
-              New Grievances
-            </h1>
-            {hasCreatePermission && (
-              <button
-                className="flex flex-row-2 gap-2 items-center border-2 bg-blue-500 text-white font-lexend rounded-full p-2.5 w-fit justify-between md:text-base text-sm"
-                onClick={handleform}
-              >
-                <FaPlus /> Add Grievances
-              </button>
-            )}
-          </div>
+          <HeaderButton
+            title="Grievances"
+            hasCreatePermission={hasCreatePermission}
+            onClick={handleform}
+          />
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
