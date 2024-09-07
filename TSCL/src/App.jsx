@@ -282,7 +282,7 @@ function App() {
                     <RequestHead permissions={memoizedFeatures["requestview4"]} />
                   }
                 />
-                <Route path="/view" element={<ViewRequest />} />
+                <Route path="/view3" element={<ViewRequestJE />} />
               </>
             )}
 

@@ -3,19 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { BsChevronDown } from "react-icons/bs";
 import { TiThMenu } from "react-icons/ti";
-import { FaUser } from "react-icons/fa";
+import { ImUserTie } from "react-icons/im";
 import { FaAlignRight } from "react-icons/fa6";
 import { SiAwsorganizations } from "react-icons/si";
 import { RxHome } from "react-icons/rx";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { CiLogout } from "react-icons/ci";
+import { ImUserCheck } from "react-icons/im";
 import { GoOrganization } from "react-icons/go";
 import { MdOutlineContactSupport } from "react-icons/md";
 import { BsShieldExclamation } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { LuUserCircle2 } from "react-icons/lu";
 import { AiFillAlert } from "react-icons/ai";
+import { CiBoxList } from "react-icons/ci";
 import Header from "./Header";
 import logo from "../../assets/images/logo1.png"
 import Loading from "../../Loading";
@@ -41,14 +42,14 @@ const Layout = ({ permissions }) => {
       ].filter(Boolean) 
     } : null,
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
-    permissions["complainttype"] && { title: "Complaint Type", icon: <LuUserCircle2 />, to: "/complainttype" },
-    permissions["designation"] && { title: "Designation", icon: <BsShieldExclamation />, to: "/designation" },
-    permissions["emp"] && { title: "Employee", icon: <BsShieldExclamation />, to: "/emp" },
+    permissions["complainttype"] && { title: "Complaint Type", icon: <CiBoxList />, to: "/complainttype" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
     permissions["requestview1"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview1" },
     permissions["requestview2"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview2" },
     permissions["requestview3"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/requestview3" },
     permissions["requestview4"] && { title: "Reports", icon: <BsShieldExclamation />, to: "/requestview4" },
+    permissions["designation"] && { title: "Designation", icon: <ImUserTie />, to: "/designation" },
+    permissions["emp"] && { title: "Employee", icon: <ImUserCheck />, to: "/emp" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
