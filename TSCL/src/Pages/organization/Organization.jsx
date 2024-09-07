@@ -16,6 +16,7 @@ import SearchInput from "../../components/SearchInput";
 import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
@@ -67,10 +68,8 @@ const Organization = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/organization/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .get(API_ENDPOINTS.GET_ORGANIZATION.url, {
+        headers: API_ENDPOINTS.GET_ORGANIZATION.headers
       })
       .then((response) => {
         const reponseData = decryptData(response.data.data);
@@ -121,10 +120,8 @@ const Organization = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${API}/organization/delete?org_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      await axios.delete(API_ENDPOINTS.DELETE_ORGANIZATION.url, {
+        headers: API_ENDPOINTS.DELETE_ORGANIZATION.headers
       });
       toggleDeleteCloseModal();
       handlerefresh();
@@ -157,12 +154,10 @@ const Organization = ({ permissions }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-        `${API}/organization/uploadcsv`,
+       API_ENDPOINTS.CSV_ORGANIZATION.url,
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers:API_ENDPOINTS.CSV_ORGANIZATION.headers
         }
       );
 
