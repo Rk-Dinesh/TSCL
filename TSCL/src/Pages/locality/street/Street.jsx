@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddStreet from "./AddSreet";
-import { API, formatDate } from "../../../Host";
+import { API, downloadCSV, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
 import EditStreet from "./EditStreet";
@@ -273,15 +273,8 @@ const Street = ({ permissions }) => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "street_bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCSV(csvData);
   };
-
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">

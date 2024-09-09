@@ -3,7 +3,7 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddZone from "./AddZone";
 import axios from "axios";
-import { API, formatDate } from "../../../Host";
+import { API, downloadCSV, formatDate } from "../../../Host";
 import decryptData from "../../../Decrypt";
 import EditZone from "./EditZone";
 import DeleteModal from "../../Modal/DeleteModal";
@@ -236,13 +236,7 @@ const Zone = ({ permissions }) => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Zone_bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCSV(csvData);
   };
 
   return (

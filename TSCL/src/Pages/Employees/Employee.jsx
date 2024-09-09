@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import axios from "axios";
-import { API } from "../../Host";
+import { API, downloadCSV } from "../../Host";
 import decryptData from "../../Decrypt";
 import DeleteModal from "../Modal/DeleteModal";
 import { toast } from 'react-toastify';
@@ -305,13 +305,7 @@ const Employee = ({ permissions }) => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCSV(csvData);
   };
 
   return (

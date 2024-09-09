@@ -3,7 +3,7 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import axios from "axios";
-import { API, formatDate1 } from "../../Host";
+import { API, downloadCSV, formatDate1 } from "../../Host";
 import logo from "../../assets/images/logo1.png"
 import decryptData from "../../Decrypt";
 import DeleteModal from "../Modal/DeleteModal";
@@ -291,13 +291,7 @@ const Designation = ({ permissions }) => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCSV(csvData);
   };
 
   return (

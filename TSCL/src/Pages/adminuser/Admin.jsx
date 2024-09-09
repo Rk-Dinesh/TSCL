@@ -3,7 +3,7 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddAdmin from "./AddAdmin";
 import axios from "axios";
-import { API } from "../../Host";
+import { API, downloadCSV } from "../../Host";
 import decryptData from "../../Decrypt";
 import EditAdmin from "./EditAdmin";
 import DeleteModal from "../Modal/DeleteModal";
@@ -333,20 +333,14 @@ const Admin = ({ permissions }) => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCSV(csvData);
   };
 
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap ">
             <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}

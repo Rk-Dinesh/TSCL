@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddWard from "./AddWard";
-import { API, formatDate } from "../../../Host";
+import { API, downloadCSV, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
 import EditWard from "./EditWard";
@@ -274,13 +274,7 @@ const Ward = ({ permissions }) => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ward_bulkupload_template.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCSV(csvData);
   };
 
   return (
