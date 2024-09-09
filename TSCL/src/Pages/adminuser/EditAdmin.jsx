@@ -86,6 +86,7 @@ const EditAdmin = (props) => {
         setValue("pincode", data.pincode);
         setRoleName(data.role);
         setValue("role", data.role);
+        setRoleId(data.role_id);
         setValue("status", data.status);
         setValue("zone_name", data.zone_name);
         setZoneNames(data.zone_name);
@@ -99,6 +100,7 @@ const EditAdmin = (props) => {
   }, [adminId, setValue]);
 
   const onRoleChange = (event) => {
+    setRoleId(null)
     const selectedRoleName = event.target.value;
     const role = ExistingRoles.find(
       (role) => role.role_name === selectedRoleName
@@ -114,7 +116,7 @@ const EditAdmin = (props) => {
       role_id: roleId,
     };
 
-    // console.log(formData);
+     //console.log(formData);
   
     try {
       const response = await axios.post(
