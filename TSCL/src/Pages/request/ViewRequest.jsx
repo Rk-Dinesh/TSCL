@@ -295,7 +295,7 @@ const ViewRequest = () => {
                   <p className="py-3 font-semibold">
                     Complaint No {data.grievance_id}
                   </p>
-                  <div className="h-[280px]  overflow-x-auto no-scrollbar mb-3">
+                  <div className="h-[380px]  overflow-x-auto no-scrollbar mb-3">
                     {logData &&
                       logData
                         .slice()
@@ -338,7 +338,7 @@ const ViewRequest = () => {
                       </p>
                       <p className="pl-5 col-span-2">
                         {" "}
-                        Assigned To Particular Department
+                        Assigned To Particular {data.dept_name} Department
                       </p>
                     </div>
                     <br />
@@ -355,42 +355,9 @@ const ViewRequest = () => {
                       </p>
                     </div>
                     <br />
-                    <div className="grid grid-cols-3 divide-x-2 divide-black">
-                      <p>
-                        {new Date(data.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </p>
-                      <p className="pl-5 col-span-2">Logged In</p>
-                    </div>
                   </div>
 
-                  <p className="mb-2">Work StatusFlow :</p>
-
-                  <div className="grid grid-cols-3 divide-x-2 divide-black">
-                    <p>
-                      <span className="block">
-                        {new Date(data.updatedAt).toLocaleDateString()}
-                      </span>
-                      {new Date(data.updatedAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </p>
-
-                    <div className="col-span-2">
-                      <p className="pl-5">Status:</p>
-                      <p className="pl-5 text-gray-500">
-                        {data.statusflow
-                          .split("/")
-                          .join(" / ")
-                          .replace(/(?: \/ ){5}/g, " / \n")}
-                      </p>
-                    </div>
-                  </div>
+                  
                   <hr className="my-3" />
                   <div className="md:grid md:grid-cols-3 flex border-2 md:mx-20">
                     <p className="text-center px-3 py-1.5">Status</p>
