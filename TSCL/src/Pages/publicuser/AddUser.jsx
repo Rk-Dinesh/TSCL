@@ -8,19 +8,24 @@ import { toast } from "react-toastify";
 import SaveCancel from "../../components/SavaCancel";
 
 const AddUserSchema = yup.object().shape({
-  public_user_name: yup.string().required("User Name is required"),
-  phone: yup.string().required("Phone Number is required"),
-  email: yup.string().required("Email Id  is required"),
+  public_user_name: yup.string().trim().required("User Name is required"),
+  phone: yup
+    .string()
+    .test(
+      "len",
+      "Phone Number must be 10 characters",
+      (val) => val.length === 10
+    )
+    .required("Phone Number is required"),
+  email: yup
+    .string()
+    .email("Invalid Email Id")
+    .required("Email Id is required"),
   address: yup.string().required("Address is required"),
-  // login_password: yup.string().required("password is required"),
-  pincode: yup.string().required("Pincode is required"),
-  // user_status: yup
-  // .string()
-  // .test(
-  //   "not-select",
-  //   "Please select an Status",
-  //   (value) => value !== "" && value !== "Status"
-  // ),
+  pincode: yup
+  .string()
+  .test("len", "Pincode must be 6 characters", (val) => val.length === 6)
+  .required("Pincode is required"),
 });
 
 const AddUser = (props) => {
