@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 
 const ViewAttachment = (props) => {
-    const {attachmentFile} = props;
+    const {endpoint,attachmentFile} = props;
 
     
     const [imageUrl, setImageUrl] = useState(null);
@@ -15,7 +15,7 @@ const ViewAttachment = (props) => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get(`${API}/new-grievance-attachment/file/${attachmentFile}`, {
+            const response = await axios.get(`${API}/${endpoint}/file/${attachmentFile}`, {
                 responseType: 'blob' 
               });
               const blob = new Blob([response.data], { type: response.headers['content-type'] });

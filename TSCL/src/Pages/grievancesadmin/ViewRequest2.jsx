@@ -17,6 +17,8 @@ const GrievanceSchema = yup.object().shape({
 const ViewRequest2 = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
+  const [workDataFile, setWorkDataFile] = useState(null);
+  const [endpoint, setEndpoint] = useState(null)
   const [dataUsers, setDataUsers] = useState([]);
   const [logData, setLogData] = useState([]);
   const [matchData, setMatchData] = useState([]);
@@ -131,10 +133,30 @@ const ViewRequest2 = () => {
       }
     };
 
+    const fetchDataFileWorksheet = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/grievance-worksheet-attachment/getattachments?grievance_id=${grievanceId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const responseData = decryptData(response.data.data);
+        setWorkDataFile(responseData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
     fetchDeptUser();
     fetchDataFile();
     fetchLog();
+    fetchDataFileWorksheet()
   }, []);
 
   const toggleModal = () => {
@@ -363,6 +385,7 @@ const ViewRequest2 = () => {
                               onClick={() => {
                                 setIsviewModal(true);
                                 setAttachmentFile(file.attachment);
+                                setEndpoint("new-grievance-attachment")
                               }}
                             >
                               {`Attachment ${index + 1}`}
@@ -488,7 +511,26 @@ const ViewRequest2 = () => {
                         </p>
                       </div>
                       <br />
-                     
+                      {workDataFile && workDataFile.length > 0 && (
+                      <div className="grid grid-cols-4">
+                        <p className="col-span-2">Attachment Files </p>
+                        <div className="col-start-1 col-span-4 mt-2 text-xs  ">
+                          {workDataFile.map((file, index) => (
+                            <button
+                              className=" mx-1 my-1 px-3 py-1.5 bg-gray-500 rounded-full text-white"
+                              key={index}
+                              onClick={() => {
+                                setIsviewModal(true);
+                                setAttachmentFile(file.attachment);
+                                setEndpoint("grievance-worksheet-attachment")
+                              }}
+                            >
+                              {`Attachment ${index + 1}`}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     </div>
 
                   
@@ -508,6 +550,7 @@ const ViewRequest2 = () => {
       </div>
       {isviewModal && (
         <ViewAttachment
+        endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
         />

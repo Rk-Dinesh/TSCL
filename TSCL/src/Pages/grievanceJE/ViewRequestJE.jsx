@@ -16,6 +16,8 @@ const Worksheet = yup.object().shape({
 const ViewRequestJE = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
+  const [workDataFile, setWorkDataFile] = useState(null);
+  const [endpoint, setEndpoint] = useState(null)
   const [dataStatus, setDataStatus] = useState([]);
   const [matchData, setMatchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,6 +109,25 @@ const ViewRequestJE = () => {
         setLoading(false);
       }
     };
+
+    const fetchDataFileWorksheet = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/grievance-worksheet-attachment/getattachments?grievance_id=${grievanceId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const responseData = decryptData(response.data.data);
+        setWorkDataFile(responseData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
     const fetchLog = async () => {
       try {
         const response = await axios.get(
@@ -130,6 +151,7 @@ const ViewRequestJE = () => {
     fetchDeptStatus();
     fetchDataFile();
     fetchLog();
+    fetchDataFileWorksheet();
   }, []);
 
   const toggleModal = () => {
@@ -210,7 +232,7 @@ const ViewRequestJE = () => {
     
     const workSheet = data.worksheet_name;
     const formData = {
-      ...data,
+      worksheet_name:` WorkSheet given by ${sessionStorage.getItem("name")}: ${data.worksheet_name} `,
       grievance_id: grievanceId,
       created_by_user: sessionStorage.getItem("name"),
     };
@@ -264,8 +286,10 @@ const ViewRequestJE = () => {
               }
             );
             if (response2.status === 200) {
-              setFiles([]);
               toast.success("Attachment Uploaded Successfully");
+              console.log(response2.data);
+              setFiles([]);
+              
             }
           } catch (error) {
             console.error(error);
@@ -414,6 +438,7 @@ const ViewRequestJE = () => {
                               onClick={() => {
                                 setIsviewModal(true);
                                 setAttachmentFile(file.attachment);
+                                setEndpoint("new-grievance-attachment")
                               }}
                             >
                               {`Attachment ${index + 1}`}
@@ -523,6 +548,7 @@ const ViewRequestJE = () => {
                         Complaint No {data.grievance_id}
                       </p>
                       <div className="h-[380px]  overflow-x-auto no-scrollbar mb-3">
+                     
                         {logData &&
                           logData
                             .slice()
@@ -582,6 +608,26 @@ const ViewRequestJE = () => {
                           </p>
                         </div>
                         <br />
+                        {workDataFile && workDataFile.length > 0 && (
+                      <div className="grid grid-cols-4">
+                        <p className="col-span-2">Attachment Files </p>
+                        <div className="col-start-1 col-span-4 mt-2 text-xs  ">
+                          {workDataFile.map((file, index) => (
+                            <button
+                              className=" mx-1 my-1 px-3 py-1.5 bg-gray-500 rounded-full text-white"
+                              key={index}
+                              onClick={() => {
+                                setIsviewModal(true);
+                                setAttachmentFile(file.attachment);
+                                setEndpoint("grievance-worksheet-attachment")
+                              }}
+                            >
+                              {`Attachment ${index + 1}`}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                         
                       </div>
 
@@ -603,6 +649,7 @@ const ViewRequestJE = () => {
       </div>
       {isviewModal && (
         <ViewAttachment
+        endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
         />
