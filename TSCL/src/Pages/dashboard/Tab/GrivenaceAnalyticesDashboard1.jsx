@@ -332,17 +332,17 @@ const GrivevanceAnalyticDashboard1 = () => {
       </div>
 
       <div className="grid grid-cols-12 gap-3  mt-2 mb-3">
-        <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md">
+        <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
           <p className="text-gray-800 text-lg font-medium mb-1 mx-3">
-            Grievances based on Location
+          Top 10 Grievances by Location :
           </p>
           <table className="w-full mt-1 my-2 ">
             <thead className=" border-b border-gray-300 py-2  ">
               <tr>
-                <th className="text-start text-gray-800 pl-5 py-2">
+                <th className="text-start text-slate-700 font-semibold pl-5 py-2">
                   <p>zone</p>
                 </th>
-                <th className="text-center text-gray-800 py-2">
+                <th className="text-center text-slate-700 font-semibold py-2">
                   <p>Grievances</p>
                 </th>
               </tr>
@@ -361,17 +361,17 @@ const GrivevanceAnalyticDashboard1 = () => {
             </tbody>
           </table>
         </div>
-        <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md">
+        <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
           <p className="text-gray-800 text-lg font-medium mb-1 mx-3">
-            Grievances based on Complaint
+          Top 10 Grievances by Complaint Type :
           </p>
           <table className="w-full mt-1 my-2 mx-3 ">
             <thead className=" border-b border-gray-300 py-2  ">
               <tr>
-                <th className="text-start text-gray-800 pl-3 py-2">
+                <th className="text-start text-slate-700 font-semibold pl-3 py-2">
                   <p>complaint</p>
                 </th>
-                <th className="text-center text-gray-800 py-2">
+                <th className="text-center text-slate-700 font-semibold py-2">
                   <p>Grievances</p>
                 </th>
               </tr>
