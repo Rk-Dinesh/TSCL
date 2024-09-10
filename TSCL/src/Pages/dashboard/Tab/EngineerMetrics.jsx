@@ -182,19 +182,26 @@ const EngineerMetrics = () => {
             <div className="bg-[#219ebc] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Grievances Received</p>
               <p className="text-2xl text-white  font-bold">
-                {percentData.totalGrievancesReceived}
+                {percentData.totalGrievancesReceived
+                  ? percentData.totalGrievancesReceived
+                  : 0}
               </p>
             </div>
             <div className="bg-[#3d5b81] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Resolved Before Escalation</p>
               <p className="text-2xl text-white font-bold">
-                {percentData.totalGrievancesResolvedWithinPeriod}
+                {percentData.totalGrievancesResolvedWithinPeriod
+                  ? percentData.totalGrievancesResolvedWithinPeriod
+                  : 0}
               </p>
             </div>
             <div className="bg-[#023047] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Percentage Resolved</p>
               <p className="text-2xl text-white font-bold">
-                {percentData.totalPercentageResolved}%
+                {percentData.totalPercentageResolved
+                  ? percentData.totalPercentageResolved
+                  : 0}
+                %
               </p>
             </div>
           </div>
@@ -212,13 +219,16 @@ const EngineerMetrics = () => {
             <div className="bg-[#219ebc] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Total Grievances</p>
               <p className="text-2xl text-white font-bold">
-                {escalate.totalGrievances}
+                {escalate.totalGrievances ? escalate.totalGrievances : 0}
               </p>
             </div>
             <div className="bg-[#023047] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Percentage Escalated</p>
               <p className="text-2xl text-white font-bold">
-                {escalate.percentageEscalated}%
+                {escalate.percentageEscalated
+                  ? escalate.percentageEscalated
+                  : 0}
+                %
               </p>
             </div>
           </div>
@@ -226,19 +236,19 @@ const EngineerMetrics = () => {
             <div className="bg-[#f6ee21] p-4 rounded-lg shadow-md">
               <p className="text-black text-sm">Escalated L1</p>
               <p className="text-2xl  text-black font-bold">
-                {escalate.escalatedL1}
+                {escalate.escalatedL1 ? escalate.escalatedL1 : 0}
               </p>
             </div>
             <div className="bg-[#f69220] p-4 rounded-lg shadow-md">
               <p className="text-black text-sm">Escalated L2</p>
               <p className="text-2xl text-black font-bold">
-                {escalate.escalatedL2}
+                {escalate.escalatedL2 ? escalate.escalatedL2 : 0}
               </p>
             </div>
             <div className="bg-[#da1b20] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Escalated L3</p>
               <p className="text-2xl text-white font-bold">
-                {escalate.escalatedL3}
+                {escalate.escalatedL3 ? escalate.escalatedL3 : 0}
               </p>
             </div>
           </div>
@@ -267,20 +277,21 @@ const EngineerMetrics = () => {
             </tr>
           </thead>
           <tbody className="">
-            {avgrsolution.map((item, index) => (
-              <tr className=" border-b border-gray-300   " key={index}>
-                <td className="text-start text-gray-600 pl-5 py-2 whitespace-nowrap">
-                  {item.engineer || "-"}
-                </td>
-                <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
-                  {item.department}
-                </td>
+            {avgrsolution &&
+              avgrsolution.map((item, index) => (
+                <tr className=" border-b border-gray-300   " key={index}>
+                  <td className="text-start text-gray-600 pl-5 py-2 whitespace-nowrap">
+                    {item.engineer || "-"}
+                  </td>
+                  <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
+                    {item.department}
+                  </td>
 
-                <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
-                  {item.averageResolutionTime.toFixed(0)} days
-                </td>
-              </tr>
-            ))}
+                  <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
+                    {item.averageResolutionTime.toFixed(0)} days
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -305,73 +316,108 @@ const EngineerMetrics = () => {
               </tr>
             </thead>
             <tbody>
-              {workLoadData.map((work, index) => (
-                <tr className=" border-b border-gray-300  py-2 " key={index}>
-                  <td className="text-start text-gray-600 pl-5 py-2">
-                    {work.engineer}
-                  </td>
-                  <td className="text-center text-gray-600 py-2">
-                    {work.count}
-                  </td>
-                </tr>
-              ))}
+              {workLoadData &&
+                workLoadData.map((work, index) => (
+                  <tr className=" border-b border-gray-300  py-2 " key={index}>
+                    <td className="text-start text-gray-600 pl-5 py-2">
+                      {work.engineer}
+                    </td>
+                    <td className="text-center text-gray-600 py-2">
+                      {work.count}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
         <div className="md:col-span-6 col-span-12   ">
-        <p className="text-[#023047] text-lg font-medium my-1  whitespace-nowrap bg-white rounded-lg py-1 px-3">Comparative Analysis : </p>
-        <div className="md:col-span-6 col-span-12 mt-2">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <p className="text-gray-600 text-sm mb-1">Current Month</p>
-            <div className="flex justify-between mb-2">
-              <p className="text-lg font-medium text-slate-700">
-                Grievances: {analysis.currentMonthGrievances}
-              </p>
-              <p className="text-lg font-medium text-slate-700">
-                Resolved: {analysis.currentMonthResolvedGrievances}
-              </p>
-              <p className="text-lg font-medium text-slate-700">
-                Escalated: {analysis.currentMonthEscalatedGrievances}
-              </p>
-            </div>
-            <div className="flex justify-between mb-2">
-              <p className="text-lg font-medium text-green-600">
-                Resolved : {analysis.currentMonthPercentageResolved}%
-              </p>
-              <p className="text-lg font-medium text-red-600">
-                Escalated : {analysis.currentMonthPercentageEscalated}%
-              </p>
+          <p className="text-[#023047] text-lg font-medium my-1  whitespace-nowrap bg-white rounded-lg py-1 px-3">
+            Comparative Analysis :{" "}
+          </p>
+          <div className="md:col-span-6 col-span-12 mt-2">
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <p className="text-gray-600 text-sm mb-1">Current Month</p>
+              <div className="flex justify-between mb-2">
+                <p className="text-lg font-medium text-slate-700">
+                  Grievances:{" "}
+                  {analysis.currentMonthGrievances
+                    ? analysis.currentMonthGrievances
+                    : 0}
+                </p>
+                <p className="text-lg font-medium text-slate-700">
+                  Resolved:{" "}
+                  {analysis.currentMonthResolvedGrievances
+                    ? analysis.currentMonthResolvedGrievances
+                    : 0}
+                </p>
+                <p className="text-lg font-medium text-slate-700">
+                  Escalated:{" "}
+                  {analysis.currentMonthEscalatedGrievances
+                    ? analysis.currentMonthEscalatedGrievances
+                    : 0}
+                </p>
+              </div>
+              <div className="flex justify-between mb-2">
+                <p className="text-lg font-medium text-green-600">
+                  Resolved :{" "}
+                  {analysis.currentMonthPercentageResolved
+                    ? analysis.currentMonthPercentageResolved
+                    : 0}
+                  %
+                </p>
+                <p className="text-lg font-medium text-red-600">
+                  Escalated :{" "}
+                  {analysis.currentMonthPercentageEscalated
+                    ? analysis.currentMonthPercentageEscalated
+                    : 0}
+                  %
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="md:col-span-6 col-span-12 mt-2">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <p className="text-gray-600 text-sm mb-1">Previous Month</p>
-            <div className="flex justify-between mb-2">
-              <p className="text-lg font-medium text-slate-700">
-                Grievances: {analysis.previousMonthGrievances}
-              </p>
-              <p className="text-lg font-medium text-slate-700">
-                Resolved: {analysis.previousMonthResolvedGrievances}
-              </p>
-              <p className="text-lg font-medium text-slate-700">
-                Escalated: {analysis.previousMonthEscalatedGrievances}
-              </p>
-            </div>
-            <div className="flex justify-between mb-2">
-              <p className="text-lg font-medium text-green-600">
-                Resolved : {analysis.previousMonthPercentageResolved}%
-              </p>
-              <p className="text-lg font-medium text-red-600">
-                Escalated : {analysis.previousMonthPercentageEscalated}%
-              </p>
+          <div className="md:col-span-6 col-span-12 mt-2">
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <p className="text-gray-600 text-sm mb-1">Previous Month</p>
+              <div className="flex justify-between mb-2">
+                <p className="text-lg font-medium text-slate-700">
+                  Grievances:{" "}
+                  {analysis.previousMonthGrievances
+                    ? analysis.previousMonthGrievances
+                    : 0}
+                </p>
+                <p className="text-lg font-medium text-slate-700">
+                  Resolved:{" "}
+                  {analysis.previousMonthResolvedGrievances
+                    ? analysis.previousMonthResolvedGrievances
+                    : 0}
+                </p>
+                <p className="text-lg font-medium text-slate-700">
+                  Escalated:{" "}
+                  {analysis.previousMonthEscalatedGrievances
+                    ? analysis.previousMonthEscalatedGrievances
+                    : 0}
+                </p>
+              </div>
+              <div className="flex justify-between mb-2">
+                <p className="text-lg font-medium text-green-600">
+                  Resolved :{" "}
+                  {analysis.previousMonthPercentageResolved
+                    ? analysis.previousMonthPercentageResolved
+                    : 0}
+                  %
+                </p>
+                <p className="text-lg font-medium text-red-600">
+                  Escalated :{" "}
+                  {analysis.previousMonthPercentageEscalated
+                    ? analysis.previousMonthPercentageEscalated
+                    : 0}
+                  %
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
-
-      
     </div>
   );
 };
