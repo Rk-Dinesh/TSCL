@@ -193,6 +193,7 @@ const Escalation = ({ permissions }) => {
         .post(`${API}/manual-escalation-check`)
         .then((response) => {
           //console.log(response.data);
+          handlerefresh()
           toast.success("Manual Escalation Done!!!");
         })
         .catch((error) => {
@@ -220,7 +221,7 @@ const Escalation = ({ permissions }) => {
                 className="bg-red-600 rounded-full px-3 py-2 text-white text-sm"
                 onClick={() => handleEscalation()}
               >
-                Manual Cron
+                Refresh
               </button>
               {hasDownloadPermission && (
                 <DocumentDownload

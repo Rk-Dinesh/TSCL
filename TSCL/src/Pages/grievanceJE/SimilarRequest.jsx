@@ -163,7 +163,7 @@ const SimilarRequest = (props) => {
             </div>
           ))
         ) : (
-          <p>No matching data found</p>
+          <p className=" text-center font-semibold text-2xl mt-28">No matching data found !!!</p>
         )}
       </div>
     </div>
