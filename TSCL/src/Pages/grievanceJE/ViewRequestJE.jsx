@@ -245,13 +245,22 @@ const ViewRequestJE = () => {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
+    const fileSizeLimit = 250 * 1024; // 250KB in bytes
+  
     if (files.length > 5) {
       toast.error("Maximum 5 files allowed");
       e.target.value = null;
     } else {
+      for (const file of files) {
+        if (file.size > fileSizeLimit) {
+          toast.error(`File ${file.name} is too large. Please upload files up to 250KB.`);
+          e.target.value = null;
+          return;
+        }
+      }
       setFiles(files);
     }
-  };
+  }
 
   const onSubmit = async (data) => {
     const workSheet = data.worksheet_name;
@@ -556,6 +565,7 @@ const ViewRequestJE = () => {
                         type="file"
                         id="file"
                         multiple
+                         accept=".jpeg, .jpg, .png"
                         className=" py-2 px-3   outline-none"
                         onChange={handleFileChange}
                       />

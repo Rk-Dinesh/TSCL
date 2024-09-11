@@ -685,6 +685,7 @@ const GrievanceForm = () => {
                       type="file"
                       id="file"
                       multiple
+                      accept=".jpeg, .jpg, .png"
                       className=" w-full py-2 px-2 rounded-lg outline-none"
                       onChange={handleFileChange}
                     
