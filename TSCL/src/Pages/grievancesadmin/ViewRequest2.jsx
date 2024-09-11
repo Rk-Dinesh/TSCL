@@ -9,6 +9,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import TicketTransfer from "./TicketTransfer";
+import SimilarReq from "../grievances/SimilarReq";
 
 const GrievanceSchema = yup.object().shape({
   assign_username: yup.string().required(" required "),
@@ -33,6 +34,7 @@ const ViewRequest2 = () => {
 
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
+  const [isSimilarReq, setIsSimilarReq] = useState(false);
   const [istransferModal, setIstransferModal] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const navigate = useNavigate();
@@ -68,7 +70,11 @@ const ViewRequest2 = () => {
             },
           }
         );
-        setMatchData(decryptData(responsefilter.data.data));
+        const data = decryptData(responsefilter.data.data);
+        const filteredData = data.filter(
+          (item) => item.grievance_id !== grievanceId
+        );
+        setMatchData(filteredData);
       } catch (err) {
         setError(err);
       } finally {
@@ -168,6 +174,10 @@ const ViewRequest2 = () => {
     setIstransferModal(!istransferModal);
     setTranserId(null)
     setTransferDept(null)
+  };
+
+  const togglReModal = () => {
+    setIsSimilarReq(!setIsSimilarReq);
   };
 
   const onSubmit = async (data) => {
@@ -399,7 +409,7 @@ const ViewRequest2 = () => {
                 <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
                   <p className="pt-2 text-lg ">Similar Request</p>
                   <hr className="my-3 w-full" />
-                  <div className="overflow-auto no-scrollbar">
+                  <div className="overflow-auto no-scrollbar" onClick={()=>setIsSimilarReq(true)}>
                     <table className="w-full bg-gray-200 rounded ">
                       <thead>
                         <tr>
@@ -556,6 +566,9 @@ const ViewRequest2 = () => {
         />
       )}
       {istransferModal && <TicketTransfer toggleTModal={toggleTModal} transerId= {transerId} transferDept={transferDept} />}
+      {isSimilarReq && (
+        <SimilarReq matchData={matchData} togglReModal={togglReModal} />
+      )}
     </Fragment>
   );
 };

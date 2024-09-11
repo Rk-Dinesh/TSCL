@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "./ViewAttachment";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import SimilarReq from "../grievances/SimilarReq";
 
 const ViewRequest = () => {
   const [data, setData] = useState(null);
@@ -18,6 +19,7 @@ const ViewRequest = () => {
   const grievanceId = location.state?.grievanceId;
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
+  const [isSimilarReq, setIsSimilarReq] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [logData, setLogData] = useState([]);
   const navigate = useNavigate();
@@ -121,6 +123,10 @@ const ViewRequest = () => {
   const toggleModal = () => {
     setIsviewModal(!isviewModal);
     setAttachmentFile(null);
+  };
+
+  const togglReModal = () => {
+    setIsSimilarReq(!setIsSimilarReq);
   };
 
   return (
@@ -248,7 +254,7 @@ const ViewRequest = () => {
               <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
                 <p className="pt-2 text-lg ">Similar Request</p>
                 <hr className="my-3 w-full" />
-                <div className="overflow-auto no-scrollbar">
+                <div className="overflow-auto no-scrollbar" onClick={()=>setIsSimilarReq(true)}>
                   <table className="w-full bg-gray-200 rounded ">
                     <thead>
                       <tr>
@@ -419,6 +425,9 @@ const ViewRequest = () => {
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
         />
+      )}
+      {isSimilarReq && (
+        <SimilarReq matchData={matchData} togglReModal={togglReModal} />
       )}
     </Fragment>
   );

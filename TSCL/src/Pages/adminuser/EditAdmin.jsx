@@ -11,10 +11,8 @@ import SaveCancel from "../../components/SavaCancel";
 const AddAdminSchema = yup.object().shape({
   user_name: yup.string().required("User Name is required"),
   dept_name: yup.string().required("Department is required"),
-  //   phone: yup.string().required("Phone Number is required"),
-  //   email: yup.string().required("Email Id  is required"),
   address: yup.string().required("Address is required"),
-  //   login_password: yup.string().required("password is required"),
+  login_password: yup.string().required("password is required"),
   pincode: yup.string().required("Pincode is required"),
   status: yup
     .string()
@@ -83,6 +81,7 @@ const EditAdmin = (props) => {
         setValue("user_name", data.user_name);
         setValue("dept_name", data.dept_name);
         setValue("address", data.address);
+        setValue("login_password",data.login_password)
         setValue("pincode", data.pincode);
         setRoleName(data.role);
         setValue("role", data.role);
@@ -92,6 +91,7 @@ const EditAdmin = (props) => {
         setZoneNames(data.zone_name);
         setValue("ward_name", data.ward_name);
         setWardName(data.ward_name);
+        
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -294,6 +294,28 @@ const EditAdmin = (props) => {
               {errors.role && (
                 <p className="text-red-500 text-xs text-end ">
                   {errors.role.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className="text-black text-base font-medium mb-2 col-span-1"
+                  htmlFor="login_password"
+                >
+                  Password:
+                </label>
+                <input
+                  type="text"
+                  id="login_password"
+                  className="text-end outline-none col-span-2"
+                  placeholder="Password"
+                  {...register("login_password")}
+                />
+              </div>
+              {errors.login_password && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.login_password.message}
                 </p>
               )}
             </div>

@@ -9,6 +9,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import SimilarRequest from "./SimilarRequest";
+import SimilarReq from "../grievances/SimilarReq";
 
 const Worksheet = yup.object().shape({
   worksheet_name: yup.string().required("worksheet is required"),
@@ -29,10 +30,11 @@ const ViewRequestJE = () => {
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [isSimilar, setIsSimilar] = useState(false);
+  const [isSimilarReq, setIsSimilarReq] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [logData, setLogData] = useState([]);
   const [files, setFiles] = useState([]);
-  const [worksheet, setWorksheet] = useState(null)
+  const [worksheet, setWorksheet] = useState(null);
   const navigate = useNavigate();
 
   const {
@@ -165,7 +167,11 @@ const ViewRequestJE = () => {
   };
 
   const togglSeModal = () => {
-    navigate('/requestview3')
+    navigate("/requestview3");
+  };
+
+  const togglReModal = () => {
+    setIsSimilarReq(!setIsSimilarReq);
   };
 
   const handleStatus = async (data) => {
@@ -214,14 +220,17 @@ const ViewRequestJE = () => {
           }
         );
         if (data.toLowerCase() === "closed") {
-          onSubmit({ worksheet_name: watch("worksheet_name"),status: data.toLowerCase() });
+          onSubmit({
+            worksheet_name: watch("worksheet_name"),
+            status: data.toLowerCase(),
+          });
           if (matchData.length === 0) {
             navigate("/requestview3");
           } else {
             setIsSimilar(true);
-            setWorksheet(watch("worksheet_name"))
+            setWorksheet(watch("worksheet_name"));
           }
-          
+
           return;
         }
         navigate("/requestview3");
@@ -267,7 +276,7 @@ const ViewRequestJE = () => {
 
       if (response.status === 200) {
         toast.success("Wroksheet Uploaded Successfully");
-        
+
         const response = await axios.post(
           `${API}/grievance-log/post`,
           {
@@ -475,7 +484,7 @@ const ViewRequestJE = () => {
                 <div className="md:col-span-6 col-span-12 border px-1 py-3 rounded ">
                   <p className="pt-2 text-lg ">Similar Request</p>
                   <hr className="my-3 w-full" />
-                  <div className="overflow-auto no-scrollbar">
+                  <div className="overflow-auto no-scrollbar" onClick={()=>setIsSimilarReq(true)}>
                     <table className="w-full bg-gray-200 rounded  ">
                       <thead>
                         <tr>
@@ -661,9 +670,6 @@ const ViewRequestJE = () => {
                           {data.status}
                         </p>
                       </div>
-                      <button onClick={() => setIsSimilar(true)}>
-                        similar
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -686,6 +692,9 @@ const ViewRequestJE = () => {
           dataStatus={dataStatus}
           worksheet={worksheet}
         />
+      )}
+      {isSimilarReq && (
+        <SimilarReq matchData={matchData} togglReModal={togglReModal} />
       )}
     </Fragment>
   );
