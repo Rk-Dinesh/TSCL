@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
+import SimilarRequest from "./SimilarRequest";
 
 const Worksheet = yup.object().shape({
   worksheet_name: yup.string().required("worksheet is required"),
@@ -27,6 +28,7 @@ const ViewRequestJE = () => {
 
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
+  const [isSimilar, setIsSimilar] = useState(false)
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [logData, setLogData] = useState([]);
   const [files, setFiles] = useState([]);
@@ -157,6 +159,10 @@ const ViewRequestJE = () => {
   const toggleModal = () => {
     setIsviewModal(!isviewModal);
     setAttachmentFile(null);
+  };
+
+  const togglSeModal = () => {
+    setIsSimilar(!isSimilar);
   };
 
   const handleStatus = async (data) => {
@@ -639,6 +645,7 @@ const ViewRequestJE = () => {
                           {data.status}
                         </p>
                       </div>
+                      <button onClick={()=>setIsSimilar(true)}>similar</button>
                     </div>
                   </div>
                 </div>
@@ -654,6 +661,7 @@ const ViewRequestJE = () => {
           attachmentFile={attachmentFile}
         />
       )}
+      {isSimilar && (<SimilarRequest matchData={matchData} togglSeModal={togglSeModal}/>)}
     </Fragment>
   );
 };
