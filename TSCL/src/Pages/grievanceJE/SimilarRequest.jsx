@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { formatDate1 } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import { BsChevronDown } from "react-icons/bs";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 
 const SimilarRequest = (props) => {
-  const { matchData,togglSeModal } = props;
+  const { matchData,togglSeModal,dataStatus,worksheet } = props;
+ 
+  
   const [accordionOpen, setAccordionOpen] = useState({});
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     const accordions = document.querySelectorAll(".accordion");
@@ -23,6 +29,63 @@ const SimilarRequest = (props) => {
     });
   }, []);
 
+  const handleStatus = async (data,grievanceId) => {
+
+    const formData = {
+      status: data,
+    };
+  console.log(formData,grievanceId);
+  
+    try {
+      const response = await axios.post(
+        `${API}/new-grievance/updatestatus?grievance_id=${grievanceId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        toast.success("Status Updated Successfully");
+  
+        const response = await axios.post(
+          `${API}/grievance-log/post`,
+          {
+            grievance_id: grievanceId,
+            log_details: ` SR : Assigned work is ${data} updated by ${sessionStorage.getItem("name")}`,
+            created_by_user: sessionStorage.getItem("name"),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const response1 = await axios.post(
+            `${API}/grievance-log/post`,
+            {
+              grievance_id: grievanceId,
+              log_details: `  SR : Worksheet Updated by ${sessionStorage.getItem("name")} : ${worksheet}`,
+              created_by_user: sessionStorage.getItem("name"),
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          toast.success("Worksheet  Uploaded Successfully");
+      } else {
+        console.error("Error in posting data", response);
+        toast.error("Failed to Upload");
+      }
+    } catch (error) {
+      console.error("Error in posting data", error);
+    }
+  };
+
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center">
@@ -40,7 +103,7 @@ const SimilarRequest = (props) => {
                 <p className="text-white">
                   <span className="text-lg  font-medium">{data.grievance_id} :</span> {data.dept_name} - {data.complaint}
                 </p>
-                <button className="bg-blue-500 text-white rounded-full py-1 px-3">Status</button>
+               
                 </div>
                 
                 <span className="text-2xl font-bold text-white">
@@ -60,7 +123,28 @@ const SimilarRequest = (props) => {
                   <tbody className="divide-y divide-gray-300">
                   <tr>
                       <td className="text-start px-3 mx-3 py-2.5 whitespace-nowrap">
-                        Department : {data.dept_name}
+                       <div className="flex justify-between">
+                       Department : {data.dept_name} 
+                         <select
+                          className="col-span-2 bg-gray-100 block px-1 py-1 text-sm text-black border rounded-lg border-none outline-none capitalize"
+                          onChange={(e) => handleStatus(e.target.value,data.grievance_id)}
+                        >
+                          <option value={data.status} hidden>
+                            {data.status}
+                          </option>
+
+                          {dataStatus &&
+                            dataStatus.map((option) => (
+                              <option
+                                key={option.status_name}
+                                value={option.status_name}
+                                //disabled={option.status_name.toLowerCase() === "closed" && !watch("worksheet_name")}
+                              >
+                                {option.status_name}
+                              </option>
+                            ))}
+                        </select>
+                       </div>
                       </td>
                     </tr>
                     <tr>

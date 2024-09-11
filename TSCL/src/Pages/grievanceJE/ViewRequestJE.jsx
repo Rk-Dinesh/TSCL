@@ -18,7 +18,7 @@ const ViewRequestJE = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
   const [workDataFile, setWorkDataFile] = useState(null);
-  const [endpoint, setEndpoint] = useState(null)
+  const [endpoint, setEndpoint] = useState(null);
   const [dataStatus, setDataStatus] = useState([]);
   const [matchData, setMatchData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,10 +28,11 @@ const ViewRequestJE = () => {
 
   const token = sessionStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
-  const [isSimilar, setIsSimilar] = useState(false)
+  const [isSimilar, setIsSimilar] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [logData, setLogData] = useState([]);
   const [files, setFiles] = useState([]);
+  const [worksheet, setWorksheet] = useState(null)
   const navigate = useNavigate();
 
   const {
@@ -68,7 +69,9 @@ const ViewRequestJE = () => {
           }
         );
         const data = decryptData(responsefilter.data.data);
-        const filteredData = data.filter(item => item.grievance_id !== grievanceId);
+        const filteredData = data.filter(
+          (item) => item.grievance_id !== grievanceId
+        );
         setMatchData(filteredData);
       } catch (err) {
         setError(err);
@@ -162,26 +165,25 @@ const ViewRequestJE = () => {
   };
 
   const togglSeModal = () => {
-    setIsSimilar(!isSimilar);
+    navigate('/requestview3')
   };
 
   const handleStatus = async (data) => {
     if (data.toLowerCase() === "closed" && !watch("worksheet_name")) {
-      toast.error("Please fill out the worksheet form before closing the request");
+      toast.error(
+        "Please fill out the worksheet form before closing the request"
+      );
       return;
     }
 
- 
-  
-  
     const formData = {
       status: data,
     };
-  
+
     if (data.toLowerCase() !== "closed") {
       formData.worksheet_name = watch("worksheet_name");
     }
-  
+
     try {
       const response = await axios.post(
         `${API}/new-grievance/updatestatus?grievance_id=${grievanceId}`,
@@ -192,15 +194,17 @@ const ViewRequestJE = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         toast.success("Status Updated Successfully");
-  
+
         const response = await axios.post(
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: ` Assigned work is ${data} updated by ${sessionStorage.getItem("name")}`,
+            log_details: ` Assigned work is ${data} updated by ${sessionStorage.getItem(
+              "name"
+            )}`,
             created_by_user: sessionStorage.getItem("name"),
           },
           {
@@ -210,11 +214,17 @@ const ViewRequestJE = () => {
           }
         );
         if (data.toLowerCase() === "closed") {
-          onSubmit({ worksheet_name: watch("worksheet_name")});
+          onSubmit({ worksheet_name: watch("worksheet_name"),status: data.toLowerCase() });
+          if (matchData.length === 0) {
+            navigate("/requestview3");
+          } else {
+            setIsSimilar(true);
+            setWorksheet(watch("worksheet_name"))
+          }
+          
           return;
         }
         navigate("/requestview3");
-
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");
@@ -235,10 +245,11 @@ const ViewRequestJE = () => {
   };
 
   const onSubmit = async (data) => {
-    
     const workSheet = data.worksheet_name;
     const formData = {
-      worksheet_name:` WorkSheet given by ${sessionStorage.getItem("name")}: ${data.worksheet_name} `,
+      worksheet_name: ` WorkSheet given by ${sessionStorage.getItem("name")}: ${
+        data.worksheet_name
+      } `,
       grievance_id: grievanceId,
       created_by_user: sessionStorage.getItem("name"),
     };
@@ -256,11 +267,14 @@ const ViewRequestJE = () => {
 
       if (response.status === 200) {
         toast.success("Wroksheet Uploaded Successfully");
+        
         const response = await axios.post(
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: ` WorkSheet given by ${sessionStorage.getItem("name")}: ${workSheet}`,
+            log_details: ` WorkSheet given by ${sessionStorage.getItem(
+              "name"
+            )}: ${workSheet}`,
             created_by_user: sessionStorage.getItem("name"),
           },
           {
@@ -295,7 +309,6 @@ const ViewRequestJE = () => {
               toast.success("Attachment Uploaded Successfully");
               console.log(response2.data);
               setFiles([]);
-              
             }
           } catch (error) {
             console.error(error);
@@ -303,8 +316,9 @@ const ViewRequestJE = () => {
           }
         }
       }
-
-      navigate("/requestview3");
+      if (data.status !== "closed") {
+        navigate("/requestview3");
+      }
     } catch (error) {
       console.log(error);
       toast.error("An error occurred during submission. Please try again.");
@@ -346,7 +360,10 @@ const ViewRequestJE = () => {
                               <option
                                 key={option.status_name}
                                 value={option.status_name}
-                                disabled={option.status_name.toLowerCase() === "closed" && !watch("worksheet_name")}
+                                disabled={
+                                  option.status_name.toLowerCase() ===
+                                    "closed" && !watch("worksheet_name")
+                                }
                               >
                                 {option.status_name}
                               </option>
@@ -444,7 +461,7 @@ const ViewRequestJE = () => {
                               onClick={() => {
                                 setIsviewModal(true);
                                 setAttachmentFile(file.attachment);
-                                setEndpoint("new-grievance-attachment")
+                                setEndpoint("new-grievance-attachment");
                               }}
                             >
                               {`Attachment ${index + 1}`}
@@ -554,7 +571,6 @@ const ViewRequestJE = () => {
                         Complaint No {data.grievance_id}
                       </p>
                       <div className="h-[380px]  overflow-x-auto no-scrollbar mb-3">
-                     
                         {logData &&
                           logData
                             .slice()
@@ -615,29 +631,29 @@ const ViewRequestJE = () => {
                         </div>
                         <br />
                         {workDataFile && workDataFile.length > 0 && (
-                      <div className="grid grid-cols-4">
-                        <p className="col-span-2">Attachment Files </p>
-                        <div className="col-start-1 col-span-4 mt-2 text-xs  ">
-                          {workDataFile.map((file, index) => (
-                            <button
-                              className=" mx-1 my-1 px-3 py-1.5 bg-gray-500 rounded-full text-white"
-                              key={index}
-                              onClick={() => {
-                                setIsviewModal(true);
-                                setAttachmentFile(file.attachment);
-                                setEndpoint("grievance-worksheet-attachment")
-                              }}
-                            >
-                              {`Attachment ${index + 1}`}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                        
+                          <div className="grid grid-cols-4">
+                            <p className="col-span-2">Attachment Files </p>
+                            <div className="col-start-1 col-span-4 mt-2 text-xs  ">
+                              {workDataFile.map((file, index) => (
+                                <button
+                                  className=" mx-1 my-1 px-3 py-1.5 bg-gray-500 rounded-full text-white"
+                                  key={index}
+                                  onClick={() => {
+                                    setIsviewModal(true);
+                                    setAttachmentFile(file.attachment);
+                                    setEndpoint(
+                                      "grievance-worksheet-attachment"
+                                    );
+                                  }}
+                                >
+                                  {`Attachment ${index + 1}`}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      
                       <hr className="my-3" />
                       <div className="md:grid md:grid-cols-3 flex border-2 ">
                         <p className="text-center px-3 py-1.5">Status</p>
@@ -645,7 +661,9 @@ const ViewRequestJE = () => {
                           {data.status}
                         </p>
                       </div>
-                      <button onClick={()=>setIsSimilar(true)}>similar</button>
+                      <button onClick={() => setIsSimilar(true)}>
+                        similar
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -656,12 +674,19 @@ const ViewRequestJE = () => {
       </div>
       {isviewModal && (
         <ViewAttachment
-        endpoint={endpoint}
+          endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
         />
       )}
-      {isSimilar && (<SimilarRequest matchData={matchData} togglSeModal={togglSeModal}/>)}
+      {isSimilar && (
+        <SimilarRequest
+          matchData={matchData}
+          togglSeModal={togglSeModal}
+          dataStatus={dataStatus}
+          worksheet={worksheet}
+        />
+      )}
     </Fragment>
   );
 };
