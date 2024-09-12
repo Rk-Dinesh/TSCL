@@ -182,7 +182,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               },
               {
                 label: "Re-opened Grievances",
-                value: 1,
+                value: count.reopendGrievances?.[0]?.reopen ?? 0,
                 icon: GoIssueReopened,
                 color: "yellow-600",
               },
