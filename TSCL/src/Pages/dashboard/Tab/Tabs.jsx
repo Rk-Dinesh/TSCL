@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import GrivevanceAnalyticDashboard1 from './GrivenaceAnalyticesDashboard1';
 import WardAnalyticDashboard2 from './WardAnalyiticsDashboard2';
 import EngineerMetrics from './EngineerMetrics';
+import PredictiveAnalysis from './PredictiveAnalysis';
 
 function Tabs() {
   const [activeTab, setActiveTab] = useState('tab1');
@@ -39,6 +40,16 @@ function Tabs() {
            Engineer Metrics
           </a>
         </li>
+        <li className="-mb-px mr-1">
+          <a
+            className={`text-white   font-medium rounded-sm text-sm px-5 py-1.5 text-center ${
+              activeTab === 'tab4' ? 'bg-gray-700' : 'bg-gray-400'
+            }`}
+            onClick={() => setActiveTab('tab4')}
+          >
+           Predictive Analysis
+          </a>
+        </li>
       </ul>
       <div className="mx-1 ">
         {activeTab === 'tab1' && (
@@ -49,6 +60,9 @@ function Tabs() {
         )}
         {activeTab === 'tab3' && (
           <EngineerMetrics />
+        )}
+        {activeTab === 'tab4' && (
+          <PredictiveAnalysis />
         )}
       </div>
     </div>

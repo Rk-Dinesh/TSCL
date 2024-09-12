@@ -63,7 +63,7 @@ const GrievanceForm = () => {
   const [filteredStreets, setFilteredStreets] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [files, setFiles] = useState([]);
-  const [translatedText, setTranslatedText] = useState("");
+  const [translatedLan, setTranslatedLan] = useState("");
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
@@ -287,11 +287,13 @@ const GrievanceForm = () => {
 
   const handleTranslate = async (text, targetLanguage) => {
     try {
+      
       const response = await axios.post(`${API}/translate/translate`, {
         text,
         targetLanguage,
       });
       return response.data.translatedText;
+      
       
     } catch (error) {
       console.error(error);
@@ -679,7 +681,7 @@ const GrievanceForm = () => {
                           );
                         }}
                       >
-                        <option hidden>LAN</option>
+                        <option hidden value=''>LAN</option>
                         <option value="ta">EN - TA</option>
                         <option value="en">TA - EN</option>
                       </select>
@@ -691,6 +693,7 @@ const GrievanceForm = () => {
                       className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
                       placeholder="Description here..."
                       {...register("complaint_details")}
+                      
                     ></textarea>
                     {errors.complaint_details && (
                       <p className="text-red-500 text-xs text-start px-2">
