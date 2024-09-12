@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { API } from "../../Host";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const OrganizationSchema = yup.object().shape({
   org_name: yup.string().required("Organization is required"),
@@ -26,8 +26,6 @@ const AddOrganization = (props) => {
 
 
   const onSubmit = async (data) => {
-    const token = sessionStorage.getItem('token');
-   
     const formData = {
       ...data,
       status:"active",
@@ -35,10 +33,8 @@ const AddOrganization = (props) => {
     };
 
     try {
-      const response = await axios.post(`${API}/organization/post`, formData,{
-        headers: {
-           Authorization: `Bearer ${token}`,
-       }
+      const response = await axios.post(API_ENDPOINTS.POST_ORGANIZATION.url, formData,{
+        headers: API_ENDPOINTS.POST_ORGANIZATION.headers
       });
 
       if (response.status === 200) { 

@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const OrganizationSchema = yup.object().shape({
   org_name: yup.string().required("Organization is required"),
@@ -20,8 +20,7 @@ const OrganizationSchema = yup.object().shape({
 });
 
 const EditOrganization = (props) => {
-    const { orgId } = props;
-    const token = sessionStorage.getItem('token');
+    const { orgId } = props
 
     const {
       register,
@@ -37,10 +36,9 @@ const EditOrganization = (props) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`${API}/organization/getbyid?org_id=${orgId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
+          const GETBYID = API_ENDPOINTS.FETCH_ORGANIZATION(orgId)
+          const response = await axios.get(GETBYID.url, {
+            headers:GETBYID.headers
           });
           const data = decryptData(response.data.data); 
           setValue("org_name", data.org_name);
@@ -59,10 +57,9 @@ const EditOrganization = (props) => {
       };
   
       try {
-        const response = await axios.post(`${API}/organization/update?org_id=${orgId}`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
+        const UPDATEORGANIZATION = API_ENDPOINTS.UPDATE_ORGANIZATION(orgId)
+        const response = await axios.post(UPDATEORGANIZATION.url, formData, {
+          headers: UPDATEORGANIZATION.headers
         });
   
         if (response.status === 200) {

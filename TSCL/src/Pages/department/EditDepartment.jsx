@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { API } from '../../Host';
 import decryptData from '../../Decrypt';
 import SaveCancel from '../../components/SavaCancel';
+import API_ENDPOINTS from '../../ApiEndpoints/api/ApiClient';
 
 
 const departmentSchema = yup.object().shape({
@@ -32,7 +32,6 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
  
   const [orgId, setOrgId] = useState(null);
   const [orgName, setOrgName] = useState(null);
-  const token = sessionStorage.getItem('token');
 
   const { register, formState: { errors }, handleSubmit,setValue, watch } = useForm({
     resolver: yupResolver(departmentSchema),
@@ -42,10 +41,9 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/department/getbyid?dept_id=${deptId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
+        const GETBYID = API_ENDPOINTS.FETCH_DEPARTMENT(deptId)
+        const response = await axios.get(GETBYID.url, {
+          headers: GETBYID.headers
         });
         const data = decryptData(response.data.data);
         
@@ -75,11 +73,9 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
     };
 
     try {
-    
-      const response = await axios.post(`${API}/department/update?dept_id=${deptId}`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const UPDATEDEPARTMENT = API_ENDPOINTS.UPDATE_DEPARTMENT(deptId)
+      const response = await axios.post(UPDATEDEPARTMENT.url, formData,{
+        headers:UPDATEDEPARTMENT.headers
       }
       );
 

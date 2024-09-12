@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { API } from '../../Host';
 import SaveCancel from '../../components/SavaCancel';
+import API_ENDPOINTS from '../../ApiEndpoints/api/ApiClient';
 
 
 const departmentSchema = yup.object().shape({
@@ -46,11 +46,8 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) =>
     };
 
     try {
-      const token = sessionStorage.getItem('token');
-      const response = await axios.post(`${API}/department/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const response = await axios.post(API_ENDPOINTS.POST_DEPARTMENT.url, formData,{
+        headers:API_ENDPOINTS.POST_DEPARTMENT.headers
       }
       );
 

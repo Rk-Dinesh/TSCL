@@ -4,7 +4,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import AddDepartment from "./AddDepartment";
 import axios from "axios";
-import { API, downloadCSV, formatDate } from "../../Host";
+import { downloadCSV, formatDate } from "../../Host";
 import logo from "../../assets/images/logo1.png"
 import decryptData from "../../Decrypt";
 import EditDepartment from "./EditDepartment";
@@ -17,6 +17,7 @@ import SearchInput from "../../components/SearchInput";
 import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData=`dept_name,org_name,status,created_by_user
 Department,Organization,active,admin`;
@@ -41,8 +42,6 @@ const Department = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [department, setDepartmnent] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem('token'); 
-
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
   const [selectedDoc, setSelectedDoc] = useState(null)
@@ -68,10 +67,8 @@ const Department = ({ permissions }) => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/department/get`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
+    axios.get(API_ENDPOINTS.GET_DEPARTMENT.url,{
+      headers:API_ENDPOINTS.GET_DEPARTMENT.headers
     }).then((response) => {
       const responseData = decryptData(response.data.data)
       setDepartmnent(responseData);
@@ -109,10 +106,8 @@ const Department = ({ permissions }) => {
 
   const fetchExistingOrganiZations = async () => {
     try {
-      const response = await axios.get(`${API}/organization/getactive`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const response = await axios.get(API_ENDPOINTS.GET_ORGANIZATIONACTIVE.url,{
+        headers:API_ENDPOINTS.GET_ORGANIZATIONACTIVE.headers
       });
       const responseData = decryptData(response.data.data);
       setExistingOrganiZations(responseData);
@@ -134,10 +129,9 @@ const Department = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${API}/department/delete?dept_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const DELETEDEPARTMENT = API_ENDPOINTS.DELETE_DEPARTMENT(deleteId)
+      await axios.delete(DELETEDEPARTMENT.url, {
+        headers: DELETEDEPARTMENT.headers,
       });
       toggleDeleteCloseModal()
       handlerefresh();
@@ -169,7 +163,7 @@ const Department = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/department/uploadcsv`, formData, {
+      const response = await axios.post(API_ENDPOINTS.CSV_DEPARTMENT.url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

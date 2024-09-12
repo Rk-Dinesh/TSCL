@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddOrganization from "./AddOrganization";
-import { API, downloadCSV, formatDate } from "../../Host";
+import { downloadCSV, formatDate } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
@@ -144,7 +144,7 @@ const Organization = ({ permissions }) => {
     if (buttonText === "Bulk Upload") {
       document.getElementById("fileInput").click();
     } else {
-      // Call your API here to upload the file
+      // Call your  here to upload the file
       uploadFile(file);
     }
   };
@@ -159,7 +159,9 @@ const Organization = ({ permissions }) => {
        API_ENDPOINTS.CSV_ORGANIZATION.url,
         formData,
         {
-          headers:API_ENDPOINTS.CSV_ORGANIZATION.headers
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
