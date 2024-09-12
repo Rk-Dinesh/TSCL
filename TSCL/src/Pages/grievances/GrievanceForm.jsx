@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchZone } from "../redux/slice/zone";
-import { fetchWard } from "../redux/slice/ward";
-import { fetchStreet } from "../redux/slice/street";
 import { fetchDepartment } from "../redux/slice/department";
 import { fetchComplaint } from "../redux/slice/complaint";
 import * as yup from "yup";
@@ -44,8 +42,6 @@ const GrievanceDetailsSchema = yup.object().shape({
   complaint_details: yup.string().required("Description is required"),
 });
 
-
-
 const CombinedSchema = yup
   .object()
   .shape({
@@ -70,16 +66,12 @@ const GrievanceForm = () => {
     dispatch(fetchDepartment());
     dispatch(fetchComplaint());
     dispatch(fetchZone());
-    dispatch(fetchWard());
-    dispatch(fetchStreet());
     dispatch(fetchComplainttype());
   }, [dispatch]);
 
   const Department = useSelector((state) => state.department);
   const Complaint = useSelector((state) => state.complaint);
   const Zone = useSelector((state) => state.zone);
-  const Ward = useSelector((state) => state.ward);
-  const Street = useSelector((state) => state.street);
   const Complainttype = useSelector((state) => state.complainttype);
 
   const {
@@ -101,40 +93,79 @@ const GrievanceForm = () => {
 
   useEffect(() => {
     if (deptName) {
-      const filteredComplaints = Complaint.data.filter(
-        (complaint) => complaint.dept_name === deptName
-      );
-      setFilteredComplaints(filteredComplaints);
-      setValue("complaint_type_title", "");
+      axios
+        .get(`${API}/complaint/getdept?dept_name=${deptName}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          try {
+            const responseData = decryptData(response.data.data);
+            setFilteredComplaints(responseData);
+            setValue("complaint_type_title", "");
+          } catch (error) {
+            console.error("Error decrypting data:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     } else {
       setFilteredComplaints([]);
     }
-  }, [deptName, Complaint.data]);
+  }, [deptName]);
 
   useEffect(() => {
     if (zoneName) {
-      const filteredWards = Ward.data.filter(
-        (ward) => ward.zone_name === zoneName
-      );
-      setFilteredWards(filteredWards);
-      setValue("ward_name", "");
-      setValue("street_name", "");
+      axios
+        .get(`${API}/ward/getzone?zone_name=${zoneName}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          try {
+            const responseData = decryptData(response.data.data);
+            setFilteredWards(responseData);
+            setValue("ward_name", "");
+            setValue("street_name", "");
+          } catch (error) {
+            console.error("Error decrypting data:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     } else {
       setFilteredWards([]);
     }
-  }, [zoneName, Ward.data]);
+  }, [zoneName]);
 
   useEffect(() => {
     if (wardName) {
-      const filteredStreets = Street.data.filter(
-        (street) => street.ward_name === wardName
-      );
-      setFilteredStreets(filteredStreets);
-      setValue("street_name", "");
+      axios
+        .get(`${API}/street/getward?ward_name=${wardName}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          try {
+            const responseData = decryptData(response.data.data);
+            setFilteredStreets(responseData);
+            setValue("street_name", "");
+          } catch (error) {
+            console.error("Error decrypting data:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     } else {
       setFilteredStreets([]);
     }
-  }, [wardName, Street.data]);
+  }, [wardName]);
 
   useEffect(() => {
     if (contactNumber && contactNumber.length === 10) {
@@ -224,7 +255,6 @@ const GrievanceForm = () => {
     };
 
     console.log(grievanceDetails);
-    
 
     try {
       const response1 = await axios.post(
@@ -287,14 +317,11 @@ const GrievanceForm = () => {
 
   const handleTranslate = async (text, targetLanguage) => {
     try {
-      
       const response = await axios.post(`${API}/translate/translate`, {
         text,
         targetLanguage,
       });
       return response.data.translatedText;
-      
-      
     } catch (error) {
       console.error(error);
       return null;
@@ -681,7 +708,9 @@ const GrievanceForm = () => {
                           );
                         }}
                       >
-                        <option hidden value=''>LAN</option>
+                        <option hidden value="">
+                          LAN
+                        </option>
                         <option value="ta">EN - TA</option>
                         <option value="en">TA - EN</option>
                       </select>
@@ -693,7 +722,6 @@ const GrievanceForm = () => {
                       className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
                       placeholder="Description here..."
                       {...register("complaint_details")}
-                      
                     ></textarea>
                     {errors.complaint_details && (
                       <p className="text-red-500 text-xs text-start px-2">
