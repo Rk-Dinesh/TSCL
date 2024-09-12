@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddComplaint from "./AddComplaint";
-import { API, downloadCSV } from "../../Host";
+import {  downloadCSV } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import EditComplaint from "./EditComplaint";
@@ -16,6 +16,7 @@ import SearchInput from "../../components/SearchInput";
 import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData = `complaint_type_title,dept_name,tat_type,tat_duration,priority,escalation_type,escalation_l1,role_l1,escalation_l2,role_l2,escalation_l3,role_l3,status,created_by_user
 Title,Department,duration,Type,Priority,Type,duration1,role1,duration2,role2,duration3,role3,status,admin
@@ -43,7 +44,6 @@ const Complaint = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [complaint, setComplaint] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
@@ -69,10 +69,8 @@ const Complaint = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/complaint/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .get(API_ENDPOINTS.GET_COMPLAINT.url, {
+        headers: API_ENDPOINTS.GET_COMPLAINT.headers,
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
@@ -97,10 +95,8 @@ const Complaint = ({ permissions }) => {
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(`${API}/role/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_ROLE_COMPLAINTACTIVE.url, {
+        headers:API_ENDPOINTS.GET_ROLE_COMPLAINTACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setExistingRoles(responseData);
@@ -111,10 +107,8 @@ const Complaint = ({ permissions }) => {
 
   const fetchExistingDepts = async () => {
     try {
-      const response = await axios.get(`${API}/department/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_DEPT_COMPLAINTACTIVE.url, {
+        headers: API_ENDPOINTS.GET_DEPT_COMPLAINTACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setExistingDept(responseData);
@@ -152,10 +146,9 @@ const Complaint = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${API}/complaint/delete?complaint_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const DELETE_COMPLAINT = API_ENDPOINTS.DELETE_COMPLAINT(deleteId)
+      await axios.delete(DELETE_COMPLAINT.url, {
+        headers:DELETE_COMPLAINT.headers,
       });
       toggleDeleteCloseModal();
       handlerefresh();
@@ -184,8 +177,7 @@ const Complaint = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(
-        `${API}/complaint/uploadcsv`,
+      const response = await axios.post(API_ENDPOINTS.CSV_COMPLAINT.url,
         formData,
         {
           headers: {

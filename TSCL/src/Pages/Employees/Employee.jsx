@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import axios from "axios";
-import { API, downloadCSV } from "../../Host";
+import { downloadCSV } from "../../Host";
 import decryptData from "../../Decrypt";
 import DeleteModal from "../Modal/DeleteModal";
 import { toast } from 'react-toastify';
@@ -16,6 +16,7 @@ import SearchInput from "../../components/SearchInput";
 import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData = `emp_name,designation_id,designation,dept_name,phone,email,address,pincode,status,created_by_user
 name,DE***,designation,Department,1234567890,abc@gmail.com,address,123456,active,admin`;
@@ -41,7 +42,6 @@ const Employee = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
@@ -68,10 +68,8 @@ const Employee = ({ permissions }) => {
   const handlerefresh = () => {
    
     axios
-      .get(`${API}/employee/get`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .get(API_ENDPOINTS.GET_EMPLOYEE.url,{
+        headers: API_ENDPOINTS.GET_EMPLOYEE.headers,
       })
       .then((response) => {
         const responseData = decryptData(response.data.data)
@@ -109,10 +107,8 @@ const Employee = ({ permissions }) => {
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(`${API}/designation/getactive`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_DESIG_EMPLOYEEACTIVE.url,{
+        headers:API_ENDPOINTS.GET_DESIG_EMPLOYEEACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setExistingDesignation(responseData);
@@ -123,10 +119,8 @@ const Employee = ({ permissions }) => {
 
   const fetchExistingDepts = async () => {
     try {
-      const response = await axios.get(`${API}/department/getactive`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_DEPT_EMPLOYEEACTIVE.url,{
+        headers: API_ENDPOINTS.GET_DEPT_EMPLOYEEACTIVE.headers
       });
       const responseData = decryptData(response.data.data);
       setExistingDept(responseData);
@@ -146,11 +140,9 @@ const Employee = ({ permissions }) => {
   const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {
-      await axios.delete(`${API}/employee/delete?emp_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {const DELETE_EMPLOYEE= API_ENDPOINTS.DELETE_EMPLOYEE(deleteId)
+      await axios.delete(DELETE_EMPLOYEE.url, {
+        headers: DELETE_EMPLOYEE.headers,
       });
       toggleDeleteCloseModal()
       handlerefresh();
@@ -179,7 +171,7 @@ const Employee = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/user/uploadcsv`, formData, {
+      const response = await axios.post(API_ENDPOINTS.CSV_EMPLOYEE.url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

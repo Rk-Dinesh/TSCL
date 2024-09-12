@@ -3,10 +3,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { API } from "../../Host";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const AddAdminSchema = yup.object().shape({
   user_name: yup.string().required("User Name is required"),
@@ -38,7 +38,6 @@ const EditAdmin = (props) => {
   const [filteredWards, setFilteredWards] = useState([]);
   const [zoneNames, setZoneNames] = useState([]);
 
-  const token = sessionStorage.getItem("token");
 
   const {
     register,
@@ -68,12 +67,11 @@ const EditAdmin = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const GETBYID_ADMIN = API_ENDPOINTS.FETCH_ADMIN(adminId) 
         const response = await axios.get(
-          `${API}/user/getbyid?user_id=${adminId}`,
+          GETBYID_ADMIN.url,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers:GETBYID_ADMIN.headers,
           }
         );
         const data = decryptData(response.data.data);
@@ -119,13 +117,12 @@ const EditAdmin = (props) => {
      //console.log(formData);
   
     try {
+      const UPDATE_ADMIN = API_ENDPOINTS.UPDATE_ADMIN(adminId)
       const response = await axios.post(
-        `${API}/user/update?user_id=${adminId}`,
+        UPDATE_ADMIN.url,
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers:UPDATE_ADMIN.headers
         }
       );
 

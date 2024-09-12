@@ -17,6 +17,7 @@ import SearchInput from "../../components/SearchInput";
 import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData=`designation,dept_name,org_name,status,created_by_user
 Designation,Department,Organization,active,admin`;
@@ -70,10 +71,8 @@ const Designation = ({ permissions }) => {
   };
 
   const handlerefresh = () => {
-    axios.get(`${API}/designation/get`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
+    axios.get(API_ENDPOINTS.GET_DESIGNATION.url,{
+      headers:API_ENDPOINTS.GET_DESIGNATION.headers,
     }).then((response) => {
       const responseData = decryptData(response.data.data)
       setDesignation(responseData);
@@ -111,10 +110,8 @@ const Designation = ({ permissions }) => {
 
   const fetchExistingOrganiZations = async () => {
     try {
-      const response = await axios.get(`${API}/organization/getactive`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const response = await axios.get(API_ENDPOINTS.GET_ORG_DESIGNATIONACTIVE.url,{
+        headers:API_ENDPOINTS.GET_ORG_DESIGNATIONACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setExistingOrganiZations(responseData);
@@ -125,10 +122,8 @@ const Designation = ({ permissions }) => {
 
   const fetchExistingDepartments = async () => {
     try {
-      const response = await axios.get(`${API}/department/getactive`,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const response = await axios.get(API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.url,{
+        headers:API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.headers
       });
       const responseData = decryptData(response.data.data);
       setExistingDepartments(responseData);
@@ -149,11 +144,9 @@ const Designation = ({ permissions }) => {
   const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {
-      await axios.delete(`${API}/designation/delete?desgination_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {const DELETE_DESIGNATION =API_ENDPOINTS.DELETE_DESIGNATION(deleteId)
+      await axios.delete(DELETE_DESIGNATION.url, {
+        headers: DELETE_DESIGNATION.headers,
       });
       toggleDeleteCloseModal()
       handlerefresh();
@@ -185,7 +178,7 @@ const Designation = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/designation/uploadcsv`, formData, {
+      const response = await axios.post(API_ENDPOINTS.UPLOAD_DESIGNATION.url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

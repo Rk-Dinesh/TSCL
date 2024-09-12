@@ -9,6 +9,7 @@ import EditComplaintType from "./EditComplainType";
 import DeleteModal from "../Modal/DeleteModal";
 import Pagination from "../../components/Pagination";
 import SearchHeader from "../../components/SearchHeader";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const ComplaintType = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -47,10 +48,8 @@ const ComplaintType = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/complainttype/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .get(API_ENDPOINTS.GET_COMPLAINTTYPE.url, {
+        headers: API_ENDPOINTS.GET_COMPLAINTTYPE.headers
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
@@ -100,13 +99,11 @@ const ComplaintType = ({ permissions }) => {
     .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {
+    try {const DELETE_COMPLAINTTYPE= API_ENDPOINTS.DELETE_COMPLAINTTYPE(deleteId)
       await axios.delete(
-        `${API}/complainttype/delete?compliant_type_id=${deleteId}`,
+       DELETE_COMPLAINTTYPE.url,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: DELETE_COMPLAINTTYPE.headers,
         }
       );
       toggleDeleteCloseModal();

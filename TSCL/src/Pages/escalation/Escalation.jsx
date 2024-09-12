@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
@@ -190,7 +191,7 @@ const Escalation = ({ permissions }) => {
   const handleEscalation = () => {
     try {
       axios
-        .post(`${API}/manual-escalation-check`)
+        .post(API_ENDPOINTS.POST_ESCALATION.url)
         .then((response) => {
           //console.log(response.data);
           handlerefresh()

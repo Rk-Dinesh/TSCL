@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { API } from '../../Host';
 import decryptData from '../../Decrypt';
 import SaveCancel from '../../components/SavaCancel';
+import API_ENDPOINTS from '../../ApiEndpoints/api/ApiClient';
 
 
 const desginationSchema = yup.object().shape({
@@ -39,7 +39,6 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
  
   const [orgName, setOrgName] = useState(null);
   const [DeptName, setDeptName] = useState(null);
-  const token = sessionStorage.getItem('token');
 
   const { register, formState: { errors }, handleSubmit,setValue, watch } = useForm({
     resolver: yupResolver(desginationSchema),
@@ -48,11 +47,9 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`${API}/designation/getbyid?desgination_id=${desgId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
+      try {const GETBYID_DESIGNATION= API_ENDPOINTS.FETCH_DESIGNATION(desgId)
+        const response = await axios.get(GETBYID_DESIGNATION.url, {
+          headers: GETBYID_DESIGNATION.headers,
         });
         const data = decryptData(response.data.data);
         
@@ -77,11 +74,9 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
     };
 
     try {
-    
-      const response = await axios.post(`${API}/designation/update?desgination_id=${desgId}`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+    const UPDATE_DESIGNATION= API_ENDPOINTS.UPDATE_DESIGNATION(desgId)
+      const response = await axios.post(UPDATE_DESIGNATION.url, formData,{
+        headers:UPDATE_DESIGNATION.headers
       }
       );
 

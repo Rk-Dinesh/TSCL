@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { API } from "../../Host";
 import decryptData from "../../Decrypt";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 
 const ComplaintSchema = yup.object().shape({
@@ -24,7 +24,6 @@ const EditComplaintType = (props) => {
 const {comptId}= props;
 
 
-const token = sessionStorage.getItem('token');
   const {
     register,
     formState: { errors },
@@ -38,11 +37,9 @@ const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`${API}/complainttype/getbyid?compliant_type_id=${comptId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
+      try {const GETBYID_COMPLAINTTYPE= API_ENDPOINTS.FETCH_COMPLAINTTYPE(comptId)
+        const response = await axios.get(GETBYID_COMPLAINTTYPE.url, {
+          headers:GETBYID_COMPLAINTTYPE.headers,
         });
         const data = decryptData(response.data.data); 
        
@@ -63,11 +60,9 @@ const token = sessionStorage.getItem('token');
     };
 
     try {
-      
-      const response = await axios.post(`${API}/complainttype/update?compliant_type_id=${comptId}`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const UPDATE_COMPLAINTTYPE= API_ENDPOINTS.UPDATE_COMPLAINTTYPE(comptId)
+      const response = await axios.post(UPDATE_COMPLAINTTYPE.url, formData,{
+        headers:UPDATE_COMPLAINTTYPE.headers,
       });
 
       if (response.status === 200) { 

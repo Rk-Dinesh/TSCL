@@ -1,12 +1,12 @@
 import React,{useState,useEffect} from "react";
 import axios from "axios";
-import { API } from "../../../Host";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import decryptData from "../../../Decrypt";
 import SaveCancel from "../../../components/SavaCancel";
+import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
 
 const StreetSchema = yup.object().shape({
   ward_name: yup.string().test('not-select', 'Please select a ward', (value) => value !== '' && value !== 'Select Street'),
@@ -23,7 +23,6 @@ const StreetSchema = yup.object().shape({
 
 const EditStreet = (props) => {
   const {ExistingWards,streetId} = props;
-  const token = sessionStorage.getItem('token'); 
 
   
   const [zoneId, setZoneId] = useState(null)
@@ -44,11 +43,9 @@ const EditStreet = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`${API}/street/getbyid?street_id=${streetId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
+      try {const GETBYID_STREET= API_ENDPOINTS.FETCH_STREET(streetId)
+        const response = await axios.get(GETBYID_STREET.url, {
+          headers: GETBYID_STREET.headers,
         });
         const data = decryptData(response.data.data);
         
@@ -89,11 +86,9 @@ const EditStreet = (props) => {
     // console.log(formData);
 
     try {
-    
-      const response = await axios.post(`${API}/street/update?street_id=${streetId}`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+    const UPDATE_STREET= API_ENDPOINTS.UPDATE_STREET(streetId)
+      const response = await axios.post(UPDATE_STREET.url, formData,{
+        headers:UPDATE_STREET.headers,
       });
 
       if (response.status === 200) {

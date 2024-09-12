@@ -28,36 +28,37 @@ const API_ENDPOINTS = {
 
   //COMPLAINT:
   GET_COMPLAINT: {url:`${BASE_URL}/complaint/get`,headers: authHeaders},
-  GET_COMPLAINTACTIVE: {url: `${BASE_URL}/department/getactive`,headers: authHeaders},
-  // DELETE_COMPLAINT:(deleteId) => ({url: `${BASE_URL}/complaint/delete?complaint_id=${deleteId}`,headers: authHeaders}),
+  GET_DEPT_COMPLAINTACTIVE: {url: `${BASE_URL}/department/getactive`,headers: authHeaders},
+  GET_ROLE_COMPLAINTACTIVE: {url: `${BASE_URL}/role/getactive`,headers: authHeaders},
+   DELETE_COMPLAINT:(deleteId) => ({url: `${BASE_URL}/complaint/delete?complaint_id=${deleteId}`,headers: authHeaders}),
   CSV_COMPLAINT:  {url:`${BASE_URL}}/complaint/uploadcsv`,headers: authHeaders},
   POST_COMPLAINT: {url:`${BASE_URL}}/complaint/post`,headers: authHeaders},
-  // FETCH_COMPLAINT: (comptId) => ({url: `${BASE_URL}/complaint/getbyid?complaint_id=${comptId}`,headers: authHeaders}),
-  // UPDATE_COMPLAINT : (comptId) => ({url:`${BASE_URL}/complaint/update?complaint_id=${comptId}`,headers: authHeaders}),
+  FETCH_COMPLAINT: (comptId) => ({url: `${BASE_URL}/complaint/getbyid?complaint_id=${comptId}`,headers: authHeaders}),
+  UPDATE_COMPLAINT : (comptId) => ({url:`${BASE_URL}/complaint/update?complaint_id=${comptId}`,headers: authHeaders}),
 
   //COMPLAINT TYPE:
   GET_COMPLAINTTYPE: {url:`${BASE_URL}/complainttype/get`,headers: authHeaders},
-  // DELETE_COMPLAINTTYPE: (deleteId) => ({url: `${BASE_URL}/complainttype/delete?compliant_type_id=${deleteId}`,headers: authHeaders}),
+  DELETE_COMPLAINTTYPE: (deleteId) => ({url: `${BASE_URL}/complainttype/delete?compliant_type_id=${deleteId}`,headers: authHeaders}),
   POST_COMPLAINTTYPE: {url:`${BASE_URL}/complainttype/post`,headers: authHeaders},
-  // FETCH_COMPLAINTTYPE: (comptId) => ({url: `${BASE_URL}/complainttype/getbyid?compliant_type_id=${comptId}`,headers: authHeaders}),
-  // UPDATE_COMPLAINTTYPE: (comptId) => ({url:`${BASE_URL}/complainttype/update?compliant_type_id=${comptId}`,headers: authHeaders}),
+  FETCH_COMPLAINTTYPE: (comptId) => ({url: `${BASE_URL}/complainttype/getbyid?compliant_type_id=${comptId}`,headers: authHeaders}),
+  UPDATE_COMPLAINTTYPE: (comptId) => ({url:`${BASE_URL}/complainttype/update?compliant_type_id=${comptId}`,headers: authHeaders}),
 
   //DESIGNATION:
   GET_DESIGNATION:  {url:`${BASE_URL}/designation/get`,headers: authHeaders},
-  GET_DESIGNATIONACTIVE: {url:`${BASE_URL}/organization/getactive`,headers: authHeaders},
-  GET_DESIGNATIONACTIVE: {url:`${BASE_URL}/department/getactive`,headers: authHeaders},
+  GET_ORG_DESIGNATIONACTIVE: {url:`${BASE_URL}/organization/getactive`,headers: authHeaders},
+  GET_DEPT_DESIGNATIONACTIVE: {url:`${BASE_URL}/department/getactive`,headers: authHeaders},
   UPLOAD_DESIGNATION: {url:`${BASE_URL}/designation/uploadcsv`,headers: authHeaders},
   POST_DESIGANATION: {url:`${BASE_URL}/designation/post`,headers: authHeaders},
-  // FETCH_DESIGNATION:  (desgId) =>  ({url:`${BASE_URL}/designation/getbyid?desgination_id=${desgId}`,headers: authHeaders}),
-  // DELETE_DESIGNATION: (deleteId) => ({url:`${BASE_URL}/designation/delete?desgination_id=${deleteId}`,headers: authHeaders}),
-  // UPDATE_DESIGNATION: (desgId) => ({url: `${BASE_URL}/designation/update?desgination_id=${desgId}`,headers: authHeaders}),
+  FETCH_DESIGNATION:  (desgId) =>  ({url:`${BASE_URL}/designation/getbyid?desgination_id=${desgId}`,headers: authHeaders}),
+  DELETE_DESIGNATION: (deleteId) => ({url:`${BASE_URL}/designation/delete?desgination_id=${deleteId}`,headers: authHeaders}),
+  UPDATE_DESIGNATION: (desgId) => ({url: `${BASE_URL}/designation/update?desgination_id=${desgId}`,headers: authHeaders}),
 
   //EMPLOYEES:
   GET_EMPLOYEE: {url:`${BASE_URL}/employee/get`,headers:authHeaders},
-  GET_EMPLOYEEACTIVE: {url: `${BASE_URL}/designation/getactive`,headers: authHeaders},
-  GET_EMPLOYEEACTIVE: {url: `${BASE_URL}/department/getactive`,Headers: authHeaders},
+  GET_DESIG_EMPLOYEEACTIVE: {url: `${BASE_URL}/designation/getactive`,headers: authHeaders},
+  GET_DEPT_EMPLOYEEACTIVE: {url: `${BASE_URL}/department/getactive`,Headers: authHeaders},
   DELETE_EMPLOYEE: (deleteId) => ({url:`${BASE_URL}/employee/delete?emp_id=${deleteId}`,headers: authHeaders}),
-  UPLOAD_EMPLOYEE: {url: `${BASE_URL} /user/uploadcsv`,headers:authHeaders},
+  CSV_EMPLOYEE: {url: `${BASE_URL} /user/uploadcsv`,headers:authHeaders},
   POST_EMPLOYEE: {url:`${BASE_URL}/employee/post`,headers:authHeaders},
   FETCH_EMPLOYEE: (adminId) => ({url:`${BASE_URL}/employee/getbyid?emp_id=${adminId}`,headers:authHeaders}),
   UPDATE_EMPLOYEE: (adminId) => ({url: `${BASE_URL}/employee/update?emp_id=${adminId}`,headers:authHeaders}),
@@ -65,14 +66,14 @@ const API_ENDPOINTS = {
   //ESCALATON:
   GET_ESCALATION: {url: `${BASE_URL} /grievance-escalation/get`,headers: authHeaders},
   // GET_ESCALATION: {url: `${BASE_URL} /grievance-escalation/getbydeptrole?escalation_department=${dept}&escalation_to=${role}`,headers:authHeaders},
-  MANUAL_ESCALATION: {url: `${BASE_URL}/manual-escalation-check`,headers: authHeaders},
+  POST_ESCALATION: {url: `${BASE_URL}/manual-escalation-check`,headers: authHeaders},
 
   //ADMIN:
   GET_ADMIN: {url:`${BASE_URL}/user/get`,headers:authHeaders},
-  GET_ADMINACTIVE: {url:`${BASE_URL}/role/getactive`,headers:authHeaders},
-  GET_ADMINACTIVE:{url:`${BASE_URL}/employee/getactive`,headers:authHeaders},
-  GET_ADMINACTIVE:{url:`${BASE_URL}/zone/getactive`,headers:authHeaders},
-  GET_ADMINACTIVE:{url:`${BASE_URL}/ward/getactive`,headers:authHeaders},
+  GET_ROLE_ADMINACTIVE: {url:`${BASE_URL}/role/getactive`,headers:authHeaders},
+  GET_EMPLOYEE_ADMINACTIVE:{url:`${BASE_URL}/employee/getactive`,headers:authHeaders},
+  GET_ZONE_ADMINACTIVE:{url:`${BASE_URL}/zone/getactive`,headers:authHeaders},
+  GET_WARD_ADMINACTIVE:{url:`${BASE_URL}/ward/getactive`,headers:authHeaders},
   DELETE_ADMIN: (deleteId) => ({url: `${BASE_URL}/user/delete?user_id=${deleteId}`,headers:authHeaders}),
   UPLOAD_ADMIN:{url:`${BASE_URL}/user/uploadcsv`,headers:authHeaders},
   POST_ADMIN: {url:`${BASE_URL}/user/post`,headers:authHeaders},
@@ -81,12 +82,12 @@ const API_ENDPOINTS = {
 
   //GRIEVANCE HEAD
   GET_GRIEVANCE: {url:`${BASE_URL}/new-grievance/get`,headers:authHeaders},
-  GET_GRIEVANCE: {url: `${BASE_URL}/department/get`,headers:authHeaders},
-  GET_GRIEVANCE: {url: `${BASE_URL}/status/get`,headers:authHeaders},
-  GET_GRIEVANCE: {url: `${BASE_URL}/complainttype/get`,headers:authHeaders},
-  GET_GRIEVANCEACTIVE: {url:`${BASE_URL}/zone/get`,heraders:authHeaders},
-  GET_GRIEVANCEACTIVE: {url:`${BASE_URL}/ward/get`,heraders:authHeaders},
-  GET_GRIEVANCEACTIVE: {url:`${BASE_URL}/street/get`,heraders:authHeaders},
+  GET_DEPT_GRIEVANCE: {url: `${BASE_URL}/department/get`,headers:authHeaders},
+  GET_STATUS_GRIEVANCE: {url: `${BASE_URL}/status/get`,headers:authHeaders},
+  GET_COMPLAINTTYPE_GRIEVANCE: {url: `${BASE_URL}/complainttype/get`,headers:authHeaders},
+  GET_ZONE_GRIEVANCE: {url:`${BASE_URL}/zone/get`,heraders:authHeaders},
+  GET_WARD_GRIEVANCE: {url:`${BASE_URL}/ward/get`,heraders:authHeaders},
+  GET_STREET_GRIEVANCE: {url:`${BASE_URL}/street/get`,heraders:authHeaders},
   FETCH_GRIVANCE: (dept) => ({url: `${BASE_URL}/user/getbydept?dept_name=${dept}`,headers:authHeaders}),
 
 
@@ -120,6 +121,10 @@ const API_ENDPOINTS = {
   FETCH_GRIEVANCEADMIN: (props)=> ({url: `${BASE_URL}/new-grievance/tickettransfer?grievance_id=${props.transerId}`,headers:authHeaders}),
 
   //STREET
+
+  GET_STREET: {url:`${BASE_URL}/street/get`,headers:authHeaders},
+  POST_STREET: {url:`${BASE_URL}}/street/post`,headers: authHeaders},
+  GET_WARD_STREETACTIVE:{url:`${BASE_URL}/ward/getactive`,headers:authHeaders},
   DELETE_STREET: (deleteId) => ({url: `${BASE_URL}/street/delete?street_id=${deleteId}`,headers:authHeaders}),
   UPLOAD_STREET: {url: `${BASE_URL}/street/uploadcsv`,headers:authHeaders},
   FETCH_STREET: (streetId)=>({url: `${BASE_URL}/street/getbyid?street_id=${streetId}`, headers:authHeaders}),

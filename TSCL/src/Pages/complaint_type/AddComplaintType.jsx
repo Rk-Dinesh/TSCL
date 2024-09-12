@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { API } from "../../Host";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 
 const ComplaintSchema = yup.object().shape({
@@ -33,11 +33,8 @@ const AddComplaintType = (props) => {
     };
 
     try {
-      const token = sessionStorage.getItem('token');
-      const response = await axios.post(`${API}/complainttype/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const response = await axios.post(API_ENDPOINTS.POST_COMPLAINTTYPE.url, formData,{
+        headers:API_ENDPOINTS.POST_COMPLAINTTYPE.headers
       });
 
       if (response.status === 200) { 

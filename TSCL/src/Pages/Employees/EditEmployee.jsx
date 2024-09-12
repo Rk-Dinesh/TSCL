@@ -3,10 +3,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { API } from "../../Host";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const AddEmployeeSchema = yup.object().shape({
     emp_name: yup.string().trim().required("Employee Name is required"),
@@ -42,7 +42,6 @@ const EditEmployee = (props) => {
   const [roleId, setRoleId] = useState(null);
   
   
-  const token = sessionStorage.getItem('token');
 
   const {
     register,
@@ -57,11 +56,9 @@ const EditEmployee = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`${API}/employee/getbyid?emp_id=${adminId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
+      try {const GETBYID_EMPLOYEE = API_ENDPOINTS.FETCH_EMPLOYEE(adminId)
+        const response = await axios.get(GETBYID_EMPLOYEE.url, {
+          headers: GETBYID_EMPLOYEE.headers,
         });
         const data = decryptData(response.data.data); 
         
@@ -102,11 +99,9 @@ const EditEmployee = (props) => {
      
     };
 
-    try {
-      const response = await axios.post(`${API}/employee/update?emp_id=${adminId}`, formData,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {const UPDATE_EMPLOYEE= API_ENDPOINTS.UPDATE_EMPLOYEE(adminId)
+      const response = await axios.post(UPDATE_EMPLOYEE.url, formData,{
+        headers: UPDATE_EMPLOYEE.headers,
       });
 
       if (response.status === 200) {

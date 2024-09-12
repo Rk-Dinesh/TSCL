@@ -3,9 +3,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { API } from "../../Host";
 import { toast } from "react-toastify";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const AddAdminSchema = yup.object().shape({
   user_name: yup.string().trim().required("User Name is required"),
@@ -106,13 +106,10 @@ const AddAdmin = (props) => {
       role_id: selectedRoleId,
     };
 
-    const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.post(`${API}/user/post`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.post(API_ENDPOINTS.POST_ADMIN.url, formData, {
+        headers: API_ENDPOINTS.POST_ADMIN.headers,
       });
 
       if (response.status === 200) {

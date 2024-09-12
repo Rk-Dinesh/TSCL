@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddStreet from "./AddSreet";
-import { API, downloadCSV, formatDate } from "../../../Host";
+import { downloadCSV, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
 import EditStreet from "./EditStreet";
@@ -16,6 +16,7 @@ import SearchInput from "../../../components/SearchInput";
 import FileUploadButton from "../../../components/FileUploadButton";
 import DocumentDownload from "../../../components/DocumentDownload";
 import HeaderButton from "../../../components/HeaderButton";
+import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
 
 const csvData = `street_name,ward_id,ward_name,zone_id,zone_name,status,created_by_user
  streetName,Ward***,WardName,Z***,ZoneName,Status,admin`;
@@ -39,7 +40,6 @@ const Street = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [street, setStreet] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
@@ -64,10 +64,8 @@ const Street = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/street/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .get(API_ENDPOINTS.GET_STREET.url, {
+        headers: API_ENDPOINTS.GET_STREET.headers,
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
@@ -107,10 +105,8 @@ const Street = ({ permissions }) => {
 
   const fetchExistingWards = async () => {
     try {
-      const response = await axios.get(`${API}/ward/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_WARD_STREETACTIVE.url, {
+        headers: API_ENDPOINTS.GET_WARD_STREETACTIVE.headers
       });
       const responseData = decryptData(response.data.data);
       setExistingWards(responseData);
@@ -130,11 +126,9 @@ const Street = ({ permissions }) => {
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {
-      await axios.delete(`${API}/street/delete?street_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {const DELETE_STREET = API_ENDPOINTS.DELETE_STREET(deleteId)
+      await axios.delete(DELETE_STREET.url, {
+        headers: DELETE_STREET.headers,
       });
       toggleDeleteCloseModal();
       handlerefresh();
@@ -163,7 +157,7 @@ const Street = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/street/uploadcsv`, formData, {
+      const response = await axios.post(API_ENDPOINTS.UPLOAD_STREET.url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

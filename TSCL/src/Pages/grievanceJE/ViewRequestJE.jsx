@@ -543,12 +543,6 @@ const ViewRequestJE = () => {
                 <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded mt-8">
                   <div className="flex justify-between items-center">
                     <p className="mx-3">Replay</p>
-
-                    <select className=" block px-4 py-3 text-sm text-black border rounded-lg  outline-none">
-                      <option hidden>LAN</option>
-                      <option value="Tamil">TA - EN</option>
-                      <option value="English">EN - TA</option>
-                    </select>
                   </div>
                   <hr className="my-3 w-full" />
                   <form onSubmit={handleSubmit(onSubmit)}>

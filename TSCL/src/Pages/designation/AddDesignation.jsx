@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { API } from '../../Host';
 import SaveCancel from '../../components/SavaCancel';
+import API_ENDPOINTS from '../../ApiEndpoints/api/ApiClient';
 
 
 const desginationSchema = yup.object().shape({
@@ -44,11 +44,8 @@ const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal
     };
 
     try {
-      const token = sessionStorage.getItem('token');
-      const response = await axios.post(`${API}/designation/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const response = await axios.post(API_ENDPOINTS.POST_DESIGANATION.url, formData,{
+        headers:API_ENDPOINTS.POST_DESIGANATION.headers
       }
       );
 

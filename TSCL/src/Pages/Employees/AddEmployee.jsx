@@ -3,9 +3,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { API } from "../../Host";
 import { toast } from "react-toastify";
 import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const AddEmployeeSchema = yup.object().shape({
   emp_name: yup.string().trim().required("Employee Name is required"),
@@ -69,13 +69,9 @@ const AddEmployee = (props) => {
 
     // console.log(formData);
 
-    const token = sessionStorage.getItem("token");
-
     try {
-      const response = await axios.post(`${API}/employee/post`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.post(API_ENDPOINTS.POST_EMPLOYEE.url, formData, {
+        headers: API_ENDPOINTS.POST_EMPLOYEE.headers,
       });
 
       if (response.status === 200) {

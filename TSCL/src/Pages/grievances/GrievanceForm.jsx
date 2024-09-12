@@ -44,14 +44,7 @@ const GrievanceDetailsSchema = yup.object().shape({
   complaint_details: yup.string().required("Description is required"),
 });
 
-// const AttachmentSchema = yup.object().shape({
-//   file: yup.mixed().test("fileSize", "File size is too large", (value) => {
-//     if (value && value[0]) {
-//       return value[0].size <= 5000000; // 5MB
-//     }
-//     return true; // Allow no file
-//   }),
-// });
+
 
 const CombinedSchema = yup
   .object()
@@ -70,6 +63,7 @@ const GrievanceForm = () => {
   const [filteredStreets, setFilteredStreets] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [files, setFiles] = useState([]);
+  const [translatedText, setTranslatedText] = useState("");
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
@@ -111,8 +105,7 @@ const GrievanceForm = () => {
         (complaint) => complaint.dept_name === deptName
       );
       setFilteredComplaints(filteredComplaints);
-      setValue("complaint_type_title","")
-
+      setValue("complaint_type_title", "");
     } else {
       setFilteredComplaints([]);
     }
@@ -148,13 +141,14 @@ const GrievanceForm = () => {
       async function fetchAutoFillData() {
         try {
           const response = await axios.get(
-            `${API}/public-user/getbyphone?phone=${contactNumber}`,{
-              headers:{
-                Authorization:`Bearer ${token}`
-              }
+            `${API}/public-user/getbyphone?phone=${contactNumber}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
           );
-          const responseData= decryptData(response.data.data)
+          const responseData = decryptData(response.data.data);
           const autoFillData = responseData;
           setValue("public_user_name", autoFillData.public_user_name);
           setValue("email", autoFillData.email);
@@ -178,11 +172,11 @@ const GrievanceForm = () => {
     const files = e.target.files;
     if (files.length > 5) {
       toast.error("Maximum 5 files allowed");
-      e.target.value = null; 
+      e.target.value = null;
     } else {
       setFiles(files);
     }
-  }
+  };
 
   const onSubmit = async (data) => {
     const userInfo = {
@@ -209,8 +203,7 @@ const GrievanceForm = () => {
       public_user_id = autoFillData.public_user_id;
     } else {
       const response = await axios.post(`${API}/public-user/post`, userInfo);
-      public_user_id =decryptData( response.data.data)
-    
+      public_user_id = decryptData(response.data.data);
     }
     const grievanceDetails = {
       grievance_mode: data.grievance_mode,
@@ -230,6 +223,9 @@ const GrievanceForm = () => {
       priority: getPriorityFromComplaintType(data.complaint_type_title),
     };
 
+    console.log(grievanceDetails);
+    
+
     try {
       const response1 = await axios.post(
         `${API}/new-grievance/post`,
@@ -240,14 +236,13 @@ const GrievanceForm = () => {
           },
         }
       );
-      
+
       const grievanceId = await response1.data.data;
-      
+
       if (response1.status === 200) {
         toast.success("Grievance created Successfully");
       }
 
-     
       if (files.length > 0) {
         if (files.length > 5) {
           toast.error("File limit exceeded. Maximum 5 files allowed.");
@@ -255,7 +250,7 @@ const GrievanceForm = () => {
           try {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
-              formData.append('files', files[i]);
+              formData.append("files", files[i]);
             }
             formData.append("grievance_id", grievanceId);
             formData.append("created_by_user", "admin");
@@ -269,7 +264,7 @@ const GrievanceForm = () => {
               }
             );
             if (response3.status === 200) {
-              setFiles([])
+              setFiles([]);
               toast.success("Attachment created Successfully");
             }
           } catch (error) {
@@ -278,17 +273,29 @@ const GrievanceForm = () => {
           }
         }
       }
-      
 
       reset();
-     
-      
+
       navigate("/view", {
         state: { grievanceId: grievanceId },
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("An error occurred during submission. Please try again.");
+    }
+  };
+
+  const handleTranslate = async (text, targetLanguage) => {
+    try {
+      const response = await axios.post(`${API}/translate/translate`, {
+        text,
+        targetLanguage,
+      });
+      return response.data.translatedText;
+      
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   };
 
@@ -658,16 +665,35 @@ const GrievanceForm = () => {
                     Description
                   </label>
 
-                  <div className="flex flex-col md:col-span-2">
+                  <div className="flex flex-col md:col-span-2 border rounded p-1">
+                    <div className="flex justify-end items-center -mb-2">
+                      <select
+                        className="block px-4 py-3 text-sm rounded-lg outline-none"
+                        onChange={(e) => {
+                          const targetLanguage = e.target.value;
+                          const text = watch("complaint_details");
+                          handleTranslate(text, targetLanguage).then(
+                            (translatedText) => {
+                              setValue("complaint_details", translatedText);
+                            }
+                          );
+                        }}
+                      >
+                        <option hidden>LAN</option>
+                        <option value="ta">EN - TA</option>
+                        <option value="en">TA - EN</option>
+                      </select>
+                    </div>
+                    <hr className="w-full" />
                     <textarea
                       id="complaint_details"
                       rows="5"
-                      className="block  py-2.5 pl-3  w-full  text-sm text-gray-900 rounded border border-gray-300 focus:outline-none focus:shadow-outline mb-2"
+                      className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
                       placeholder="Description here..."
                       {...register("complaint_details")}
                     ></textarea>
                     {errors.complaint_details && (
-                      <p className="text-red-500 text-xs text-start px-2 ">
+                      <p className="text-red-500 text-xs text-start px-2">
                         {errors.complaint_details.message}
                       </p>
                     )}
@@ -678,7 +704,10 @@ const GrievanceForm = () => {
                     className="block text-black text-lg  font-medium mb-2 md:col-span-1"
                     htmlFor="file"
                   >
-                    Attachment <p className="text-xs ">(optional / <br /> upto 5 files allowed)</p>
+                    Attachment{" "}
+                    <p className="text-xs ">
+                      (optional / <br /> upto 5 files allowed)
+                    </p>
                   </label>
                   <div className="flex flex-col md:col-span-2">
                     <input
@@ -688,10 +717,12 @@ const GrievanceForm = () => {
                       accept=".jpeg, .jpg, .png"
                       className=" w-full py-2 px-2 rounded-lg outline-none"
                       onChange={handleFileChange}
-                    
                     />
-                    {files.length >= 5 && <p className="text-red-500 text-sm">Maximum 5 files allowed</p>}
-                  
+                    {files.length >= 5 && (
+                      <p className="text-red-500 text-sm">
+                        Maximum 5 files allowed
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

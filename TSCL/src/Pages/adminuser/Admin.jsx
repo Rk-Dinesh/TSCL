@@ -3,7 +3,7 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddAdmin from "./AddAdmin";
 import axios from "axios";
-import { API, downloadCSV } from "../../Host";
+import { downloadCSV } from "../../Host";
 import decryptData from "../../Decrypt";
 import EditAdmin from "./EditAdmin";
 import DeleteModal from "../Modal/DeleteModal";
@@ -16,6 +16,7 @@ import SearchInput from "../../components/SearchInput";
 import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const csvData = `user_name,dept_name,phone,email,address,pincode,login_password,status,role,created_by_user
 UserName,Department,phone,email@gmail.com,Address,123456,passord,status,role,admin`;
@@ -41,7 +42,6 @@ const Admin = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [admin, setAdmin] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
@@ -71,10 +71,8 @@ const Admin = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/user/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .get(API_ENDPOINTS.GET_ADMIN.url, {
+        headers:API_ENDPOINTS.GET_ADMIN.headers,
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
@@ -111,10 +109,8 @@ const Admin = ({ permissions }) => {
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(`${API}/role/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_ROLE_ADMINACTIVE.url, {
+        headers: API_ENDPOINTS.GET_ROLE_ADMINACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setExistingRoles(responseData);
@@ -125,10 +121,8 @@ const Admin = ({ permissions }) => {
 
   const fetchExistingEmployees = async () => {
     try {
-      const response = await axios.get(`${API}/employee/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.url, {
+        headers: API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setExistingEmployees(responseData);
@@ -139,10 +133,8 @@ const Admin = ({ permissions }) => {
 
   const fetchZones = async () => {
     try {
-      const response = await axios.get(`${API}/zone/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_ZONE_ADMINACTIVE.url, {
+        headers: API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setIsZone(responseData);
@@ -152,10 +144,8 @@ const Admin = ({ permissions }) => {
   };
   const fetchWards = async () => {
     try {
-      const response = await axios.get(`${API}/ward/getactive`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(API_ENDPOINTS.GET_WARD_ADMINACTIVE.url, {
+        headers: API_ENDPOINTS.GET_WARD_ADMINACTIVE.headers,
       });
       const responseData = decryptData(response.data.data);
       setIsWard(responseData);
@@ -178,11 +168,9 @@ const Admin = ({ permissions }) => {
     .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {
-      await axios.delete(`${API}/user/delete?user_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {const DELETE_ADMIN = API_ENDPOINTS.DELETE_ADMIN(deleteId)
+      await axios.delete(DELETE_ADMIN.url, {
+        headers: DELETE_ADMIN.headers,
       });
       toggleDeleteCloseModal();
       handlerefresh();
@@ -211,7 +199,7 @@ const Admin = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${API}/user/uploadcsv`, formData, {
+      const response = await axios.post(API_ENDPOINTS.UPLOAD_ADMIN.url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
