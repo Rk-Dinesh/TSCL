@@ -150,7 +150,7 @@ const EngineerMetrics = () => {
                 className={`md:col-span-4 sm:col-span-6 col-span-12 border-2 bg-white p-4 rounded-lg shadow-md ${
                   item.onClick ? "cursor-pointer" : ""
                 }`}
-                onClick={item.onClick ?? handleNavigate}
+                //onClick={item.onClick ?? handleNavigate}
               >
                 <p className="text-lg text-gray-700 font-medium">
                   {item.label}
