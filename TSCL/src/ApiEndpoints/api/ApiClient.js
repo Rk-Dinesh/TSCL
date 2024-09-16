@@ -56,7 +56,7 @@ const API_ENDPOINTS = {
   //EMPLOYEES:
   GET_EMPLOYEE: {url:`${BASE_URL}/employee/get`,headers:authHeaders},
   GET_DESIG_EMPLOYEEACTIVE: {url: `${BASE_URL}/designation/getactive`,headers: authHeaders},
-  GET_DEPT_EMPLOYEEACTIVE: {url: `${BASE_URL}/department/getactive`,Headers: authHeaders},
+  GET_DEPT_EMPLOYEEACTIVE: {url: `${BASE_URL}/department/getactive`,headers: authHeaders},
   DELETE_EMPLOYEE: (deleteId) => ({url:`${BASE_URL}/employee/delete?emp_id=${deleteId}`,headers: authHeaders}),
   CSV_EMPLOYEE: {url: `${BASE_URL} /user/uploadcsv`,headers:authHeaders},
   POST_EMPLOYEE: {url:`${BASE_URL}/employee/post`,headers:authHeaders},
