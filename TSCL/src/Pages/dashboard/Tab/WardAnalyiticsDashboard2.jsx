@@ -179,7 +179,7 @@ const EngineerMetrics = () => {
               </tr>
             </thead>
             <tbody>
-              {publicData.map((user, index) => (
+              {publicData.slice(0,10).map((user, index) => (
                 <tr className=" border-b border-gray-300  py-2 " key={index}>
                   <td className="text-start text-gray-600 pl-3 py-2">{user._id}</td>
                   <td className="text-center text-gray-600 py-2">{user.count}</td>
@@ -200,6 +200,9 @@ const EngineerMetrics = () => {
               <th className="text-start text-slate-700 font-semibold pl-3 py-2">
                 <p>Ward</p>
               </th>
+              <th className="text-start text-slate-700 font-semibold pl-3 py-2">
+                <p>Department</p>
+              </th>
               <th className="text-start text-slate-700 font-semibold py-2">
                 <p>Complaint</p>
               </th>
@@ -212,6 +215,9 @@ const EngineerMetrics = () => {
             {frequent.map((user, index) => (
               <tr className=" border-b border-gray-300   " key={index}>
                 <td className="text-start text-gray-600 pl-3 py-2">{user._id}</td>
+                <td className="text-start text-gray-600 py-2">
+                  {user.maxComplaint.dept_name}
+                </td>
                 <td className="text-start text-gray-600 py-2">
                   {user.maxComplaint.complaint}
                 </td>

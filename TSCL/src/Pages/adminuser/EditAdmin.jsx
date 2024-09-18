@@ -12,7 +12,7 @@ const AddAdminSchema = yup.object().shape({
   user_name: yup.string().required("User Name is required"),
   dept_name: yup.string().required("Department is required"),
   address: yup.string().required("Address is required"),
-  login_password: yup.string().required("password is required"),
+  //login_password: yup.string().required("password is required"),
   pincode: yup.string().required("Pincode is required"),
   status: yup
     .string()
@@ -79,7 +79,7 @@ const EditAdmin = (props) => {
         setValue("user_name", data.user_name);
         setValue("dept_name", data.dept_name);
         setValue("address", data.address);
-        setValue("login_password",data.login_password)
+        //setValue("login_password",data.login_password)
         setValue("pincode", data.pincode);
         setRoleName(data.role);
         setValue("role", data.role);
@@ -294,7 +294,7 @@ const EditAdmin = (props) => {
                 </p>
               )}
             </div>
-            <div>
+            {/* <div>
               <div className="grid grid-cols-3 gap-3">
                 <label
                   className="text-black text-base font-medium mb-2 col-span-1"
@@ -315,7 +315,7 @@ const EditAdmin = (props) => {
                   {errors.login_password.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             <p className="text-gray-500">Auto Assign Options : </p>
             <p className="text-sm text-red-500 -mt-2">

@@ -255,46 +255,7 @@ const EngineerMetrics = () => {
         </div>
       </div>
 
-      <div className=" mt-2 md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
-        <p className="text-[#023047] text-lg font-medium mb-1 mx-3 whitespace-nowrap">
-          Performance of Resolution Teams :
-        </p>
-        <p className="mx-3 text-sm mb-2 whitespace-nowrap text-gray-600">
-          Average resolution time by Engineers by department.
-        </p>
-        <table className="w-full mt-1 my-2 mx-3 ">
-          <thead className=" border-b border-gray-300   ">
-            <tr>
-              <th className="text-start text-slate-700 font-semibold pl-5 py-2 whitespace-nowrap">
-                <p>Engineer</p>
-              </th>
-              <th className="text-center text-slate-700 font-semibold py-2 whitespace-nowrap">
-                <p>Department</p>
-              </th>
-              <th className="text-center text-slate-700 font-semibold pl-3 py-2 whitespace-nowrap">
-                <p>Average Resolution Time</p>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="">
-            {avgrsolution &&
-              avgrsolution.map((item, index) => (
-                <tr className=" border-b border-gray-300   " key={index}>
-                  <td className="text-start text-gray-600 pl-5 py-2 whitespace-nowrap">
-                    {item.engineer || "-"}
-                  </td>
-                  <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
-                    {item.department}
-                  </td>
-
-                  <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
-                    {item.averageResolutionTime.toFixed(0)} days
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+    
 
       <div className="grid grid-cols-12 gap-3  mt-3 mb-3">
         <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
@@ -310,6 +271,9 @@ const EngineerMetrics = () => {
                 <th className="text-start text-slate-700 font-semibold pl-5 py-2">
                   <p>Enigneer Name</p>
                 </th>
+                <th className="text-start text-slate-700 font-semibold pl-5 py-2">
+                  <p> Solved</p>
+                </th>
                 <th className="text-center text-slate-700 font-semibold py-2">
                   <p>Grievances</p>
                 </th>
@@ -321,6 +285,9 @@ const EngineerMetrics = () => {
                   <tr className=" border-b border-gray-300  py-2 " key={index}>
                     <td className="text-start text-gray-600 pl-5 py-2">
                       {work.engineer}
+                    </td>
+                    <td className="text-start text-gray-600 pl-5 py-2">
+                      {work.closedCount}
                     </td>
                     <td className="text-center text-gray-600 py-2">
                       {work.count}
@@ -417,6 +384,47 @@ const EngineerMetrics = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className=" mt-2 md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
+        <p className="text-[#023047] text-lg font-medium mb-1 mx-3 whitespace-nowrap">
+          Performance of Resolution Teams :
+        </p>
+        <p className="mx-3 text-sm mb-2 whitespace-nowrap text-gray-600">
+          Average resolution time by Engineers by department.
+        </p>
+        <table className="w-full mt-1 my-2 mx-3 ">
+          <thead className=" border-b border-gray-300   ">
+            <tr>
+              <th className="text-start text-slate-700 font-semibold pl-5 py-2 whitespace-nowrap">
+                <p>Engineer</p>
+              </th>
+              <th className="text-center text-slate-700 font-semibold py-2 whitespace-nowrap">
+                <p>Department</p>
+              </th>
+              <th className="text-center text-slate-700 font-semibold pl-3 py-2 whitespace-nowrap">
+                <p>Average Resolution Time</p>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="">
+            {avgrsolution &&
+              avgrsolution.map((item, index) => (
+                <tr className=" border-b border-gray-300   " key={index}>
+                  <td className="text-start text-gray-600 pl-5 py-2 whitespace-nowrap">
+                    {item.engineer || "-"}
+                  </td>
+                  <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
+                    {item.department}
+                  </td>
+
+                  <td className="text-center text-gray-600 pl-3 py-2 whitespace-nowrap">
+                    {item.averageResolutionTime.toFixed(0)} days
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import SaveCancel from "../../components/SavaCancel";
 
 const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
 const StatusSchema = yup.object().shape({
-  status_name: yup.string().required("status is required"),
+  status_name: yup.string().required("status is required").lowercase(),
   color: yup
   .string()
   .matches(hexColorRegex, "Enter a valid hex color code")

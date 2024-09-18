@@ -1,4 +1,4 @@
-const BASE_URL = 'http://13.48.10.96:4000';
+const BASE_URL = 'http://localhost:4000';
 
 const token = () => sessionStorage.getItem('token');
 

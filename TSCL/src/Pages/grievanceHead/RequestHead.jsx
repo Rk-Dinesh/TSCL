@@ -16,6 +16,7 @@ const RequestHead = () => {
 
   const [Complainttype, setComplainttype] = useState([]);
   const [department, setDepartment] = useState([]);
+  const [Complaint, setComplaint] = useState([]);
   const [zone, setZone] = useState([]);
   const [ward, setWard] = useState([]);
   const [Street, setStreet] = useState([]);
@@ -31,6 +32,7 @@ const RequestHead = () => {
   const [statusColors, setStatusColors] = useState({});
 
   const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selecetedComplaint, setSelecetedComplaint] = useState(null);
   const [selectedZone, setSelectedZone] = useState(null);
   const [selectedWard, setSelectedWard] = useState(null);
   const [selectedStreet, setSelectedStreet] = useState(null);
@@ -70,8 +72,6 @@ const RequestHead = () => {
 
     fetchDepartment();
     fetchZone();
-    fetchWard();
-    fetchStreet();
     fetchActiveStatus();
     fetchComplaintType();
     fetchDeptUser();
@@ -86,34 +86,6 @@ const RequestHead = () => {
       });
       const responseData = decryptData(response.data.data);
       setZone(responseData);
-    } catch (error) {
-      console.error("Error fetching existing Dept:", error);
-    }
-  };
-
-  const fetchWard = async () => {
-    try {
-      const response = await axios.get(`${API}/ward/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const responseData = decryptData(response.data.data);
-      setWard(responseData);
-    } catch (error) {
-      console.error("Error fetching existing Dept:", error);
-    }
-  };
-
-  const fetchStreet = async () => {
-    try {
-      const response = await axios.get(`${API}/street/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const responseData = decryptData(response.data.data);
-      setStreet(responseData);
     } catch (error) {
       console.error("Error fetching existing Dept:", error);
     }
@@ -210,31 +182,75 @@ const RequestHead = () => {
     setSelectedAssign(null);
     paginate(1);
   };
-  const handleDept = (dept) => {
-    if (dept === "All") {
+  const handleDept = async(depts) => {
+    if (depts === "All") {
       setSelectedDepartment(null);
+      setComplaint([]);
     } else {
-      setSelectedDepartment(dept);
-    }
-    paginate(1);
-  };
-  const handleZone = (zones) => {
-    if (zones === "All") {
-      setSelectedZone(null);
-    } else {
-      setSelectedZone(zones);
-      setSelectedWard(null);
-      setSelectedStreet(null);
+      setSelectedDepartment(depts);
+      setSelecetedComplaint(null);
+      await axios
+        .get(`${API}/complaint/getdept?dept_name=${depts}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setComplaint(responseData);
+        });
     }
     paginate(1);
   };
 
-  const handleWard = (wards) => {
+  const handleC = (compt) => {
+    if (compt === "All") {
+      setSelecetedComplaint(null);
+    } else {
+      setSelecetedComplaint(compt);
+    }
+    paginate(1);
+  };
+  const handleZone = async(zones) => {
+    if (zones === "All") {
+      setSelectedZone(null);
+      setWard([])
+      setStreet([])
+    } else {
+      setSelectedZone(zones);
+      setSelectedWard(null);
+      setSelectedStreet(null);
+      await axios
+      .get(`${API}/ward/getzone?zone_name=${zones}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setWard(responseData);
+      });
+    }
+    paginate(1);
+  };
+
+  const handleWard = async(wards) => {
     if (wards === "All") {
       setSelectedWard(null);
+      setStreet([])
     } else {
-        setSelectedWard(wards);
-        setSelectedStreet(null);
+      setSelectedWard(wards);
+      setSelectedStreet(null);
+      await axios
+      .get(`${API}/street/getward?ward_name=${wards}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setStreet(responseData);
+      });
     }
     paginate(1);
   };
@@ -243,7 +259,7 @@ const RequestHead = () => {
     if (streets === "All") {
       setSelectedStreet(null);
     } else {
-        setSelectedStreet(streets);
+      setSelectedStreet(streets);
     }
     paginate(1);
   };
@@ -281,18 +297,24 @@ const RequestHead = () => {
     paginate(1);
   };
 
-  const currentItemsOnPage = filteredCenters.slice().reverse()
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
     .filter((report) => {
       const complaintTypeMatch = selected === "All" ? true : "";
       const deptMatch =
         selectedDepartment === null
           ? true
           : report.dept_name === selectedDepartment;
+      const CMatch =
+        selecetedComplaint === null
+          ? true
+          : report.complaint === selecetedComplaint;
       const zoneMatch =
         selectedZone === null ? true : report.zone_name === selectedZone;
-        const wardMatch =
+      const wardMatch =
         selectedWard === null ? true : report.ward_name === selectedWard;
-        const streetMatch =
+      const streetMatch =
         selectedStreet === null ? true : report.street_name === selectedStreet;
       const statusMatch =
         selectedStatus === null ? true : report.status === selectedStatus;
@@ -313,6 +335,7 @@ const RequestHead = () => {
         complaintTypeMatch &&
         statusMatch &&
         deptMatch &&
+        CMatch &&
         zoneMatch &&
         wardMatch &&
         streetMatch &&
@@ -358,6 +381,26 @@ const RequestHead = () => {
           <div className="flex gap-2 flex-wrap">
             <select
               className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+              onChange={(e) => handleC(e.target.value)}
+              value={selecetedComplaint || ""}
+            >
+              <option hidden>Complaint</option>
+              <option value="All">All</option>
+              {Complaint &&
+                Complaint.map((option) => (
+                  <option
+                    key={option.complaint_id}
+                    value={option.complaint_type_title}
+                  >
+                    {option.complaint_type_title}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            <select
+              className="block w-full  px-1 md:py-2 py-1.5 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
               onChange={(e) => handleZone(e.target.value)}
               value={selectedZone || ""}
             >
@@ -381,11 +424,13 @@ const RequestHead = () => {
               <option hidden>ward</option>
               <option value="All">All</option>
               {ward &&
-                ward.filter(ward=>ward.zone_name === selectedZone).map((option) => (
-                  <option key={option.ward_id} value={option.ward_name}>
-                    {option.ward_name}
-                  </option>
-                ))}
+                ward
+                  .filter((ward) => ward.zone_name === selectedZone)
+                  .map((option) => (
+                    <option key={option.ward_id} value={option.ward_name}>
+                      {option.ward_name}
+                    </option>
+                  ))}
             </select>
           </div>
 
@@ -398,11 +443,10 @@ const RequestHead = () => {
               <option hidden>Area</option>
               <option value="All">All</option>
               {Street &&
-                Street.filter(streets=>streets.ward_name === selectedWard).map((option) => (
-                  <option
-                    key={option.street_id}
-                    value={option.street_name}
-                  >
+                Street.filter(
+                  (streets) => streets.ward_name === selectedWard
+                ).map((option) => (
+                  <option key={option.street_id} value={option.street_name}>
                     {option.street_name}
                   </option>
                 ))}
@@ -460,10 +504,7 @@ const RequestHead = () => {
                   <option value="All">All</option>
                   {status &&
                     status.map((option) => (
-                      <option
-                        key={option.status_id}
-                        value={option.status_name}
-                      >
+                      <option key={option.status_id} value={option.status_name}>
                         {option.status_name}
                       </option>
                     ))}
@@ -563,7 +604,6 @@ const RequestHead = () => {
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
-                 
                 </tr>
               </thead>
               <tbody>
@@ -577,15 +617,16 @@ const RequestHead = () => {
                       </div>
                     </td>
                     <td>
-                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  capitalize text-slate-900"
-                      onClick={() =>
-                        navigate(`/view3`, {
-                          state: {
-                            grievanceId: report.grievance_id,
-                            deptName: report.dept_name,
-                          },
-                        })
-                      }
+                      <p
+                        className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  capitalize text-slate-900"
+                        onClick={() =>
+                          navigate(`/view3`, {
+                            state: {
+                              grievanceId: report.grievance_id,
+                              deptName: report.dept_name,
+                            },
+                          })
+                        }
                       >
                         {report.grievance_id}
                       </p>
@@ -673,7 +714,6 @@ const RequestHead = () => {
                         {report.status}
                       </p>
                     </td>
-                   
                   </tr>
                 ))}
               </tbody>
@@ -681,16 +721,16 @@ const RequestHead = () => {
           </div>
         </div>
         <div className=" my-3 mb-5 mx-7">
-          <Pagination 
-          Length={report.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
+          <Pagination
+            Length={report.length}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            firstIndex={firstIndex}
+            lastIndex={lastIndex}
+            paginate={paginate}
+            hasNextPage={lastIndex >= filteredCenters.length}
           />
-          </div>
+        </div>
       </div>
     </div>
   );

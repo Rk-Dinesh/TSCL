@@ -17,6 +17,7 @@ import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
 import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
+import PasswordAdmin from "./PasswordAdmin";
 
 const csvData = `user_name,dept_name,phone,email,address,pincode,login_password,status,role,created_by_user
 UserName,Department,phone,email@gmail.com,Address,123456,passord,status,role,admin`;
@@ -28,6 +29,8 @@ const Admin = ({ permissions }) => {
   const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
   const [editModal, setEditModal] = useState(false);
+  const [isChange, setIsChange] = useState(false);
+  const [phoneID, setPhoneID] = useState(null)
   const [adminId, setAdminId] = useState(null);
 
   const [isDeleteModal, setIsDeleteModal] = useState(false);
@@ -105,6 +108,11 @@ const Admin = ({ permissions }) => {
   const toggleDeleteCloseModal = () => {
     setIsDeleteModal(!isDeleteModal);
     setdeleteId(null);
+  };
+
+  const togglePassModal = () => {
+    setIsChange(!isChange);
+    setPhoneID(null)
   };
 
   const fetchExistingRoles = async () => {
@@ -469,6 +477,7 @@ const Admin = ({ permissions }) => {
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
+                                <div>
                                 <button
                                   className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                   onClick={() => {
@@ -479,6 +488,17 @@ const Admin = ({ permissions }) => {
                                 >
                                   Edit
                                 </button>
+                                 <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setIsChange(true);
+                                    setPhoneID(admins.phone);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Password
+                                </button>
+                                </div>
                               )}
                               {hasDeletePermission && (
                                 <button
@@ -540,6 +560,12 @@ const Admin = ({ permissions }) => {
         <DeleteModal
           toggleDeleteModal={toggleDeleteCloseModal}
           delete={handleDelete}
+        />
+      )}
+      {isChange && (
+        <PasswordAdmin
+        togglePassModal={togglePassModal}
+        phoneID={phoneID}
         />
       )}
     </Fragment>
