@@ -167,36 +167,64 @@ const GrivevanceAnalyticDashboard1 = () => {
                 value: count.totalGrievances?.[0]?.total ?? 0,
                 icon: HiClipboardList,
                 color: "sky-600",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'get' },
+                  })
+                }
               },
               {
                 label: "Grievances Resolved",
                 value: count.resolvedGrievances?.[0]?.resolved ?? 0,
                 icon: TbCheckupList,
                 color: "green-600",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'byclosed' },
+                  })
+                }
               },
               {
                 label: "Pending Grievances",
                 value: count.pendingGrievances?.[0]?.pending ?? 0,
                 icon: MdPendingActions,
                 color: "red-800",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'bynotclosed' },
+                  })
+                }
               },
               {
                 label: "Re-opened Grievances",
                 value: count.reopendGrievances?.[0]?.reopen ?? 0,
                 icon: GoIssueReopened,
                 color: "yellow-600",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'byreopen' },
+                  })
+                }
               },
               {
                 label: "Escalated Grievances",
                 value: count.escalatedGrievances?.[0]?.escalated ?? 0,
                 icon: AiFillAlert,
                 color: "red-700",
+                navigate:()=>{
+                  navigate('/escalation')
+                }
               },
               {
                 label: "Grievances by Severity",
                 value: count.highPriorityGrievances?.[0]?.highPriority ?? 0,
                 icon: MdOutlinePriorityHigh,
                 color: "gray-800",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'byhigh' },
+                  })
+                }
               },
             ].map((item, index) => (
               <div
@@ -204,7 +232,7 @@ const GrivevanceAnalyticDashboard1 = () => {
                 className={`md:col-span-4 sm:col-span-6 col-span-12 border-2 bg-white p-4 rounded-lg shadow-md ${
                   item.onClick ? "cursor-pointer" : ""
                 }`}
-                // onClick={item.onClick ?? handleNavigate}
+                onClick={item.onClick ?? item.navigate}
               >
                 <p className="text-lg text-gray-700 font-medium">
                   {item.label}
@@ -268,7 +296,7 @@ const GrivevanceAnalyticDashboard1 = () => {
                       backgroundColor: COLORS_1[index % COLORS_1.length],
                     }}
                   />
-                  <span style={{ marginLeft: 10 }}>{entry.name}</span>
+                  <span style={{ marginLeft: 10 }} onClick={()=>navigate('/dashboardview',{state:{endpoint:`getbydept?dept_name=${entry.name}`}})}>{entry.name}</span>
                 </div>
               ))}
             </div>
@@ -323,7 +351,7 @@ const GrivevanceAnalyticDashboard1 = () => {
                       backgroundColor: COLORS_2[index % COLORS_2.length],
                     }}
                   />
-                  <span style={{ marginLeft: 10 }}>{entry.priority}</span>
+                  <span style={{ marginLeft: 10 }} onClick={()=>navigate('/dashboardview',{state:{endpoint:`by${entry.priority}`}})}>{entry.priority}</span>
                 </div>
               ))}
             </div>

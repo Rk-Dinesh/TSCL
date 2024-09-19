@@ -9,6 +9,7 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
+import GrivencesTable from "./Pages/dashboard/Tab/GrievanceTable";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -44,7 +45,9 @@ const Status = lazy(() => import("./Pages/status/Status"));
 const RequestHead = lazy(() => import("./Pages/grievanceHead/RequestHead"));
 const Profile = lazy(() => import("./Pages/layout.jsx/Profile"));
 const Escalation = lazy(() => import("./Pages/escalation/Escalation"));
-const EscalationCommissioner = lazy(() => import("./Pages/escalation/EscalationCommissioner"));
+const EscalationCommissioner = lazy(() =>
+  import("./Pages/escalation/EscalationCommissioner")
+);
 const Designation = lazy(() => import("./Pages/designation/Designation"));
 const Employee = lazy(() => import("./Pages/Employees/Employee"));
 
@@ -59,7 +62,7 @@ function App() {
   const [features, setFeatures] = useState({});
 
   useEffect(() => {
-    if (decodedToken) { 
+    if (decodedToken) {
       const fetchUserData = async () => {
         try {
           const response = await axios.get(
@@ -87,18 +90,17 @@ function App() {
       };
 
       fetchUserData();
-    }else {
-      setLoading(false); 
+    } else {
+      setLoading(false);
     }
   }, [decodedToken, token]);
 
   const memoizedFeatures = useMemo(() => features, [features]);
 
   if (loading) {
-   
     return (
       <div>
-       <p>Loading...</p>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -110,7 +112,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="" element={<Login setToken={setToken} />} />
           <Route path="/auth" element={<OTP />} />
-          
+
           <Route
             path="/"
             element={
@@ -123,12 +125,19 @@ function App() {
           >
             <Route path="/profile" element={<Profile />} />
             {memoizedFeatures["dashboard"] && (
-              <Route
-                path="/dashboard"
-                element={
-                  <Tabs permissions={memoizedFeatures["dashboard"]} />
-                }
-              />
+              <>
+                <Route
+                  path="/dashboard"
+                  element={<Tabs permissions={memoizedFeatures["dashboard"]} />}
+                />
+                 <Route
+                  path="/dashboardview"
+                  element={<GrivencesTable />}
+                />
+                 <Route path="/view" element={<ViewRequest />} />
+                 <Route path="/escalation"element={<EscalationCommissioner/>}/>
+
+              </>
             )}
             {memoizedFeatures["admin"] && (
               <Route
@@ -202,20 +211,14 @@ function App() {
               <Route
                 path="/designation"
                 element={
-                  <Designation
-                    permissions={memoizedFeatures["designation"]}
-                  />
+                  <Designation permissions={memoizedFeatures["designation"]} />
                 }
               />
             )}
             {memoizedFeatures["emp"] && (
               <Route
                 path="/emp"
-                element={
-                  <Employee
-                    permissions={memoizedFeatures["emp"]}
-                  />
-                }
+                element={<Employee permissions={memoizedFeatures["emp"]} />}
               />
             )}
             {memoizedFeatures["grievance"] && (
@@ -228,23 +231,19 @@ function App() {
                 />
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
-               
               </>
             )}
             {memoizedFeatures["requestview1"] && (
               <>
-               
                 <Route
                   path="/requestview1"
                   element={
                     <Request permissions={memoizedFeatures["requestview1"]} />
                   }
                 />
-                
+
                 <Route path="/view" element={<ViewRequest />} />
                 <Route path="/form" element={<GrievanceForm />} />
-               
-                
               </>
             )}
 
@@ -253,7 +252,9 @@ function App() {
                 <Route
                   path="/requestview2"
                   element={
-                    <RequestAdmin permissions={memoizedFeatures["requestview2"]} />
+                    <RequestAdmin
+                      permissions={memoizedFeatures["requestview2"]}
+                    />
                   }
                 />
                 <Route path="/view2" element={<ViewRequest2 />} />
@@ -262,7 +263,6 @@ function App() {
 
             {memoizedFeatures["requestview3"] && (
               <>
-               
                 <Route
                   path="/requestview3"
                   element={
@@ -275,31 +275,35 @@ function App() {
 
             {memoizedFeatures["requestview4"] && (
               <>
-                
                 <Route
                   path="/requestview4"
                   element={
-                    <RequestHead permissions={memoizedFeatures["requestview4"]} />
+                    <RequestHead
+                      permissions={memoizedFeatures["requestview4"]}
+                    />
                   }
                 />
                 <Route path="/view3" element={<ViewRequestJE />} />
               </>
             )}
 
-
-        
             {memoizedFeatures["escalate"] && (
               <Route
                 path="/escalate"
-                element={<Escalation permissions={memoizedFeatures["escalate"]} />}
+                element={
+                  <Escalation permissions={memoizedFeatures["escalate"]} />
+                }
               />
             )}
-         
 
             {memoizedFeatures["escalation"] && (
               <Route
                 path="/escalation"
-                element={<EscalationCommissioner permissions={memoizedFeatures["escalation"]} />}
+                element={
+                  <EscalationCommissioner
+                    permissions={memoizedFeatures["escalation"]}
+                  />
+                }
               />
             )}
 

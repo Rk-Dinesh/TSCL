@@ -128,18 +128,33 @@ const EngineerMetrics = () => {
                 value: count.totalGrievances?.[0]?.total ?? 0,
                 icon: HiClipboardList,
                 color: "sky-600",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'get' },
+                  })
+                }
               },
               {
                 label: "Grievances Resolved",
                 value: count.resolvedGrievances?.[0]?.resolved ?? 0,
                 icon: TbCheckupList,
                 color: "green-600",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'byclosed' },
+                  })
+                }
               },
               {
                 label: "Pending Grievances",
                 value: count.pendingGrievances?.[0]?.pending ?? 0,
                 icon: MdPendingActions,
                 color: "red-800",
+                navigate: ()=>{
+                  navigate('/dashboardview', {
+                    state: { endpoint: 'bynotclosed' },
+                  })
+                }
               }
             ].map((item, index) => (
               <div
@@ -147,7 +162,7 @@ const EngineerMetrics = () => {
                 className={`md:col-span-4 sm:col-span-6 col-span-12 border-2 bg-white p-4 rounded-lg shadow-md ${
                   item.onClick ? "cursor-pointer" : ""
                 }`}
-                //onClick={item.onClick ?? handleNavigate}
+                onClick={item.onClick ?? item.navigate}
               >
                 <p className="text-lg text-gray-700 font-medium">
                   {item.label}
@@ -271,6 +286,10 @@ const EngineerMetrics = () => {
           </tbody>
         </table>
       </div>
+
+
+
+
     </div>
   );
 };
