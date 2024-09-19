@@ -6,6 +6,8 @@ import { HiClipboardList } from "react-icons/hi";
 import axios from "axios";
 import { API} from "../../../Host";
 import { useNavigate } from "react-router-dom";
+import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
+import decryptData from "../../../Decrypt";
 
 const EngineerMetrics = () => {
   const token = sessionStorage.getItem("token");
@@ -13,6 +15,8 @@ const EngineerMetrics = () => {
   const [wardData, setWardData] = useState([]);
   const [publicData, setPublicData] = useState([]);
   const [frequent, setFrequent] = useState([]);
+  const [Departments, setDepartments] = useState([])
+  const [selectedDepartment, setSelectedDepartment] = useState('All')
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,11 +24,14 @@ const EngineerMetrics = () => {
     fetchward();
     fetchpublic();
     fetchfrequent();
+    fetchDepartments()
   }, []);
 
   const handleNavigate = () => {
     navigate('/requestview4')
   }
+
+
 
   const fetchGrievanceCounts = async () => {
     try {
@@ -90,6 +97,26 @@ const EngineerMetrics = () => {
     }
   };
 
+  const fetchDepartments = async () => {
+    try {
+      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENT.url,{
+        headers:API_ENDPOINTS.GET_DEPARTMENT.headers
+      });
+      const responseData = decryptData(response.data.data);
+      setDepartments(responseData);
+    } catch (error) {
+      console.error("Error fetching existing Departments:", error);
+    }
+  };
+
+  const handleDept = async(depts) => {
+      setSelectedDepartment(depts);
+  };
+
+  const filters = frequent.filter((report) => {
+    return selectedDepartment === "All" ? report : report.maxComplaint.dept_name === selectedDepartment;
+  });
+  
   return (
     <div className="  font-lexend mx-2 my-5 h-screen  ">
        <div>
@@ -191,9 +218,24 @@ const EngineerMetrics = () => {
       </div>
 
       <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
-        <p className="text-gray-800 text-lg font-medium mb-1 mx-3">
+       <div className="flex justify-between flex-wrap mb-2">
+       <p className="text-gray-800 text-lg font-medium mb-1 mx-3">
           Most frequent complaints By ward :
         </p>
+        <select  className="text-sm text-gray-800  border border-gray-900 rounded-lg border-none outline-none mr-4" 
+         onChange={(e) => handleDept(e.target.value)}
+         value={selectedDepartment || ""}
+        >
+        
+        <option hidden>Select Department</option>
+        <option value="All">All</option>
+                {Departments && Departments.map((dept) => (
+                  <option key={dept.dept_id} value={dept.dept_name}>
+                    {dept.dept_name}
+                  </option>
+                ))}
+        </select>
+       </div>
         <table className="w-full mt-1 my-2 mx-3 ">
           <thead className=" border-b border-gray-300   ">
             <tr>
@@ -212,7 +254,7 @@ const EngineerMetrics = () => {
             </tr>
           </thead>
           <tbody>
-            {frequent.map((user, index) => (
+            {filters.map((user, index) => (
               <tr className=" border-b border-gray-300   " key={index}>
                 <td className="text-start text-gray-600 pl-3 py-2">{user._id}</td>
                 <td className="text-start text-gray-600 py-2">

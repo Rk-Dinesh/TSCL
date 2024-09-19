@@ -76,7 +76,10 @@ const PasswordAdmin = (props) => {
   };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
-      <div className="bg-white w-fit h-fit  font-lexend m-2">
+      <div className="bg-white w-[380px] h-fit  font-lexend m-2 rounded">
+      <div className="border-b-2 border-gray-300 mx-10">
+          <h1 className="text-xl font-medium pt-10 pb-2">Change Password</h1>
+        </div>
         <form onSubmit={handleSubmitPassword(onChangePassword)}>
             <div className="col-span-4 my-4  px-3">
               <div className="flex items-center border-2  rounded-lg mx-2  px-2 py-2 outline-none">
