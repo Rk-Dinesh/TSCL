@@ -7,12 +7,12 @@ const SaveCancel = ({
   return (
     <div className="flex justify-end  mx-10  gap-5">
       <div
-        className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5"
+        className="border border-primary text-primary bg-none font-lexend rounded-3xl px-5 py-1.5 shadow-md"
         onClick={onCancel}
       >
         Cancel
       </div>
-      <button className="text-white bg-primary font-lexend rounded-3xl px-5 py-1.5" type="submit">
+      <button className="text-white bg-primary font-lexend rounded-3xl px-5 py-1.5 shadow-lg" type="submit">
         Save
       </button>
     </div>

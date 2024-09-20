@@ -11,7 +11,7 @@ const DocumentDownload = ({
     <div className="flex gap-2 items-center">
       <form>
         <select
-          className="block w-full py-2 px-2 text-sm border-2 text-gray-400 border-gray-300 rounded-full bg-gray-50 outline-none"
+          className="block w-full py-1.5 px-2 text-sm border-2 text-gray-400 border-gray-300 rounded-full bg-gray-50 outline-none"
           onChange={onChange}
         >
           <option hidden>Download</option>

@@ -243,7 +243,7 @@ const Zone = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen ">
-          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-2 mx-8 flex-wrap">
             <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
@@ -271,7 +271,7 @@ const Zone = ({ permissions }) => {
             onClick={() => setIsModal(true)}
           />
 
-          <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
+          <div className="bg-white mx-4 rounded-lg my-2  h-3/5 ">
             <div className="overflow-x-auto no-scrollbar ">
               <table className="w-full mt-3 ">
                 <thead className=" border-b-2 border-gray-300">
@@ -391,7 +391,7 @@ const Zone = ({ permissions }) => {
               </table>
             </div>
           </div>
-          <div className=" my-3 mb-5 mx-7">
+          <div className=" my-2 mb-5 mx-7">
             <BulkUploadButton handleDownload={handleDownload} />
             <Pagination
               Length={zone.length}

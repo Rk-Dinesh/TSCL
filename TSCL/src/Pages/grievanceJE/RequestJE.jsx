@@ -2,11 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { API,  formatDate1 } from "../../Host";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
+import SearchInput from "../../components/SearchInput";
+import DocumentDownload from "../../components/DocumentDownload";
 
 const RequestJE = ({permissions,include,endpoint}) => {
+  const hasCreatePermission = permissions?.includes('create');
+  const hasEditPermission = permissions?.includes('edit');
+  const hasDeletePermission = permissions?.includes('delete');
+  const hasDownloadPermission = permissions?.includes("download");
+
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -17,6 +26,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
   const token = sessionStorage.getItem("token");
   const code = sessionStorage.getItem("code");
   const navigate = useNavigate();
+  const [selectedDoc, setSelectedDoc] = useState(null);
   
   const [selected, setSelected] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -124,19 +134,149 @@ const RequestJE = ({permissions,include,endpoint}) => {
   })
   .slice(firstIndex, lastIndex);
 
+
+  const setDocs = (event) => {
+    setSelectedDoc(event.target.value);
+  };
+
+  const exportData = async (format) => {
+    if (format === "csv") {
+      // CSV Export
+      const exportedData = report.map((row) => ({
+        grievance_id: row.grievance_id,
+        grievance_mode: row.grievance_mode,
+        complaint_type_title: row.complaint_type_title,
+        dept_name: row.dept_name,
+        zone_name: row.zone_name,
+        ward_name: row.ward_name,
+        street_name: row.street_name,
+        pincode: row.pincode,
+        complaint: row.complaint,
+
+        public_user_id: row.public_user_id,
+        public_user_name: row.public_user_name,
+        phone: row.phone,
+        assign_user: row.assign_user,
+        assign_username: row.assign_username,
+        assign_userphone: row.assign_userphone,
+        status: row.status,
+        escalation_level: row.escalation_level,
+
+        priority: row.priority,
+      }));
+
+      const csvData = [
+        Object.keys(exportedData[0]).join(","),
+        ...exportedData.map((row) => Object.values(row).join(",")),
+      ].join("\n");
+
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "Grievance_data.csv");
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === "pdf") {
+      try {
+        const rowsPerPage = 30;
+        const totalPages = Math.ceil(report.length / rowsPerPage);
+
+        const pdf = new jsPDF("l", "mm", "a4");
+        let yOffset = 0;
+
+        for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
+          const startIndex = (currentPage - 1) * rowsPerPage;
+          const endIndex = Math.min(startIndex + rowsPerPage, report.length);
+          const currentPageData = report.slice(startIndex, endIndex);
+
+          const tableData = currentPageData.map((row) => [
+            row.grievance_id,
+            row.grievance_mode,
+            row.complaint_type_title,
+            row.dept_name,
+
+            row.pincode,
+            row.complaint,
+
+            row.public_user_name,
+            row.phone,
+
+            row.assign_username,
+            row.assign_userphone,
+            row.status,
+            row.escalation_level,
+
+            row.priority,
+          ]);
+
+          pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
+          pdf.autoTable({
+            startY: yOffset + 15,
+            head: [
+              [
+                "grievance_id",
+                "grievance_mode",
+                "complaintType",
+                "dept",
+                "pincode",
+                "complaint",
+                "publicUser",
+                "phone",
+                "assignUser",
+                "assignUserphone",
+                "status",
+                "Escalation",
+                "Priority",
+              ],
+            ],
+            body: tableData,
+            theme: "striped",
+          });
+
+          if (currentPage < totalPages) {
+            pdf.addPage();
+            yOffset = 10; // Set yOffset for the new page
+          }
+        }
+
+        pdf.save("Grievance_data.pdf");
+      } catch (error) {
+        console.error("Error exporting data:", error);
+      }
+    }
+  };
+
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-   
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-3  p-3">
+      <div className="flex flex-row  gap-3 p-2 mt-1 mx-8 flex-wrap md:justify-end ">
+          <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Grievances"
+            />
+
+            {hasDownloadPermission && (
+              <DocumentDownload
+              selectedDoc={selectedDoc}
+              onChange={setDocs}
+              exportData={exportData}
+            />
+            )}
+          </div>
+        <div className="bg-white h-4/5 mx-3 rounded-lg mt-2  p-3">
             <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
             
             <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
                   onChange={(e) =>
                     handlePriority(e.target.value)
                   }
@@ -155,7 +295,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
                 
               </div>
               <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize"
+                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
                  onChange={(e) =>
                   handleStatus(e.target.value)
                 }
@@ -184,7 +324,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
                   selected === "All"
                     ? "bg-primary text-white"
                     : "bg-white text-black"
-                } rounded-full`}
+                } rounded-full shadow-lg`}
                 onClick={() => handleComplaintTypeClick("All")}
               >
                 All

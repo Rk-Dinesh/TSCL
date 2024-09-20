@@ -273,7 +273,7 @@ const Department = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-3 mx-8 flex-wrap">
+          <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-1 mx-8 flex-wrap">
             
             <SearchInput
               value={searchValue}
@@ -303,7 +303,7 @@ const Department = ({ permissions }) => {
             onClick={() => setIsModal(true)}
           />
 
-          <div className="bg-white mx-4 rounded-lg my-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-2 overflow-x-auto h-3/5 no-scrollbar">
             <table className="w-full  mt-3">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">
@@ -436,7 +436,7 @@ const Department = ({ permissions }) => {
               </tbody>
             </table>
           </div>
-          <div className=" my-3 mb-5 mx-7">
+          <div className=" my-2 mb-5 mx-7">
           <BulkUploadButton handleDownload={handleDownload}/>
           <Pagination 
           Length={department.length}
