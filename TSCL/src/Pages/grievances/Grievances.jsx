@@ -6,13 +6,14 @@ import axios from "axios";
 import decryptData from "../../Decrypt";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { addDays } from "date-fns";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
 import DateRangeComp from "../../components/DateRangeComp";
 
-const Grivences = ({ permissions ,include,endpoint}) => {
+const Grivences = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
@@ -25,6 +26,7 @@ const Grivences = ({ permissions ,include,endpoint}) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
+  const [filteredGrievances, setFilteredGrievances] = useState([]);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const handleform = () => {
@@ -45,25 +47,31 @@ const Grivences = ({ permissions ,include,endpoint}) => {
       .then((response) => {
         const responseData = decryptData(response.data.data);
         setGrievance(responseData);
-
-        const filteredCenters = responseData.filter((grievances) =>
-          Object.values(grievances).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
       })
       .catch((error) => {
         console.error(error);
       });
 
     fetchActiveStatus();
-  }, [searchValue, currentPage]);
+  }, []);
+
+  useEffect(() => {
+    const filteredCenters = grievance.filter((grievances) =>
+      Object.values(grievances).some((value) =>
+        value.toString().toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+
+    setFilteredGrievances(filteredCenters);
+  }, [searchValue, grievance]);
+
+  useEffect(() => {
+    const lastIndex = currentPage * itemsPerPage;
+    const firstIndex = lastIndex - itemsPerPage;
+
+    setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
+    setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
+  }, [filteredGrievances, currentPage]);
 
   const fetchActiveStatus = async () => {
     try {
@@ -91,19 +99,19 @@ const Grivences = ({ permissions ,include,endpoint}) => {
     }
   };
 
+  const handleDateRangeChange = (range) => {
+    const startDate = range[0].startDate;
+    const endDate = range[0].endDate;
+    const filteredCenters = grievance.filter((grievances) => {
+      const createdAt = new Date(grievances.createdAt);
+      return createdAt >= startDate && createdAt < addDays(endDate, 1);
+    });
+  
+    setFilteredGrievances(filteredCenters);
+  };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  const filteredCenters = grievance.filter((grievances) =>
-    Object.values(grievances).some((value) =>
-      value.toString().toLowerCase().includes(searchValue.toLowerCase())
-    )
-  );
-
-  const currentItemsOnPage = filteredCenters
-    .slice()
-    .reverse()
-    .slice(firstIndex, lastIndex);
-
+  
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -111,7 +119,7 @@ const Grivences = ({ permissions ,include,endpoint}) => {
   const exportData = async (format) => {
     if (format === "csv") {
       // CSV Export
-      const exportedData = grievance.map((row) => ({
+      const exportedData = filteredGrievances.map((row) => ({
         grievance_id: row.grievance_id,
         grievance_mode: row.grievance_mode,
         complaint_type_title: row.complaint_type_title,
@@ -152,15 +160,15 @@ const Grivences = ({ permissions ,include,endpoint}) => {
     } else if (format === "pdf") {
       try {
         const rowsPerPage = 30;
-        const totalPages = Math.ceil(grievance.length / rowsPerPage);
+        const totalPages = Math.ceil(filteredGrievances.length / rowsPerPage);
 
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, grievance.length);
-          const currentPageData = grievance.slice(startIndex, endIndex);
+          const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
+          const currentPageData = filteredGrievances.slice(startIndex, endIndex);
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
@@ -210,7 +218,7 @@ const Grivences = ({ permissions ,include,endpoint}) => {
           });
 
           if (currentPage < totalPages) {
-            pdf.addPage();
+            pdf .addPage();
             yOffset = 10; // Set yOffset for the new page
           }
         }
@@ -222,109 +230,92 @@ const Grivences = ({ permissions ,include,endpoint}) => {
     }
   };
 
-  const handleDateRangeChange = (range) => {
-    const startDate = range[0].startDate;
-    const endDate = range[0]. endDate;
-console.log(startDate);
-
-    const filteredCenters = grievance.filter((grievances) => {
-      const createdAt = new Date(grievances.createdAt);
-      return createdAt >= startDate && createdAt <= endDate;
-    });
-
-    setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-    const lastIndex = currentPage * itemsPerPage;
-    const firstIndex = lastIndex - itemsPerPage;
-
-    setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-  };
-
   return (
     <Fragment>
-      <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
+      <div className="bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-        {include === 'yes' && (
-          <HeaderButton
-            title="Grievances"
-            hasCreatePermission={hasCreatePermission}
-            onClick={handleform}
-          />
-        )}
-          <div className="flex flex-row  gap-1.5 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-          <DateRangeComp />
-          <div className="flex flex-row flex-wrap gap-1.5">
-          <SearchInput
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Grievances"
+          {include === "yes" && (
+            <HeaderButton
+              title="Grievances"
+              hasCreatePermission={hasCreatePermission}
+              onClick={handleform}
             />
+          )}
+          <div className="flex flex-row gap-1.5 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
+            <DateRangeComp onChange={handleDateRangeChange} />
+            <div className="flex flex-row flex-wrap gap-1.5">
+              <SearchInput
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Grievances"
+              />
 
-            {hasDownloadPermission && (
-              <DocumentDownload
-              selectedDoc={selectedDoc}
-              onChange={setDocs}
-              exportData={exportData}
-            />
-            )}
+              {hasDownloadPermission && (
+                <DocumentDownload
+                  selectedDoc={selectedDoc}
+                  onChange={setDocs}
+                  exportData={exportData}
+                />
+              )}
             </div>
           </div>
-         
-          <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
-            <table className="w-full mt-2 ">
-              <thead className=" border-b border-gray-300  ">
+
+          <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar">
+            <table className="w-full mt-2">
+              <thead className="border-b border-gray-300">
                 <tr className="">
                   <th className="">
-                    <p className=" mx-3 my-2 font-lexend font-medium whitespace-nowrap">
+                    <p className="mx-3 my-2 font-lexend font-medium whitespace-nowrap">
                       #
                     </p>
                   </th>
                   <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                    <p className="mx-1.5 my-2 text-start font-lexend font-medium whitespace-nowrap">
                       Complaint No
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
                       Raised by <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
                       Complaint Type <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
                       Department
                       <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
                       Assigned JE <RiExpandUpDownLine />
                     </p>
                   </th>
 
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
                       Date and Time <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium whitespace-nowrap">
                       Priority <RiExpandUpDownLine />
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {currentItemsOnPage.map((report, index) => (
-                  <tr className=" border-b border-gray-300  " key={index}>
+                {currentItems.map((report, index) => (
+                  <tr key={index}>
                     <td className="">
                       <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700">
                         {firstIndex + index + 1 < 10
@@ -407,18 +398,18 @@ console.log(startDate);
               </tbody>
             </table>
           </div>
-          <div className=" my-3 mb-5 mx-7">
-          <Pagination 
-          Length={grievance.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+          <div className="my-3 mb-5 mx-7">
+            <Pagination
+              Length={filteredGrievances.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredGrievances.length}
+            />
           </div>
-        </div>
+ </div>
       </div>
     </Fragment>
   );

@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DateRange } from "react-date-range";
 import format from "date-fns/format";
-import { addDays } from "date-fns";
+
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const DateRangeComp = () => {
+const DateRangeComp = ({ onChange }) => {
   // date state
   const [range, setRange] = useState([
     {
@@ -56,7 +56,14 @@ const DateRangeComp = () => {
         onClick={() => setOpen((open) => !open)}
       />
 
-      <button className="bg-primary px-4 py-1.5 rounded-md text-white ml-2 ">Search</button>
+      <button
+        className="bg-primary px-4 py-1.5 rounded-md text-white ml-2 "
+        onClick={() => {
+          onChange(range);
+        }}
+      >
+        Search
+      </button>
 
       <div ref={refOne}>
         {open && (
