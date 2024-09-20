@@ -10,6 +10,7 @@ import Pagination from "../../components/Pagination";
 import HeaderButton from "../../components/HeaderButton";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
+import DateRangeComp from "../../components/DateRangeComp";
 
 const Request = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -247,7 +248,16 @@ const Request = ({ permissions, include, endpoint }) => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-        <div className="flex flex-row  gap-3 p-2 mt-1 mx-8 flex-wrap md:justify-end ">
+      {include === "yes" && (
+          <HeaderButton
+            title="Grievances"
+            hasCreatePermission={hasCreatePermission}
+            onClick={handleform}
+          />
+        )}
+        <div className="flex flex-row  gap-3 p-2 mt-1 mx-8 flex-wrap md:justify-between items-center ">
+        <DateRangeComp />
+          <div className="flex flex-row flex-wrap gap-1.5">
           <SearchInput
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -261,14 +271,9 @@ const Request = ({ permissions, include, endpoint }) => {
               exportData={exportData}
             />
           )}
+          </div>
         </div>
-        {include === "yes" && (
-          <HeaderButton
-            title="Grievances"
-            hasCreatePermission={hasCreatePermission}
-            onClick={handleform}
-          />
-        )}
+       
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-2  p-3">
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">

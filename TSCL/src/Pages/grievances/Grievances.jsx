@@ -10,6 +10,7 @@ import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
+import DateRangeComp from "../../components/DateRangeComp";
 
 const Grivences = ({ permissions ,include,endpoint}) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -221,11 +222,37 @@ const Grivences = ({ permissions ,include,endpoint}) => {
     }
   };
 
+  const handleDateRangeChange = (range) => {
+    const startDate = range[0].startDate;
+    const endDate = range[0]. endDate;
+console.log(startDate);
+
+    const filteredCenters = grievance.filter((grievances) => {
+      const createdAt = new Date(grievances.createdAt);
+      return createdAt >= startDate && createdAt <= endDate;
+    });
+
+    setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+    const lastIndex = currentPage * itemsPerPage;
+    const firstIndex = lastIndex - itemsPerPage;
+
+    setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+  };
+
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-          <div className="flex flex-row  gap-3 p-2 mt-3 mx-8 flex-wrap md:justify-end ">
+        {include === 'yes' && (
+          <HeaderButton
+            title="Grievances"
+            hasCreatePermission={hasCreatePermission}
+            onClick={handleform}
+          />
+        )}
+          <div className="flex flex-row  gap-1.5 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
+          <DateRangeComp />
+          <div className="flex flex-row flex-wrap gap-1.5">
           <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
@@ -239,14 +266,9 @@ const Grivences = ({ permissions ,include,endpoint}) => {
               exportData={exportData}
             />
             )}
+            </div>
           </div>
-          {include === 'yes' && (
-          <HeaderButton
-            title="Grievances"
-            hasCreatePermission={hasCreatePermission}
-            onClick={handleform}
-          />
-        )}
+         
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
