@@ -5,6 +5,7 @@ import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { addDays } from "date-fns";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
 import HeaderButton from "../../components/HeaderButton";
@@ -24,6 +25,7 @@ const Request = ({ permissions, include, endpoint }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [report, setReport] = useState([]);
+  const [filteredGrievances, setFilteredGrievances] = useState([]);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const [complainttype, setComplainttype] = useState([]);
@@ -43,18 +45,13 @@ const Request = ({ permissions, include, endpoint }) => {
         });
         const responseData = decryptData(response.data.data);
         setReport(responseData);
-
-        const filteredCenters = responseData.filter((report) =>
-          Object.values(report).some((value) =>
+        const filteredCenters = responseData.filter((grievances) =>
+          Object.values(grievances).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+    
+        setFilteredGrievances(filteredCenters);
       } catch (error) {}
     };
 
@@ -75,7 +72,25 @@ const Request = ({ permissions, include, endpoint }) => {
     fetchgrievance();
     fetchComplaintType();
     fetchActiveStatus();
-  }, [searchValue, currentPage, selectedComplaintType]);
+  }, [ ]);
+
+  useEffect(() => {
+    const filteredCenters = report.filter((grievances) =>
+      Object.values(grievances).some((value) =>
+        value.toString().toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+
+    setFilteredGrievances(filteredCenters);
+  }, [searchValue]);
+
+  useEffect(() => {
+    const lastIndex = currentPage * itemsPerPage;
+    const firstIndex = lastIndex - itemsPerPage;
+
+    setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
+    setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
+  }, [filteredGrievances, currentPage]);
 
   const fetchActiveStatus = async () => {
     try {
@@ -103,15 +118,20 @@ const Request = ({ permissions, include, endpoint }) => {
     }
   };
 
+  const handleDateRangeChange = (range) => {
+    const startDate = range[0].startDate;
+    const endDate = range[0].endDate;
+    const filteredCenters = report.filter((grievances) => {
+      const createdAt = new Date(grievances.createdAt);
+      return createdAt >= startDate && createdAt < addDays(endDate, 1);
+    });
+  
+    setFilteredGrievances(filteredCenters);
+  };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  const filteredCenters = report.filter((report) =>
-    Object.values(report).some((value) =>
-      value.toString().toLowerCase().includes(searchValue.toLowerCase())
-    )
-  );
 
-  const currentItemsOnPage = filteredCenters
+  const currentItemsOnPage = filteredGrievances
     .slice()
     .reverse()
     .filter((report) =>
@@ -137,7 +157,7 @@ const Request = ({ permissions, include, endpoint }) => {
   const exportData = async (format) => {
     if (format === "csv") {
       // CSV Export
-      const exportedData = report.map((row) => ({
+      const exportedData = filteredGrievances.map((row) => ({
         grievance_id: row.grievance_id,
         grievance_mode: row.grievance_mode,
         complaint_type_title: row.complaint_type_title,
@@ -178,15 +198,15 @@ const Request = ({ permissions, include, endpoint }) => {
     } else if (format === "pdf") {
       try {
         const rowsPerPage = 30;
-        const totalPages = Math.ceil(report.length / rowsPerPage);
+        const totalPages = Math.ceil(filteredGrievances.length / rowsPerPage);
 
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, report.length);
-          const currentPageData = report.slice(startIndex, endIndex);
+          const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
+          const currentPageData = filteredGrievances.slice(startIndex, endIndex);
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
@@ -256,7 +276,7 @@ const Request = ({ permissions, include, endpoint }) => {
           />
         )}
         <div className="flex flex-row  gap-3 p-2 mt-1 mx-8 flex-wrap md:justify-between items-center ">
-        <DateRangeComp />
+        <DateRangeComp onChange={handleDateRangeChange} />
           <div className="flex flex-row flex-wrap gap-1.5">
           <SearchInput
             value={searchValue}
@@ -450,13 +470,13 @@ const Request = ({ permissions, include, endpoint }) => {
 
         <div className=" mt-2 mb-5 mx-7">
           <Pagination
-            Length={report.length}
+            Length={filteredGrievances.length}
             currentPage={currentPage}
             totalPages={totalPages}
             firstIndex={firstIndex}
             lastIndex={lastIndex}
             paginate={paginate}
-            hasNextPage={lastIndex >= filteredCenters.length}
+            hasNextPage={lastIndex >= filteredGrievances.length}
           />
         </div>
         <p className="text-transparent">transparent</p>

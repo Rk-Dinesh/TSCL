@@ -18,6 +18,7 @@ const DateRangeComp = ({ onChange }) => {
 
   // open close
   const [open, setOpen] = useState(false);
+  const [Errors, setErrors] = useState(null)
 
   const refOne = useRef(null);
 
@@ -40,6 +41,16 @@ const DateRangeComp = ({ onChange }) => {
     }
   };
 
+  const handleSearchClick = () => {
+    if (!range[0].startDate || !range[0].endDate) {
+     // alert("Please select a date range");
+      setErrors("please select a date range");
+      return;
+    }
+    onChange(range);
+    setErrors(null)
+  };
+
   return (
     <div className="relative">
       <input
@@ -53,17 +64,18 @@ const DateRangeComp = ({ onChange }) => {
         }
         readOnly
         className="w-60 outline-none rounded-md px-3 font-lexend py-1.5 text-center"
+        placeholder="dd/mm/yy - dd/mm/yy"
         onClick={() => setOpen((open) => !open)}
       />
+     
 
       <button
         className="bg-primary px-4 py-1.5 rounded-md text-white ml-2 "
-        onClick={() => {
-          onChange(range);
-        }}
+        onClick={handleSearchClick}
       >
         Search
       </button>
+      {Errors && (<p className="text-red-600 text-sm text-start ml-5 mt-1">{Errors}</p>)}
 
       <div ref={refOne}>
         {open && (
