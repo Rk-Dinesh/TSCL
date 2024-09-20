@@ -8,7 +8,7 @@ import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
 import HeaderButton from "../../components/HeaderButton";
 
-const Request = ({ permissions }) => {
+const Request = ({ permissions,include,endpoint }) => {
   const hasCreatePermission = permissions?.includes('create');
   const hasEditPermission = permissions?.includes('edit');
   const hasDeletePermission = permissions?.includes('delete');
@@ -30,7 +30,7 @@ const Request = ({ permissions }) => {
   useEffect(() => {
     const fetchgrievance = async () => {
       try {
-        const response = await axios.get(`${API}/new-grievance/get`, {
+        const response = await axios.get(`${API}/new-grievance/${endpoint}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -130,12 +130,13 @@ const Request = ({ permissions }) => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
+        {include === 'yes' && (
       <HeaderButton
             title="Grievances"
             hasCreatePermission={hasCreatePermission}
             onClick={handleform}
           />
-          
+        )}
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-3  p-3">
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">

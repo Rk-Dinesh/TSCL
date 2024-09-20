@@ -10,6 +10,11 @@ import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
 import GrivencesTable from "./Pages/dashboard/Tab/GrievanceTable";
+import GrievanceTab from "./Pages/grievances/GrievanceTab";
+import RequestTab from "./Pages/request/RequestTab";
+import RequestAdminTab from "./Pages/grievancesadmin/RequestAdminTab";
+import RequestJETab from "./Pages/grievanceJE/RequestJETab";
+import RequestHeadTab from "./Pages/grievanceHead/RequestHeadTab";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -124,19 +129,19 @@ function App() {
             }
           >
             <Route path="/profile" element={<Profile />} />
+            
             {memoizedFeatures["dashboard"] && (
               <>
                 <Route
                   path="/dashboard"
                   element={<Tabs permissions={memoizedFeatures["dashboard"]} />}
                 />
-                 <Route
-                  path="/dashboardview"
-                  element={<GrivencesTable />}
+                <Route path="/dashboardview" element={<GrivencesTable />} />
+                <Route path="/view" element={<ViewRequest />} />
+                <Route
+                  path="/escalation"
+                  element={<EscalationCommissioner />}
                 />
-                 <Route path="/view" element={<ViewRequest />} />
-                 <Route path="/escalation"element={<EscalationCommissioner/>}/>
-
               </>
             )}
             {memoizedFeatures["admin"] && (
@@ -223,12 +228,7 @@ function App() {
             )}
             {memoizedFeatures["grievance"] && (
               <>
-                <Route
-                  path="/grievances"
-                  element={
-                    <Grivences permissions={memoizedFeatures["grievance"]} />
-                  }
-                />
+                <Route path="/grievances" element={<GrievanceTab permissions={memoizedFeatures["grievance"]}/>} /> 
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
               </>
@@ -238,7 +238,7 @@ function App() {
                 <Route
                   path="/requestview1"
                   element={
-                    <Request permissions={memoizedFeatures["requestview1"]} />
+                    <RequestTab permissions={memoizedFeatures["requestview1"]} />
                   }
                 />
 
@@ -252,7 +252,7 @@ function App() {
                 <Route
                   path="/requestview2"
                   element={
-                    <RequestAdmin
+                    <RequestAdminTab
                       permissions={memoizedFeatures["requestview2"]}
                     />
                   }
@@ -266,7 +266,7 @@ function App() {
                 <Route
                   path="/requestview3"
                   element={
-                    <RequestJE permissions={memoizedFeatures["requestview3"]} />
+                    <RequestJETab permissions={memoizedFeatures["requestview3"]} />
                   }
                 />
                 <Route path="/view3" element={<ViewRequestJE />} />
@@ -278,7 +278,7 @@ function App() {
                 <Route
                   path="/requestview4"
                   element={
-                    <RequestHead
+                    <RequestHeadTab
                       permissions={memoizedFeatures["requestview4"]}
                     />
                   }

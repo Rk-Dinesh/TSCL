@@ -9,10 +9,10 @@ import { AiOutlineThunderbolt } from "react-icons/ai";
 import ManyTicketTransfer from "./ManyTicketTransfer";
 import BulkAssign from "./BulkAssign";
 
-const RequestAdmin = () => {
+const RequestAdmin = ({permissions,include,endpoint}) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [status, setStatus] = useState([]);
@@ -44,7 +44,7 @@ const RequestAdmin = () => {
 
   const handlerefresh = () => {
     axios
-      .get(`${API}/new-grievance/getbydept?dept_name=${dept}`, {
+      .get(`${API}/new-grievance/${endpoint}?dept_name=${dept}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -196,7 +196,7 @@ const RequestAdmin = () => {
     <Fragment>
       <div className="overflow-y-auto no-scrollbar">
         <div className="  font-lexend h-screen ">
-          <div className="bg-white h-4/5 mx-3 rounded-lg mt-8  p-3">
+          <div className="bg-white h-4/5 mx-3 rounded-lg mt-3  p-3">
             <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
               <div className="flex flex-wrap gap-3">
                 <p className="text-lg  whitespace-nowrap">View Report</p>
@@ -266,6 +266,7 @@ const RequestAdmin = () => {
                 </button>
               </div>
             </div>
+            {include == 'yes' && (
             <div className="my-2 mx-3 flex flex-wrap gap-2 ">
               <button className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
               onClick={() => setIsBulkassign(true)}
@@ -279,15 +280,18 @@ const RequestAdmin = () => {
                 Multi-Transfer
               </button>
             </div>
+            )}
             <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
               <table className="w-full mt-1 ">
                 <thead className=" border-b border-gray-300  ">
                   <tr className="">
+                    {include==='yes' && (
                     <th className="">
                       <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
                         <AiOutlineThunderbolt className="text-xl text-center text-primary" />
                       </p>
                     </th>
+                    )}
                     <th className="">
                       <p className=" mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
                         #
@@ -341,11 +345,12 @@ const RequestAdmin = () => {
                 <tbody>
                   {currentItemsOnPage.map((report, index) => (
                     <tr className=" border-b border-gray-300  " key={index}>
-                      <td className="w-4 p-4 mt-2 flex gap-2 items-center">
-                        <div className="flex items-center">
+                      {include==='yes' && (
+                      <td className=" flex gap-2 items-center justify-center ">
+                        <div className="flex items-center ">
                           <input
                             type="checkbox"
-                            className="w-4 h-4 text-dark bg-gray-800 border-gray-800 rounded"
+                            className="w-4 h-4 mt-4  text-dark bg-gray-800 border-gray-800 rounded"
                             checked={selectedRows.includes(report.grievance_id)}
                             onChange={() =>
                               handleCheckboxChange(report.grievance_id)
@@ -359,6 +364,7 @@ const RequestAdmin = () => {
                           </label>
                         </div>
                       </td>
+                     )}
                       <td className="">
                         <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
                           {firstIndex + index + 1 < 10
@@ -446,7 +452,7 @@ const RequestAdmin = () => {
               </table>
             </div>
           </div>
-          <div className=" mt-4 mb-5 mx-7">
+          <div className=" mt-1 mb-5 mx-7">
             <Pagination
               Length={report.length}
               currentPage={currentPage}

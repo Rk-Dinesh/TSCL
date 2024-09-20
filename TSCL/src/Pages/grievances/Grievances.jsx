@@ -11,7 +11,7 @@ import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
 
-const Grivences = ({ permissions }) => {
+const Grivences = ({ permissions ,include,endpoint}) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
@@ -36,7 +36,7 @@ const Grivences = ({ permissions }) => {
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/get`, {
+      .get(`${API}/new-grievance/${endpoint}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -240,11 +240,13 @@ const Grivences = ({ permissions }) => {
             />
             )}
           </div>
+          {include === 'yes' && (
           <HeaderButton
             title="Grievances"
             hasCreatePermission={hasCreatePermission}
             onClick={handleform}
           />
+        )}
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">

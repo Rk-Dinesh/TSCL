@@ -6,7 +6,7 @@ import axios from "axios";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
 
-const RequestJE = () => {
+const RequestJE = ({permissions,include,endpoint}) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -27,7 +27,7 @@ const RequestJE = () => {
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/getbyassign?assign_user=${code}`, {
+      .get(`${API}/new-grievance/${endpoint}?assign_user=${code}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -128,7 +128,7 @@ const RequestJE = () => {
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
    
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-6  p-3">
+        <div className="bg-white h-4/5 mx-3 rounded-lg mt-3  p-3">
             <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
@@ -309,7 +309,7 @@ const RequestJE = () => {
             </table>
           </div>
         </div>
-        <div className=" mt-4 mb-5 mx-7">
+        <div className=" mt-1 mb-5 mx-7">
           <Pagination 
           Length={report.length}
           currentPage={currentPage}

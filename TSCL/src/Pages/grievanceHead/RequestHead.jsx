@@ -6,7 +6,7 @@ import axios from "axios";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
 
-const RequestHead = () => {
+const RequestHead = ({permissions,include,endpoint}) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -44,7 +44,7 @@ const RequestHead = () => {
 
   useEffect(() => {
     axios
-      .get(`${API}/new-grievance/get`, {
+      .get(`${API}/new-grievance/${endpoint}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
