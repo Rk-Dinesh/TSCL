@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { API,  formatDate1 } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
+import { addDays } from "date-fns";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
+import DateRangeComp from "../../components/DateRangeComp";
 
-const RequestJE = ({permissions,include,endpoint}) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
+const RequestJE = ({ permissions, include, endpoint }) => {
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
 
   const [searchValue, setSearchValue] = useState("");
@@ -21,19 +24,19 @@ const RequestJE = ({permissions,include,endpoint}) => {
   const [itemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
-  const [status, setStatus] = useState([])
+  const [status, setStatus] = useState([]);
   const [report, setReport] = useState([]);
+  const [filteredGrievances, setFilteredGrievances] = useState([]);
   const token = sessionStorage.getItem("token");
   const code = sessionStorage.getItem("code");
   const navigate = useNavigate();
   const [selectedDoc, setSelectedDoc] = useState(null);
-  
+
   const [selected, setSelected] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedPrior, setSelectedPrior] = useState(null);
 
   const [statusColors, setStatusColors] = useState({});
-
 
   useEffect(() => {
     axios
@@ -43,28 +46,41 @@ const RequestJE = ({permissions,include,endpoint}) => {
         },
       })
       .then((response) => {
-        const responseData = decryptData(response.data.data);        
+        const responseData = decryptData(response.data.data);
         setReport(responseData);
 
-        const filteredCenters = responseData.filter((report) =>
-          Object.values(report).some((value) =>
+        const filteredCenters = responseData.filter((grievances) =>
+          Object.values(grievances).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
 
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+        setFilteredGrievances(filteredCenters);
       })
       .catch((error) => {
         console.error(error);
       });
 
-   
-    fetchActiveStatus()
-  }, [searchValue, currentPage]);
+    fetchActiveStatus();
+  }, []);
+
+  useEffect(() => {
+    const filteredCenters = report.filter((grievances) =>
+      Object.values(grievances).some((value) =>
+        value.toString().toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+
+    setFilteredGrievances(filteredCenters);
+  }, [searchValue]);
+
+  useEffect(() => {
+    const lastIndex = currentPage * itemsPerPage;
+    const firstIndex = lastIndex - itemsPerPage;
+
+    setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
+    setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
+  }, [filteredGrievances, currentPage]);
 
   const fetchActiveStatus = async () => {
     try {
@@ -83,7 +99,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
       setStatusColors(colorMapping);
     } catch (err) {
       console.error("Error fetching existing ActiveStatus:", err);
-    } 
+    }
   };
 
   const paginate = (pageNumber) => {
@@ -92,19 +108,25 @@ const RequestJE = ({permissions,include,endpoint}) => {
     }
   };
 
+  const handleDateRangeChange = (range) => {
+    const startDate = range[0].startDate;
+    const endDate = range[0].endDate;
+    const filteredCenters = report.filter((grievances) => {
+      const createdAt = new Date(grievances.createdAt);
+      return createdAt >= startDate && createdAt < addDays(endDate, 1);
+    });
+
+    setFilteredGrievances(filteredCenters);
+    toast.success("Grievance filtered");
+  };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  const filteredCenters = report.filter((report) =>
-    Object.values(report).some((value) =>
-      value.toString().toLowerCase().includes(searchValue.toLowerCase())
-    )
-  );
 
   const handleComplaintTypeClick = (Type) => {
     setSelected(Type);
     setSelectedStatus(null);
     setSelectedPrior(null);
-    paginate(1)
+    paginate(1);
   };
   const handleStatus = (status) => {
     if (status === "All") {
@@ -115,25 +137,27 @@ const RequestJE = ({permissions,include,endpoint}) => {
     paginate(1);
   };
   const handlePriority = (prior) => {
-    if(prior === 'All') {
+    if (prior === "All") {
       setSelectedPrior(null);
-    }else{
+    } else {
       setSelectedPrior(prior);
     }
-    paginate(1)
-  }
+    paginate(1);
+  };
 
+  const currentItemsOnPage = filteredGrievances
+    .slice()
+    .reverse()
+    .filter((report) => {
+      const complaintTypeMatch = selected === "All" ? true : "";
+      const statusMatch =
+        selectedStatus === null ? true : report.status === selectedStatus;
+      const priorityMatch =
+        selectedPrior === null ? true : report.priority === selectedPrior;
 
-  const currentItemsOnPage = filteredCenters.slice().reverse()
-  .filter((report) => {
-    const complaintTypeMatch = selected === "All" ? true : '';
-    const statusMatch = selectedStatus === null ? true : report.status === selectedStatus;
-    const priorityMatch = selectedPrior === null ? true : report.priority === selectedPrior;
-   
-    return complaintTypeMatch && statusMatch && priorityMatch ;
-  })
-  .slice(firstIndex, lastIndex);
-
+      return complaintTypeMatch && statusMatch && priorityMatch;
+    })
+    .slice(firstIndex, lastIndex);
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -142,7 +166,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
   const exportData = async (format) => {
     if (format === "csv") {
       // CSV Export
-      const exportedData = report.map((row) => ({
+      const exportedData = filteredGrievances.map((row) => ({
         grievance_id: row.grievance_id,
         grievance_mode: row.grievance_mode,
         complaint_type_title: row.complaint_type_title,
@@ -183,15 +207,21 @@ const RequestJE = ({permissions,include,endpoint}) => {
     } else if (format === "pdf") {
       try {
         const rowsPerPage = 30;
-        const totalPages = Math.ceil(report.length / rowsPerPage);
+        const totalPages = Math.ceil(filteredGrievances.length / rowsPerPage);
 
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, report.length);
-          const currentPageData = report.slice(startIndex, endIndex);
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            filteredGrievances.length
+          );
+          const currentPageData = filteredGrievances.slice(
+            startIndex,
+            endIndex
+          );
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
@@ -253,8 +283,10 @@ const RequestJE = ({permissions,include,endpoint}) => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-      <div className="flex flex-row  gap-3 p-2 mt-1 mx-8 flex-wrap md:justify-end ">
-          <SearchInput
+        <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
+          <DateRangeComp onChange={handleDateRangeChange} />
+          <div className="flex flex-row flex-wrap gap-1.5">
+            <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search Grievances"
@@ -262,62 +294,50 @@ const RequestJE = ({permissions,include,endpoint}) => {
 
             {hasDownloadPermission && (
               <DocumentDownload
-              selectedDoc={selectedDoc}
-              onChange={setDocs}
-              exportData={exportData}
-            />
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
             )}
           </div>
+        </div>
         <div className="bg-white h-4/5 mx-3 rounded-lg mt-2  p-3">
-            <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
+          <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
             </div>
             <div className="flex flex-wrap gap-1.5">
-            
-            <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
-                  onChange={(e) =>
-                    handlePriority(e.target.value)
-                  }
+              <div className="flex gap-2 flex-wrap">
+                <select
+                  className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
+                  onChange={(e) => handlePriority(e.target.value)}
                   value={selectedPrior || ""}
                 >
-                  <option hidden >
-                   Priority
-                  </option>
-                  <option value='All' >
-                   All
-                  </option>
+                  <option hidden>Priority</option>
+                  <option value="All">All</option>
                   <option value="High">High</option>
                   <option value="Medium">Medium</option>
                   <option value="Low">Low</option>
                 </select>
-                
               </div>
               <div className="flex gap-2 flex-wrap">
-                <select className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
-                 onChange={(e) =>
-                  handleStatus(e.target.value)
-                }
-                value={selectedStatus || ""}
+                <select
+                  className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
+                  onChange={(e) => handleStatus(e.target.value)}
+                  value={selectedStatus || ""}
                 >
-                  <option hidden >
-                   Status
-                  </option>
-                  <option value='All' >
-                  All
-                  </option>
+                  <option hidden>Status</option>
+                  <option value="All">All</option>
                   {status &&
-                          status.map((option) => (
-                            <option
-                              key={option.status_name}
-                              value={option.status_name}
-                            >
-                              {option.status_name}
-                            </option>
-                          ))}
+                    status.map((option) => (
+                      <option
+                        key={option.status_name}
+                        value={option.status_name}
+                      >
+                        {option.status_name}
+                      </option>
+                    ))}
                 </select>
-                
               </div>
               <button
                 className={`w-20 py-1.5 ${
@@ -329,16 +349,15 @@ const RequestJE = ({permissions,include,endpoint}) => {
               >
                 All
               </button>
-              
             </div>
           </div>
           <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
-                <th className="">
-                  <p className=" mx-6 my-2 font-lexend  font-medium whitespace-nowrap">
-                      # 
+                  <th className="">
+                    <p className=" mx-6 my-2 font-lexend  font-medium whitespace-nowrap">
+                      #
                     </p>
                   </th>
                   <th>
@@ -348,7 +367,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
                   </th>
                   <th>
                     <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                      Complaint 
+                      Complaint
                     </p>
                   </th>
                   <th>
@@ -363,7 +382,7 @@ const RequestJE = ({permissions,include,endpoint}) => {
                   </th>
                   <th>
                     <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                     Priority
+                      Priority
                       <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -372,28 +391,28 @@ const RequestJE = ({permissions,include,endpoint}) => {
                       Status <RiExpandUpDownLine />
                     </p>
                   </th>
-                  
                 </tr>
               </thead>
               <tbody>
                 {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
                     <td className="">
-                    <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowraptext-gray-700">
-                    {firstIndex + index + 1 < 10
-                            ? `0${firstIndex + index + 1}`
-                            : firstIndex + index + 1}
-                    </div>
-                  </td>
+                      <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowraptext-gray-700">
+                        {firstIndex + index + 1 < 10
+                          ? `0${firstIndex + index + 1}`
+                          : firstIndex + index + 1}
+                      </div>
+                    </td>
                     <td>
-                      <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
-                       onClick={() =>
-                        navigate(`/view3`, {
-                          state: {
-                            grievanceId: report.grievance_id,
-                          },
-                        })
-                      }
+                      <p
+                        className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
+                        onClick={() =>
+                          navigate(`/view3`, {
+                            state: {
+                              grievanceId: report.grievance_id,
+                            },
+                          })
+                        }
                       >
                         {report.grievance_id}
                       </p>
@@ -442,7 +461,6 @@ const RequestJE = ({permissions,include,endpoint}) => {
                         {report.status}
                       </p>
                     </td>
-                   
                   </tr>
                 ))}
               </tbody>
@@ -450,16 +468,16 @@ const RequestJE = ({permissions,include,endpoint}) => {
           </div>
         </div>
         <div className=" mt-1 mb-5 mx-7">
-          <Pagination 
-          Length={report.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
+          <Pagination
+            Length={filteredGrievances.length}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            firstIndex={firstIndex}
+            lastIndex={lastIndex}
+            paginate={paginate}
+            hasNextPage={lastIndex >= filteredGrievances.length}
           />
-          </div>
+        </div>
       </div>
     </div>
   );

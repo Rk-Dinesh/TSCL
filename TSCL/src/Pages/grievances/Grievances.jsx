@@ -6,6 +6,7 @@ import axios from "axios";
 import decryptData from "../../Decrypt";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
 import { addDays } from "date-fns";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
@@ -46,7 +47,8 @@ const Grivences = ({ permissions, include, endpoint }) => {
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
-        setGrievance(responseData);
+        const reverseData = responseData.reverse()
+        setGrievance(reverseData);
       })
       .catch((error) => {
         console.error(error);
@@ -108,6 +110,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
     });
   
     setFilteredGrievances(filteredCenters);
+    toast.success("Grievances filtered")
   };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -260,7 +263,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
             </div>
           </div>
 
-          <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar">
+          <div className="bg-white mx-4 rounded-lg my-2 py-3 overflow-x-auto h-3/5 no-scrollbar">
             <table className="w-full mt-2">
               <thead className="border-b border-gray-300">
                 <tr className="">

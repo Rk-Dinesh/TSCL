@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { API, formatDate } from "../../Host";
+import { API,  formatDate1 } from "../../Host";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
+import { addDays } from "date-fns";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
+import DateRangeComp from "../../components/DateRangeComp";
 
 const RequestHead = ({permissions,include,endpoint}) => {
   const hasCreatePermission = permissions?.includes('create');
@@ -31,6 +34,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
   const [ward, setWard] = useState([]);
   const [Street, setStreet] = useState([]);
   const [report, setReport] = useState([]);
+  const [filteredGrievances, setFilteredGrievances] = useState([]);
   const [dataUsers, setDataUsers] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
 
@@ -65,17 +69,13 @@ const RequestHead = ({permissions,include,endpoint}) => {
 
         setReport(responseData);
 
-        const filteredCenters = responseData.filter((report) =>
-          Object.values(report).some((value) =>
+        const filteredCenters = responseData.filter((grievances) =>
+          Object.values(grievances).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+    
+        setFilteredGrievances(filteredCenters);
       })
       .catch((error) => {
         console.error(error);
@@ -86,7 +86,25 @@ const RequestHead = ({permissions,include,endpoint}) => {
     fetchActiveStatus();
     fetchComplaintType();
     fetchDeptUser();
-  }, [searchValue, currentPage]);
+  }, [ ]);
+
+  useEffect(() => {
+    const filteredCenters = report.filter((grievances) =>
+      Object.values(grievances).some((value) =>
+        value.toString().toLowerCase().includes(searchValue.toLowerCase())
+      )
+    );
+
+    setFilteredGrievances(filteredCenters);
+  }, [searchValue]);
+
+  useEffect(() => {
+    const lastIndex = currentPage * itemsPerPage;
+    const firstIndex = lastIndex - itemsPerPage;
+
+    setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
+    setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
+  }, [filteredGrievances, currentPage]);
 
   const fetchZone = async () => {
     try {
@@ -174,13 +192,19 @@ const RequestHead = ({permissions,include,endpoint}) => {
     }
   };
 
+  const handleDateRangeChange = (range) => {
+    const startDate = range[0].startDate;
+    const endDate = range[0].endDate;
+    const filteredCenters = report.filter((grievances) => {
+      const createdAt = new Date(grievances.createdAt);
+      return createdAt >= startDate && createdAt < addDays(endDate, 1);
+    });
+  
+    setFilteredGrievances(filteredCenters);
+    toast.success("Grievance filtered")
+  };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  const filteredCenters = report.filter((report) =>
-    Object.values(report).some((value) =>
-      value.toString().toLowerCase().includes(searchValue.toLowerCase())
-    )
-  );
 
   const handleComplaintTypeClick = (Type) => {
     setSelected(Type);
@@ -308,7 +332,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
     paginate(1);
   };
 
-  const currentItemsOnPage = filteredCenters
+  const currentItemsOnPage = filteredGrievances
     .slice()
     .reverse()
     .filter((report) => {
@@ -364,7 +388,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
     const exportData = async (format) => {
       if (format === "csv") {
         // CSV Export
-        const exportedData = report.map((row) => ({
+        const exportedData = filteredGrievances.map((row) => ({
           grievance_id: row.grievance_id,
           grievance_mode: row.grievance_mode,
           complaint_type_title: row.complaint_type_title,
@@ -405,15 +429,15 @@ const RequestHead = ({permissions,include,endpoint}) => {
       } else if (format === "pdf") {
         try {
           const rowsPerPage = 30;
-          const totalPages = Math.ceil(report.length / rowsPerPage);
+          const totalPages = Math.ceil(filteredGrievances.length / rowsPerPage);
   
           const pdf = new jsPDF("l", "mm", "a4");
           let yOffset = 0;
   
           for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
             const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, report.length);
-            const currentPageData = report.slice(startIndex, endIndex);
+            const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
+            const currentPageData = filteredGrievances.slice(startIndex, endIndex);
   
             const tableData = currentPageData.map((row) => [
               row.grievance_id,
@@ -475,7 +499,9 @@ const RequestHead = ({permissions,include,endpoint}) => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-      <div className="flex flex-row  gap-2 p-2 mt-4 mx-8 flex-wrap md:justify-end ">
+      <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
+        <DateRangeComp onChange={handleDateRangeChange} />
+          <div className="flex flex-row flex-wrap gap-1.5">
           <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
@@ -489,6 +515,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
               exportData={exportData}
             />
             )}
+            </div>
           </div>
         <div className="flex flex-wrap gap-1.5 mt-1 mx-4">
           <button
@@ -792,7 +819,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
                     </td>
                     <td>
                       <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                        {formatDate(report.createdAt)}
+                        {formatDate1(report.createdAt)}
                       </p>
                     </td>
                     <td>
@@ -863,13 +890,13 @@ const RequestHead = ({permissions,include,endpoint}) => {
         </div>
         <div className=" my-3 mb-5 mx-7">
           <Pagination
-            Length={report.length}
+            Length={filteredGrievances.length}
             currentPage={currentPage}
             totalPages={totalPages}
             firstIndex={firstIndex}
             lastIndex={lastIndex}
             paginate={paginate}
-            hasNextPage={lastIndex >= filteredCenters.length}
+            hasNextPage={lastIndex >= filteredGrievances.length}
           />
         </div>
         <p className="text-transparent">transparent</p>

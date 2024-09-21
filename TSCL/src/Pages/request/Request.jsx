@@ -5,6 +5,7 @@ import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
 import { addDays } from "date-fns";
 import decryptData from "../../Decrypt";
 import Pagination from "../../components/Pagination";
@@ -127,6 +128,7 @@ const Request = ({ permissions, include, endpoint }) => {
     });
   
     setFilteredGrievances(filteredCenters);
+    toast.success("Grievance filtered")
   };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -275,7 +277,7 @@ const Request = ({ permissions, include, endpoint }) => {
             onClick={handleform}
           />
         )}
-        <div className="flex flex-row  gap-3 p-2 mt-1 mx-8 flex-wrap md:justify-between items-center ">
+        <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
         <DateRangeComp onChange={handleDateRangeChange} />
           <div className="flex flex-row flex-wrap gap-1.5">
           <SearchInput
@@ -294,7 +296,7 @@ const Request = ({ permissions, include, endpoint }) => {
           </div>
         </div>
        
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-2  p-3">
+        <div className="bg-white h-4/5 mx-4 rounded-lg mt-1  p-3">
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>

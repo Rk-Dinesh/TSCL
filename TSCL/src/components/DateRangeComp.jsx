@@ -70,7 +70,7 @@ const DateRangeComp = ({ onChange }) => {
      
 
       <button
-        className="bg-primary px-4 py-1.5 rounded-md text-white ml-2 "
+        className="bg-primary hover:bg-blue-400 px-4 py-1.5 rounded-md text-white ml-2  "
         onClick={handleSearchClick}
       >
         Search
