@@ -20,7 +20,7 @@ const NotFound = () => {
             to={"/dashboard"}
             className="inline-flex text-green-700   font-medium rounded-lg text-lg px-5 py-2.5 text-center  my-4"
           >
-            Back to Homepage
+            Back to Homepage 
           </Link>
         </div>
       </div>
