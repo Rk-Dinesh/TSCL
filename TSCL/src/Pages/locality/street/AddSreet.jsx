@@ -101,8 +101,8 @@ const AddStreet = (props) => {
                 onChange={(e) => setWardName(e.target.value)}
               >
                 <option value="">Select Street</option>
-                {ExistingWards.map((ward) => (
-                  <option key={ward.ward_id} value={ward.ward_name}>
+                {ExistingWards.map((ward,index) => (
+                  <option key={index} value={ward.ward_name}>
                     {ward.ward_name}
                   </option>
                 ))}

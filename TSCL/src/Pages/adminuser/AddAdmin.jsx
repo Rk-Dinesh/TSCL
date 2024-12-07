@@ -147,8 +147,8 @@ const AddAdmin = (props) => {
                 onChange={handleEmployeeChange}
               >
                 <option value="">Employee Name</option>
-                {ExistingEmployees.map((emp) => (
-                  <option key={emp.emp_id} value={emp.emp_name}>
+                {ExistingEmployees.map((emp, index) => (
+                  <option key={index} value={emp.emp_name}>
                     {emp.emp_name}
                   </option>
                 ))}
@@ -292,8 +292,8 @@ const AddAdmin = (props) => {
                   onChange={handleRoleChange}
                 >
                   <option value="">Role</option>
-                  {ExistingRoles.map((role) => (
-                    <option key={role.role_id} value={role.role_name}>
+                  {ExistingRoles.map((role, index) => (
+                    <option key={index} value={role.role_name}>
                       {role.role_name}
                     </option>
                   ))}
@@ -344,8 +344,8 @@ const AddAdmin = (props) => {
                   {...register("zone_name")}
                 >
                   <option value="">Zone</option>
-                  {isZone.map((zones) => (
-                    <option key={zones.zone_id} value={zones.zone_name}>
+                  {isZone.map((zones, index) => (
+                    <option key={index} value={zones.zone_name}>
                       {zones.zone_name}
                     </option>
                   ))}
@@ -374,9 +374,9 @@ const AddAdmin = (props) => {
                   size={4}
                 >
                   <option disabled>Ward Name</option>
-                  {filteredWards.map((wards) => (
+                  {filteredWards.map((wards, index) => (
                     <option
-                      key={wards.ward_id}
+                      key={index}
                       value={wards.ward_name}
                       className="my-0.5 "
                     >

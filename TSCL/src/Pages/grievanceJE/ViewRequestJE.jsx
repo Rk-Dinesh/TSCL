@@ -27,7 +27,7 @@ const ViewRequestJE = () => {
   const location = useLocation();
   // const grievanceId = location.state?.grievanceId;
   const queryParams = new URLSearchParams(location.search);
-  const grievanceId = queryParams.get('grievanceId');
+  const grievanceId = queryParams.get("grievanceId");
 
   const token = localStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
@@ -329,7 +329,7 @@ const ViewRequestJE = () => {
             );
             if (response2.status === 200) {
               toast.success("Attachment Uploaded Successfully");
-              console.log(response2.data);
+
               setFiles([]);
             }
           } catch (error) {
@@ -378,9 +378,9 @@ const ViewRequestJE = () => {
                           </option>
 
                           {dataStatus &&
-                            dataStatus.map((option) => (
+                            dataStatus.map((option, index) => (
                               <option
-                                key={option.status_name}
+                                key={index}
                                 value={option.status_name}
                                 disabled={
                                   option.status_name.toLowerCase() ===
@@ -466,11 +466,11 @@ const ViewRequestJE = () => {
                       <p className="col-span-2 capitalize">: {data.pincode}</p>
                     </div>
                     <div className="grid grid-cols-4">
-                    <p className="col-span-2">Complaint Address: </p>
-                    <p className="col-start-1 col-span-4 mt-2 capitalize">
-                      {data.complaintaddress}
-                    </p>
-                  </div>
+                      <p className="col-span-2">Complaint Address: </p>
+                      <p className="col-start-1 col-span-4 mt-2 capitalize">
+                        {data.complaintaddress}
+                      </p>
+                    </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Description: </p>
                       <p className="col-start-1 col-span-4 mt-2 capitalize">

@@ -98,8 +98,6 @@ const AddComplaint = (props) => {
         created_by_user: localStorage.getItem("name"),
       };
 
-      // console.log(formData);
-
       try {
         const token = localStorage.getItem("token");
         const response = await axios.post(`${API}/complaint/post`, formData, {
@@ -203,8 +201,8 @@ const AddComplaint = (props) => {
                             id="dept_name"
                           >
                             <option value="">Select an Department</option>
-                            {ExistingDept.map((dept) => (
-                              <option key={dept.dept_id} value={dept.dept_name}>
+                            {ExistingDept.map((dept, index) => (
+                              <option key={index} value={dept.dept_name}>
                                 {dept.dept_name}
                               </option>
                             ))}
@@ -347,8 +345,8 @@ const AddComplaint = (props) => {
                             id="role_l1"
                           >
                             <option value="">Select an Role</option>
-                            {ExistingRoles.map((role) => (
-                              <option key={role.role_id} value={role.role_name}>
+                            {ExistingRoles.map((role, index) => (
+                              <option key={index} value={role.role_name}>
                                 {role.role_name}
                               </option>
                             ))}
@@ -392,8 +390,8 @@ const AddComplaint = (props) => {
                             id="role_l2"
                           >
                             <option value="">Select an Role</option>
-                            {ExistingRoles.map((role) => (
-                              <option key={role.role_id} value={role.role_name}>
+                            {ExistingRoles.map((role, index) => (
+                              <option key={index} value={role.role_name}>
                                 {role.role_name}
                               </option>
                             ))}
@@ -437,8 +435,8 @@ const AddComplaint = (props) => {
                             id="role_l3"
                           >
                             <option value="">Select an Role</option>
-                            {ExistingRoles.map((role) => (
-                              <option key={role.role_id} value={role.role_name}>
+                            {ExistingRoles.map((role, index) => (
+                              <option key={index} value={role.role_name}>
                                 {role.role_name}
                               </option>
                             ))}

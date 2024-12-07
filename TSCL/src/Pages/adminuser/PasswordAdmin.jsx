@@ -45,8 +45,6 @@ const PasswordAdmin = (props) => {
       ...data,
     };
 
-    console.log(formData);
-
     try {
       const response = await axios.post(
         `${API}/user/userforgotpassword?phone=${props.phoneID}`,

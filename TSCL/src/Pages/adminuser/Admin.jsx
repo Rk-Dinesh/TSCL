@@ -30,7 +30,7 @@ const Admin = ({ permissions }) => {
   const hasDownloadPermission = permissions?.includes("download");
   const [editModal, setEditModal] = useState(false);
   const [isChange, setIsChange] = useState(false);
-  const [phoneID, setPhoneID] = useState(null)
+  const [phoneID, setPhoneID] = useState(null);
   const [adminId, setAdminId] = useState(null);
 
   const [isDeleteModal, setIsDeleteModal] = useState(false);
@@ -75,7 +75,7 @@ const Admin = ({ permissions }) => {
   const handlerefresh = () => {
     axios
       .get(API_ENDPOINTS.GET_ADMIN.url, {
-        headers:API_ENDPOINTS.GET_ADMIN.headers,
+        headers: API_ENDPOINTS.GET_ADMIN.headers,
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
@@ -112,7 +112,7 @@ const Admin = ({ permissions }) => {
 
   const togglePassModal = () => {
     setIsChange(!isChange);
-    setPhoneID(null)
+    setPhoneID(null);
   };
 
   const fetchExistingRoles = async () => {
@@ -129,9 +129,12 @@ const Admin = ({ permissions }) => {
 
   const fetchExistingEmployees = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.url, {
-        headers: API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.headers,
-      });
+      const response = await axios.get(
+        API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.url,
+        {
+          headers: API_ENDPOINTS.GET_EMPLOYEE_ADMINACTIVE.headers,
+        }
+      );
       const responseData = decryptData(response.data.data);
       setExistingEmployees(responseData);
     } catch (error) {
@@ -176,7 +179,8 @@ const Admin = ({ permissions }) => {
     .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {const DELETE_ADMIN = API_ENDPOINTS.DELETE_ADMIN(deleteId)
+    try {
+      const DELETE_ADMIN = API_ENDPOINTS.DELETE_ADMIN(deleteId);
       await axios.delete(DELETE_ADMIN.url, {
         headers: DELETE_ADMIN.headers,
       });
@@ -207,21 +211,23 @@ const Admin = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(API_ENDPOINTS.UPLOAD_ADMIN.url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.UPLOAD_ADMIN.url,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
-        // console.log("File uploaded successfully");
         setButtonText("Bulk Upload");
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
       } else {
         toast.error("Data failed to Upload");
-        //console.log("File upload failed");
       }
     } catch (error) {
       console.log(error);
@@ -478,26 +484,26 @@ const Admin = ({ permissions }) => {
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
                                 <div>
-                                <button
-                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                  onClick={() => {
-                                    setEditModal(true);
-                                    setAdminId(admins.user_id);
-                                    toggleDropdown();
-                                  }}
-                                >
-                                  Edit
-                                </button>
-                                 <button
-                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                  onClick={() => {
-                                    setIsChange(true);
-                                    setPhoneID(admins.phone);
-                                    toggleDropdown();
-                                  }}
-                                >
-                                  Password
-                                </button>
+                                  <button
+                                    className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                    onClick={() => {
+                                      setEditModal(true);
+                                      setAdminId(admins.user_id);
+                                      toggleDropdown();
+                                    }}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                    onClick={() => {
+                                      setIsChange(true);
+                                      setPhoneID(admins.phone);
+                                      toggleDropdown();
+                                    }}
+                                  >
+                                    Password
+                                  </button>
                                 </div>
                               )}
                               {hasDeletePermission && (
@@ -563,10 +569,7 @@ const Admin = ({ permissions }) => {
         />
       )}
       {isChange && (
-        <PasswordAdmin
-        togglePassModal={togglePassModal}
-        phoneID={phoneID}
-        />
+        <PasswordAdmin togglePassModal={togglePassModal} phoneID={phoneID} />
       )}
     </Fragment>
   );

@@ -543,8 +543,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               <option hidden>Department</option>
               <option value="All">All</option>
               {department &&
-                department.map((option) => (
-                  <option key={option.dept_id} value={option.dept_name}>
+                department.map((option,index) => (
+                  <option key={index} value={option.dept_name}>
                     {option.dept_name}
                   </option>
                 ))}
@@ -560,9 +560,9 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               <option hidden>Complaint</option>
               <option value="All">All</option>
               {Complaint &&
-                Complaint.map((option) => (
+                Complaint.map((option,index) => (
                   <option
-                    key={option.complaint_id}
+                    key={index}
                     value={option.complaint_type_title}
                   >
                     {option.complaint_type_title}
@@ -580,8 +580,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               <option hidden>Zone</option>
               <option value="All">All</option>
               {zone &&
-                zone.map((option) => (
-                  <option key={option.zone_id} value={option.zone_name}>
+                zone.map((option,index) => (
+                  <option key={index} value={option.zone_name}>
                     {option.zone_name}
                   </option>
                 ))}
@@ -599,8 +599,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               {ward &&
                 ward
                   .filter((ward) => ward.zone_name === selectedZone)
-                  .map((option) => (
-                    <option key={option.ward_id} value={option.ward_name}>
+                  .map((option,index) => (
+                    <option key={index} value={option.ward_name}>
                       {option.ward_name}
                     </option>
                   ))}
@@ -618,8 +618,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               {Street &&
                 Street.filter(
                   (streets) => streets.ward_name === selectedWard
-                ).map((option) => (
-                  <option key={option.street_id} value={option.street_name}>
+                ).map((option,index) => (
+                  <option key={index} value={option.street_name}>
                     {option.street_name}
                   </option>
                 ))}
@@ -646,8 +646,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                     Yet to be Assigned
                   </option>
                   {dataUsers &&
-                    dataUsers.map((option) => (
-                      <option key={option.user_id} value={option.user_name}>
+                    dataUsers.map((option,index) => (
+                      <option key={index} value={option.user_name}>
                         {option.user_name}
                       </option>
                     ))}
@@ -676,8 +676,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                   <option hidden>Status</option>
                   <option value="All">All</option>
                   {status &&
-                    status.map((option) => (
-                      <option key={option.status_id} value={option.status_name}>
+                    status.map((option,index) => (
+                      <option key={index} value={option.status_name}>
                         {option.status_name}
                       </option>
                     ))}
@@ -692,9 +692,9 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                   <option hidden>Complaint Type</option>
                   <option value="All">All</option>
                   {Complainttype &&
-                    Complainttype.map((option) => (
+                    Complainttype.map((option,index) => (
                       <option
-                        key={option.compliant_type_id}
+                        key={index}
                         value={option.complaint_type}
                       >
                         {option.complaint_type}

@@ -48,8 +48,6 @@ const AddUser = (props) => {
       verification_status: "active",
     };
 
-    // console.log(formData);
-
     const token = localStorage.getItem("token");
 
     try {

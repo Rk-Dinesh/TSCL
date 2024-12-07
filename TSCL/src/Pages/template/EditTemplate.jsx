@@ -157,8 +157,8 @@ const EditTemplate = (props) => {
             >
               <option value="">Select Department</option>
               {Department.data &&
-                Department.data.map((option) => (
-                  <option key={option.dept_id} value={option.dept_name}>
+                Department.data.map((option,index) => (
+                  <option key={index} value={option.dept_name}>
                     {option.dept_name}
                   </option>
                 ))}
@@ -177,8 +177,8 @@ const EditTemplate = (props) => {
             >
               <option value="">Select Complaint Type</option>
               {filteredComplaints &&
-                filteredComplaints.map((option) => (
-                  <option key={option.complaint_id} value={option.complaint_type_title}>
+                filteredComplaints.map((option,index) => (
+                  <option key={index} value={option.complaint_type_title}>
                     {option.complaint_type_title}
                   </option>
                 ))}

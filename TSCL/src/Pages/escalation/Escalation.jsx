@@ -193,7 +193,6 @@ const Escalation = ({ permissions }) => {
       axios
         .post(API_ENDPOINTS.POST_ESCALATION.url)
         .then((response) => {
-          //console.log(response.data);
           handlerefresh();
           toast.success("Manual Escalation Done!!!");
         })

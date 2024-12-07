@@ -312,7 +312,7 @@ const GrievanceForm = () => {
       priority: getPriorityFromComplaintType(data.complaint_type_title),
     };
 
-    console.log(grievanceDetails);
+   
 
     try {
       const response1 = await axios.post(
@@ -541,9 +541,9 @@ const GrievanceForm = () => {
                       </option>
 
                       {Complainttype.data &&
-                        Complainttype.data.map((option) => (
+                        Complainttype.data.map((option,index) => (
                           <option
-                            key={option.compliant_type_id}
+                            key={index}
                             value={option.complaint_type}
                           >
                             {option.complaint_type}
@@ -574,8 +574,8 @@ const GrievanceForm = () => {
                         Select a Department
                       </option>
                       {Department.data &&
-                        Department.data.map((option) => (
-                          <option key={option.dept_id} value={option.dept_name}>
+                        Department.data.map((option,index) => (
+                          <option key={index} value={option.dept_name}>
                             {option.dept_name}
                           </option>
                         ))}
@@ -605,9 +605,9 @@ const GrievanceForm = () => {
                       </option>
 
                       {filteredComplaints &&
-                        filteredComplaints.map((option) => (
+                        filteredComplaints.map((option,index) => (
                           <option
-                            key={option.complaint_id}
+                            key={index}
                             value={option.complaint_type_title}
                           >
                             {option.complaint_type_title}
@@ -671,8 +671,8 @@ const GrievanceForm = () => {
                       </option>
 
                       {Ward.data &&
-                        Ward.data.map((option) => (
-                          <option key={option.ward_id} value={option.ward_name}>
+                        Ward.data.map((option,index) => (
+                          <option key={index} value={option.ward_name}>
                             {option.ward_name}
                           </option>
                         ))}
@@ -702,9 +702,9 @@ const GrievanceForm = () => {
                       </option>
 
                       {filteredStreets &&
-                        filteredStreets.map((option) => (
+                        filteredStreets.map((option,index) => (
                           <option
-                            key={option.street_id}
+                            key={index}
                             value={option.street_name}
                           >
                             {option.street_name}
@@ -816,9 +816,9 @@ const GrievanceForm = () => {
                       </option>
 
                       {filteredTemplates &&
-                        filteredTemplates.map((option) => (
+                        filteredTemplates.map((option,index) => (
                           <option
-                            key={option.temp_id}
+                            key={index}
                             value={option.temp_id}
                           >
                             {option.temp_title}

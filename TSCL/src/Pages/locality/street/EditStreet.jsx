@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -9,27 +9,31 @@ import SaveCancel from "../../../components/SavaCancel";
 import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
 
 const StreetSchema = yup.object().shape({
-  ward_name: yup.string().test('not-select', 'Please select a ward', (value) => value !== '' && value !== 'Select Street'),
+  ward_name: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select a ward",
+      (value) => value !== "" && value !== "Select Street"
+    ),
   street_name: yup.string().required("street_name is required"),
   status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "Please select an Status",
+      (value) => value !== "" && value !== "Status"
+    ),
 });
 
-
 const EditStreet = (props) => {
-  const {ExistingWards,streetId} = props;
+  const { ExistingWards, streetId } = props;
 
-  
-  const [zoneId, setZoneId] = useState(null)
-  const [wardId, setWardId] = useState(null)
-  const [zoneName, setZoneName] = useState(null)
-  const [WardName, setWardName] = useState(null)
- 
+  const [zoneId, setZoneId] = useState(null);
+  const [wardId, setWardId] = useState(null);
+  const [zoneName, setZoneName] = useState(null);
+  const [WardName, setWardName] = useState(null);
+
   const {
     register,
     formState: { errors },
@@ -43,16 +47,16 @@ const EditStreet = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {const GETBYID_STREET= API_ENDPOINTS.FETCH_STREET(streetId)
+      try {
+        const GETBYID_STREET = API_ENDPOINTS.FETCH_STREET(streetId);
         const response = await axios.get(GETBYID_STREET.url, {
           headers: GETBYID_STREET.headers,
         });
         const data = decryptData(response.data.data);
-        
-        
+
         setWardName(data.ward_name);
-        setValue("ward_name",data.ward_name)
-        setValue("street_name", data.street_name); 
+        setValue("ward_name", data.ward_name);
+        setValue("street_name", data.street_name);
         setValue("status", data.status);
       } catch (error) {
         console.error("Error fetching data", error);
@@ -67,8 +71,8 @@ const EditStreet = (props) => {
         (ward) => ward.ward_name === WardName
       );
       if (selectedWard) {
-        setZoneId( selectedWard.zone_id);
-        setWardId( selectedWard.ward_id);
+        setZoneId(selectedWard.zone_id);
+        setWardId(selectedWard.ward_id);
         setZoneName(selectedWard.zone_name);
       }
     }
@@ -77,18 +81,15 @@ const EditStreet = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      zone_id:zoneId,
-      ward_id:wardId,
-      zone_name:zoneName,
-      
+      zone_id: zoneId,
+      ward_id: wardId,
+      zone_name: zoneName,
     };
 
-    // console.log(formData);
-
     try {
-    const UPDATE_STREET= API_ENDPOINTS.UPDATE_STREET(streetId)
-      const response = await axios.post(UPDATE_STREET.url, formData,{
-        headers:UPDATE_STREET.headers,
+      const UPDATE_STREET = API_ENDPOINTS.UPDATE_STREET(streetId);
+      const response = await axios.post(UPDATE_STREET.url, formData, {
+        headers: UPDATE_STREET.headers,
       });
 
       if (response.status === 200) {
@@ -121,7 +122,7 @@ const EditStreet = (props) => {
                 className="block text-gray-900 text-base font-normal mb-2"
                 htmlFor="ward_name"
               >
-               Ward Name
+                Ward Name
               </label>
               <select
                 className="appearance-none border rounded-lg w-full py-1.5 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
@@ -129,9 +130,11 @@ const EditStreet = (props) => {
                 {...register("ward_name")}
                 onChange={(e) => setWardName(e.target.value)}
               >
-                <option value={WardName} disabled>{WardName}</option>
-                {ExistingWards.map((ward) => (
-                  <option key={ward.ward_id} value={ward.ward_name}>
+                <option value={WardName} disabled>
+                  {WardName}
+                </option>
+                {ExistingWards.map((ward, index) => (
+                  <option key={index} value={ward.ward_name}>
                     {ward.ward_name}
                   </option>
                 ))}
@@ -166,19 +169,22 @@ const EditStreet = (props) => {
               >
                 Status:
               </label>
-              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
-              id="status"
-               {...register("status")}
-               >
-                <option value="" hidden>Status</option>
+              <select
+                className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+                id="status"
+                {...register("status")}
+              >
+                <option value="" hidden>
+                  Status
+                </option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>
               {errors.status && (
-              <p className="text-red-500 text-xs text-center mb-3 ">
-                {errors.status.message}
-              </p>
-            )}
+                <p className="text-red-500 text-xs text-center mb-3 ">
+                  {errors.status.message}
+                </p>
+              )}
             </div>
           </div>
           <SaveCancel onCancel={props.toggleModal} />

@@ -145,8 +145,8 @@ const AddTemplate = (props) => {
             >
               <option value="">Select Departmnet</option>
               {Department.data &&
-                Department.data.map((option) => (
-                  <option key={option.dept_id} value={option.dept_name}>
+                Department.data.map((option,index) => (
+                  <option key={index} value={option.dept_name}>
                     {option.dept_name}
                   </option>
                 ))}
@@ -169,9 +169,9 @@ const AddTemplate = (props) => {
             >
               <option value="">Select Complaint Type</option>
               {filteredComplaints &&
-                filteredComplaints.map((option) => (
+                filteredComplaints.map((option,index) => (
                   <option
-                    key={option.complaint_id}
+                    key={index}
                     value={option.complaint_type_title}
                   >
                     {option.complaint_type_title}

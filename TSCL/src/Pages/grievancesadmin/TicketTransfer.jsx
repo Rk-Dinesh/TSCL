@@ -151,8 +151,8 @@ const TicketTransfer = (props) => {
                 onChange={handleComplaint}
               >
                 <option value="">Select Department</option>
-                {ExistingDept.map((dept) => (
-                  <option key={dept.dept_id} value={dept.dept_name}>
+                {ExistingDept.map((dept,index) => (
+                  <option key={index} value={dept.dept_name}>
                     {dept.dept_name}
                   </option>
                 ))}
@@ -177,9 +177,9 @@ const TicketTransfer = (props) => {
                 {...register("complaint")}
               >
                 <option value="">Select complaint</option>
-                {filterComplaints.map((com) => (
+                {filterComplaints.map((com,index) => (
                   <option
-                    key={com.complaint_id}
+                    key={index}
                     value={com.complaint_type_title}
                   >
                     {com.complaint_type_title}

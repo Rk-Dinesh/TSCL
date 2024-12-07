@@ -456,8 +456,8 @@ const EngineerMetrics = () => {
             <option hidden>Select Department</option>
             <option value="All">All</option>
             {Departments &&
-              Departments.map((dept) => (
-                <option key={dept.dept_id} value={dept.dept_name}>
+              Departments.map((dept,index) => (
+                <option key={index} value={dept.dept_name}>
                   {dept.dept_name}
                 </option>
               ))}

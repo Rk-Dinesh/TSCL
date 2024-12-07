@@ -253,8 +253,8 @@ const EditComplaint = (props) => {
                             id="dept_name"
                           >
                             <option value={deptName}>{deptName}</option>
-                            {ExistingDept.map((dept) => (
-                              <option key={dept.dept_id} value={dept.dept_name}>
+                            {ExistingDept.map((dept,index) => (
+                              <option key={index} value={dept.dept_name}>
                                 {dept.dept_name}
                               </option>
                             ))}
@@ -405,8 +405,8 @@ const EditComplaint = (props) => {
                             <option value={role1} disabled>
                               {role1}
                             </option>
-                            {ExistingRoles.map((role) => (
-                              <option key={role.role_id} value={role.role_name}>
+                            {ExistingRoles.map((role,index) => (
+                              <option key={index} value={role.role_name}>
                                 {role.role_name}
                               </option>
                             ))}
@@ -452,8 +452,8 @@ const EditComplaint = (props) => {
                             <option value={role2} disabled>
                               {role2}
                             </option>
-                            {ExistingRoles.map((role) => (
-                              <option key={role.role_id} value={role.role_name}>
+                            {ExistingRoles.map((role,index) => (
+                              <option key={index} value={role.role_name}>
                                 {role.role_name}
                               </option>
                             ))}
@@ -499,8 +499,8 @@ const EditComplaint = (props) => {
                             <option value={role3} disabled>
                               {role3}
                             </option>
-                            {ExistingRoles.map((role) => (
-                              <option key={role.role_id} value={role.role_name}>
+                            {ExistingRoles.map((role,index) => (
+                              <option key={index} value={role.role_name}>
                                 {role.role_name}
                               </option>
                             ))}

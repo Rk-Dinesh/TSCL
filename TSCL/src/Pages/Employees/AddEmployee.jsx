@@ -67,8 +67,6 @@ const AddEmployee = (props) => {
       designation_id: selectedDesignId,
     };
 
-    // console.log(formData);
-
     try {
       const response = await axios.post(
         API_ENDPOINTS.POST_EMPLOYEE.url,
@@ -133,8 +131,8 @@ const AddEmployee = (props) => {
                   {...register("dept_name")}
                 >
                   <option value="">Department</option>
-                  {ExistingDept.map((dept) => (
-                    <option key={dept.dept_id} value={dept.dept_name}>
+                  {ExistingDept.map((dept, index) => (
+                    <option key={index} value={dept.dept_name}>
                       {dept.dept_name}
                     </option>
                   ))}
@@ -277,11 +275,8 @@ const AddEmployee = (props) => {
                   onChange={handleDesgnationChange}
                 >
                   <option value="">Designation</option>
-                  {ExistingDesignation.map((desgn) => (
-                    <option
-                      key={desgn.designation_id}
-                      value={desgn.designation}
-                    >
+                  {ExistingDesignation.map((desgn, index) => (
+                    <option key={index} value={desgn.designation}>
                       {desgn.designation}
                     </option>
                   ))}

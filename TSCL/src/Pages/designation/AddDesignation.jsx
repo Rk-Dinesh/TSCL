@@ -90,8 +90,8 @@ const AddDesgination = ({
                 {...register("org_name")}
               >
                 <option value="">Select Organization</option>
-                {ExistingOrganiZations.map((org) => (
-                  <option key={org.org_id} value={org.org_name}>
+                {ExistingOrganiZations.map((org,index) => (
+                  <option key={index} value={org.org_name}>
                     {org.org_name}
                   </option>
                 ))}
@@ -115,8 +115,8 @@ const AddDesgination = ({
                 {...register("dept_name")}
               >
                 <option value="">Select Department</option>
-                {ExistingDepartments.map((dept) => (
-                  <option key={dept.dept_id} value={dept.dept_name}>
+                {ExistingDepartments.map((dept,index) => (
+                  <option key={index} value={dept.dept_name}>
                     {dept.dept_name}
                   </option>
                 ))}

@@ -31,7 +31,6 @@ const SimilarRequest = (props) => {
     const formData = {
       status: data,
     };
-    console.log(formData, grievanceId);
 
     try {
       const response = await axios.post(
@@ -138,11 +137,8 @@ const SimilarRequest = (props) => {
                             </option>
 
                             {dataStatus &&
-                              dataStatus.map((option) => (
-                                <option
-                                  key={option.status_name}
-                                  value={option.status_name}
-                                >
+                              dataStatus.map((option, index) => (
+                                <option key={index} value={option.status_name}>
                                   {option.status_name}
                                 </option>
                               ))}

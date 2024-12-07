@@ -385,8 +385,8 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
                       Yet to be Assigned
                     </option>
                     {dataUsers &&
-                      dataUsers.map((option) => (
-                        <option key={option.user_name} value={option.user_name}>
+                      dataUsers.map((option,index) => (
+                        <option key={index} value={option.user_name}>
                           {option.user_name}
                         </option>
                       ))}
@@ -415,9 +415,9 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
                     <option hidden>Status</option>
                     <option value="All">All</option>
                     {status &&
-                      status.map((option) => (
+                      status.map((option,index) => (
                         <option
-                          key={option.status_name}
+                          key={index}
                           value={option.status_name}
                         >
                           {option.status_name}

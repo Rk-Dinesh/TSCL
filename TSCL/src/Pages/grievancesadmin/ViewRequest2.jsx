@@ -302,9 +302,9 @@ const ViewRequest2 = () => {
                         </option>
 
                         {dataUsers &&
-                          dataUsers.map((option) => (
+                          dataUsers.map((option,index) => (
                             <option
-                              key={option.user_name}
+                              key={index}
                               value={option.user_name}
                               data-user-id={option.user_id}
                               data-user-phone={option.phone}

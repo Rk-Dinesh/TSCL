@@ -118,8 +118,8 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
                 onChange={(e) => setOrgName(e.target.value)}
               >
                 <option value={orgName} disabled>{orgName}</option>
-                {ExistingOrganiZations.map((org) => (
-                  <option key={org.org_id} value={org.org_name}>
+                {ExistingOrganiZations.map((org,index) => (
+                  <option key={index} value={org.org_name}>
                     {org.org_name}
                   </option>
                 ))}
@@ -143,8 +143,8 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
                 onChange={(e) => setDeptName(e.target.value)}
               >
                 <option value={DeptName} disabled>{DeptName}</option>
-                {ExistingDepartments.map((dept) => (
-                  <option key={dept.dept_id} value={dept.dept_name}>
+                {ExistingDepartments.map((dept,index) => (
+                  <option key={index} value={dept.dept_name}>
                     {dept.dept_name}
                   </option>
                 ))}

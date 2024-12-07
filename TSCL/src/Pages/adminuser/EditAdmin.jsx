@@ -38,7 +38,6 @@ const EditAdmin = (props) => {
   const [filteredWards, setFilteredWards] = useState([]);
   const [zoneNames, setZoneNames] = useState([]);
 
-
   const {
     register,
     formState: { errors },
@@ -67,13 +66,10 @@ const EditAdmin = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const GETBYID_ADMIN = API_ENDPOINTS.FETCH_ADMIN(adminId) 
-        const response = await axios.get(
-          GETBYID_ADMIN.url,
-          {
-            headers:GETBYID_ADMIN.headers,
-          }
-        );
+        const GETBYID_ADMIN = API_ENDPOINTS.FETCH_ADMIN(adminId);
+        const response = await axios.get(GETBYID_ADMIN.url, {
+          headers: GETBYID_ADMIN.headers,
+        });
         const data = decryptData(response.data.data);
 
         setValue("user_name", data.user_name);
@@ -89,7 +85,6 @@ const EditAdmin = (props) => {
         setZoneNames(data.zone_name);
         setValue("ward_name", data.ward_name);
         setWardName(data.ward_name);
-        
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -98,7 +93,7 @@ const EditAdmin = (props) => {
   }, [adminId, setValue]);
 
   const onRoleChange = (event) => {
-    setRoleId(null)
+    setRoleId(null);
     const selectedRoleName = event.target.value;
     const role = ExistingRoles.find(
       (role) => role.role_name === selectedRoleName
@@ -114,17 +109,11 @@ const EditAdmin = (props) => {
       role_id: roleId,
     };
 
-     //console.log(formData);
-  
     try {
-      const UPDATE_ADMIN = API_ENDPOINTS.UPDATE_ADMIN(adminId)
-      const response = await axios.post(
-        UPDATE_ADMIN.url,
-        formData,
-        {
-          headers:UPDATE_ADMIN.headers
-        }
-      );
+      const UPDATE_ADMIN = API_ENDPOINTS.UPDATE_ADMIN(adminId);
+      const response = await axios.post(UPDATE_ADMIN.url, formData, {
+        headers: UPDATE_ADMIN.headers,
+      });
 
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -281,8 +270,8 @@ const EditAdmin = (props) => {
                   <option value={roleName} hidden>
                     {roleName}
                   </option>
-                  {ExistingRoles.map((role) => (
-                    <option key={role.role_name} value={role.role_name}>
+                  {ExistingRoles.map((role, index) => (
+                    <option key={index} value={role.role_name}>
                       {role.role_name}
                     </option>
                   ))}
@@ -340,9 +329,11 @@ const EditAdmin = (props) => {
                   {...register("zone_name")}
                   onChange={handleChangeZone}
                 >
-                  <option value={zoneNames} disabled>{zoneNames}</option>
-                  {isZone.map((zones) => (
-                    <option key={zones.zone_id} value={zones.zone_name}>
+                  <option value={zoneNames} disabled>
+                    {zoneNames}
+                  </option>
+                  {isZone.map((zones, index) => (
+                    <option key={index} value={zones.zone_name}>
                       {zones.zone_name}
                     </option>
                   ))}
@@ -376,9 +367,9 @@ const EditAdmin = (props) => {
                         {ward}
                       </option>
                     ))}
-                  {filteredWards.map((wards) => (
+                  {filteredWards.map((wards, index) => (
                     <option
-                      key={wards.ward_id}
+                      key={index}
                       value={wards.ward_name}
                       className="my-0.5 "
                     >

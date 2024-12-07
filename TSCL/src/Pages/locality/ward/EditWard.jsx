@@ -135,8 +135,8 @@ const EditWard = (props) => {
                 <option value={ZoneName} disabled>
                   {ZoneName}
                 </option>
-                {ExistingZones.map((zone) => (
-                  <option key={zone.zone_id} value={zone.zone_name}>
+                {ExistingZones.map((zone,index) => (
+                  <option key={index} value={zone.zone_name}>
                     {zone.zone_name}
                   </option>
                 ))}

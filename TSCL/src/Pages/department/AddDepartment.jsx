@@ -99,8 +99,8 @@ const AddDepartment = ({
                 onChange={(e) => setOrgName(e.target.value)}
               >
                 <option value="">Select Organization</option>
-                {ExistingOrganiZations.map((org) => (
-                  <option key={org.org_id} value={org.org_name}>
+                {ExistingOrganiZations.map((org,index) => (
+                  <option key={index} value={org.org_name}>
                     {org.org_name}
                   </option>
                 ))}

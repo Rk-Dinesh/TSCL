@@ -161,8 +161,8 @@ const EditEmployee = (props) => {
                   {...register("dept_name")}
                 >
                   <option value={deptName}>{deptName}</option>
-                  {ExistingDept.map((dept) => (
-                    <option key={dept.dept_id} value={dept.dept_name}>
+                  {ExistingDept.map((dept,index) => (
+                    <option key={index} value={dept.dept_name}>
                       {dept.dept_name}
                     </option>
                   ))}
@@ -262,9 +262,9 @@ const EditEmployee = (props) => {
                   onChange={handleDesgnationChange}
                 >
                   <option value={roleName}>{roleName}</option>
-                  {ExistingDesignation.map((desgn) => (
+                  {ExistingDesignation.map((desgn,index) => (
                     <option
-                      key={desgn.designation_id}
+                      key={index}
                       value={desgn.designation}
                     >
                       {desgn.designation}

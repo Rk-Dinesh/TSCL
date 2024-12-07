@@ -329,9 +329,9 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                   <option hidden>Status</option>
                   <option value="All">All</option>
                   {status &&
-                    status.map((option) => (
+                    status.map((option,index) => (
                       <option
-                        key={option.status_name}
+                        key={index}
                         value={option.status_name}
                       >
                         {option.status_name}

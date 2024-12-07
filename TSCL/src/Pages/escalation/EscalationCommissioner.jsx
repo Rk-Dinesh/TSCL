@@ -189,7 +189,6 @@ const EscalationCommissioner = ({ permissions }) => {
       axios
         .post(`${API}/manual-escalation-check`)
         .then((response) => {
-          //console.log(response.data);
           handlerefresh();
           toast.success("Manual Escalation Done!!!");
         })

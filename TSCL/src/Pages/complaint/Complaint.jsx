@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddComplaint from "./AddComplaint";
-import {  downloadCSV } from "../../Host";
+import { downloadCSV } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import EditComplaint from "./EditComplaint";
@@ -95,9 +95,12 @@ const Complaint = ({ permissions }) => {
 
   const fetchExistingRoles = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_ROLE_COMPLAINTACTIVE.url, {
-        headers:API_ENDPOINTS.GET_ROLE_COMPLAINTACTIVE.headers,
-      });
+      const response = await axios.get(
+        API_ENDPOINTS.GET_ROLE_COMPLAINTACTIVE.url,
+        {
+          headers: API_ENDPOINTS.GET_ROLE_COMPLAINTACTIVE.headers,
+        }
+      );
       const responseData = decryptData(response.data.data);
       setExistingRoles(responseData);
     } catch (error) {
@@ -107,9 +110,12 @@ const Complaint = ({ permissions }) => {
 
   const fetchExistingDepts = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPT_COMPLAINTACTIVE.url, {
-        headers: API_ENDPOINTS.GET_DEPT_COMPLAINTACTIVE.headers,
-      });
+      const response = await axios.get(
+        API_ENDPOINTS.GET_DEPT_COMPLAINTACTIVE.url,
+        {
+          headers: API_ENDPOINTS.GET_DEPT_COMPLAINTACTIVE.headers,
+        }
+      );
       const responseData = decryptData(response.data.data);
       setExistingDept(responseData);
     } catch (error) {
@@ -146,9 +152,9 @@ const Complaint = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      const DELETE_COMPLAINT = API_ENDPOINTS.DELETE_COMPLAINT(deleteId)
+      const DELETE_COMPLAINT = API_ENDPOINTS.DELETE_COMPLAINT(deleteId);
       await axios.delete(DELETE_COMPLAINT.url, {
-        headers:DELETE_COMPLAINT.headers,
+        headers: DELETE_COMPLAINT.headers,
       });
       toggleDeleteCloseModal();
       handlerefresh();
@@ -177,7 +183,8 @@ const Complaint = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(API_ENDPOINTS.CSV_COMPLAINT.url,
+      const response = await axios.post(
+        API_ENDPOINTS.CSV_COMPLAINT.url,
         formData,
         {
           headers: {
@@ -187,14 +194,12 @@ const Complaint = ({ permissions }) => {
       );
 
       if (response.status === 200) {
-        // console.log("File uploaded successfully");
         setButtonText("Bulk Upload");
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
       } else {
         toast.error("Data failed to Upload");
-        //console.log("File upload failed");
       }
     } catch (error) {
       console.log(error);

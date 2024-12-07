@@ -163,14 +163,12 @@ const User = ({ permissions }) => {
       );
 
       if (response.status === 200) {
-        // console.log("File uploaded successfully");
         setButtonText("Bulk Upload");
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
       } else {
         toast.error("Data failed to Upload");
-        //console.log("File upload failed");
       }
     } catch (error) {
       console.log(error);

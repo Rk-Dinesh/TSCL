@@ -105,9 +105,12 @@ const Street = ({ permissions }) => {
 
   const fetchExistingWards = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_WARD_STREETACTIVE.url, {
-        headers: API_ENDPOINTS.GET_WARD_STREETACTIVE.headers
-      });
+      const response = await axios.get(
+        API_ENDPOINTS.GET_WARD_STREETACTIVE.url,
+        {
+          headers: API_ENDPOINTS.GET_WARD_STREETACTIVE.headers,
+        }
+      );
       const responseData = decryptData(response.data.data);
       setExistingWards(responseData);
     } catch (error) {
@@ -126,7 +129,8 @@ const Street = ({ permissions }) => {
   const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {const DELETE_STREET = API_ENDPOINTS.DELETE_STREET(deleteId)
+    try {
+      const DELETE_STREET = API_ENDPOINTS.DELETE_STREET(deleteId);
       await axios.delete(DELETE_STREET.url, {
         headers: DELETE_STREET.headers,
       });
@@ -157,21 +161,23 @@ const Street = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(API_ENDPOINTS.UPLOAD_STREET.url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.UPLOAD_STREET.url,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
-        // console.log("File uploaded successfully");
         setButtonText("Bulk Upload");
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
       } else {
         toast.error("Data failed to Upload");
-        //console.log("File upload failed");
       }
     } catch (error) {
       console.log(error);

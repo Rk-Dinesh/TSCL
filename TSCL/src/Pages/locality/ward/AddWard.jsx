@@ -54,8 +54,6 @@ const AddWard = (props) => {
       created_by_user: localStorage.getItem("name"),
     };
 
-    // console.log(formData);
-
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(`${API}/ward/post`, formData, {
@@ -99,8 +97,8 @@ const AddWard = (props) => {
                 onChange={(e) => setZoneName(e.target.value)}
               >
                 <option value="">Select Zone</option>
-                {ExistingZones.map((zone) => (
-                  <option key={zone.zone_id} value={zone.zone_name}>
+                {ExistingZones.map((zone, index) => (
+                  <option key={index} value={zone.zone_name}>
                     {zone.zone_name}
                   </option>
                 ))}
