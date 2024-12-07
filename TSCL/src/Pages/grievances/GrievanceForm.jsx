@@ -6,12 +6,14 @@ import { fetchDepartment } from "../redux/slice/department";
 import { fetchComplaint } from "../redux/slice/complaint";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { API } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { fetchComplainttype } from "../redux/slice/complainttype";
 import decryptData from "../../Decrypt";
+import { RiExpandUpDownLine } from "react-icons/ri";
+import { fetchWard } from "../redux/slice/ward";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -31,13 +33,14 @@ const GrievanceDetailsSchema = yup.object().shape({
   grievance_mode: yup.string().required("Origin is required"),
   complaint_type_title: yup.string().required("Complaint  is required"),
   dept_name: yup.string().required("Department is required"),
-  zone_name: yup.string().required("Zone is required"),
+  // zone_name: yup.string().required("Zone is required"),
   ward_name: yup.string().required("Ward is required"),
   street_name: yup.string().required("Street is required"),
   pincode: yup
     .string()
     .required("Pincode is required")
     .matches(/^[0-9]{6}$/, "Pincode must be 6 digits"),
+  complaintaddress: yup.string().required("Complaint Address is required"),
   complaint: yup.string().required("Complaint Type is required"),
   complaint_details: yup.string().required("Description is required"),
 });
@@ -54,6 +57,7 @@ const CombinedSchema = yup
 const GrievanceForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isSameAddress, setIsSameAddress] = useState(false);
   const [autoFillData, setAutoFillData] = useState(null);
   const [filteredWards, setFilteredWards] = useState([]);
   const [filteredStreets, setFilteredStreets] = useState([]);
@@ -61,17 +65,23 @@ const GrievanceForm = () => {
   const [files, setFiles] = useState([]);
   const [translatedLan, setTranslatedLan] = useState("");
   const token = sessionStorage.getItem("token");
+  const [statusColors, setStatusColors] = useState({});
+  const [grievance, setGrievance] = useState([]);
+  const [status, setStatus] = useState([]);
+
 
   useEffect(() => {
     dispatch(fetchDepartment());
     dispatch(fetchComplaint());
-    dispatch(fetchZone());
+    // dispatch(fetchZone());
+    dispatch(fetchWard());
     dispatch(fetchComplainttype());
   }, [dispatch]);
 
   const Department = useSelector((state) => state.department);
   const Complaint = useSelector((state) => state.complaint);
-  const Zone = useSelector((state) => state.zone);
+  // const Zone = useSelector((state) => state.zone);
+  const Ward = useSelector((state) => state.ward);
   const Complainttype = useSelector((state) => state.complainttype);
 
   const {
@@ -87,9 +97,49 @@ const GrievanceForm = () => {
   });
 
   const contactNumber = watch("phone");
-  const zoneName = watch("zone_name");
+  // const zoneName = watch("zone_name");
   const wardName = watch("ward_name");
   const deptName = watch("dept_name");
+  const residentAddress = watch("address");
+
+  useEffect(() => {
+    axios
+      .get(`${API}/new-grievance/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        const reverseData = responseData.reverse();
+        setGrievance(reverseData);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    fetchActiveStatus();
+  }, []);
+
+  const fetchActiveStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/status/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      const colorMapping = responseData.reduce((acc, status) => {
+        acc[status.status_name] = status.color;
+        return acc;
+      }, {});
+
+      setStatus(responseData);
+      setStatusColors(colorMapping);
+    } catch (err) {
+      console.error("Error fetching existing ActiveStatus:", err);
+    }
+  };
 
   useEffect(() => {
     if (deptName) {
@@ -116,31 +166,31 @@ const GrievanceForm = () => {
     }
   }, [deptName]);
 
-  useEffect(() => {
-    if (zoneName) {
-      axios
-        .get(`${API}/ward/getzone?zone_name=${zoneName}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          try {
-            const responseData = decryptData(response.data.data);
-            setFilteredWards(responseData);
-            setValue("ward_name", "");
-            setValue("street_name", "");
-          } catch (error) {
-            console.error("Error decrypting data:", error);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-    } else {
-      setFilteredWards([]);
-    }
-  }, [zoneName]);
+  // useEffect(() => {
+  //   if (zoneName) {
+  //     axios
+  //       .get(`${API}/ward/getzone?zone_name=${zoneName}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         try {
+  //           const responseData = decryptData(response.data.data);
+  //           setFilteredWards(responseData);
+  //           setValue("ward_name", "");
+  //           setValue("street_name", "");
+  //         } catch (error) {
+  //           console.error("Error decrypting data:", error);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching data:", error);
+  //       });
+  //   } else {
+  //     setFilteredWards([]);
+  //   }
+  // }, [zoneName]);
 
   useEffect(() => {
     if (wardName) {
@@ -228,6 +278,11 @@ const GrievanceForm = () => {
       return complaint ? complaint.priority : null;
     };
 
+    const getZone = (zonaName) => {
+      const zone = Ward.data.find((value) => value.ward_name === zonaName);
+      return zone ? zone.zone_name : null;
+    };
+
     let public_user_id;
     if (autoFillData) {
       const response = await axios.post(`${API}/public-user/post`, userInfo);
@@ -240,10 +295,11 @@ const GrievanceForm = () => {
       grievance_mode: data.grievance_mode,
       complaint_type_title: data.complaint,
       dept_name: data.dept_name,
-      zone_name: data.zone_name,
+      zone_name: getZone(data.ward_name),
       ward_name: data.ward_name,
       street_name: data.street_name,
       pincode: data.pincode,
+      complaintaddress: data.complaintaddress,
       complaint: data.complaint_type_title,
       complaint_details: data.complaint_details,
       public_user_id: public_user_id,
@@ -329,10 +385,10 @@ const GrievanceForm = () => {
   };
 
   return (
-    <>
-      <div className="bg-blue-100 flex flex-col  md:px-8 px-3 text-start h-fit   font-lexend overflow-y-auto no-scrollbar">
+    <div className="grid grid-cols-12 gap-3 mx-3  overflow-y-auto no-scrollbar">
+      <div className="bg-blue-100 lg:col-span-6 md:col-span-12 col-span-12   text-start h-fit   font-lexend ">
         <h1 className="text-xl my-5">Grievance Form</h1>
-        <div className="  bg-white max-w-[592px] h-fit rounded-lg ">
+        <div className="  bg-white w-full h-fit rounded-lg ">
           <div className="border-b-2 border-search">
             <h1 className=" text-xl px-3 py-3">Request by</h1>
           </div>
@@ -566,7 +622,7 @@ const GrievanceForm = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                {/* <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
                     className="block text-black text-lg font-medium mb-2 md:col-span-1"
                     htmlFor="zone_name"
@@ -596,7 +652,7 @@ const GrievanceForm = () => {
                       </p>
                     )}
                   </div>
-                </div>
+                </div> */}
                 <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                   <label
                     className="block text-black text-lg font-medium mb-2 md:col-span-1"
@@ -614,8 +670,8 @@ const GrievanceForm = () => {
                         Select a Ward
                       </option>
 
-                      {filteredWards &&
-                        filteredWards.map((option) => (
+                      {Ward.data &&
+                        Ward.data.map((option) => (
                           <option key={option.ward_id} value={option.ward_name}>
                             {option.ward_name}
                           </option>
@@ -681,6 +737,51 @@ const GrievanceForm = () => {
                     {errors.pincode && (
                       <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.pincode.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col md:grid md:grid-cols-3 font-normal mx-10">
+                  <label
+                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                    htmlFor="complaintaddress"
+                  >
+                    Complaint Address
+                  </label>
+
+                  <div className="flex flex-col md:col-span-2 border rounded p-1">
+                    <div className="flex items-center gap-3 mb-2 mx-1">
+                      <input
+                        type="checkbox"
+                        id="sameAsResidentAddress"
+                        checked={isSameAddress}
+                        onChange={(e) => {
+                          setIsSameAddress(e.target.checked);
+                          if (e.target.checked) {
+                            setValue("complaintaddress", residentAddress); 
+                          }else{
+                            setValue("complaintaddress", ""); 
+                          }
+                        }}
+                      />
+                      <label
+                        className="text-black text-sm font-medium"
+                        htmlFor="sameAsResidentAddress"
+                      >
+                        Same as Resident Address
+                      </label>
+                    </div>
+                    <hr className="w-full" />
+                    <textarea
+                      id="complaintaddress"
+                      rows="5"
+                      className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
+                      placeholder="Complaint Address here..."
+                      {...register("complaintaddress")} // Ensure this matches the schema
+                    ></textarea>
+                    {errors.complaintaddress && (
+                      <p className="text-red-500 text-xs text-start px-2">
+                        {errors.complaintaddress.message}
                       </p>
                     )}
                   </div>
@@ -760,7 +861,7 @@ const GrievanceForm = () => {
               <div className=" text-center my-3">
                 <button
                   type="submit"
-                  className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 "
+                  className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 mb-4"
                 >
                   Submit
                 </button>
@@ -769,7 +870,96 @@ const GrievanceForm = () => {
           </form>
         </div>
       </div>
-    </>
+      <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
+        <h1 className="text-xl my-5">Recent Grievances</h1>
+        <div className="bg-white rounded-lg my-2 py-3 overflow-x-auto h-2/5 no-scrollbar">
+          <table className="w-full mt-2 mx-3">
+            <thead className="border-b border-gray-300">
+              <tr className="">
+                <th>
+                  <p className=" my-2 text-start font-lexend font-normal text-base whitespace-nowrap">
+                    Complaint
+                  </p>
+                </th>
+
+                <th>
+                  <p className="flex gap-2 items-center justify-start  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    Type
+                  </p>
+                </th>
+                <th>
+                  <p className="flex gap-2 items-center justify-start  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    Department
+                  </p>
+                </th>
+
+                <th>
+                  <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    Priority
+                  </p>
+                </th>
+                <th>
+                  <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    Status
+                  </p>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {grievance.slice(0, 10).map((report, index) => (
+                <tr key={index}>
+                  <td>
+                    <p className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900">
+                      {report.grievance_id}
+                    </p>
+                  </td>
+
+                  <td>
+                    {" "}
+                    <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                      {report.complaint_type_title}
+                    </p>
+                  </td>
+                  <td>
+                    {" "}
+                    <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                      {report.dept_name}
+                    </p>
+                  </td>
+                  <td>
+                    <p
+                      className={`border-2 w-26 rounded-full text-center py-1.5 text-sm font-medium capitalize  ${
+                        report.priority === "High"
+                          ? "text-red-500 border-red-500"
+                          : report.priority === "Medium"
+                          ? "text-sky-500 border-sky-500"
+                          : report.priority === "Low"
+                          ? "text-green-500 border-green-500"
+                          : ""
+                      }`}
+                    >
+                      {report.priority}
+                    </p>
+                  </td>
+                  <td>
+                    <p
+                      className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-1 capitalize  "
+                      style={{
+                        borderColor: statusColors[report.status] || "gray",
+                        color: statusColors[report.status] || "black",
+                        fontSize: 14,
+                      }}
+                    >
+                      {report.status}
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
 

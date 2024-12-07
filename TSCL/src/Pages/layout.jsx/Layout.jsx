@@ -13,7 +13,7 @@ import { GoOrganization } from "react-icons/go";
 import { MdOutlineContactSupport } from "react-icons/md";
 import { BsShieldExclamation } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
-import { LuUserCircle2 } from "react-icons/lu";
+import { FaRegCircleUser } from "react-icons/fa6";
 import { AiFillAlert } from "react-icons/ai";
 import { CiBoxList } from "react-icons/ci";
 import Header from "./Header";
@@ -50,7 +50,7 @@ const Layout = ({ permissions }) => {
     permissions["designation"] && { title: "Designation", icon: <ImUserTie />, to: "/designation" },
     permissions["emp"] && { title: "Employee", icon: <ImUserCheck />, to: "/emp" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
-    permissions["user"] && { title: "Public User", icon: <LuUserCircle2 />, to: "/user" },
+    permissions["user"] && { title: "Public User", icon: <FaRegCircleUser />, to: "/user" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
     permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
