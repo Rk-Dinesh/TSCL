@@ -882,24 +882,24 @@ const GrievanceForm = () => {
                 </th>
 
                 <th>
-                  <p className="flex gap-2 items-center justify-start  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Type
+                  <p className="flex gap-2 items-center justify-start mx-2 my-2 font-lexend font-normal text-base whitespace-nowrap">
+                  Raised by
                   </p>
                 </th>
                 <th>
-                  <p className="flex gap-2 items-center justify-start  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                  <p className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-normal text-base whitespace-nowrap">
                     Department
                   </p>
                 </th>
 
                 <th>
                   <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Priority
+                  Assigned JE
                   </p>
                 </th>
                 <th>
                   <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Status
+                    Date/Time
                   </p>
                 </th>
               </tr>
@@ -908,15 +908,19 @@ const GrievanceForm = () => {
               {grievance.slice(0, 10).map((report, index) => (
                 <tr key={index}>
                   <td>
-                    <p className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900">
+                    <p className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
+                    onClick={() =>
+                      navigate(`/view?grievanceId=${report.grievance_id}`)
+                    }
+                    >
                       {report.grievance_id}
                     </p>
                   </td>
 
                   <td>
                     {" "}
-                    <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                      {report.complaint_type_title}
+                    <p className="capitalize text-center mx-2   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                    {report.public_user_name}
                     </p>
                   </td>
                   <td>
@@ -926,31 +930,16 @@ const GrievanceForm = () => {
                     </p>
                   </td>
                   <td>
-                    <p
-                      className={`border-2 w-26 rounded-full text-center py-1.5 text-sm font-medium capitalize  ${
-                        report.priority === "High"
-                          ? "text-red-500 border-red-500"
-                          : report.priority === "Medium"
-                          ? "text-sky-500 border-sky-500"
-                          : report.priority === "Low"
-                          ? "text-green-500 border-green-500"
-                          : ""
-                      }`}
-                    >
-                      {report.priority}
-                    </p>
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
+                        {report.assign_username
+                          ? report.assign_username
+                          : "Yet to be assigned"}
+                      </p>
                   </td>
                   <td>
-                    <p
-                      className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-1 capitalize  "
-                      style={{
-                        borderColor: statusColors[report.status] || "gray",
-                        color: statusColors[report.status] || "black",
-                        fontSize: 14,
-                      }}
-                    >
-                      {report.status}
-                    </p>
+                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                        {formatDate1(report.createdAt)}
+                      </p>
                   </td>
                 </tr>
               ))}
