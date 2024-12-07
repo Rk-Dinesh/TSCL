@@ -229,6 +229,12 @@ const ViewRequest = () => {
                     <p className="col-span-2 capitalize">: {data.pincode}</p>
                   </div>
                   <div className="grid grid-cols-4">
+                    <p className="col-span-2">Complaint Address: </p>
+                    <p className="col-start-1 col-span-4 mt-2 capitalize">
+                      {data.complaintaddress}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-4">
                     <p className="col-span-2">Description: </p>
                     <p className="col-start-1 col-span-4 mt-2 capitalize">
                       {data.complaint_details}
