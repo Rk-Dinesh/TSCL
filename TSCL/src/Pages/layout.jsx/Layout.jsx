@@ -16,6 +16,7 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { AiFillAlert } from "react-icons/ai";
 import { CiBoxList } from "react-icons/ci";
+import { CgTemplate } from "react-icons/cg";
 import Header from "./Header";
 import logo from "../../assets/images/logo1.png"
 import Loading from "../../Loading";
@@ -54,6 +55,7 @@ const Layout = ({ permissions }) => {
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
     permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
+    permissions["complainttype"] && { title: "Template", icon: <CgTemplate />, to: "/template" },
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
     
    

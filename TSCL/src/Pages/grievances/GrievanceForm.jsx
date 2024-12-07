@@ -398,7 +398,7 @@ const GrievanceForm = () => {
                   className="block text-black text-lg font-medium mb-2"
                   htmlFor="phone"
                 >
-                  Contact Number
+                  Phone
                 </label>
                 <div className="flex flex-col">
                   <input

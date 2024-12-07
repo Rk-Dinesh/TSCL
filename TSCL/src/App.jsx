@@ -15,6 +15,7 @@ import RequestTab from "./Pages/request/RequestTab";
 import RequestAdminTab from "./Pages/grievancesadmin/RequestAdminTab";
 import RequestJETab from "./Pages/grievanceJE/RequestJETab";
 import RequestHeadTab from "./Pages/grievanceHead/RequestHeadTab";
+import Template from "./Pages/template/Template";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -334,7 +335,18 @@ function App() {
                 element={<Status permissions={memoizedFeatures["status"]} />}
               />
             )}
+                {memoizedFeatures["complainttype"] && (
+              <Route
+                path="/template"
+                element={
+                  <Template
+                    permissions={memoizedFeatures["complainttype"]}
+                  />
+                }
+              />
+            )}
             <Route path="/token" element={<Expire />} />
+
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
