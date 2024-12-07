@@ -62,6 +62,7 @@ const GrievanceForm = () => {
   const [filteredWards, setFilteredWards] = useState([]);
   const [filteredStreets, setFilteredStreets] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const [filteredTemplates, setFilteredTemplates] = useState([])
   const [files, setFiles] = useState([]);
   const [translatedLan, setTranslatedLan] = useState("");
   const token = localStorage.getItem("token");
@@ -99,6 +100,7 @@ const GrievanceForm = () => {
   // const zoneName = watch("zone_name");
   const wardName = watch("ward_name");
   const deptName = watch("dept_name");
+  const complaintName =watch('complaint_type_title')
   const residentAddress = watch("address");
 
   useEffect(() => {
@@ -165,31 +167,7 @@ const GrievanceForm = () => {
     }
   }, [deptName]);
 
-  // useEffect(() => {
-  //   if (zoneName) {
-  //     axios
-  //       .get(`${API}/ward/getzone?zone_name=${zoneName}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         try {
-  //           const responseData = decryptData(response.data.data);
-  //           setFilteredWards(responseData);
-  //           setValue("ward_name", "");
-  //           setValue("street_name", "");
-  //         } catch (error) {
-  //           console.error("Error decrypting data:", error);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data:", error);
-  //       });
-  //   } else {
-  //     setFilteredWards([]);
-  //   }
-  // }, [zoneName]);
+
 
   useEffect(() => {
     if (wardName) {
@@ -248,6 +226,31 @@ const GrievanceForm = () => {
       setAutoFillData(null);
     }
   }, [contactNumber]);
+
+  useEffect(() => {
+    if (deptName && complaintName) {
+      axios
+        .get(`${API}/template/getbyquery?dept_name=${deptName}&complaint_type=${complaintName}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          try {
+            const responseData = decryptData(response.data.data);
+            setFilteredTemplates(responseData);
+            setValue("complaint_details", "");
+          } catch (error) {
+            console.error("Error decrypting data:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    } 
+  }, [deptName,complaintName]);
+
+
   const handleFileChange = (e) => {
     const files = e.target.files;
     if (files.length > 5) {
@@ -361,9 +364,7 @@ const GrievanceForm = () => {
 
       reset();
 
-      navigate("/view", {
-        state: { grievanceId: grievanceId },
-      });
+      navigate(`/view?grievanceId=${grievanceId}`)
     } catch (error) {
       console.log(error);
       toast.error("An error occurred during submission. Please try again.");
@@ -795,7 +796,35 @@ const GrievanceForm = () => {
                   </label>
 
                   <div className="flex flex-col md:col-span-2 border rounded p-1">
-                    <div className="flex justify-end items-center -mb-2">
+                    <div className="flex justify-around items-center -mb-1 gap-3">
+                    <select
+                      className="block w-full  px-2 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                      defaultValue=""
+                      onChange={(e) => {
+                        const selectedTemplateId = e.target.value;
+                        const selectedTemplate = filteredTemplates.find(
+                          (template) => template.temp_id === selectedTemplateId
+                        );
+                        if (selectedTemplate) {
+                          setValue("complaint_details", selectedTemplate.desc);
+                        }
+                      }}
+                
+                    >
+                      <option value="" hidden>
+                        Select a Template
+                      </option>
+
+                      {filteredTemplates &&
+                        filteredTemplates.map((option) => (
+                          <option
+                            key={option.temp_id}
+                            value={option.temp_id}
+                          >
+                            {option.temp_title}
+                          </option>
+                        ))}
+                    </select>
                       <select
                         className="block px-4 py-3 text-sm rounded-lg outline-none"
                         onChange={(e) => {

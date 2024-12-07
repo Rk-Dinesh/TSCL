@@ -30,102 +30,102 @@ const TemplateSchema = yup.object().shape({
 });
 
 const EditTemplate = (props) => {
-  const dispatch = useDispatch();
-  const [filteredComplaints, setFilteredComplaints] = useState([]);
-  const token = localStorage.getItem("token");
-  const {tempId}= props;
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm({
-    resolver: yupResolver(TemplateSchema),
-    mode: "all",
-  });
-
-  const deptName = watch("dept_name");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${API}/template/getbyid?temp_id=${tempId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = decryptData(response.data.data);
-        setValue("temp_title", data.temp_title);
-        setValue("dept_name", data.dept_name); 
-        setValue("complaint_type", data.complaint_type);
-        setValue("desc", data.desc);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
-    fetchData();
-  }, [tempId, setValue]);
-
-  useEffect(() => {
-    dispatch(fetchDepartment());
-  }, [dispatch]);
-
-  const Department = useSelector((state) => state.department);
-
-  useEffect(() => {
-    if (deptName) {
-      axios
-        .get(`${API}/complaint/getdept?dept_name=${deptName}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
+    const dispatch = useDispatch();
+    const [filteredComplaints, setFilteredComplaints] = useState([]);
+    const token = localStorage.getItem("token");
+    const { tempId } = props;
+  
+    const {
+      register,
+      formState: { errors },
+      handleSubmit,
+      watch,
+      setValue,
+    } = useForm({
+      resolver: yupResolver(TemplateSchema),
+      mode: "all",
+    });
+  
+    const deptName = watch("dept_name");
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`${API}/template/getbyid?temp_id=${tempId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const data = decryptData(response.data.data);
+          setValue("temp_title", data.temp_title);
+          setValue("dept_name", data.dept_name);
+          setValue("complaint_type", data.complaint_type);
+          setValue("desc", data.desc);
+        } catch (error) {
+          console.error("Error fetching data", error);
+          toast.error("Failed to fetch template data");
+        }
+      };
+      fetchData();
+    }, [tempId, setValue, token]);
+  
+    useEffect(() => {
+      dispatch(fetchDepartment());
+    }, [dispatch]);
+  
+    const Department = useSelector((state) => state.department);
+  
+    useEffect(() => {
+      if (deptName) {
+        const fetchComplaints = async () => {
           try {
+            const response = await axios.get(`${API}/complaint/getdept?dept_name=${deptName}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
             const responseData = decryptData(response.data.data);
             setFilteredComplaints(responseData);
             setValue("complaint_type", "");
           } catch (error) {
-            console.error("Error decrypting data:", error);
+            console.error("Error fetching complaints", error);
+            toast.error("Failed to fetch complaint types");
           }
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-    } else {
-      setFilteredComplaints([]);
-    }
-  }, [deptName]);
-
-  const onSubmit = async (data) => {
-    const formData = {
-      ...data,
-      created_by_user: localStorage.getItem("name"),
-    };
-    console.log(formData);
-    
-
-    try {
-      const response = await axios.post(`${API}/template/update?temp_id=${tempId}`, formData, {
+        };
+        fetchComplaints();
+      } else {
+        setFilteredComplaints([]);
+      }
+    }, [deptName, setValue, token]);
+  
+    const onSubmit = async (data) => {
+        console.log("form");
+        
+      const formData = {
+        ...data,
+      };
+      console.log(formData);
+  
+      try {
+        const response = await axios.post(`${API}/template/update?temp_id=${tempId}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
-      if (response.status === 200) {
-        toast.success(" Updated Successfully");
-        props.toggleModal();
-        props.handlerefresh();
-      } else {
-        console.error("Error in posting data", response);
-        toast.error("Failed to Upload");
+  
+        if (response.status === 200) {
+          toast.success("Updated Successfully");
+          props.toggleModal();
+          props.handlerefresh();
+        } else {
+          console.error("Error in posting data", response);
+          toast.error("Failed to update template");
+        }
+      } catch (error) {
+        console.error("Error in posting data", error);
+        toast.error("Failed to update template");
       }
-    } catch (error) {
-      console.error("Error in posting data", error);
-    }
-  };
+    };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
       <div className="bg-white w-[522px]   font-lexend p-3">
