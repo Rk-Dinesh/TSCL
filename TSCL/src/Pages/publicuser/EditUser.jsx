@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -13,20 +13,18 @@ const AddUserSchema = yup.object().shape({
   address: yup.string().required("Address is required"),
   pincode: yup.string().required("Pincode is required"),
   user_status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "Please select an Status",
+      (value) => value !== "" && value !== "Status"
+    ),
 });
 
 const EditUser = (props) => {
+  const { userId } = props;
+  const token = localStorage.getItem("token");
 
-    const {userId} = props;
-    const token = sessionStorage.getItem('token');
-    
-    
   const {
     register,
     formState: { errors },
@@ -41,14 +39,16 @@ const EditUser = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/public-user/getbyid?public_user_id=${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.get(
+          `${API}/public-user/getbyid?public_user_id=${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        const data = decryptData(response.data.data); 
-        
-        
+        );
+        const data = decryptData(response.data.data);
+
         setValue("public_user_name", data.public_user_name);
         setValue("address", data.address);
         setValue("pincode", data.pincode);
@@ -63,16 +63,18 @@ const EditUser = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-     
     };
 
-
     try {
-      const response = await axios.post(`${API}/public-user/update?public_user_id=${userId}`, formData,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        `${API}/public-user/update?public_user_id=${userId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         toast.success("Public User Updated Successfully");
@@ -96,7 +98,7 @@ const EditUser = (props) => {
                 className="block text-black text-lg font-medium mb-2 col-span-1 whitespace-nowrap"
                 htmlFor="public_user_name"
               >
-                 Name
+                Name
               </label>
               <input
                 type="text"
@@ -214,11 +216,14 @@ const EditUser = (props) => {
                 >
                   Status:
                 </label>
-                <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
-                id="user_status"
-                 {...register("user_status")}
-                 >
-                  <option value="" hidden>Status</option>
+                <select
+                  className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+                  id="user_status"
+                  {...register("user_status")}
+                >
+                  <option value="" hidden>
+                    Status
+                  </option>
                   <option value="active">Active</option>
                   <option value="inactive">InActive</option>
                 </select>

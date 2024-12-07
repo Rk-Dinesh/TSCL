@@ -63,16 +63,20 @@ const AddEmployee = (props) => {
     const formData = {
       ...data,
       status: "active",
-      created_by_user: sessionStorage.getItem("name"),
+      created_by_user: localStorage.getItem("name"),
       designation_id: selectedDesignId,
     };
 
     // console.log(formData);
 
     try {
-      const response = await axios.post(API_ENDPOINTS.POST_EMPLOYEE.url, formData, {
-        headers: API_ENDPOINTS.POST_EMPLOYEE.headers,
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.POST_EMPLOYEE.url,
+        formData,
+        {
+          headers: API_ENDPOINTS.POST_EMPLOYEE.headers,
+        }
+      );
 
       if (response.status === 200) {
         toast.success(response.data.message);

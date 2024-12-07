@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -10,70 +10,70 @@ import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const OrganizationSchema = yup.object().shape({
   org_name: yup.string().required("Organization is required"),
-    status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+  status: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select an Status",
+      (value) => value !== "" && value !== "Status"
+    ),
 });
 
 const EditOrganization = (props) => {
-    const { orgId } = props
+  const { orgId } = props;
 
-    const {
-      register,
-      formState: { errors },
-      handleSubmit,
-      watch,
-      setValue,
-    } = useForm({
-      resolver: yupResolver(OrganizationSchema),
-      mode: "all",
-    });
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const GETBYID = API_ENDPOINTS.FETCH_ORGANIZATION(orgId)
-          const response = await axios.get(GETBYID.url, {
-            headers:GETBYID.headers
-          });
-          const data = decryptData(response.data.data); 
-          setValue("org_name", data.org_name);
-          setValue("status", data.status);
-        } catch (error) {
-          console.error("Error fetching data", error);
-        }
-      };
-      fetchData();
-    }, [orgId, setValue]);
-  
-    const onSubmit = async (data) => {
-      const token = sessionStorage.getItem('token');
-      const formData = {
-        ...data,
-      };
-  
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    watch,
+    setValue,
+  } = useForm({
+    resolver: yupResolver(OrganizationSchema),
+    mode: "all",
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const UPDATEORGANIZATION = API_ENDPOINTS.UPDATE_ORGANIZATION(orgId)
-        const response = await axios.post(UPDATEORGANIZATION.url, formData, {
-          headers: UPDATEORGANIZATION.headers
+        const GETBYID = API_ENDPOINTS.FETCH_ORGANIZATION(orgId);
+        const response = await axios.get(GETBYID.url, {
+          headers: GETBYID.headers,
         });
-  
-        if (response.status === 200) {
-          toast.success("Org Updated Successfully");
-          props.toggleModal();
-          props.handlerefresh();
-        } else {
-          console.error("Error in posting data", response);
-          toast.error("Failed to Upload");
-        }
+        const data = decryptData(response.data.data);
+        setValue("org_name", data.org_name);
+        setValue("status", data.status);
       } catch (error) {
-        console.error("Error in posting data", error);
+        console.error("Error fetching data", error);
       }
     };
+    fetchData();
+  }, [orgId, setValue]);
+
+  const onSubmit = async (data) => {
+    const token = localStorage.getItem("token");
+    const formData = {
+      ...data,
+    };
+
+    try {
+      const UPDATEORGANIZATION = API_ENDPOINTS.UPDATE_ORGANIZATION(orgId);
+      const response = await axios.post(UPDATEORGANIZATION.url, formData, {
+        headers: UPDATEORGANIZATION.headers,
+      });
+
+      if (response.status === 200) {
+        toast.success("Org Updated Successfully");
+        props.toggleModal();
+        props.handlerefresh();
+      } else {
+        console.error("Error in posting data", response);
+        toast.error("Failed to Upload");
+      }
+    } catch (error) {
+      console.error("Error in posting data", error);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center  ">
       <div className="bg-white w-[522px] h-[358px]  font-lexend m-2 ">
@@ -107,11 +107,14 @@ const EditOrganization = (props) => {
               >
                 Status:
               </label>
-              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
-              id="status"
-               {...register("status")}
-               >
-                <option value="" hidden>Status</option>
+              <select
+                className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+                id="status"
+                {...register("status")}
+              >
+                <option value="" hidden>
+                  Status
+                </option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>

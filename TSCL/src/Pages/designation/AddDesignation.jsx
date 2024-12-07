@@ -1,64 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import SaveCancel from '../../components/SavaCancel';
-import API_ENDPOINTS from '../../ApiEndpoints/api/ApiClient';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const desginationSchema = yup.object().shape({
   org_name: yup
     .string()
     .test(
-      'not-select',
-      'Please select an Organization',
-      (value) => value !== '' && value !== 'Select  Organization'
+      "not-select",
+      "Please select an Organization",
+      (value) => value !== "" && value !== "Select  Organization"
     ),
   dept_name: yup
-  .string()
-  .test(
-    'not-select',
-    'Please select an Department',
-    (value) => value !== '' && value !== 'Select  Department'
-  ),
-  designation: yup.string().required('Designation is required'),
+    .string()
+    .test(
+      "not-select",
+      "Please select an Department",
+      (value) => value !== "" && value !== "Select  Department"
+    ),
+  designation: yup.string().required("Designation is required"),
 });
 
-const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal, handlerefresh }) => {
-
-
-  const { register, formState: { errors }, handleSubmit } = useForm({
+const AddDesgination = ({
+  ExistingOrganiZations,
+  ExistingDepartments,
+  toggleModal,
+  handlerefresh,
+}) => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
     resolver: yupResolver(desginationSchema),
-    mode: 'all',
+    mode: "all",
   });
-
-
 
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      status: 'active',
-      created_by_user: sessionStorage.getItem('name'),
+      status: "active",
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
-      const response = await axios.post(API_ENDPOINTS.POST_DESIGANATION.url, formData,{
-        headers:API_ENDPOINTS.POST_DESIGANATION.headers
-      }
+      const response = await axios.post(
+        API_ENDPOINTS.POST_DESIGANATION.url,
+        formData,
+        {
+          headers: API_ENDPOINTS.POST_DESIGANATION.headers,
+        }
       );
 
       if (response.status === 200) {
-        toast.success('Designatiom created Successfully');
+        toast.success("Designatiom created Successfully");
         toggleModal();
         handlerefresh();
       } else {
-        console.error('Error in posting data', response);
-        toast.error('Failed to Upload');
+        console.error("Error in posting data", response);
+        toast.error("Failed to Upload");
       }
     } catch (error) {
-      console.error('Error in posting data', error);
+      console.error("Error in posting data", error);
     }
   };
 
@@ -80,8 +87,7 @@ const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal
               <select
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
                 id="org_name"
-                {...register('org_name')}
-               
+                {...register("org_name")}
               >
                 <option value="">Select Organization</option>
                 {ExistingOrganiZations.map((org) => (
@@ -91,7 +97,9 @@ const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal
                 ))}
               </select>
               {errors.org_name && (
-                <p className="text-red-500 text-xs mt-1">{errors.org_name.message}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.org_name.message}
+                </p>
               )}
             </div>
             <div className="mb-3">
@@ -104,8 +112,7 @@ const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal
               <select
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
                 id="dept_name"
-                {...register('dept_name')}
-             
+                {...register("dept_name")}
               >
                 <option value="">Select Department</option>
                 {ExistingDepartments.map((dept) => (
@@ -115,7 +122,9 @@ const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal
                 ))}
               </select>
               {errors.dept_name && (
-                <p className="text-red-500 text-xs mt-1">{errors.dept_name.message}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.dept_name.message}
+                </p>
               )}
             </div>
             <div>
@@ -130,10 +139,12 @@ const AddDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModal
                 id="designation"
                 type="text"
                 placeholder="Designation Name"
-                {...register('designation')}
+                {...register("designation")}
               />
               {errors.designation && (
-                <p className="text-red-500 text-xs mt-1">{errors.designation.message}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.designation.message}
+                </p>
               )}
             </div>
           </div>

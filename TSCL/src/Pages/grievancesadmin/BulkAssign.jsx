@@ -18,9 +18,9 @@ const AssignSchema = yup.object().shape({
     ),
 });
 
-const BulkAssign= (props) => {
+const BulkAssign = (props) => {
   const { selectedRows, toggleAModal, handlerefresh } = props;
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [dataUsers, setDataUsers] = useState([]);
 
   const {
@@ -38,7 +38,7 @@ const BulkAssign= (props) => {
   }, []);
   const fetchDeptUser = async () => {
     try {
-      const dept = sessionStorage.getItem("dept");
+      const dept = localStorage.getItem("dept");
       const response = await axios.get(
         `${API}/user/getbydept?dept_name=${dept}`,
         {
@@ -51,12 +51,11 @@ const BulkAssign= (props) => {
 
       setDataUsers(responseData);
     } catch (err) {
-        console.error(err);
-    } 
+      console.error(err);
+    }
   };
 
   const onSubmit = async (data) => {
-
     const selectElement = event.target.querySelector("select");
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const assignUserId = selectedOption.getAttribute("data-user-id");

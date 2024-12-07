@@ -24,7 +24,7 @@ const Ward = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -44,7 +44,7 @@ const Ward = ({ permissions }) => {
 
   const [ward, setWard] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -165,15 +165,11 @@ const Ward = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(
-        `${API}/ward/uploadcsv`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${API}/ward/uploadcsv`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 200) {
         // console.log("File uploaded successfully");
@@ -282,25 +278,25 @@ const Ward = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-2 mx-8 flex-wrap">
-          <SearchInput
+            <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search Ward"
             />
             {hasCreatePermission && (
               <FileUploadButton
-              onChange={handleFileChange}
-              buttonText={buttonText}
-              accept=".csv"
-              onClick={handleButtonClick}
-            />
+                onChange={handleFileChange}
+                buttonText={buttonText}
+                accept=".csv"
+                onClick={handleButtonClick}
+              />
             )}
             {hasDownloadPermission && (
-            <DocumentDownload
-            selectedDoc={selectedDoc}
-            onChange={setDocs}
-            exportData={exportData}
-          />
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
             )}
           </div>
           <HeaderButton
@@ -439,18 +435,18 @@ const Ward = ({ permissions }) => {
               </table>
             </div>
           </div>
-      
+
           <div className=" my-2 mb-5 mx-7">
-          <BulkUploadButton handleDownload={handleDownload}/>
-          <Pagination 
-          Length={ward.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <BulkUploadButton handleDownload={handleDownload} />
+            <Pagination
+              Length={ward.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>

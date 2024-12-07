@@ -11,13 +11,15 @@ const ViewRequest = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
   const [workDataFile, setWorkDataFile] = useState(null);
-  const [endpoint, setEndpoint] = useState(null)
+  const [endpoint, setEndpoint] = useState(null);
   const [matchData, setMatchData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  const grievanceId = location.state?.grievanceId;
-  const token = sessionStorage.getItem("token");
+  // const grievanceId = location.state?.grievanceId;
+  const queryParams = new URLSearchParams(location.search);
+  const grievanceId = queryParams.get('grievanceId');
+  const token = localStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [isSimilarReq, setIsSimilarReq] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
@@ -46,7 +48,9 @@ const ViewRequest = () => {
           }
         );
         const data = decryptData(responsefilter.data.data);
-        const filteredData = data.filter(item => item.grievance_id !== grievanceId);
+        const filteredData = data.filter(
+          (item) => item.grievance_id !== grievanceId
+        );
         setMatchData(filteredData);
       } catch (err) {
         setError(err);
@@ -151,15 +155,17 @@ const ViewRequest = () => {
 
                 <div className="flex gap-3 items-center ">
                   <p className="">Priority: </p>
-                  <span className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
-                        data.priority === "High"
-                          ? "bg-red-500"
-                          : data.priority === "Medium"
-                          ? "bg-sky-500"
-                          : data.priority === "Low"
-                          ? "bg-green-500"
-                          : ""
-                      }`}>
+                  <span
+                    className={`border w-28 rounded-full text-center py-1.5 mx-2 text-sm font-normal capitalize text-white  ${
+                      data.priority === "High"
+                        ? "bg-red-500"
+                        : data.priority === "Medium"
+                        ? "bg-sky-500"
+                        : data.priority === "Low"
+                        ? "bg-green-500"
+                        : ""
+                    }`}
+                  >
                     {data.priority}
                   </span>
                 </div>
@@ -240,7 +246,7 @@ const ViewRequest = () => {
                             onClick={() => {
                               setIsviewModal(true);
                               setAttachmentFile(file.attachment);
-                              setEndpoint("new-grievance-attachment")
+                              setEndpoint("new-grievance-attachment");
                             }}
                           >
                             {`Attachment ${index + 1}`}
@@ -254,7 +260,10 @@ const ViewRequest = () => {
               <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
                 <p className="pt-2 text-lg ">Similar Request</p>
                 <hr className="my-3 w-full" />
-                <div className="overflow-auto no-scrollbar" onClick={()=>setIsSimilarReq(true)}>
+                <div
+                  className="overflow-auto no-scrollbar"
+                  onClick={() => setIsSimilarReq(true)}
+                >
                   <table className="w-full bg-gray-200 rounded ">
                     <thead>
                       <tr>
@@ -394,7 +403,7 @@ const ViewRequest = () => {
                               onClick={() => {
                                 setIsviewModal(true);
                                 setAttachmentFile(file.attachment);
-                                setEndpoint("grievance-worksheet-attachment")
+                                setEndpoint("grievance-worksheet-attachment");
                               }}
                             >
                               {`Attachment ${index + 1}`}
@@ -405,7 +414,6 @@ const ViewRequest = () => {
                     )}
                   </div>
 
-                  
                   <hr className="my-3" />
                   <div className="md:grid md:grid-cols-3 flex border-2 md:mx-20">
                     <p className="text-center px-3 py-1.5">Status</p>
@@ -421,7 +429,7 @@ const ViewRequest = () => {
       </div>
       {isviewModal && (
         <ViewAttachment
-        endpoint={endpoint}
+          endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
         />

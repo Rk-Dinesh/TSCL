@@ -28,7 +28,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
   const [filteredGrievances, setFilteredGrievances] = useState([]);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const handleform = () => {
     navigate("/form");
@@ -47,7 +47,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
-        const reverseData = responseData.reverse()
+        const reverseData = responseData.reverse();
         setGrievance(reverseData);
       })
       .catch((error) => {
@@ -108,13 +108,13 @@ const Grivences = ({ permissions, include, endpoint }) => {
       const createdAt = new Date(grievances.createdAt);
       return createdAt >= startDate && createdAt < addDays(endDate, 1);
     });
-  
+
     setFilteredGrievances(filteredCenters);
-    toast.success("Grievances filtered")
+    toast.success("Grievances filtered");
   };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  
+
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -170,8 +170,14 @@ const Grivences = ({ permissions, include, endpoint }) => {
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
-          const currentPageData = filteredGrievances.slice(startIndex, endIndex);
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            filteredGrievances.length
+          );
+          const currentPageData = filteredGrievances.slice(
+            startIndex,
+            endIndex
+          );
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
@@ -221,7 +227,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
           });
 
           if (currentPage < totalPages) {
-            pdf .addPage();
+            pdf.addPage();
             yOffset = 10; // Set yOffset for the new page
           }
         }
@@ -330,9 +336,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
                       <p
                         className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1   text-slate-900"
                         onClick={() =>
-                          navigate(`/view`, {
-                            state: { grievanceId: report.grievance_id },
-                          })
+                          navigate(`/view?grievanceId=${report.grievance_id}`)
                         }
                       >
                         {report.grievance_id}
@@ -412,7 +416,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
               hasNextPage={lastIndex >= filteredGrievances.length}
             />
           </div>
- </div>
+        </div>
       </div>
     </Fragment>
   );

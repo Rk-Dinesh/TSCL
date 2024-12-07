@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo1.png";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -29,7 +29,6 @@ const Login = ({ setToken }) => {
     mode: "all",
   });
 
-
   function getTokenExpirationDuration(token) {
     const decodedToken = jwtDecode(token);
     const expirationTime = decodedToken.exp;
@@ -37,31 +36,30 @@ const Login = ({ setToken }) => {
     const expirationDuration = expirationTime - currentTime;
     return expirationDuration;
   }
-  
-  const onSubmit = async (data) => {
 
+  const onSubmit = async (data) => {
     let isRegularUserLoggedIn = false;
     let token = null;
 
     try {
       const response = await axios.post(`${API}/user/loginweb`, data);
-      
+
       if (response.status === 200) {
         isRegularUserLoggedIn = true;
         token = response.data.token;
         const decodedToken = jwtDecode(token);
-        sessionStorage.setItem("dept",decodedToken.dept);
-        sessionStorage.setItem("code",decodedToken.code);
-        sessionStorage.setItem("role",decodedToken.role);
-        sessionStorage.setItem("name",decodedToken.name);
+        localStorage.setItem("dept", decodedToken.dept);
+        localStorage.setItem("code", decodedToken.code);
+        localStorage.setItem("role", decodedToken.role);
+        localStorage.setItem("name", decodedToken.name);
       }
     } catch (error) {
       // console.error("Error logging in as user", error);
     }
-    if ( isRegularUserLoggedIn === true) {
+    if (isRegularUserLoggedIn === true) {
       const tokenExpirationDuration = getTokenExpirationDuration(token);
       setToken(token);
-      sessionStorage.setItem('token', token);
+      localStorage.setItem("token", token);
       toast.success("Logged in successfully");
       navigate("/dashboard");
       const timeoutId = setTimeout(() => {
@@ -73,10 +71,8 @@ const Login = ({ setToken }) => {
     }
   };
 
-  
   return (
     <div className="h-screen  bg-primary py-6 flex flex-col md:items-center gap-8 justify-center ">
-      
       <div className="flex items-center justify-center gap-3 ">
         <img src={logo} alt="Image" className="w-24 h-24" />
         <p className="text-6xl text-secondary">TSCL</p>
@@ -84,16 +80,18 @@ const Login = ({ setToken }) => {
       <div className="mx-3  ">
         <div className="p-6  md:max-w-[600px] w-full  md:bg-white  rounded-lg ">
           <div className="font-lexend text-start mt-2">
-
             <form onSubmit={handleSubmit(onSubmit)}>
-              <p className="text-xl md:text-black text-gray-200  md:mx-2  my-2 ">Sign In</p>
+              <p className="text-xl md:text-black text-gray-200  md:mx-2  my-2 ">
+                Sign In
+              </p>
 
               <div className=" grid md:grid-cols-3 grid-col-2  font-normal md:mx-4 py-3">
                 <label
                   className="flex md:text-black text-slate-800 text-lg font-medium mb-2 col-span-1 "
                   htmlFor="identifier"
                 >
-                  Email / Phone<span className="md:text-red-700 text-red-900 px-2">*</span>
+                  Email / Phone
+                  <span className="md:text-red-700 text-red-900 px-2">*</span>
                 </label>
                 <input
                   type="text"
@@ -114,7 +112,8 @@ const Login = ({ setToken }) => {
                   className="md:text-black text-slate-800  text-lg font-medium mb-2 col-span-1"
                   htmlFor="login_password"
                 >
-                  Password<span className="md:text-red-700 text-red-900 px-2">*</span>
+                  Password
+                  <span className="md:text-red-700 text-red-900 px-2">*</span>
                 </label>
                 <input
                   type="password"
@@ -130,9 +129,7 @@ const Login = ({ setToken }) => {
                 )}
               </div>
               <div className="flex justify-center mt-5">
-                <button
-                  className="px-5 py-1.5 md:text-white text-primary text-base rounded-full md:bg-primary bg-gray-50 md:hover:bg-primary-hover"
-                >
+                <button className="px-5 py-1.5 md:text-white text-primary text-base rounded-full md:bg-primary bg-gray-50 md:hover:bg-primary-hover">
                   Login
                 </button>
               </div>

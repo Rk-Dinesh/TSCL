@@ -16,10 +16,10 @@ import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
 
-const RequestAdmin = ({permissions,include,endpoint}) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
+const RequestAdmin = ({ permissions, include, endpoint }) => {
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
 
   const [searchValue, setSearchValue] = useState("");
@@ -36,8 +36,8 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
 
-  const token = sessionStorage.getItem("token");
-  const dept = sessionStorage.getItem("dept");
+  const token = localStorage.getItem("token");
+  const dept = localStorage.getItem("dept");
 
   const [statusColors, setStatusColors] = useState({});
 
@@ -49,8 +49,6 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
   const [selectedAssign, setSelectedAssign] = useState(null);
 
   useEffect(() => {
-   
-
     handlerefresh();
     fetchActiveStatus();
     fetchDeptUser();
@@ -73,7 +71,7 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
-    
+
         setFilteredGrievances(filteredCenters);
       })
       .catch((error) => {
@@ -150,9 +148,9 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
       const createdAt = new Date(grievances.createdAt);
       return createdAt >= startDate && createdAt < addDays(endDate, 1);
     });
-  
+
     setFilteredGrievances(filteredCenters);
-    toast.success("Grievance filtered")
+    toast.success("Grievance filtered");
   };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -281,8 +279,14 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
-          const currentPageData = filteredGrievances.slice(startIndex, endIndex);
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            filteredGrievances.length
+          );
+          const currentPageData = filteredGrievances.slice(
+            startIndex,
+            endIndex
+          );
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
@@ -345,22 +349,22 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
     <Fragment>
       <div className="overflow-y-auto no-scrollbar">
         <div className="  font-lexend h-screen ">
-        <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
-        <DateRangeComp onChange={handleDateRangeChange} />
-        <div className="flex flex-row flex-wrap gap-1.5">
-          <SearchInput
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Grievances"
-            />
+          <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
+            <DateRangeComp onChange={handleDateRangeChange} />
+            <div className="flex flex-row flex-wrap gap-1.5">
+              <SearchInput
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Grievances"
+              />
 
-            {hasDownloadPermission && (
-              <DocumentDownload
-              selectedDoc={selectedDoc}
-              onChange={setDocs}
-              exportData={exportData}
-            />
-            )}
+              {hasDownloadPermission && (
+                <DocumentDownload
+                  selectedDoc={selectedDoc}
+                  onChange={setDocs}
+                  exportData={exportData}
+                />
+              )}
             </div>
           </div>
           <div className="bg-white h-4/5 mx-3 rounded-lg mt-2  p-3">
@@ -433,31 +437,32 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
                 </button>
               </div>
             </div>
-            {include == 'yes' && (
-            <div className="my-2 mx-3 flex flex-wrap gap-2 ">
-              <button className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
-              onClick={() => setIsBulkassign(true)}
-              >
-                Multi-Assign
-              </button>
-              <button
-                className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
-                onClick={() => setIstransferModal(true)}
-              >
-                Multi-Transfer
-              </button>
-            </div>
+            {include == "yes" && (
+              <div className="my-2 mx-3 flex flex-wrap gap-2 ">
+                <button
+                  className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
+                  onClick={() => setIsBulkassign(true)}
+                >
+                  Multi-Assign
+                </button>
+                <button
+                  className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
+                  onClick={() => setIstransferModal(true)}
+                >
+                  Multi-Transfer
+                </button>
+              </div>
             )}
             <div className=" rounded-lg  py-3 overflow-x-auto no-scrollbar">
               <table className="w-full mt-1 ">
                 <thead className=" border-b border-gray-300  ">
                   <tr className="">
-                    {include==='yes' && (
-                    <th className="">
-                      <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
-                        <AiOutlineThunderbolt className="text-xl text-center text-primary" />
-                      </p>
-                    </th>
+                    {include === "yes" && (
+                      <th className="">
+                        <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                          <AiOutlineThunderbolt className="text-xl text-center text-primary" />
+                        </p>
+                      </th>
                     )}
                     <th className="">
                       <p className=" mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
@@ -512,26 +517,28 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
                 <tbody>
                   {currentItemsOnPage.map((report, index) => (
                     <tr className=" border-b border-gray-300  " key={index}>
-                      {include==='yes' && (
-                      <td className=" flex gap-2 items-center justify-center ">
-                        <div className="flex items-center ">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 mt-4  text-dark bg-gray-800 border-gray-800 rounded"
-                            checked={selectedRows.includes(report.grievance_id)}
-                            onChange={() =>
-                              handleCheckboxChange(report.grievance_id)
-                            }
-                          />
-                          <label
-                            className="sr-only"
-                            htmlFor="checkbox-table-search-1"
-                          >
-                            checkbox
-                          </label>
-                        </div>
-                      </td>
-                     )}
+                      {include === "yes" && (
+                        <td className=" flex gap-2 items-center justify-center ">
+                          <div className="flex items-center ">
+                            <input
+                              type="checkbox"
+                              className="w-4 h-4 mt-4  text-dark bg-gray-800 border-gray-800 rounded"
+                              checked={selectedRows.includes(
+                                report.grievance_id
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(report.grievance_id)
+                              }
+                            />
+                            <label
+                              className="sr-only"
+                              htmlFor="checkbox-table-search-1"
+                            >
+                              checkbox
+                            </label>
+                          </div>
+                        </td>
+                      )}
                       <td className="">
                         <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap">
                           {firstIndex + index + 1 < 10
@@ -543,12 +550,7 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
                         <p
                           className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  capitalize text-slate-900"
                           onClick={() =>
-                            navigate(`/view2`, {
-                              state: {
-                                grievanceId: report.grievance_id,
-                                deptName: report.dept_name,
-                              },
-                            })
+                            navigate(`/view2?grievanceId=${report.grievance_id}&deptName=${encodeURIComponent(report.dept_name)}`)
                           }
                         >
                           {report.grievance_id}
@@ -637,7 +639,6 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
           toggleTModal={toggleTModal}
           selectedRows={selectedRows}
           handlerefresh={handlerefresh}
-          
         />
       )}
       {isBulkassign && (
@@ -645,7 +646,6 @@ const RequestAdmin = ({permissions,include,endpoint}) => {
           toggleAModal={toggleAModal}
           selectedRows={selectedRows}
           handlerefresh={handlerefresh}
-          
         />
       )}
     </Fragment>

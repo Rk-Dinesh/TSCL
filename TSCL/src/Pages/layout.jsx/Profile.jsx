@@ -42,8 +42,8 @@ const passwordSchema = yup.object().shape({
 });
 
 const Profile = () => {
-  const code = sessionStorage.getItem("code");
-  const token = sessionStorage.getItem("token");
+  const code = localStorage.getItem("code");
+  const token = localStorage.getItem("token");
   const [data, setData] = useState({});
   const [isPassword, setIsPassword] = useState(null);
 
@@ -335,7 +335,7 @@ const Profile = () => {
                 </button>
               </div>
             </div>
-          
+
             <div className="col-span-4 my-4  px-3">
               <div className="flex items-center border-2  rounded-lg mx-2  px-2 py-2 outline-none">
                 <input
@@ -359,8 +359,6 @@ const Profile = () => {
                 </p>
               )}
             </div>
-
-            
 
             <div className=" text-center my-6 sm:py-5">
               <button

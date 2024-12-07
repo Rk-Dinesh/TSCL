@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../../../Host";
 import { toast } from "react-toastify";
@@ -8,18 +8,23 @@ import * as yup from "yup";
 import SaveCancel from "../../../components/SavaCancel";
 
 const StreetSchema = yup.object().shape({
-  ward_name: yup.string().test('not-select', 'Please select a ward', (value) => value !== '' && value !== 'Select Street'),
+  ward_name: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select a ward",
+      (value) => value !== "" && value !== "Select Street"
+    ),
   street_name: yup.string().required("street_name is required"),
 });
 
-
 const AddStreet = (props) => {
-  const {ExistingWards} = props
-  const [zoneId, setZoneId] = useState(null)
-  const [wardId, setWardId] = useState(null)
-  const [zoneName, setZoneName] = useState(null)
-  const [WardName, setWardName] = useState(null)
- 
+  const { ExistingWards } = props;
+  const [zoneId, setZoneId] = useState(null);
+  const [wardId, setWardId] = useState(null);
+  const [zoneName, setZoneName] = useState(null);
+  const [WardName, setWardName] = useState(null);
+
   const {
     register,
     formState: { errors },
@@ -36,8 +41,8 @@ const AddStreet = (props) => {
         (ward) => ward.ward_name === WardName
       );
       if (selectedWard) {
-        setZoneId( selectedWard.zone_id);
-        setWardId( selectedWard.ward_id);
+        setZoneId(selectedWard.zone_id);
+        setWardId(selectedWard.ward_id);
         setZoneName(selectedWard.zone_name);
       }
     }
@@ -46,21 +51,19 @@ const AddStreet = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      zone_id:zoneId,
-      ward_id:wardId,
-      zone_name:zoneName,
+      zone_id: zoneId,
+      ward_id: wardId,
+      zone_name: zoneName,
       status: "active",
-      created_by_user:sessionStorage.getItem('name'),
+      created_by_user: localStorage.getItem("name"),
     };
 
-
-
     try {
-      const token = sessionStorage.getItem('token'); 
-      const response = await axios.post(`${API}/street/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`${API}/street/post`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.status === 200) {
@@ -89,7 +92,7 @@ const AddStreet = (props) => {
                 className="block text-gray-900 text-base font-normal mb-3"
                 htmlFor="ward_name"
               >
-               Ward Name
+                Ward Name
               </label>
               <select
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"

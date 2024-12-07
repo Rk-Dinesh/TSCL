@@ -9,7 +9,7 @@ const RoleAccessLevelEdit = () => {
   const location = useLocation();
   const roleId = location.state?.role_id; // Use optional chaining in case location.state is undefined
 
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [roleName, setRoleName] = useState("");
   const [accessLevels, setAccessLevels] = useState([]);
@@ -129,7 +129,7 @@ const RoleAccessLevelEdit = () => {
       newAccessLevels[featureIndex].permissions =
         newAccessLevels[featureIndex].permissions.length === 5
           ? []
-          : ["view","create", "edit", "delete","download"];
+          : ["view", "create", "edit", "delete", "download"];
       setAccessLevels(newAccessLevels);
     }
   };
@@ -210,12 +210,14 @@ const RoleAccessLevelEdit = () => {
           )}
           <div className="mb-2">
             <h3 className="mt-6 mb-3 text-base ">Access Levels:</h3>
-            {features.map((feature, index) => (
+            {features.map((feature, index) =>
               feature.title ? (
                 <div key={index} className=" flex gap-2 items-center mb-4">
-                <h3 className="text-base text-primary">{feature.name}</h3>
-                <p className="text-red-500 text-sm">( Select one option from the list )</p>
-              </div>
+                  <h3 className="text-base text-primary">{feature.name}</h3>
+                  <p className="text-red-500 text-sm">
+                    ( Select one option from the list )
+                  </p>
+                </div>
               ) : (
                 <div
                   className="md:grid md:grid-cols-3 mb-3 text-base "
@@ -256,7 +258,9 @@ const RoleAccessLevelEdit = () => {
                               .find((level) => level.feature === feature.value)
                               ?.permissions.includes("create") || false
                           }
-                          onChange={() => handlePermissionChange(index, "create")}
+                          onChange={() =>
+                            handlePermissionChange(index, "create")
+                          }
                         />
                         <label>Create</label>
                       </div>
@@ -282,7 +286,9 @@ const RoleAccessLevelEdit = () => {
                               .find((level) => level.feature === feature.value)
                               ?.permissions.includes("delete") || false
                           }
-                          onChange={() => handlePermissionChange(index, "delete")}
+                          onChange={() =>
+                            handlePermissionChange(index, "delete")
+                          }
                         />
                         <label>Delete</label>
                       </div>
@@ -295,7 +301,9 @@ const RoleAccessLevelEdit = () => {
                               .find((level) => level.feature === feature.value)
                               ?.permissions.includes("download") || false
                           }
-                          onChange={() => handlePermissionChange(index, "download")}
+                          onChange={() =>
+                            handlePermissionChange(index, "download")
+                          }
                         />
                         <label>Download</label>
                       </div>
@@ -315,7 +323,7 @@ const RoleAccessLevelEdit = () => {
                   )}
                 </div>
               )
-            ))}
+            )}
           </div>
           {errors.featurePermissions && (
             <p className="error text-red-500">{errors.featurePermissions}</p>

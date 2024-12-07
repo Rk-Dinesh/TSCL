@@ -64,11 +64,10 @@ const GrievanceForm = () => {
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [files, setFiles] = useState([]);
   const [translatedLan, setTranslatedLan] = useState("");
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [statusColors, setStatusColors] = useState({});
   const [grievance, setGrievance] = useState([]);
   const [status, setStatus] = useState([]);
-
 
   useEffect(() => {
     dispatch(fetchDepartment());
@@ -758,9 +757,9 @@ const GrievanceForm = () => {
                         onChange={(e) => {
                           setIsSameAddress(e.target.checked);
                           if (e.target.checked) {
-                            setValue("complaintaddress", residentAddress); 
-                          }else{
-                            setValue("complaintaddress", ""); 
+                            setValue("complaintaddress", residentAddress);
+                          } else {
+                            setValue("complaintaddress", "");
                           }
                         }}
                       />

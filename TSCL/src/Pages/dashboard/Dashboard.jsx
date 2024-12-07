@@ -4,17 +4,17 @@ import { FaPlus } from "react-icons/fa6";
 import { BsCalendar2Week } from "react-icons/bs";
 import { FaCalendarAlt } from "react-icons/fa";
 import { VscGitPullRequestNewChanges } from "react-icons/vsc";
-import { API,  formatDate1 } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import decryptData from "../../Decrypt";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import logo from "../../assets/images/logo1.png"
+import logo from "../../assets/images/logo1.png";
 
 const Dashboard = () => {
   const [report, setReport] = useState([]);
   const [department, setDepartment] = useState([]);
   const [status, setStatus] = useState([]);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [filterDept, setFilterDept] = useState([]);
   const [filterStatus, setFilterStatus] = useState([]);
 
@@ -241,7 +241,6 @@ const Dashboard = () => {
                   paddingAngle={2}
                   fill="#8884d8"
                   label
-                  
                 >
                   {filterStatus.map((entry, index) => (
                     <Cell
@@ -277,62 +276,64 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
-          <div className="bg-white h-3/6 mx-3 rounded-lg mt-2  p-3 shadow-md">
-            <p className="text-lg font-lexend my-1 mx-2">Last 5 Grievances request :</p>
-            <div className=" rounded-lg  py-1 overflow-x-auto no-scrollbar">
-              <table className="w-full mt-1 ">
-                <thead className=" border-b border-gray-300  ">
-                  <tr className="">
-                    
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Complaint No
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Department <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Complaint <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        RasiedBy
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                       Date <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    
-                  </tr>
-                </thead>
-                <tbody>
-                  {report.slice().reverse().slice(0,5).map((report, index) => (
+
+        <div className="bg-white h-3/6 mx-3 rounded-lg mt-2  p-3 shadow-md">
+          <p className="text-lg font-lexend my-1 mx-2">
+            Last 5 Grievances request :
+          </p>
+          <div className=" rounded-lg  py-1 overflow-x-auto no-scrollbar">
+            <table className="w-full mt-1 ">
+              <thead className=" border-b border-gray-300  ">
+                <tr className="">
+                  <th>
+                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                      Complaint No
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                      Department <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                      Complaint <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                      RasiedBy
+                      <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                      Date <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {report
+                  .slice()
+                  .reverse()
+                  .slice(0, 5)
+                  .map((report, index) => (
                     <tr className=" border-b border-gray-300  " key={index}>
-                      
                       <td>
                         <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 ">
                           {report.grievance_id}
                         </p>
                       </td>
                       <td>
-                      <div className="flex  gap-2 items-center justify-start mx-5 my-3  text-sm text-gray-800">
-                        <img
-                          src={logo}
-                          alt="logo"
-                          className="w-8 h-8"
-                        />
-                        <p className="font-lexend whitespace-nowrap capitalize   text-gray-800"> {report.dept_name}</p>
-                      </div>
-                    </td>
+                        <div className="flex  gap-2 items-center justify-start mx-5 my-3  text-sm text-gray-800">
+                          <img src={logo} alt="logo" className="w-8 h-8" />
+                          <p className="font-lexend whitespace-nowrap capitalize   text-gray-800">
+                            {" "}
+                            {report.dept_name}
+                          </p>
+                        </div>
+                      </td>
                       <td>
                         {" "}
                         <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
@@ -350,17 +351,12 @@ const Dashboard = () => {
                           {formatDate1(report.createdAt)}
                         </p>
                       </td>
-                      
-                      
                     </tr>
                   ))}
-                </tbody>
-              </table>
-            </div>
+              </tbody>
+            </table>
           </div>
-
-         
-        
+        </div>
       </div>
     </div>
   );

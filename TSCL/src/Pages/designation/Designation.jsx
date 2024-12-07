@@ -1,10 +1,10 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import axios from "axios";
 import { API, downloadCSV, formatDate1 } from "../../Host";
-import logo from "../../assets/images/logo1.png"
+import logo from "../../assets/images/logo1.png";
 import decryptData from "../../Decrypt";
 import DeleteModal from "../Modal/DeleteModal";
 import jsPDF from "jspdf";
@@ -19,14 +19,14 @@ import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
 import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
-const csvData=`designation,dept_name,org_name,status,created_by_user
+const csvData = `designation,dept_name,org_name,status,created_by_user
 Designation,Department,Organization,active,admin`;
 
 const Designation = ({ permissions }) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -43,14 +43,11 @@ const Designation = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [designation, setDesignation] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem('token'); 
+  const token = localStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
-  const [selectedDoc, setSelectedDoc] = useState(null)
-
-
-
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -59,9 +56,9 @@ const Designation = ({ permissions }) => {
   const isDropdownOpen = (index) => dropdownOpen === index;
 
   useEffect(() => {
-   handlerefresh()
-   fetchExistingOrganiZations()
-   fetchExistingDepartments()
+    handlerefresh();
+    fetchExistingOrganiZations();
+    fetchExistingDepartments();
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -71,24 +68,26 @@ const Designation = ({ permissions }) => {
   };
 
   const handlerefresh = () => {
-    axios.get(API_ENDPOINTS.GET_DESIGNATION.url,{
-      headers:API_ENDPOINTS.GET_DESIGNATION.headers,
-    }).then((response) => {
-      const responseData = decryptData(response.data.data)
-      setDesignation(responseData);
+    axios
+      .get(API_ENDPOINTS.GET_DESIGNATION.url, {
+        headers: API_ENDPOINTS.GET_DESIGNATION.headers,
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setDesignation(responseData);
 
-      const filteredCenters = responseData.filter((desgn) =>
-        Object.values(desgn).some((value) =>
-          value.toString().toLowerCase().includes(searchValue.toLowerCase())
-        )
-      );
+        const filteredCenters = responseData.filter((desgn) =>
+          Object.values(desgn).some((value) =>
+            value.toString().toLowerCase().includes(searchValue.toLowerCase())
+          )
+        );
 
-      setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-      const lastIndex = currentPage * itemsPerPage;
-      const firstIndex = lastIndex - itemsPerPage;
+        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
+        const lastIndex = currentPage * itemsPerPage;
+        const firstIndex = lastIndex - itemsPerPage;
 
-      setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-    });
+        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
+      });
   };
 
   const toggleModal = () => {
@@ -105,14 +104,17 @@ const Designation = ({ permissions }) => {
 
   const toggleDeleteCloseModal = () => {
     setIsDeleteModal(!isDeleteModal);
-    setdeleteId(null)
+    setdeleteId(null);
   };
 
   const fetchExistingOrganiZations = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_ORG_DESIGNATIONACTIVE.url,{
-        headers:API_ENDPOINTS.GET_ORG_DESIGNATIONACTIVE.headers,
-      });
+      const response = await axios.get(
+        API_ENDPOINTS.GET_ORG_DESIGNATIONACTIVE.url,
+        {
+          headers: API_ENDPOINTS.GET_ORG_DESIGNATIONACTIVE.headers,
+        }
+      );
       const responseData = decryptData(response.data.data);
       setExistingOrganiZations(responseData);
     } catch (error) {
@@ -122,9 +124,12 @@ const Designation = ({ permissions }) => {
 
   const fetchExistingDepartments = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.url,{
-        headers:API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.headers
-      });
+      const response = await axios.get(
+        API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.url,
+        {
+          headers: API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.headers,
+        }
+      );
       const responseData = decryptData(response.data.data);
       setExistingDepartments(responseData);
     } catch (error) {
@@ -132,7 +137,6 @@ const Designation = ({ permissions }) => {
     }
   };
 
-  
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const filteredCenters = designation.filter((desgn) =>
@@ -141,14 +145,18 @@ const Designation = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {const DELETE_DESIGNATION =API_ENDPOINTS.DELETE_DESIGNATION(deleteId)
+    try {
+      const DELETE_DESIGNATION = API_ENDPOINTS.DELETE_DESIGNATION(deleteId);
       await axios.delete(DELETE_DESIGNATION.url, {
         headers: DELETE_DESIGNATION.headers,
       });
-      toggleDeleteCloseModal()
+      toggleDeleteCloseModal();
       handlerefresh();
       setDesignation(
         designation.filter((status) => designation.desgination_id !== deleteId)
@@ -178,11 +186,15 @@ const Designation = ({ permissions }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(API_ENDPOINTS.UPLOAD_DESIGNATION.url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.UPLOAD_DESIGNATION.url,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
         // console.log("File uploaded successfully");
@@ -206,23 +218,22 @@ const Designation = ({ permissions }) => {
     if (format === "csv") {
       // CSV Export
       const exportedData = designation.map((row) => ({
-        
         desgination_id: row.desgination_id,
-        designation:row.designation,
+        designation: row.designation,
         dept_name: row.dept_name,
         org_name: row.org_name,
         status: row.status,
-        created_by_user: row.created_by_user
+        created_by_user: row.created_by_user,
       }));
-  
+
       const csvData = [
         Object.keys(exportedData[0]).join(","),
         ...exportedData.map((row) => Object.values(row).join(",")),
       ].join("\n");
-  
+
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const url = window.URL.createObjectURL(blob);
-  
+
       const link = document.createElement("a");
       link.setAttribute("href", url);
       link.setAttribute("download", "Designation_data.csv");
@@ -234,17 +245,19 @@ const Designation = ({ permissions }) => {
       try {
         const rowsPerPage = 30;
         const totalPages = Math.ceil(designation.length / rowsPerPage);
-  
+
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
-  
+
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, designation.length);
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            designation.length
+          );
           const currentPageData = designation.slice(startIndex, endIndex);
-  
+
           const tableData = currentPageData.map((row) => [
-            
             row.desgination_id,
             row.designation,
             row.dept_name,
@@ -252,7 +265,7 @@ const Designation = ({ permissions }) => {
             row.status,
             row.created_by_user,
           ]);
-  
+
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
@@ -262,20 +275,20 @@ const Designation = ({ permissions }) => {
                 "Designation",
                 "DeptName",
                 "OrgName",
-               "Status",
+                "Status",
                 "createdBy",
               ],
             ],
             body: tableData,
             theme: "striped",
           });
-  
+
           if (currentPage < totalPages) {
             pdf.addPage();
             yOffset = 10; // Set yOffset for the new page
           }
         }
-  
+
         pdf.save("Designation_data.pdf");
       } catch (error) {
         console.error("Error exporting data:", error);
@@ -292,26 +305,26 @@ const Designation = ({ permissions }) => {
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
           <div className="flex flex-row items-center md:justify-end gap-3 p-2 mt-2 mx-8 flex-wrap">
-          <SearchInput
+            <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search Designation"
             />
             {hasCreatePermission && (
-               <FileUploadButton
-               onChange={handleFileChange}
-               buttonText={buttonText}
-               accept=".csv"
-               onClick={handleButtonClick}
-             />
+              <FileUploadButton
+                onChange={handleFileChange}
+                buttonText={buttonText}
+                accept=".csv"
+                onClick={handleButtonClick}
+              />
             )}
             {hasDownloadPermission && (
-            <DocumentDownload
-            selectedDoc={selectedDoc}
-            onChange={setDocs}
-            exportData={exportData}
-          />
-              )}
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
+            )}
           </div>
 
           <HeaderButton
@@ -324,9 +337,9 @@ const Designation = ({ permissions }) => {
             <table className="w-full  mt-3">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">
-                <th className="py-2">
+                  <th className="py-2">
                     <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                      # 
+                      #
                     </p>
                   </th>
                   <th className="">
@@ -383,12 +396,11 @@ const Designation = ({ permissions }) => {
                     </td>
                     <td>
                       <div className="flex  gap-2 items-center justify-start mx-3 my-3  text-sm text-gray-800">
-                        <img
-                          src={logo}
-                          alt="logo"
-                          className="w-8 h-8"
-                        />
-                        <p className="font-lexend whitespace-nowrap capitalize   text-gray-800"> {desgn.dept_name}</p>
+                        <img src={logo} alt="logo" className="w-8 h-8" />
+                        <p className="font-lexend whitespace-nowrap capitalize   text-gray-800">
+                          {" "}
+                          {desgn.dept_name}
+                        </p>
                       </div>
                     </td>
                     <td className="">
@@ -412,13 +424,13 @@ const Designation = ({ permissions }) => {
                       </p>
                     </td>
                     <td>
-                        <div className="flex justify-start mx-1.5 my-3">
-                          <BsThreeDotsVertical
-                            onClick={() => toggleDropdown(index)}
-                          />
-                          {isDropdownOpen(index) && (
-                            <div className=" bg-white shadow-md rounded-lg ml-1">
-                              {hasEditPermission && (
+                      <div className="flex justify-start mx-1.5 my-3">
+                        <BsThreeDotsVertical
+                          onClick={() => toggleDropdown(index)}
+                        />
+                        {isDropdownOpen(index) && (
+                          <div className=" bg-white shadow-md rounded-lg ml-1">
+                            {hasEditPermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
@@ -429,41 +441,39 @@ const Designation = ({ permissions }) => {
                               >
                                 Edit
                               </button>
-                              )}
-                              {hasDeletePermission && (
+                            )}
+                            {hasDeletePermission && (
                               <button
                                 className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                 onClick={() => {
                                   setIsDeleteModal(true);
                                   setdeleteId(desgn.desgination_id);
                                   toggleDropdown();
-                                  
                                 }}
                               >
                                 Delete
                               </button>
-                              )}
-                            </div>
-                            
-                          )}
-                        </div>
-                      </td>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <div className=" my-2 mb-5 mx-7">
-          <BulkUploadButton handleDownload={handleDownload}/>
-          <Pagination 
-          Length={designation.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <BulkUploadButton handleDownload={handleDownload} />
+            <Pagination
+              Length={designation.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>
@@ -477,7 +487,7 @@ const Designation = ({ permissions }) => {
           handlerefresh={handlerefresh}
         />
       )}
-       {editModal && (
+      {editModal && (
         <EditDesgination
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
@@ -487,12 +497,11 @@ const Designation = ({ permissions }) => {
         />
       )}
       {isDeleteModal && (
-        <DeleteModal 
-        toggleDeleteModal={toggleDeleteCloseModal}
-        delete={handleDelete}
+        <DeleteModal
+          toggleDeleteModal={toggleDeleteCloseModal}
+          delete={handleDelete}
         />
       )}
-  
     </Fragment>
   );
 };

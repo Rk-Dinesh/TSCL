@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiExpandUpDownLine } from "react-icons/ri";
-import { API,  formatDate1 } from "../../Host";
+import { API, formatDate1 } from "../../Host";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -13,12 +13,11 @@ import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
 
-const RequestHead = ({permissions,include,endpoint}) => {
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
+const RequestHead = ({ permissions, include, endpoint }) => {
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
-
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,8 +37,8 @@ const RequestHead = ({permissions,include,endpoint}) => {
   const [dataUsers, setDataUsers] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
 
-  const token = sessionStorage.getItem("token");
-  const dept = sessionStorage.getItem("dept");
+  const token = localStorage.getItem("token");
+  const dept = localStorage.getItem("dept");
 
   const navigate = useNavigate();
 
@@ -74,7 +73,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
-    
+
         setFilteredGrievances(filteredCenters);
       })
       .catch((error) => {
@@ -86,7 +85,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
     fetchActiveStatus();
     fetchComplaintType();
     fetchDeptUser();
-  }, [ ]);
+  }, []);
 
   useEffect(() => {
     const filteredCenters = report.filter((grievances) =>
@@ -199,9 +198,9 @@ const RequestHead = ({permissions,include,endpoint}) => {
       const createdAt = new Date(grievances.createdAt);
       return createdAt >= startDate && createdAt < addDays(endDate, 1);
     });
-  
+
     setFilteredGrievances(filteredCenters);
-    toast.success("Grievance filtered")
+    toast.success("Grievance filtered");
   };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -217,7 +216,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
     setSelectedAssign(null);
     paginate(1);
   };
-  const handleDept = async(depts) => {
+  const handleDept = async (depts) => {
     if (depts === "All") {
       setSelectedDepartment(null);
       setComplaint([]);
@@ -246,46 +245,46 @@ const RequestHead = ({permissions,include,endpoint}) => {
     }
     paginate(1);
   };
-  const handleZone = async(zones) => {
+  const handleZone = async (zones) => {
     if (zones === "All") {
       setSelectedZone(null);
-      setWard([])
-      setStreet([])
+      setWard([]);
+      setStreet([]);
     } else {
       setSelectedZone(zones);
       setSelectedWard(null);
       setSelectedStreet(null);
       await axios
-      .get(`${API}/ward/getzone?zone_name=${zones}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const responseData = decryptData(response.data.data);
-        setWard(responseData);
-      });
+        .get(`${API}/ward/getzone?zone_name=${zones}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setWard(responseData);
+        });
     }
     paginate(1);
   };
 
-  const handleWard = async(wards) => {
+  const handleWard = async (wards) => {
     if (wards === "All") {
       setSelectedWard(null);
-      setStreet([])
+      setStreet([]);
     } else {
       setSelectedWard(wards);
       setSelectedStreet(null);
       await axios
-      .get(`${API}/street/getward?ward_name=${wards}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const responseData = decryptData(response.data.data);
-        setStreet(responseData);
-      });
+        .get(`${API}/street/getward?ward_name=${wards}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setStreet(responseData);
+        });
     }
     paginate(1);
   };
@@ -381,128 +380,134 @@ const RequestHead = ({permissions,include,endpoint}) => {
     })
     .slice(firstIndex, lastIndex);
 
-    const setDocs = (event) => {
-      setSelectedDoc(event.target.value);
-    };
-  
-    const exportData = async (format) => {
-      if (format === "csv") {
-        // CSV Export
-        const exportedData = filteredGrievances.map((row) => ({
-          grievance_id: row.grievance_id,
-          grievance_mode: row.grievance_mode,
-          complaint_type_title: row.complaint_type_title,
-          dept_name: row.dept_name,
-          zone_name: row.zone_name,
-          ward_name: row.ward_name,
-          street_name: row.street_name,
-          pincode: row.pincode,
-          complaint: row.complaint,
-  
-          public_user_id: row.public_user_id,
-          public_user_name: row.public_user_name,
-          phone: row.phone,
-          assign_user: row.assign_user,
-          assign_username: row.assign_username,
-          assign_userphone: row.assign_userphone,
-          status: row.status,
-          escalation_level: row.escalation_level,
-  
-          priority: row.priority,
-        }));
-  
-        const csvData = [
-          Object.keys(exportedData[0]).join(","),
-          ...exportedData.map((row) => Object.values(row).join(",")),
-        ].join("\n");
-  
-        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-        const url = window.URL.createObjectURL(blob);
-  
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "Grievance_data.csv");
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else if (format === "pdf") {
-        try {
-          const rowsPerPage = 30;
-          const totalPages = Math.ceil(filteredGrievances.length / rowsPerPage);
-  
-          const pdf = new jsPDF("l", "mm", "a4");
-          let yOffset = 0;
-  
-          for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
-            const currentPageData = filteredGrievances.slice(startIndex, endIndex);
-  
-            const tableData = currentPageData.map((row) => [
-              row.grievance_id,
-              row.grievance_mode,
-              row.complaint_type_title,
-              row.dept_name,
-  
-              row.pincode,
-              row.complaint,
-  
-              row.public_user_name,
-              row.phone,
-  
-              row.assign_username,
-              row.assign_userphone,
-              row.status,
-              row.escalation_level,
-  
-              row.priority,
-            ]);
-  
-            pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
-            pdf.autoTable({
-              startY: yOffset + 15,
-              head: [
-                [
-                  "grievance_id",
-                  "grievance_mode",
-                  "complaintType",
-                  "dept",
-                  "pincode",
-                  "complaint",
-                  "publicUser",
-                  "phone",
-                  "assignUser",
-                  "assignUserphone",
-                  "status",
-                  "Escalation",
-                  "Priority",
-                ],
+  const setDocs = (event) => {
+    setSelectedDoc(event.target.value);
+  };
+
+  const exportData = async (format) => {
+    if (format === "csv") {
+      // CSV Export
+      const exportedData = filteredGrievances.map((row) => ({
+        grievance_id: row.grievance_id,
+        grievance_mode: row.grievance_mode,
+        complaint_type_title: row.complaint_type_title,
+        dept_name: row.dept_name,
+        zone_name: row.zone_name,
+        ward_name: row.ward_name,
+        street_name: row.street_name,
+        pincode: row.pincode,
+        complaint: row.complaint,
+
+        public_user_id: row.public_user_id,
+        public_user_name: row.public_user_name,
+        phone: row.phone,
+        assign_user: row.assign_user,
+        assign_username: row.assign_username,
+        assign_userphone: row.assign_userphone,
+        status: row.status,
+        escalation_level: row.escalation_level,
+
+        priority: row.priority,
+      }));
+
+      const csvData = [
+        Object.keys(exportedData[0]).join(","),
+        ...exportedData.map((row) => Object.values(row).join(",")),
+      ].join("\n");
+
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "Grievance_data.csv");
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === "pdf") {
+      try {
+        const rowsPerPage = 30;
+        const totalPages = Math.ceil(filteredGrievances.length / rowsPerPage);
+
+        const pdf = new jsPDF("l", "mm", "a4");
+        let yOffset = 0;
+
+        for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
+          const startIndex = (currentPage - 1) * rowsPerPage;
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            filteredGrievances.length
+          );
+          const currentPageData = filteredGrievances.slice(
+            startIndex,
+            endIndex
+          );
+
+          const tableData = currentPageData.map((row) => [
+            row.grievance_id,
+            row.grievance_mode,
+            row.complaint_type_title,
+            row.dept_name,
+
+            row.pincode,
+            row.complaint,
+
+            row.public_user_name,
+            row.phone,
+
+            row.assign_username,
+            row.assign_userphone,
+            row.status,
+            row.escalation_level,
+
+            row.priority,
+          ]);
+
+          pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
+          pdf.autoTable({
+            startY: yOffset + 15,
+            head: [
+              [
+                "grievance_id",
+                "grievance_mode",
+                "complaintType",
+                "dept",
+                "pincode",
+                "complaint",
+                "publicUser",
+                "phone",
+                "assignUser",
+                "assignUserphone",
+                "status",
+                "Escalation",
+                "Priority",
               ],
-              body: tableData,
-              theme: "striped",
-            });
-  
-            if (currentPage < totalPages) {
-              pdf.addPage();
-              yOffset = 10; // Set yOffset for the new page
-            }
+            ],
+            body: tableData,
+            theme: "striped",
+          });
+
+          if (currentPage < totalPages) {
+            pdf.addPage();
+            yOffset = 10; // Set yOffset for the new page
           }
-  
-          pdf.save("Grievance_data.pdf");
-        } catch (error) {
-          console.error("Error exporting data:", error);
         }
+
+        pdf.save("Grievance_data.pdf");
+      } catch (error) {
+        console.error("Error exporting data:", error);
       }
-    };
+    }
+  };
 
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-      <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-        <DateRangeComp onChange={handleDateRangeChange} />
+        <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
+          <DateRangeComp onChange={handleDateRangeChange} />
           <div className="flex flex-row flex-wrap gap-1.5">
-          <SearchInput
+            <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search Grievances"
@@ -510,13 +515,13 @@ const RequestHead = ({permissions,include,endpoint}) => {
 
             {hasDownloadPermission && (
               <DocumentDownload
-              selectedDoc={selectedDoc}
-              onChange={setDocs}
-              exportData={exportData}
-            />
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
             )}
-            </div>
           </div>
+        </div>
         <div className="flex flex-wrap gap-1.5 mt-1 mx-4">
           <button
             className={`w-20  py-1 ${
@@ -788,12 +793,7 @@ const RequestHead = ({permissions,include,endpoint}) => {
                       <p
                         className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  capitalize text-slate-900"
                         onClick={() =>
-                          navigate(`/view3`, {
-                            state: {
-                              grievanceId: report.grievance_id,
-                              deptName: report.dept_name,
-                            },
-                          })
+                          navigate(`/view3?grievanceId=${report.grievance_id}&deptName=${encodeURIComponent(report.dept_name)}`)
                         }
                       >
                         {report.grievance_id}

@@ -27,7 +27,7 @@ const TicketSchema = yup.object().shape({
 
 const ManyTicketTransfer = (props) => {
   const { selectedRows, toggleTModal, handlerefresh } = props;
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [ExistingDept, setExistingDept] = useState([]);
   const [ExistingComplaint, setExistingComplaint] = useState([]);
   const [filterComplaints, setFilterComplaints] = useState([]);
@@ -96,7 +96,7 @@ const ManyTicketTransfer = (props) => {
     };
 
     try {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `${API}/new-grievance/updatemanytransfer`,
         formData,

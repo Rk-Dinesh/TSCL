@@ -7,13 +7,11 @@ import * as yup from "yup";
 import SaveCancel from "../../components/SavaCancel";
 import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
-
 const ComplaintSchema = yup.object().shape({
   complaint_type: yup.string().required("complaint_type is required"),
 });
 
 const AddComplaintType = (props) => {
-
   const {
     register,
     formState: { errors },
@@ -25,19 +23,22 @@ const AddComplaintType = (props) => {
   });
 
   const onSubmit = async (data) => {
-   
     const formData = {
       ...data,
-      status:"active",
-      created_by_user:sessionStorage.getItem('name'),
+      status: "active",
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
-      const response = await axios.post(API_ENDPOINTS.POST_COMPLAINTTYPE.url, formData,{
-        headers:API_ENDPOINTS.POST_COMPLAINTTYPE.headers
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.POST_COMPLAINTTYPE.url,
+        formData,
+        {
+          headers: API_ENDPOINTS.POST_COMPLAINTTYPE.headers,
+        }
+      );
 
-      if (response.status === 200) { 
+      if (response.status === 200) {
         toast.success(" created Successfully");
         props.toggleModal();
         props.handlerefresh();
@@ -55,14 +56,14 @@ const AddComplaintType = (props) => {
         <div className="border-b-2 border-gray-300 mx-10">
           <h1 className="text-xl font-medium pt-10 pb-2">Add Complaint Type</h1>
         </div>
-       
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mx-6 my-10">
             <label
               className="block text-gray-900 text-base font-normal mb-4"
               htmlFor="complaint_type"
             >
-             Complaint Type
+              Complaint Type
             </label>
             <input
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
@@ -77,7 +78,6 @@ const AddComplaintType = (props) => {
           </div>
           <SaveCancel onCancel={props.toggleModal} />
         </form>
-       
       </div>
     </div>
   );

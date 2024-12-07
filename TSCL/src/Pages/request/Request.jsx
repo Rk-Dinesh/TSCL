@@ -27,7 +27,7 @@ const Request = ({ permissions, include, endpoint }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [report, setReport] = useState([]);
   const [filteredGrievances, setFilteredGrievances] = useState([]);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [complainttype, setComplainttype] = useState([]);
   const [Showing, setShowing] = useState([]);
@@ -51,7 +51,7 @@ const Request = ({ permissions, include, endpoint }) => {
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
-    
+
         setFilteredGrievances(filteredCenters);
       } catch (error) {}
     };
@@ -73,7 +73,7 @@ const Request = ({ permissions, include, endpoint }) => {
     fetchgrievance();
     fetchComplaintType();
     fetchActiveStatus();
-  }, [ ]);
+  }, []);
 
   useEffect(() => {
     const filteredCenters = report.filter((grievances) =>
@@ -126,9 +126,9 @@ const Request = ({ permissions, include, endpoint }) => {
       const createdAt = new Date(grievances.createdAt);
       return createdAt >= startDate && createdAt < addDays(endDate, 1);
     });
-  
+
     setFilteredGrievances(filteredCenters);
-    toast.success("Grievance filtered")
+    toast.success("Grievance filtered");
   };
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
@@ -207,8 +207,14 @@ const Request = ({ permissions, include, endpoint }) => {
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, filteredGrievances.length);
-          const currentPageData = filteredGrievances.slice(startIndex, endIndex);
+          const endIndex = Math.min(
+            startIndex + rowsPerPage,
+            filteredGrievances.length
+          );
+          const currentPageData = filteredGrievances.slice(
+            startIndex,
+            endIndex
+          );
 
           const tableData = currentPageData.map((row) => [
             row.grievance_id,
@@ -270,7 +276,7 @@ const Request = ({ permissions, include, endpoint }) => {
   return (
     <div className="overflow-y-auto no-scrollbar">
       <div className="  font-lexend h-screen ">
-      {include === "yes" && (
+        {include === "yes" && (
           <HeaderButton
             title="Grievances"
             hasCreatePermission={hasCreatePermission}
@@ -278,24 +284,24 @@ const Request = ({ permissions, include, endpoint }) => {
           />
         )}
         <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-        <DateRangeComp onChange={handleDateRangeChange} />
+          <DateRangeComp onChange={handleDateRangeChange} />
           <div className="flex flex-row flex-wrap gap-1.5">
-          <SearchInput
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search Grievances"
-          />
-
-          {hasDownloadPermission && (
-            <DocumentDownload
-              selectedDoc={selectedDoc}
-              onChange={setDocs}
-              exportData={exportData}
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search Grievances"
             />
-          )}
+
+            {hasDownloadPermission && (
+              <DocumentDownload
+                selectedDoc={selectedDoc}
+                onChange={setDocs}
+                exportData={exportData}
+              />
+            )}
           </div>
         </div>
-       
+
         <div className="bg-white h-4/5 mx-4 rounded-lg mt-1  p-3">
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
@@ -397,9 +403,7 @@ const Request = ({ permissions, include, endpoint }) => {
                       <p
                         className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  text-slate-900 "
                         onClick={() =>
-                          navigate(`/view`, {
-                            state: { grievanceId: report.grievance_id },
-                          })
+                          navigate(`/view?grievanceId=${report.grievance_id}`)
                         }
                       >
                         {report.grievance_id}

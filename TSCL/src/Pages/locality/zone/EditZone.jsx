@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { API } from "../../../Host";
 import { toast } from "react-toastify";
@@ -11,18 +11,18 @@ import SaveCancel from "../../../components/SavaCancel";
 const ZoneSchema = yup.object().shape({
   zone_name: yup.string().required("Zone_name is required"),
   status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "Please select an Status",
+      (value) => value !== "" && value !== "Status"
+    ),
 });
 
 const EditZone = (props) => {
-    const {zoneId} = props;
-    const token = sessionStorage.getItem('token'); 
-    
+  const { zoneId } = props;
+  const token = localStorage.getItem("token");
+
   const {
     register,
     formState: { errors },
@@ -37,12 +37,15 @@ const EditZone = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/zone/getbyid?zone_id=${zoneId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.get(
+          `${API}/zone/getbyid?zone_id=${zoneId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        const data = decryptData(response.data.data); 
+        );
+        const data = decryptData(response.data.data);
         setValue("zone_name", data.zone_name);
         setValue("status", data.status);
       } catch (error) {
@@ -52,22 +55,23 @@ const EditZone = (props) => {
     fetchData();
   }, [zoneId, setValue]);
 
-
   const onSubmit = async (data) => {
-   
     const formData = {
       ...data,
     };
 
     try {
-      
-      const response = await axios.post(`${API}/zone/update?zone_id=${zoneId}`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
+      const response = await axios.post(
+        `${API}/zone/update?zone_id=${zoneId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
-      if (response.status === 200) { 
+      if (response.status === 200) {
         toast.success("Zone Updated Successfully");
         props.toggleModal();
         props.handlerefresh();
@@ -113,11 +117,14 @@ const EditZone = (props) => {
               >
                 Status:
               </label>
-              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
-              id="status"
-               {...register("status")}
-               >
-                <option value="" hidden>Status</option>
+              <select
+                className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+                id="status"
+                {...register("status")}
+              >
+                <option value="" hidden>
+                  Status
+                </option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>

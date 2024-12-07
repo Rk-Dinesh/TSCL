@@ -12,7 +12,6 @@ const OrganizationSchema = yup.object().shape({
 });
 
 const AddOrganization = (props) => {
-
   const {
     register,
     formState: { errors },
@@ -23,21 +22,23 @@ const AddOrganization = (props) => {
     mode: "all",
   });
 
-
-
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      status:"active",
-      created_by_user:sessionStorage.getItem('name')
+      status: "active",
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
-      const response = await axios.post(API_ENDPOINTS.POST_ORGANIZATION.url, formData,{
-        headers: API_ENDPOINTS.POST_ORGANIZATION.headers
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.POST_ORGANIZATION.url,
+        formData,
+        {
+          headers: API_ENDPOINTS.POST_ORGANIZATION.headers,
+        }
+      );
 
-      if (response.status === 200) { 
+      if (response.status === 200) {
         toast.success("Org created Successfully");
         props.toggleModal();
         props.handlerefresh();

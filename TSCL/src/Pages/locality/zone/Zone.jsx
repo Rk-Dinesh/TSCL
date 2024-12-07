@@ -41,7 +41,7 @@ const Zone = ({ permissions }) => {
 
   const [zone, setZone] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");

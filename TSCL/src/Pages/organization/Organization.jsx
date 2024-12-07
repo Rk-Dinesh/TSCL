@@ -44,7 +44,7 @@ const Organization = ({ permissions }) => {
 
   const [organization, setOrganization] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
@@ -69,7 +69,7 @@ const Organization = ({ permissions }) => {
   const handlerefresh = () => {
     axios
       .get(API_ENDPOINTS.GET_ORGANIZATION.url, {
-        headers: API_ENDPOINTS.GET_ORGANIZATION.headers
+        headers: API_ENDPOINTS.GET_ORGANIZATION.headers,
       })
       .then((response) => {
         const reponseData = decryptData(response.data.data);
@@ -122,7 +122,7 @@ const Organization = ({ permissions }) => {
     try {
       const DELETEENDPOINT = API_ENDPOINTS.DELETE_ORGANIZATION(deleteId);
       await axios.delete(DELETEENDPOINT.url, {
-        headers: API_ENDPOINTS.DELETE_ORGANIZATION.headers
+        headers: API_ENDPOINTS.DELETE_ORGANIZATION.headers,
       });
       toggleDeleteCloseModal();
       handlerefresh();
@@ -148,7 +148,6 @@ const Organization = ({ permissions }) => {
       uploadFile(file);
     }
   };
-  
 
   const uploadFile = async (file) => {
     try {
@@ -156,7 +155,7 @@ const Organization = ({ permissions }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-       API_ENDPOINTS.CSV_ORGANIZATION.url,
+        API_ENDPOINTS.CSV_ORGANIZATION.url,
         formData,
         {
           headers: {

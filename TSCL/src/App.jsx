@@ -57,7 +57,7 @@ const Designation = lazy(() => import("./Pages/designation/Designation"));
 const Employee = lazy(() => import("./Pages/Employees/Employee"));
 
 function App() {
-  const [token, setToken] = useState(sessionStorage.getItem("token") || "");
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loading, setLoading] = useState(true);
 
   const decodedToken = useMemo(
@@ -121,7 +121,7 @@ function App() {
           <Route
             path="/"
             element={
-              !sessionStorage.getItem("token") ? (
+              !localStorage.getItem("token") ? (
                 <Navigate to="" />
               ) : (
                 <Layout permissions={memoizedFeatures} />
@@ -129,7 +129,7 @@ function App() {
             }
           >
             <Route path="/profile" element={<Profile />} />
-            
+
             {memoizedFeatures["dashboard"] && (
               <>
                 <Route
@@ -228,7 +228,12 @@ function App() {
             )}
             {memoizedFeatures["grievance"] && (
               <>
-                <Route path="/grievances" element={<GrievanceTab permissions={memoizedFeatures["grievance"]}/>} /> 
+                <Route
+                  path="/grievances"
+                  element={
+                    <GrievanceTab permissions={memoizedFeatures["grievance"]} />
+                  }
+                />
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
               </>
@@ -238,7 +243,9 @@ function App() {
                 <Route
                   path="/requestview1"
                   element={
-                    <RequestTab permissions={memoizedFeatures["requestview1"]} />
+                    <RequestTab
+                      permissions={memoizedFeatures["requestview1"]}
+                    />
                   }
                 />
 
@@ -266,7 +273,9 @@ function App() {
                 <Route
                   path="/requestview3"
                   element={
-                    <RequestJETab permissions={memoizedFeatures["requestview3"]} />
+                    <RequestJETab
+                      permissions={memoizedFeatures["requestview3"]}
+                    />
                   }
                 />
                 <Route path="/view3" element={<ViewRequestJE />} />

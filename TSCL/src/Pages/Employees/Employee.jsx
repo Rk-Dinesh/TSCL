@@ -170,6 +170,7 @@ const Employee = ({ permissions }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      localStorage
 
       const response = await axios.post(API_ENDPOINTS.CSV_EMPLOYEE.url, formData, {
         headers: {

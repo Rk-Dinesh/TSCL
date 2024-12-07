@@ -4,13 +4,11 @@ import { BsChevronDown } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
 const SimilarReq = (props) => {
-  const { matchData,togglReModal } = props;
- 
-  
+  const { matchData, togglReModal } = props;
+
   const [accordionOpen, setAccordionOpen] = useState({});
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const accordions = document.querySelectorAll(".accordion");
@@ -29,14 +27,14 @@ const SimilarReq = (props) => {
     });
   }, []);
 
-
-  
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex  justify-center items-center">
       <div className="bg-white w-full h-3/5 font-lexend m-2 mx-5 overflow-auto">
         <div className="flex justify-between mx-3 mt-2 items-center">
-        <p className="pt-2 text-lg text-slate-900 pl-5">Similar Request</p>
-        <p className="text-3xl pr-5" onClick={()=>togglReModal()}>x</p>
+          <p className="pt-2 text-lg text-slate-900 pl-5">Similar Request</p>
+          <p className="text-3xl pr-5" onClick={() => togglReModal()}>
+            x
+          </p>
         </div>
         <hr className="my-3 w-full" />
         {matchData && matchData.length > 0 ? (
@@ -44,18 +42,18 @@ const SimilarReq = (props) => {
             <div key={index} className="accordion mb-4" data-index={index}>
               <div className="accordion-header flex items-center justify-between p-4 bg-slate-500 rounded-t cursor-pointer mx-3">
                 <div className="flex flex-wrap gap-3">
-                <p className="text-white">
-                  <span className="text-lg  font-medium">{data.grievance_id} :</span> {data.dept_name} - {data.complaint}
-                </p>
-               
+                  <p className="text-white">
+                    <span className="text-lg  font-medium">
+                      {data.grievance_id} :
+                    </span>{" "}
+                    {data.dept_name} - {data.complaint}
+                  </p>
                 </div>
-                
+
                 <span className="text-2xl font-bold text-white">
-                <BsChevronDown className={ 
-                      accordionOpen[index]
-                        ? " rotate-180 "
-                        : ""
-                    }/>
+                  <BsChevronDown
+                    className={accordionOpen[index] ? " rotate-180 " : ""}
+                  />
                 </span>
               </div>
               <div
@@ -65,9 +63,9 @@ const SimilarReq = (props) => {
               >
                 <table className="w-full bg-gray-100 rounded">
                   <tbody className="divide-y divide-gray-300">
-                  <tr>
+                    <tr>
                       <td className="text-start px-3 mx-3 py-2.5 whitespace-nowrap">
-                       Department : {data.dept_name} 
+                        Department : {data.dept_name}
                       </td>
                     </tr>
                     <tr>
@@ -86,7 +84,9 @@ const SimilarReq = (props) => {
             </div>
           ))
         ) : (
-          <p className=" text-center font-semibold text-2xl mt-28">No matching data found !!!</p>
+          <p className=" text-center font-semibold text-2xl mt-28">
+            No matching data found !!!
+          </p>
         )}
       </div>
     </div>

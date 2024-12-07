@@ -11,12 +11,10 @@ import EditStatus from "./EditStatus";
 import Pagination from "../../components/Pagination";
 import SearchHeader from "../../components/SearchHeader";
 
-
 const Status = ({ permissions }) => {
-
-  const hasCreatePermission = permissions?.includes('create');
-  const hasEditPermission = permissions?.includes('edit');
-  const hasDeletePermission = permissions?.includes('delete');
+  const hasCreatePermission = permissions?.includes("create");
+  const hasEditPermission = permissions?.includes("edit");
+  const hasDeletePermission = permissions?.includes("delete");
 
   const [isModal, setIsModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -30,7 +28,7 @@ const Status = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [status, setstatus] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -97,18 +95,18 @@ const Status = ({ permissions }) => {
     )
   );
 
-  const currentItemsOnPage = filteredCenters.slice().reverse().slice(firstIndex, lastIndex);
+  const currentItemsOnPage = filteredCenters
+    .slice()
+    .reverse()
+    .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `${API}/status/delete?status_id=${deleteId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${API}/status/delete?status_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       toggleDeleteCloseModal();
       handlerefresh();
       toast.success("Deleted successfully");
@@ -121,7 +119,7 @@ const Status = ({ permissions }) => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen mt-10">
-        <SearchHeader
+          <SearchHeader
             title="Status"
             hasCreatePermission={hasCreatePermission}
             onClick={() => setIsModal(true)}
@@ -141,7 +139,7 @@ const Status = ({ permissions }) => {
                     </th>
                     <th>
                       <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                         Status Name
+                        Status Name
                         <RiExpandUpDownLine />
                       </p>
                     </th>
@@ -205,28 +203,28 @@ const Status = ({ permissions }) => {
                           {isDropdownOpen(index) && (
                             <div className=" bg-white shadow-md rounded-lg ml-1">
                               {hasEditPermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setEditModal(true);
-                                  setstatusId(type.status_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Edit
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setEditModal(true);
+                                    setstatusId(type.status_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Edit
+                                </button>
                               )}
                               {hasDeletePermission && (
-                              <button
-                                className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
-                                onClick={() => {
-                                  setIsDeleteModal(true);
-                                  setdeleteId(type.status_id);
-                                  toggleDropdown();
-                                }}
-                              >
-                                Delete
-                              </button>
+                                <button
+                                  className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
+                                  onClick={() => {
+                                    setIsDeleteModal(true);
+                                    setdeleteId(type.status_id);
+                                    toggleDropdown();
+                                  }}
+                                >
+                                  Delete
+                                </button>
                               )}
                             </div>
                           )}
@@ -239,23 +237,20 @@ const Status = ({ permissions }) => {
             </div>
           </div>
           <div className=" my-3 mb-5 mx-7">
-          <Pagination 
-          Length={status.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <Pagination
+              Length={status.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>
       {isModal && (
-        <AddStatus
-          toggleModal={toggleModal}
-          handlerefresh={handlerefresh}
-        />
+        <AddStatus toggleModal={toggleModal} handlerefresh={handlerefresh} />
       )}
       {editModal && (
         <EditStatus

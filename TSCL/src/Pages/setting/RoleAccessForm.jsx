@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const RoleAccessLevelForm = () => {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [roleName, setRoleName] = useState("");
   const [accessLevels, setAccessLevels] = useState([]);
@@ -94,7 +94,7 @@ const RoleAccessLevelForm = () => {
         "create",
         "edit",
         "delete",
-        "download"
+        "download",
       ];
     }
     setAccessLevels(newAccessLevels);
@@ -135,10 +135,8 @@ const RoleAccessLevelForm = () => {
       role_name: roleName,
       accessLevels: newAccessLevels,
       status: "active",
-      created_by_user:sessionStorage.getItem('name'),
+      created_by_user: localStorage.getItem("name"),
     };
-
-  
 
     try {
       const response = await axios.post(`${API}/role/post`, roleAccessLevel, {
@@ -175,13 +173,17 @@ const RoleAccessLevelForm = () => {
             <p className="error mt-3 text-red-500">{errors.roleName}</p>
           )}
           <div className="mb-2">
-            <h3 className="mt-6 mb-3 text-base text-primary ">Access Levels:</h3>
+            <h3 className="mt-6 mb-3 text-base text-primary ">
+              Access Levels:
+            </h3>
             {features.map((feature, index) => {
               if (feature.title) {
                 return (
                   <div key={index} className=" flex gap-2 items-center mb-4">
                     <h3 className="text-base text-primary">{feature.name}</h3>
-                    <p className="text-red-500 text-sm">( Select one option from the list )</p>
+                    <p className="text-red-500 text-sm">
+                      ( Select one option from the list )
+                    </p>
                   </div>
                 );
               }
@@ -216,9 +218,7 @@ const RoleAccessLevelForm = () => {
                               )
                               ?.permissions.includes("view") || false
                           }
-                          onChange={() =>
-                            handlePermissionChange(index, "view")
-                          }
+                          onChange={() => handlePermissionChange(index, "view")}
                         />
                         <label className="text-sm">View</label>
                       </div>
@@ -252,9 +252,7 @@ const RoleAccessLevelForm = () => {
                               )
                               ?.permissions.includes("edit") || false
                           }
-                          onChange={() =>
-                            handlePermissionChange(index, "edit")
-                          }
+                          onChange={() => handlePermissionChange(index, "edit")}
                         />
                         <label>Edit</label>
                       </div>
@@ -300,8 +298,7 @@ const RoleAccessLevelForm = () => {
                           value="all"
                           checked={
                             accessLevels.find(
-                              (level) =>
-                                level.feature === features[index].value
+                              (level) => level.feature === features[index].value
                             )?.permissions.length === 5 || false
                           }
                           onChange={() => handleAllPermissionChange(index)}

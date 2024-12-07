@@ -23,23 +23,21 @@ const AddZone = (props) => {
   });
 
   const onSubmit = async (data) => {
-   
     const formData = {
       ...data,
-      status:"active",
-      created_by_user:sessionStorage.getItem('name')
+      status: "active",
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
-      const token = sessionStorage.getItem('token'); 
-      const response = await axios.post(`${API}/zone/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`${API}/zone/post`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (response.status === 200) { 
-      
+      if (response.status === 200) {
         toast.success("Zone created Successfully");
         props.toggleModal();
         props.handlerefresh();

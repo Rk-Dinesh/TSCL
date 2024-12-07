@@ -19,7 +19,7 @@ const EscalationCommissioner = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
-  const hasDownloadPermission = permissions?.includes('download');
+  const hasDownloadPermission = permissions?.includes("download");
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,9 +29,9 @@ const EscalationCommissioner = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
 
   const [organization, setOrganization] = useState([]);
-  const token = sessionStorage.getItem("token");
-  const role = sessionStorage.getItem("role");
-  const dept = sessionStorage.getItem("dept");
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const dept = localStorage.getItem("dept");
   const [selectedDoc, setSelectedDoc] = useState(null);
 
   const navigate = useNavigate();
@@ -48,19 +48,16 @@ const EscalationCommissioner = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(
-        `${API}/grievance-escalation/get`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .get(`${API}/grievance-escalation/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const reponseData = decryptData(response.data.data);
 
-        const filteredEscalate = reponseData.filter((org) =>
-          org.escalation_to.toLowerCase() === role.toLowerCase()
+        const filteredEscalate = reponseData.filter(
+          (org) => org.escalation_to.toLowerCase() === role.toLowerCase()
         );
 
         setOrganization(reponseData);
@@ -193,7 +190,7 @@ const EscalationCommissioner = ({ permissions }) => {
         .post(`${API}/manual-escalation-check`)
         .then((response) => {
           //console.log(response.data);
-          handlerefresh()
+          handlerefresh();
           toast.success("Manual Escalation Done!!!");
         })
         .catch((error) => {
@@ -213,24 +210,24 @@ const EscalationCommissioner = ({ permissions }) => {
             </h1>
 
             <div className="flex flex-row items-center gap-2">
-            <SearchInput
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Escalation"
-            />
+              <SearchInput
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Escalation"
+              />
               <button
                 className="bg-red-600 rounded-full px-3 py-2 text-white text-sm"
                 onClick={() => handleEscalation()}
               >
-               Refresh
+                Refresh
               </button>
               {hasDownloadPermission && (
-             <DocumentDownload
-             selectedDoc={selectedDoc}
-             onChange={setDocs}
-             exportData={exportData}
-           />
-            )}
+                <DocumentDownload
+                  selectedDoc={selectedDoc}
+                  onChange={setDocs}
+                  exportData={exportData}
+                />
+              )}
             </div>
           </div>
 
@@ -363,15 +360,15 @@ const EscalationCommissioner = ({ permissions }) => {
             </div>
           </div>
           <div className=" my-3 mb-5 mx-7">
-          <Pagination 
-          Length={organization.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <Pagination
+              Length={organization.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>

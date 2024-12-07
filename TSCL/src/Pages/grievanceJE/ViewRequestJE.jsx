@@ -25,9 +25,11 @@ const ViewRequestJE = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  const grievanceId = location.state?.grievanceId;
+  // const grievanceId = location.state?.grievanceId;
+  const queryParams = new URLSearchParams(location.search);
+  const grievanceId = queryParams.get('grievanceId');
 
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [isSimilar, setIsSimilar] = useState(false);
   const [isSimilarReq, setIsSimilarReq] = useState(false);
@@ -208,10 +210,10 @@ const ViewRequestJE = () => {
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: ` Assigned work is ${data} updated by ${sessionStorage.getItem(
+            log_details: ` Assigned work is ${data} updated by ${localStorage.getItem(
               "name"
             )}`,
-            created_by_user: sessionStorage.getItem("name"),
+            created_by_user: localStorage.getItem("name"),
           },
           {
             headers: {
@@ -246,30 +248,32 @@ const ViewRequestJE = () => {
   const handleFileChange = (e) => {
     const files = e.target.files;
     const fileSizeLimit = 250 * 1024; // 250KB in bytes
-  
+
     if (files.length > 5) {
       toast.error("Maximum 5 files allowed");
       e.target.value = null;
     } else {
       for (const file of files) {
         if (file.size > fileSizeLimit) {
-          toast.error(`File ${file.name} is too large. Please upload files up to 250KB.`);
+          toast.error(
+            `File ${file.name} is too large. Please upload files up to 250KB.`
+          );
           e.target.value = null;
           return;
         }
       }
       setFiles(files);
     }
-  }
+  };
 
   const onSubmit = async (data) => {
     const workSheet = data.worksheet_name;
     const formData = {
-      worksheet_name: ` WorkSheet given by ${sessionStorage.getItem("name")}: ${
+      worksheet_name: ` WorkSheet given by ${localStorage.getItem("name")}: ${
         data.worksheet_name
       } `,
       grievance_id: grievanceId,
-      created_by_user: sessionStorage.getItem("name"),
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
@@ -290,10 +294,10 @@ const ViewRequestJE = () => {
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: ` WorkSheet given by ${sessionStorage.getItem(
+            log_details: ` WorkSheet given by ${localStorage.getItem(
               "name"
             )}: ${workSheet}`,
-            created_by_user: sessionStorage.getItem("name"),
+            created_by_user: localStorage.getItem("name"),
           },
           {
             headers: {
@@ -493,7 +497,10 @@ const ViewRequestJE = () => {
                 <div className="md:col-span-6 col-span-12 border px-1 py-3 rounded ">
                   <p className="pt-2 text-lg ">Similar Request</p>
                   <hr className="my-3 w-full" />
-                  <div className="overflow-auto no-scrollbar" onClick={()=>setIsSimilarReq(true)}>
+                  <div
+                    className="overflow-auto no-scrollbar"
+                    onClick={() => setIsSimilarReq(true)}
+                  >
                     <table className="w-full bg-gray-200 rounded  ">
                       <thead>
                         <tr>
@@ -559,7 +566,7 @@ const ViewRequestJE = () => {
                         type="file"
                         id="file"
                         multiple
-                         accept=".jpeg, .jpg, .png"
+                        accept=".jpeg, .jpg, .png"
                         className=" py-2 px-3   outline-none"
                         onChange={handleFileChange}
                       />

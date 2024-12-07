@@ -30,9 +30,9 @@ const Escalation = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
 
   const [organization, setOrganization] = useState([]);
-  const token = sessionStorage.getItem("token");
-  const role = sessionStorage.getItem("role");
-  const dept = sessionStorage.getItem("dept");
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const dept = localStorage.getItem("dept");
   const [selectedDoc, setSelectedDoc] = useState(null);
 
   const navigate = useNavigate();
@@ -194,7 +194,7 @@ const Escalation = ({ permissions }) => {
         .post(API_ENDPOINTS.POST_ESCALATION.url)
         .then((response) => {
           //console.log(response.data);
-          handlerefresh()
+          handlerefresh();
           toast.success("Manual Escalation Done!!!");
         })
         .catch((error) => {
@@ -213,11 +213,11 @@ const Escalation = ({ permissions }) => {
               Escalation
             </h1>
             <div className="flex flex-row items-center gap-2">
-            <SearchInput
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Escalation"
-            />
+              <SearchInput
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Escalation"
+              />
               <button
                 className="bg-red-600 rounded-full px-3 py-2 text-white text-sm"
                 onClick={() => handleEscalation()}
@@ -226,10 +226,10 @@ const Escalation = ({ permissions }) => {
               </button>
               {hasDownloadPermission && (
                 <DocumentDownload
-                selectedDoc={selectedDoc}
-                onChange={setDocs}
-                exportData={exportData}
-              />
+                  selectedDoc={selectedDoc}
+                  onChange={setDocs}
+                  exportData={exportData}
+                />
               )}
             </div>
           </div>
@@ -363,15 +363,15 @@ const Escalation = ({ permissions }) => {
             </div>
           </div>
           <div className=" my-3 mb-5 mx-7">
-          <Pagination 
-          Length={organization.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <Pagination
+              Length={organization.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>

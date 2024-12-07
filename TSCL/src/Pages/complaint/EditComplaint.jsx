@@ -74,7 +74,7 @@ const EditComplaint = (props) => {
   const [role1, setRole1] = useState(null);
   const [role2, setRole2] = useState(null);
   const [role3, setRole3] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const { ExistingDept, ExistingRoles, comptId } = props;
 

@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,18 +8,21 @@ import * as yup from "yup";
 import { API } from "../../../Host";
 import SaveCancel from "../../../components/SavaCancel";
 
-
 const WardSchema = yup.object().shape({
-  zone_name: yup.string().test('not-select', 'Please select an Zone', (value) => value !== '' && value !== 'Select Zone'),
+  zone_name: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select an Zone",
+      (value) => value !== "" && value !== "Select Zone"
+    ),
   ward_name: yup.string().required("ward_name is required"),
 });
 const AddWard = (props) => {
   const { ExistingZones } = props;
 
-  const [zoneId, setZoneId] = useState(null)
-  const [ZoneName, setZoneName] = useState(null)
-  
-  
+  const [zoneId, setZoneId] = useState(null);
+  const [ZoneName, setZoneName] = useState(null);
 
   const {
     register,
@@ -38,7 +41,7 @@ const AddWard = (props) => {
         (zone) => zone.zone_name === ZoneName
       );
       if (selectedZone) {
-        setZoneId( selectedZone.zone_id);
+        setZoneId(selectedZone.zone_id);
       }
     }
   }, [ZoneName, ExistingZones]);
@@ -46,19 +49,19 @@ const AddWard = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      zone_id:zoneId,
+      zone_id: zoneId,
       status: "active",
-      created_by_user: sessionStorage.getItem('name'),
+      created_by_user: localStorage.getItem("name"),
     };
 
     // console.log(formData);
 
     try {
-      const token = sessionStorage.getItem('token'); 
-      const response = await axios.post(`${API}/ward/post`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`${API}/ward/post`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.status === 200) {
@@ -95,7 +98,7 @@ const AddWard = (props) => {
                 {...register("zone_name")}
                 onChange={(e) => setZoneName(e.target.value)}
               >
-                <option value="" >Select Zone</option>
+                <option value="">Select Zone</option>
                 {ExistingZones.map((zone) => (
                   <option key={zone.zone_id} value={zone.zone_name}>
                     {zone.zone_name}

@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 const GrivevanceAnalyticDashboard1 = () => {
   const [report, setReport] = useState([]);
   const [department, setDepartment] = useState([]);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [filterDept, setFilterDept] = useState([]);
   const [count, setCount] = useState([]);
   const [prioritycounts, setPrioritycounts] = useState([]);
@@ -167,64 +167,64 @@ const GrivevanceAnalyticDashboard1 = () => {
                 value: count.totalGrievances?.[0]?.total ?? 0,
                 icon: HiClipboardList,
                 color: "sky-600",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'get' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "get" },
+                  });
+                },
               },
               {
                 label: "Grievances Resolved",
                 value: count.resolvedGrievances?.[0]?.resolved ?? 0,
                 icon: TbCheckupList,
                 color: "green-600",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'byclosed' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "byclosed" },
+                  });
+                },
               },
               {
                 label: "Pending Grievances",
                 value: count.pendingGrievances?.[0]?.pending ?? 0,
                 icon: MdPendingActions,
                 color: "red-800",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'bynotclosed' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "bynotclosed" },
+                  });
+                },
               },
               {
                 label: "Re-opened Grievances",
                 value: count.reopendGrievances?.[0]?.reopen ?? 0,
                 icon: GoIssueReopened,
                 color: "yellow-600",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'byreopen' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "byreopen" },
+                  });
+                },
               },
               {
                 label: "Escalated Grievances",
                 value: count.escalatedGrievances?.[0]?.escalated ?? 0,
                 icon: AiFillAlert,
                 color: "red-700",
-                navigate:()=>{
-                  navigate('/escalation')
-                }
+                navigate: () => {
+                  navigate("/escalation");
+                },
               },
               {
                 label: "Grievances by Severity",
                 value: count.highPriorityGrievances?.[0]?.highPriority ?? 0,
                 icon: MdOutlinePriorityHigh,
                 color: "gray-800",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'byhigh' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "byhigh" },
+                  });
+                },
               },
             ].map((item, index) => (
               <div
@@ -296,7 +296,18 @@ const GrivevanceAnalyticDashboard1 = () => {
                       backgroundColor: COLORS_1[index % COLORS_1.length],
                     }}
                   />
-                  <span style={{ marginLeft: 10 }} onClick={()=>navigate('/dashboardview',{state:{endpoint:`getbydept?dept_name=${entry.name}`}})}>{entry.name}</span>
+                  <span
+                    style={{ marginLeft: 10 }}
+                    onClick={() =>
+                      navigate("/dashboardview", {
+                        state: {
+                          endpoint: `getbydept?dept_name=${entry.name}`,
+                        },
+                      })
+                    }
+                  >
+                    {entry.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -351,7 +362,16 @@ const GrivevanceAnalyticDashboard1 = () => {
                       backgroundColor: COLORS_2[index % COLORS_2.length],
                     }}
                   />
-                  <span style={{ marginLeft: 10 }} onClick={()=>navigate('/dashboardview',{state:{endpoint:`by${entry.priority}`}})}>{entry.priority}</span>
+                  <span
+                    style={{ marginLeft: 10 }}
+                    onClick={() =>
+                      navigate("/dashboardview", {
+                        state: { endpoint: `by${entry.priority}` },
+                      })
+                    }
+                  >
+                    {entry.priority}
+                  </span>
                 </div>
               ))}
             </div>
@@ -362,7 +382,7 @@ const GrivevanceAnalyticDashboard1 = () => {
       <div className="grid grid-cols-12 gap-3  mt-2 mb-3">
         <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
           <p className="text-gray-800 text-lg font-medium mb-1 mx-3">
-           Grievances by Zone :
+            Grievances by Zone :
           </p>
           <table className="w-full mt-1 my-2 ">
             <thead className=" border-b border-gray-300 py-2  ">
@@ -391,7 +411,7 @@ const GrivevanceAnalyticDashboard1 = () => {
         </div>
         <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
           <p className="text-gray-800 text-lg font-medium mb-1 mx-3">
-          Top 10 Grievances by Complaint Type :
+            Top 10 Grievances by Complaint Type :
           </p>
           <table className="w-full mt-1 my-2 mx-3 ">
             <thead className=" border-b border-gray-300 py-2  ">
@@ -405,7 +425,7 @@ const GrivevanceAnalyticDashboard1 = () => {
               </tr>
             </thead>
             <tbody>
-              {complaintData.slice(0,10).map((compt, index) => (
+              {complaintData.slice(0, 10).map((compt, index) => (
                 <tr className=" border-b border-gray-300  py-2 " key={index}>
                   <td className="text-start text-gray-800 pl-3 py-2">
                     {compt.complaint}

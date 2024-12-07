@@ -7,7 +7,6 @@ import { IoMdClose } from "react-icons/io";
 import { API } from "../../Host";
 import axios from "axios";
 
-
 const steps = [
   {
     id: 1,
@@ -22,50 +21,49 @@ const steps = [
 const complaintdetailSchema = yup.object().shape({
   complaint_type_title: yup.string().required("complaint_type is required"),
   dept_name: yup
-  .string()
-  .test(
-    "not-select",
-    "select an Department",
-    (value) => value !== "" && value !== "Select an Department"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "select an Department",
+      (value) => value !== "" && value !== "Select an Department"
+    ),
   tat_type: yup
-  .string()
-  .test(
-    "not-select",
-    "select an TAT Type",
-    (value) => value !== "" && value !== "Select Type"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "select an TAT Type",
+      (value) => value !== "" && value !== "Select Type"
+    ),
   tat_duration: yup.string().required("Duration is required"),
   priority: yup.string().required("Priority is required"),
 });
 
 const escdetailSchema = yup.object().shape({
-  escalation_type:yup
-  .string()
-  .test(
-    "not-select",
-    "select an Type",
-    (value) => value !== "" && value !== "Select Type"
-  ),
+  escalation_type: yup
+    .string()
+    .test(
+      "not-select",
+      "select an Type",
+      (value) => value !== "" && value !== "Select Type"
+    ),
   escalation_l1: yup.number().required("L1 duration is required"),
   role_l1: yup
-  .string()
-  .test(
-    "not-select",
-    "select an L1 role",
-    (value) => value !== "" && value !== "Select an Role"
-  ),
-  escalation_l2: yup.string().optional(), 
-  role_l2: yup.string().optional(), 
-  escalation_l3: yup.string().optional(), 
-  role_l3: yup.string().optional(), 
+    .string()
+    .test(
+      "not-select",
+      "select an L1 role",
+      (value) => value !== "" && value !== "Select an Role"
+    ),
+  escalation_l2: yup.string().optional(),
+  role_l2: yup.string().optional(),
+  escalation_l3: yup.string().optional(),
+  role_l3: yup.string().optional(),
 });
 
 const AddComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
 
-  const {ExistingDept,ExistingRoles} = props
-  
+  const { ExistingDept, ExistingRoles } = props;
 
   let currentStepSchema;
   switch (stepNumber) {
@@ -97,19 +95,19 @@ const AddComplaint = (props) => {
       const formData = {
         ...data,
         status: "active",
-        created_by_user: sessionStorage.getItem('name'),
+        created_by_user: localStorage.getItem("name"),
       };
-  
+
       // console.log(formData);
-  
+
       try {
-        const token = sessionStorage.getItem('token'); 
-        const response = await axios.post(`${API}/complaint/post`, formData,{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
+        const token = localStorage.getItem("token");
+        const response = await axios.post(`${API}/complaint/post`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-  
+
         if (response.status === 200) {
           toast.success("Complaint created Successfully");
           props.toggleModal();
@@ -135,7 +133,7 @@ const AddComplaint = (props) => {
                 <IoMdClose className="text-2xl" />
               </button>
             </div>
-            <div >
+            <div>
               <div className="flex items-center gap-9 relative justify-center mx-60 py-1 rounded-full bg-slate-200 mt-4">
                 {steps.map((item, i) => (
                   <div
@@ -177,7 +175,7 @@ const AddComplaint = (props) => {
                             className="block text-gray-500 text-base text-start font-normal mb-2 mx-8 col-span-1"
                             htmlFor="complaint_type_title"
                           >
-                            Complaint 
+                            Complaint
                           </label>
                           <input
                             className="appearance-none border rounded-lg py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline  col-span-2"
@@ -206,10 +204,10 @@ const AddComplaint = (props) => {
                           >
                             <option value="">Select an Department</option>
                             {ExistingDept.map((dept) => (
-                            <option key={dept.dept_id} value={dept.dept_name}>
-                              {dept.dept_name}
-                            </option>
-                             ))}
+                              <option key={dept.dept_id} value={dept.dept_name}>
+                                {dept.dept_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.dept_name && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -350,10 +348,10 @@ const AddComplaint = (props) => {
                           >
                             <option value="">Select an Role</option>
                             {ExistingRoles.map((role) => (
-                  <option key={role.role_id} value={role.role_name}>
-                    {role.role_name}
-                  </option>
-                ))}
+                              <option key={role.role_id} value={role.role_name}>
+                                {role.role_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.role_l1 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -395,10 +393,10 @@ const AddComplaint = (props) => {
                           >
                             <option value="">Select an Role</option>
                             {ExistingRoles.map((role) => (
-                  <option key={role.role_id} value={role.role_name}>
-                    {role.role_name}
-                  </option>
-                ))}
+                              <option key={role.role_id} value={role.role_name}>
+                                {role.role_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.role_l2 && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -440,10 +438,10 @@ const AddComplaint = (props) => {
                           >
                             <option value="">Select an Role</option>
                             {ExistingRoles.map((role) => (
-                  <option key={role.role_id} value={role.role_name}>
-                    {role.role_name}
-                  </option>
-                ))}
+                              <option key={role.role_id} value={role.role_name}>
+                                {role.role_name}
+                              </option>
+                            ))}
                           </select>
                           {errors.role_l3 && (
                             <p className="text-red-500 text-sm text-center -mt-3">

@@ -1,36 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import SaveCancel from '../../components/SavaCancel';
-import API_ENDPOINTS from '../../ApiEndpoints/api/ApiClient';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import SaveCancel from "../../components/SavaCancel";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
 const departmentSchema = yup.object().shape({
   org_name: yup
     .string()
     .test(
-      'not-select',
-      'Please select an Organization',
-      (value) => value !== '' && value !== 'Select  Organization'
+      "not-select",
+      "Please select an Organization",
+      (value) => value !== "" && value !== "Select  Organization"
     ),
-  dept_name: yup.string().required('Department is required'),
+  dept_name: yup.string().required("Department is required"),
 });
 
-const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) => {
+const AddDepartment = ({
+  ExistingOrganiZations,
+  toggleModal,
+  handlerefresh,
+}) => {
   const [orgId, setOrgId] = useState(null);
   const [orgName, setOrgName] = useState(null);
 
-  const { register, formState: { errors }, handleSubmit, watch } = useForm({
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    watch,
+  } = useForm({
     resolver: yupResolver(departmentSchema),
-    mode: 'all',
+    mode: "all",
   });
 
   useEffect(() => {
     if (orgName) {
-      const selectedOrg = ExistingOrganiZations.find((org) => org.org_name === orgName);
+      const selectedOrg = ExistingOrganiZations.find(
+        (org) => org.org_name === orgName
+      );
       if (selectedOrg) {
         setOrgId(selectedOrg.org_id);
       }
@@ -41,26 +51,29 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) =>
     const formData = {
       ...data,
       org_id: orgId,
-      status: 'active',
-      created_by_user: sessionStorage.getItem('name'),
+      status: "active",
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
-      const response = await axios.post(API_ENDPOINTS.POST_DEPARTMENT.url, formData,{
-        headers:API_ENDPOINTS.POST_DEPARTMENT.headers
-      }
+      const response = await axios.post(
+        API_ENDPOINTS.POST_DEPARTMENT.url,
+        formData,
+        {
+          headers: API_ENDPOINTS.POST_DEPARTMENT.headers,
+        }
       );
 
       if (response.status === 200) {
-        toast.success('Department created Successfully');
+        toast.success("Department created Successfully");
         toggleModal();
         handlerefresh();
       } else {
-        console.error('Error in posting data', response);
-        toast.error('Failed to Upload');
+        console.error("Error in posting data", response);
+        toast.error("Failed to Upload");
       }
     } catch (error) {
-      console.error('Error in posting data', error);
+      console.error("Error in posting data", error);
     }
   };
 
@@ -82,7 +95,7 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) =>
               <select
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 leading-relaxed focus:outline-none focus:shadow-outline"
                 id="org_name"
-                {...register('org_name')}
+                {...register("org_name")}
                 onChange={(e) => setOrgName(e.target.value)}
               >
                 <option value="">Select Organization</option>
@@ -109,7 +122,7 @@ const AddDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh }) =>
                 id="dept_name"
                 type="text"
                 placeholder="Department Name"
-                {...register('dept_name')}
+                {...register("dept_name")}
               />
               {errors.dept_name && (
                 <p className="text-red-500">{errors.dept_name.message}</p>

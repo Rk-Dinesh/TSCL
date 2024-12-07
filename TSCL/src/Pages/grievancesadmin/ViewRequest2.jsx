@@ -19,7 +19,7 @@ const ViewRequest2 = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
   const [workDataFile, setWorkDataFile] = useState(null);
-  const [endpoint, setEndpoint] = useState(null)
+  const [endpoint, setEndpoint] = useState(null);
   const [dataUsers, setDataUsers] = useState([]);
   const [logData, setLogData] = useState([]);
   const [matchData, setMatchData] = useState([]);
@@ -28,11 +28,15 @@ const ViewRequest2 = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  const grievanceId = location.state?.grievanceId;
+  // const grievanceId = location.state?.grievanceId;
 
-  const deptName = location.state?.deptName;
+  // const deptName = location.state?.deptName;
 
-  const token = sessionStorage.getItem("token");
+  const queryParams = new URLSearchParams(location.search);
+  const grievanceId = queryParams.get('grievanceId');
+  const deptName = queryParams.get('deptName');
+
+  const token = localStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [isSimilarReq, setIsSimilarReq] = useState(false);
   const [istransferModal, setIstransferModal] = useState(false);
@@ -162,7 +166,7 @@ const ViewRequest2 = () => {
     fetchDeptUser();
     fetchDataFile();
     fetchLog();
-    fetchDataFileWorksheet()
+    fetchDataFileWorksheet();
   }, []);
 
   const toggleModal = () => {
@@ -172,8 +176,8 @@ const ViewRequest2 = () => {
 
   const toggleTModal = () => {
     setIstransferModal(!istransferModal);
-    setTranserId(null)
-    setTransferDept(null)
+    setTranserId(null);
+    setTransferDept(null);
   };
 
   const togglReModal = () => {
@@ -241,7 +245,7 @@ const ViewRequest2 = () => {
                 onClick={() => {
                   setIstransferModal(true);
                   setTranserId(data.grievance_id);
-                  setTransferDept([data.dept_name,data.complaint])
+                  setTransferDept([data.dept_name, data.complaint]);
                 }}
               >
                 Ticket Transfer
@@ -395,7 +399,7 @@ const ViewRequest2 = () => {
                               onClick={() => {
                                 setIsviewModal(true);
                                 setAttachmentFile(file.attachment);
-                                setEndpoint("new-grievance-attachment")
+                                setEndpoint("new-grievance-attachment");
                               }}
                             >
                               {`Attachment ${index + 1}`}
@@ -409,7 +413,10 @@ const ViewRequest2 = () => {
                 <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
                   <p className="pt-2 text-lg ">Similar Request</p>
                   <hr className="my-3 w-full" />
-                  <div className="overflow-auto no-scrollbar" onClick={()=>setIsSimilarReq(true)}>
+                  <div
+                    className="overflow-auto no-scrollbar"
+                    onClick={() => setIsSimilarReq(true)}
+                  >
                     <table className="w-full bg-gray-200 rounded ">
                       <thead>
                         <tr>
@@ -522,28 +529,27 @@ const ViewRequest2 = () => {
                       </div>
                       <br />
                       {workDataFile && workDataFile.length > 0 && (
-                      <div className="grid grid-cols-4">
-                        <p className="col-span-2">Attachment Files </p>
-                        <div className="col-start-1 col-span-4 mt-2 text-xs  ">
-                          {workDataFile.map((file, index) => (
-                            <button
-                              className=" mx-1 my-1 px-3 py-1.5 bg-gray-500 rounded-full text-white"
-                              key={index}
-                              onClick={() => {
-                                setIsviewModal(true);
-                                setAttachmentFile(file.attachment);
-                                setEndpoint("grievance-worksheet-attachment")
-                              }}
-                            >
-                              {`Attachment ${index + 1}`}
-                            </button>
-                          ))}
+                        <div className="grid grid-cols-4">
+                          <p className="col-span-2">Attachment Files </p>
+                          <div className="col-start-1 col-span-4 mt-2 text-xs  ">
+                            {workDataFile.map((file, index) => (
+                              <button
+                                className=" mx-1 my-1 px-3 py-1.5 bg-gray-500 rounded-full text-white"
+                                key={index}
+                                onClick={() => {
+                                  setIsviewModal(true);
+                                  setAttachmentFile(file.attachment);
+                                  setEndpoint("grievance-worksheet-attachment");
+                                }}
+                              >
+                                {`Attachment ${index + 1}`}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                     </div>
 
-                  
                     <hr className="my-3" />
                     <div className="md:grid md:grid-cols-3 flex border-2 md:mx-20">
                       <p className="text-center px-3 py-1.5">Status</p>
@@ -560,12 +566,18 @@ const ViewRequest2 = () => {
       </div>
       {isviewModal && (
         <ViewAttachment
-        endpoint={endpoint}
+          endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
         />
       )}
-      {istransferModal && <TicketTransfer toggleTModal={toggleTModal} transerId= {transerId} transferDept={transferDept} />}
+      {istransferModal && (
+        <TicketTransfer
+          toggleTModal={toggleTModal}
+          transerId={transerId}
+          transferDept={transferDept}
+        />
+      )}
       {isSimilarReq && (
         <SimilarReq matchData={matchData} togglReModal={togglReModal} />
       )}

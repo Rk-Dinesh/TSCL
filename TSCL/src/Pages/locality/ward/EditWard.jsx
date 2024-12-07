@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,34 +9,36 @@ import { API } from "../../../Host";
 import decryptData from "../../../Decrypt";
 import SaveCancel from "../../../components/SavaCancel";
 
-
 const WardSchema = yup.object().shape({
-  zone_name: yup.string().test('not-select', 'Please select an Zone', (value) => value !== '' && value !== 'Select Zone'),
+  zone_name: yup
+    .string()
+    .test(
+      "not-select",
+      "Please select an Zone",
+      (value) => value !== "" && value !== "Select Zone"
+    ),
   ward_name: yup.string().required("ward_name is required"),
   status: yup
-  .string()
-  .test(
-    "not-select",
-    "Please select an Status",
-    (value) => value !== "" && value !== "Status"
-  ),
+    .string()
+    .test(
+      "not-select",
+      "Please select an Status",
+      (value) => value !== "" && value !== "Status"
+    ),
 });
 const EditWard = (props) => {
-    const token = sessionStorage.getItem('token'); 
-  const { ExistingZones,wardId } = props;
+  const token = localStorage.getItem("token");
+  const { ExistingZones, wardId } = props;
 
-
-  const [zoneId, setZoneId] = useState(null)
-  const [ZoneName, setZoneName] = useState(null)
-  
-  
+  const [zoneId, setZoneId] = useState(null);
+  const [ZoneName, setZoneName] = useState(null);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     watch,
-    setValue
+    setValue,
   } = useForm({
     resolver: yupResolver(WardSchema),
     mode: "all",
@@ -45,15 +47,18 @@ const EditWard = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/ward/getbyid?ward_id=${wardId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.get(
+          `${API}/ward/getbyid?ward_id=${wardId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
         const data = decryptData(response.data.data);
-        
+
         setZoneName(data.zone_name);
-        setValue("ward_name", data.ward_name); 
+        setValue("ward_name", data.ward_name);
         setValue("status", data.status);
         setValue("zone_name", data.zone_name);
       } catch (error) {
@@ -64,13 +69,12 @@ const EditWard = (props) => {
   }, [wardId, setValue]);
 
   useEffect(() => {
-   
     if (ZoneName) {
       const selectedZone = ExistingZones.find(
         (zone) => zone.zone_name === ZoneName
       );
       if (selectedZone) {
-        setZoneId( selectedZone.zone_id);
+        setZoneId(selectedZone.zone_id);
       }
     }
   }, [ZoneName, ExistingZones]);
@@ -78,16 +82,19 @@ const EditWard = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      zone_id:zoneId,
+      zone_id: zoneId,
     };
 
     try {
-      
-      const response = await axios.post(`${API}/ward/update?ward_id=${wardId}`, formData,{
-        headers:{
-          Authorization:`Bearer ${token}`
+      const response = await axios.post(
+        `${API}/ward/update?ward_id=${wardId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       if (response.status === 200) {
         toast.success("Ward Updated Successfully");
@@ -125,7 +132,9 @@ const EditWard = (props) => {
                 {...register("zone_name")}
                 onChange={(e) => setZoneName(e.target.value)}
               >
-                <option value={ZoneName} disabled>{ZoneName}</option>
+                <option value={ZoneName} disabled>
+                  {ZoneName}
+                </option>
                 {ExistingZones.map((zone) => (
                   <option key={zone.zone_id} value={zone.zone_name}>
                     {zone.zone_name}
@@ -163,19 +172,22 @@ const EditWard = (props) => {
               >
                 Status:
               </label>
-              <select className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
-              id="status"
-               {...register("status")}
-               >
-                <option value="" hidden>Status</option>
+              <select
+                className="   text-sm text-black border border-gray-900 rounded-lg  border-none outline-none"
+                id="status"
+                {...register("status")}
+              >
+                <option value="" hidden>
+                  Status
+                </option>
                 <option value="active">Active</option>
                 <option value="inactive">InActive</option>
               </select>
               {errors.status && (
-              <p className="text-red-500 text-xs text-center mb-3 ">
-                {errors.status.message}
-              </p>
-            )}
+                <p className="text-red-500 text-xs text-center mb-3 ">
+                  {errors.status.message}
+                </p>
+              )}
             </div>
           </div>
           <SaveCancel onCancel={props.toggleModal} />

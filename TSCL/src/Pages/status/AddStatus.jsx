@@ -31,11 +31,11 @@ const AddStatus = (props) => {
     const formData = {
       ...data,
       status: "active",
-      created_by_user: sessionStorage.getItem('name'),
+      created_by_user: localStorage.getItem("name"),
     };
 
     try {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const response = await axios.post(`${API}/status/post`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,

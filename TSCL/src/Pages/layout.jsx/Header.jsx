@@ -12,19 +12,18 @@ const Header = () => {
   };
 
   const handleProfileClick = () => {
-   
     navigate("/profile");
-    setIsDropdownOpen(false); 
+    setIsDropdownOpen(false);
   };
 
   const handleLogoutClick = () => {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('dept');
-    sessionStorage.removeItem("code");
-    sessionStorage.removeItem("role");
-    sessionStorage.removeItem("name");
-    navigate('/');
-    setIsDropdownOpen(false); 
+    localStorage.removeItem("token");
+    localStorage.removeItem("dept");
+    localStorage.removeItem("code");
+    localStorage.removeItem("role");
+    localStorage.removeItem("name");
+    navigate("/");
+    setIsDropdownOpen(false);
   };
 
   return (

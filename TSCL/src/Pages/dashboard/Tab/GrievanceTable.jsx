@@ -8,16 +8,15 @@ import Pagination from "../../../components/Pagination";
 import SearchHeader from "../../../components/SearchHeader";
 
 const GrivencesTable = () => {
-
- const location = useLocation();
- const endpoints = location.state?.endpoint
+  const location = useLocation();
+  const endpoints = location.state?.endpoint;
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [status, setStatus] = useState([]);
   const [statusColors, setStatusColors] = useState({});
@@ -95,14 +94,14 @@ const GrivencesTable = () => {
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="h-screen">
-    <div className="mt-14">
-    <SearchHeader
-            title="Grievances"
-            onClick={() => setIsModal(true)}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-          />
-    </div>
+          <div className="mt-14">
+            <SearchHeader
+              title="Grievances"
+              onClick={() => setIsModal(true)}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+            />
+          </div>
           <div className="bg-white mx-4 rounded-lg my-3 py-3 overflow-x-auto h-3/5 no-scrollbar ">
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
@@ -242,15 +241,15 @@ const GrivencesTable = () => {
             </table>
           </div>
           <div className=" my-3 mb-5 mx-7">
-          <Pagination 
-          Length={grievance.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          firstIndex={firstIndex}
-          lastIndex={lastIndex}
-          paginate={paginate}
-          hasNextPage={lastIndex >= filteredCenters.length}
-          />
+            <Pagination
+              Length={grievance.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredCenters.length}
+            />
           </div>
         </div>
       </div>

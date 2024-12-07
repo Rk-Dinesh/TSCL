@@ -28,7 +28,7 @@ const ComplaintType = ({ permissions }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [complaint, setComplaint] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -49,7 +49,7 @@ const ComplaintType = ({ permissions }) => {
   const handlerefresh = () => {
     axios
       .get(API_ENDPOINTS.GET_COMPLAINTTYPE.url, {
-        headers: API_ENDPOINTS.GET_COMPLAINTTYPE.headers
+        headers: API_ENDPOINTS.GET_COMPLAINTTYPE.headers,
       })
       .then((response) => {
         const responseData = decryptData(response.data.data);
@@ -99,13 +99,11 @@ const ComplaintType = ({ permissions }) => {
     .slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
-    try {const DELETE_COMPLAINTTYPE= API_ENDPOINTS.DELETE_COMPLAINTTYPE(deleteId)
-      await axios.delete(
-       DELETE_COMPLAINTTYPE.url,
-        {
-          headers: DELETE_COMPLAINTTYPE.headers,
-        }
-      );
+    try {
+      const DELETE_COMPLAINTTYPE = API_ENDPOINTS.DELETE_COMPLAINTTYPE(deleteId);
+      await axios.delete(DELETE_COMPLAINTTYPE.url, {
+        headers: DELETE_COMPLAINTTYPE.headers,
+      });
       toggleDeleteCloseModal();
       handlerefresh();
       toast.success("Deleted successfully");

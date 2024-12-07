@@ -102,15 +102,18 @@ const AddAdmin = (props) => {
     const formData = {
       ...data,
       status: "active",
-      created_by_user: sessionStorage.getItem("name"),
+      created_by_user: localStorage.getItem("name"),
       role_id: selectedRoleId,
     };
 
-
     try {
-      const response = await axios.post(API_ENDPOINTS.POST_ADMIN.url, formData, {
-        headers: API_ENDPOINTS.POST_ADMIN.headers,
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.POST_ADMIN.url,
+        formData,
+        {
+          headers: API_ENDPOINTS.POST_ADMIN.headers,
+        }
+      );
 
       if (response.status === 200) {
         toast.success(response.data.message);

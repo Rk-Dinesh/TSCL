@@ -27,8 +27,8 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   const [status, setStatus] = useState([]);
   const [report, setReport] = useState([]);
   const [filteredGrievances, setFilteredGrievances] = useState([]);
-  const token = sessionStorage.getItem("token");
-  const code = sessionStorage.getItem("code");
+  const token = localStorage.getItem("token");
+  const code = localStorage.getItem("code");
   const navigate = useNavigate();
   const [selectedDoc, setSelectedDoc] = useState(null);
 
@@ -407,11 +407,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                       <p
                         className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
                         onClick={() =>
-                          navigate(`/view3`, {
-                            state: {
-                              grievanceId: report.grievance_id,
-                            },
-                          })
+                          navigate(`/view3?grievanceId=${report.grievance_id}`)
                         }
                       >
                         {report.grievance_id}

@@ -10,15 +10,15 @@ import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
 import decryptData from "../../../Decrypt";
 
 const EngineerMetrics = () => {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [count, setCount] = useState({});
   const [workLoadData, setWorkLoadData] = useState([]);
   const [percentData, setPercentData] = useState([]);
   const [avgrsolution, setAvgrsolution] = useState([]);
   const [escalate, setEscalate] = useState([]);
   const [analysis, setAnalysis] = useState([]);
-  const [Departments, setDepartments] = useState([])
-  const [selectedDepartment, setSelectedDepartment] = useState('All')
+  const [Departments, setDepartments] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("All");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const EngineerMetrics = () => {
     fetchAvergResolution();
     fetchEscalation();
     fetchComparitiveAnalysis();
-    fetchDepartments()
+    fetchDepartments();
   }, []);
 
   const handleNavigate = () => {
@@ -127,8 +127,8 @@ const EngineerMetrics = () => {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENT.url,{
-        headers:API_ENDPOINTS.GET_DEPARTMENT.headers
+      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENT.url, {
+        headers: API_ENDPOINTS.GET_DEPARTMENT.headers,
       });
       const responseData = decryptData(response.data.data);
       setDepartments(responseData);
@@ -137,12 +137,14 @@ const EngineerMetrics = () => {
     }
   };
 
-  const handleDept = async(depts) => {
-      setSelectedDepartment(depts);
+  const handleDept = async (depts) => {
+    setSelectedDepartment(depts);
   };
 
   const filters = avgrsolution.filter((report) => {
-    return selectedDepartment === "All" ? report : report.department === selectedDepartment;
+    return selectedDepartment === "All"
+      ? report
+      : report.department === selectedDepartment;
   });
 
   return (
@@ -156,31 +158,31 @@ const EngineerMetrics = () => {
                 value: count.totalGrievances?.[0]?.total ?? 0,
                 icon: HiClipboardList,
                 color: "sky-600",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'get' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "get" },
+                  });
+                },
               },
               {
                 label: "Grievances Resolved",
                 value: count.resolvedGrievances?.[0]?.resolved ?? 0,
                 icon: TbCheckupList,
                 color: "green-600",
-                navigate: ()=>{
-                  navigate('/dashboardview', {
-                    state: { endpoint: 'byclosed' },
-                  })
-                }
+                navigate: () => {
+                  navigate("/dashboardview", {
+                    state: { endpoint: "byclosed" },
+                  });
+                },
               },
               {
                 label: "Escalated Grievances",
                 value: count.escalatedGrievances?.[0]?.escalated ?? 0,
                 icon: AiFillAlert,
                 color: "red-700",
-                navigate:()=>{
-                  navigate('/escalation')
-                }
+                navigate: () => {
+                  navigate("/escalation");
+                },
               },
             ].map((item, index) => (
               <div
@@ -228,9 +230,7 @@ const EngineerMetrics = () => {
             <div className="bg-[#3d5b81] p-4 rounded-lg shadow-md">
               <p className="text-white text-sm">Resolved Grievances</p>
               <p className="text-2xl text-white font-bold">
-                {percentData.generalResolved
-                  ? percentData.generalResolved
-                  : 0}
+                {percentData.generalResolved ? percentData.generalResolved : 0}
               </p>
             </div>
             <div className="bg-[#023047] p-3.5 rounded-lg shadow-md">
@@ -244,7 +244,6 @@ const EngineerMetrics = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2">
-           
             <div className="bg-[#3d5b81] p-3.5 rounded-lg shadow-md">
               <p className="text-white text-sm">Resolved Before Escalation</p>
               <p className="text-2xl text-white font-bold">
@@ -254,7 +253,9 @@ const EngineerMetrics = () => {
               </p>
             </div>
             <div className="bg-[#023047] p-3.5 rounded-lg shadow-md">
-              <p className="text-white text-sm">Percentage Resolved Before Escalation</p>
+              <p className="text-white text-sm">
+                Percentage Resolved Before Escalation
+              </p>
               <p className="text-2xl text-white font-bold mt-1">
                 {percentData.totalPercentageResolved
                   ? percentData.totalPercentageResolved
@@ -262,7 +263,6 @@ const EngineerMetrics = () => {
                 %
               </p>
             </div>
-           
           </div>
         </div>
         <div className="md:col-span-6 col-span-12 p-3 border-2 bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
@@ -313,8 +313,6 @@ const EngineerMetrics = () => {
           </div>
         </div>
       </div>
-
-    
 
       <div className="grid grid-cols-12 gap-3  mt-3 mb-3">
         <div className="md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
@@ -446,23 +444,24 @@ const EngineerMetrics = () => {
       </div>
 
       <div className=" mt-2 md:col-span-6 col-span-12 p-3 border-2  bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">
-       <div className=" flex justify-between flex-wrap">
-        <p className="text-[#023047] text-lg font-medium mb-1 mx-3 whitespace-nowrap">
-          Performance of Resolution Teams :
-        </p>
-        <select  className="text-sm text-gray-800  border border-gray-900 rounded-lg border-none outline-none mr-4" 
-         onChange={(e) => handleDept(e.target.value)}
-         value={selectedDepartment || ""}
-        >
-        
-        <option hidden>Select Department</option>
-        <option value="All">All</option>
-                {Departments && Departments.map((dept) => (
-                  <option key={dept.dept_id} value={dept.dept_name}>
-                    {dept.dept_name}
-                  </option>
-                ))}
-        </select>
+        <div className=" flex justify-between flex-wrap">
+          <p className="text-[#023047] text-lg font-medium mb-1 mx-3 whitespace-nowrap">
+            Performance of Resolution Teams :
+          </p>
+          <select
+            className="text-sm text-gray-800  border border-gray-900 rounded-lg border-none outline-none mr-4"
+            onChange={(e) => handleDept(e.target.value)}
+            value={selectedDepartment || ""}
+          >
+            <option hidden>Select Department</option>
+            <option value="All">All</option>
+            {Departments &&
+              Departments.map((dept) => (
+                <option key={dept.dept_id} value={dept.dept_name}>
+                  {dept.dept_name}
+                </option>
+              ))}
+          </select>
         </div>
         <p className="mx-3 text-sm mb-2 whitespace-nowrap text-gray-600">
           Average resolution time by Engineers by department.

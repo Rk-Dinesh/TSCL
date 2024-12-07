@@ -23,9 +23,9 @@ const AddUserSchema = yup.object().shape({
     .required("Email Id is required"),
   address: yup.string().required("Address is required"),
   pincode: yup
-  .string()
-  .test("len", "Pincode must be 6 characters", (val) => val.length === 6)
-  .required("Pincode is required"),
+    .string()
+    .test("len", "Pincode must be 6 characters", (val) => val.length === 6)
+    .required("Pincode is required"),
 });
 
 const AddUser = (props) => {
@@ -43,18 +43,17 @@ const AddUser = (props) => {
   const onSubmit = async (data) => {
     const formData = {
       ...data,
-      login_password:"tscl@123",
-      user_status:"active",
-      verification_status:"active"
+      login_password: "tscl@123",
+      user_status: "active",
+      verification_status: "active",
     };
 
     // console.log(formData);
 
-    const token = sessionStorage.getItem('token');
-  
+    const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(`${API}/public-user/post`, formData,{
+      const response = await axios.post(`${API}/public-user/post`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -82,7 +81,7 @@ const AddUser = (props) => {
                 className="block text-black text-lg font-medium mb-2 col-span-1 whitespace-nowrap"
                 htmlFor="public_user_name"
               >
-                 Name
+                Name
               </label>
               <input
                 type="text"
