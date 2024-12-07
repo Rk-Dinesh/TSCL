@@ -15,9 +15,9 @@ import RequestTab from "./Pages/request/RequestTab";
 import RequestAdminTab from "./Pages/grievancesadmin/RequestAdminTab";
 import RequestJETab from "./Pages/grievanceJE/RequestJETab";
 import RequestHeadTab from "./Pages/grievanceHead/RequestHeadTab";
-import Template from "./Pages/template/Template";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
+const Template = lazy(() => import("./Pages/template/Template"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
 const Department = lazy(() => import("./Pages/department/Department"));
 const Zone = lazy(() => import("./Pages/locality/zone/Zone"));
@@ -335,12 +335,12 @@ function App() {
                 element={<Status permissions={memoizedFeatures["status"]} />}
               />
             )}
-                {memoizedFeatures["complainttype"] && (
+                {memoizedFeatures["template"] && (
               <Route
                 path="/template"
                 element={
                   <Template
-                    permissions={memoizedFeatures["complainttype"]}
+                    permissions={memoizedFeatures["template"]}
                   />
                 }
               />

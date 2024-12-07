@@ -55,7 +55,7 @@ const Layout = ({ permissions }) => {
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
     permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
-    permissions["complainttype"] && { title: "Template", icon: <CgTemplate />, to: "/template" },
+    permissions["template"] && { title: "Template", icon: <CgTemplate />, to: "/template" },
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
     
    

@@ -28,6 +28,7 @@ const RoleAccessLevelEdit = () => {
     { name: "PublicUser", value: "user", checked: false },
     { name: "Status", value: "status", checked: false },
     { name: "Setting", value: "setting", checked: false },
+    { name: "Template", value: "template", checked: false },
     { name: "Escalation", title: true },
     { name: "Escalation", value: "escalate", checked: false },
     { name: "Escalation Commissioner", value: "escalation", checked: false },
