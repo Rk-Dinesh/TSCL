@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
-import logo from "../../assets/images/logo1.png"
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../../assets/images/logo1.png";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { API } from "../../Host";
@@ -22,7 +22,7 @@ const OTP = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     try {
       const otpValue = Object.values(formData).join("");
       if (otpValue.length !== 4) {
@@ -30,36 +30,37 @@ const OTP = () => {
         return;
       }
       // console.log("OTP Value:", otpValue);
-      
+
       // const otpVerification = {
       //   otp: otpValue,
       // };
-  
+
       //const response1 = await axios.post(`${API}/public-user/verify-otp`, otpVerification);
 
-      const finalvalue = "1234"
-  
+      const finalvalue = "1234";
+
       if (otpValue === finalvalue) {
-        toast.success("OTP verified"); 
-        
-      const DataForm = { ...location.state?.DataForm };
-      DataForm.verification_status = "verified";
-      DataForm.user_status = "active";
-      DataForm.role = "user";
-      // console.log(DataForm);
-        
-      const responseUser = await axios.post(`${API}/public-user/post`, DataForm);
-  
+        toast.success("OTP verified");
+
+        const DataForm = { ...location.state?.DataForm };
+        DataForm.verification_status = "verified";
+        DataForm.user_status = "active";
+        DataForm.role = "user";
+        // console.log(DataForm);
+
+        const responseUser = await axios.post(
+          `${API}/public-user/post`,
+          DataForm
+        );
+
         if (responseUser.status === 200) {
           toast.success(responseUser.data.message);
           navigate("/");
-          
-       } else { 
+        } else {
           console.error(response.data.message);
-         toast.error("Error posting form data");
+          toast.error("Error posting form data");
         }
       } else {
-        
         toast.error("Invalid OTP");
       }
     } catch (error) {
@@ -89,11 +90,13 @@ const OTP = () => {
     <div className="h-screen  bg-primary py-6 flex flex-col items-center gap-8 justify-center ">
       <div className="flex items-center gap-4">
         <img src={logo} alt="Image" className="w-24 h-24" />
-        <p className="text-6xl text-secondary ">TSCL</p>
+        <p className="text-6xl text-secondary ">MSCL</p>
       </div>
       <div className="p-6 md:w-[550px]   md:bg-white  rounded-lg mx-5">
         <div className="font-lexend text-start mt-2">
-          <p className="text-xl py-2 md:text-black text-gray-200 text-center">One Time Password</p>
+          <p className="text-xl py-2 md:text-black text-gray-200 text-center">
+            One Time Password
+          </p>
           <form onSubmit={handleSubmit}>
             <div className="flex justify-center gap-3  pt-5">
               <input
@@ -141,19 +144,19 @@ const OTP = () => {
                 onKeyUp={(e) => inputfocus(e)}
               />
             </div>
-            <p className="text-center text-xs md:text-primary text-white ml-36 mt-2">Resend 3s</p>
+            <p className="text-center text-xs md:text-primary text-white ml-36 mt-2">
+              Resend 3s
+            </p>
             <div className="text-center my-5">
               <button
                 className="px-5 py-2 md:bg-primary md:text-white text-primary bg-gray-100 rounded-full"
                 type="submit"
                 // onClick={handlelogin}
-
               >
                 Verify OTP
               </button>
             </div>
           </form>
-          
         </div>
       </div>
     </div>

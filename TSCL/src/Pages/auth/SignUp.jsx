@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 
-
 const AddUserSchema = yup.object().shape({
   public_user_name: yup.string().required("User Name is required"),
   phone: yup.string().required("Phone Number is required"),
@@ -29,10 +28,8 @@ const SignUp = () => {
 
   const onSubmit = async (data) => {
     const DataForm = { ...data };
-    navigate('/auth', { state: { DataForm } });
+    navigate("/auth", { state: { DataForm } });
   };
-
-
 
   const handleSignIn = () => {
     navigate("/");
@@ -42,7 +39,7 @@ const SignUp = () => {
     <div className="h-screen  bg-primary py-6 flex flex-col md:items-center gap-8 justify-center ">
       <div className="flex items-center justify-center gap-3">
         <img src={logo} alt="Image" className="w-24 h-24" />
-        <p className="text-6xl text-secondary">TSCL</p>
+        <p className="text-6xl text-secondary">MSCL</p>
       </div>
       <div className="mx-3">
         <div className="p-6  md:max-w-[600px] w-full   md:bg-white  relative rounded-lg ">
@@ -148,7 +145,10 @@ const SignUp = () => {
             </form>
             <p className="text-sm text-center mt-3">
               Already have an account?{" "}
-              <span className="text-base md:text-primary text-white" onClick={handleSignIn}>
+              <span
+                className="text-base md:text-primary text-white"
+                onClick={handleSignIn}
+              >
                 Sign In
               </span>
             </p>

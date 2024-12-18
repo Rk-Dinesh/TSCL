@@ -366,7 +366,7 @@ const Admin = ({ permissions }) => {
             )}
           </div>
           <HeaderButton
-            title="TSCL Admin"
+            title="MSCL Admin"
             hasCreatePermission={hasCreatePermission}
             onClick={() => setIsModal(true)}
           />

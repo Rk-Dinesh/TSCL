@@ -75,7 +75,7 @@ const Login = ({ setToken }) => {
     <div className="h-screen  bg-primary py-6 flex flex-col md:items-center gap-8 justify-center ">
       <div className="flex items-center justify-center gap-3 ">
         <img src={logo} alt="Image" className="w-24 h-24" />
-        <p className="text-6xl text-secondary">TSCL</p>
+        <p className="text-6xl text-secondary">MSCL</p>
       </div>
       <div className="mx-3  ">
         <div className="p-6  md:max-w-[600px] w-full  md:bg-white  rounded-lg ">

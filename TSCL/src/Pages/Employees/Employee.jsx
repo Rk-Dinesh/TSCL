@@ -336,7 +336,7 @@ const Employee = ({ permissions }) => {
             )}
           </div>
           <HeaderButton
-            title="TSCL Employee"
+            title="MSCL Employee"
             hasCreatePermission={hasCreatePermission}
             onClick={() => setIsModal(true)}
           />
