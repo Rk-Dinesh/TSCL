@@ -21,7 +21,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-     const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [status, setStatus] = useState([]);
@@ -80,7 +80,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
 
     setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
     setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
-  }, [filteredGrievances, currentPage,itemsPerPage]);
+  }, [filteredGrievances, currentPage, itemsPerPage]);
 
   const fetchActiveStatus = async () => {
     try {
@@ -283,21 +283,21 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   const handleItemsPerPageChange = (event) => {
     const value = parseInt(event.target.value, 10);
     setItemsPerPage(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   return (
     <div className="">
       <div className="  font-lexend h-screen ">
         <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-        <div className="flex gap-3">
+          <div className="flex gap-3">
             <DateRangeComp onChange={handleDateRangeChange} />
             <div className="flex items-center gap-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
               >
-                Table Contents
+                Page Entries
               </label>
               <select
                 id="itemsPerPage"
@@ -328,9 +328,11 @@ const RequestJE = ({ permissions, include, endpoint }) => {
             )}
           </div>
         </div>
-        <div className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
+        <div
+          className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
             report.length < 8 ? "h-4/5" : "h-fit"
-          }`}>
+          }`}
+        >
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="text-lg  whitespace-nowrap">View Report</p>
@@ -358,11 +360,8 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                   <option hidden>Status</option>
                   <option value="All">All</option>
                   {status &&
-                    status.map((option,index) => (
-                      <option
-                        key={index}
-                        value={option.status_name}
-                      >
+                    status.map((option, index) => (
+                      <option key={index} value={option.status_name}>
                         {option.status_name}
                       </option>
                     ))}

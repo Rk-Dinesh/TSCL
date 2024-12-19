@@ -297,7 +297,7 @@ const Request = ({ permissions, include, endpoint }) => {
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
               >
-                Table Contents
+                Page Entries
               </label>
               <select
                 id="itemsPerPage"

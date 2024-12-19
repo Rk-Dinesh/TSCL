@@ -62,7 +62,6 @@ const Layout = ({ permissions }) => {
   ].filter(Boolean); 
   
 
-
   return (
     <div className="w-full h-screen relative  md:flex">
     

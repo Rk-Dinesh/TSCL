@@ -73,7 +73,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
 
     setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
     setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
-  }, [filteredGrievances, currentPage,itemsPerPage]);
+  }, [filteredGrievances, currentPage, itemsPerPage]);
 
   const fetchActiveStatus = async () => {
     try {
@@ -242,7 +242,7 @@ const Grivences = ({ permissions, include, endpoint }) => {
   const handleItemsPerPageChange = (event) => {
     const value = parseInt(event.target.value, 10);
     setItemsPerPage(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   return (
@@ -257,26 +257,28 @@ const Grivences = ({ permissions, include, endpoint }) => {
             />
           )}
           <div className="flex flex-row gap-1.5 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
-         <div className="flex gap-3">
-         <DateRangeComp onChange={handleDateRangeChange} />
-         <div className="flex items-center gap-3">
-              <label htmlFor="itemsPerPage" className="font-medium text-gray-600">
-               Table Contents
-              </label>
-              <select
-                id="itemsPerPage"
-                value={itemsPerPage}
-                onChange={handleItemsPerPageChange}
-                className=" p-1 outline-none text-sm rounded px-2"
-              >
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
+            <div className="flex gap-3">
+              <DateRangeComp onChange={handleDateRangeChange} />
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="itemsPerPage"
+                  className="font-medium text-gray-600"
+                >
+                  Page Entries
+                </label>
+                <select
+                  id="itemsPerPage"
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  className=" p-1 outline-none text-sm rounded px-2"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
             </div>
-           
-         </div>
             <div className="flex flex-row flex-wrap gap-1.5">
               <SearchInput
                 value={searchValue}
@@ -294,7 +296,11 @@ const Grivences = ({ permissions, include, endpoint }) => {
             </div>
           </div>
 
-          <div className={`bg-white overflow-x-auto mx-4 rounded-lg mt-1  p-3 ${grievance.length < 8 ?'h-4/5' : 'h-fit'}`}>
+          <div
+            className={`bg-white overflow-x-auto mx-4 rounded-lg mt-1  p-3 ${
+              grievance.length < 8 ? "h-4/5" : "h-fit"
+            }`}
+          >
             <table className="w-full mt-2">
               <thead className="border-b border-gray-300">
                 <tr className="">

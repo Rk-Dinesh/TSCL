@@ -24,7 +24,7 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [status, setStatus] = useState([]);
@@ -133,7 +133,7 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
 
     setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
     setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
-  }, [filteredGrievances, currentPage,itemsPerPage]);
+  }, [filteredGrievances, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -348,7 +348,7 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
   const handleItemsPerPageChange = (event) => {
     const value = parseInt(event.target.value, 10);
     setItemsPerPage(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   return (
@@ -356,28 +356,28 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
       <div className="  mb-10">
         <div className="  font-lexend h-screen ">
           <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
-          <div className="flex gap-3">
-            <DateRangeComp onChange={handleDateRangeChange} />
-            <div className="flex items-center gap-3">
-              <label
-                htmlFor="itemsPerPage"
-                className="font-medium text-gray-600"
-              >
-                Table Contents
-              </label>
-              <select
-                id="itemsPerPage"
-                value={itemsPerPage}
-                onChange={handleItemsPerPageChange}
-                className=" p-1 outline-none text-sm rounded px-2"
-              >
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
+            <div className="flex gap-3">
+              <DateRangeComp onChange={handleDateRangeChange} />
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="itemsPerPage"
+                  className="font-medium text-gray-600"
+                >
+                  Page Entries
+                </label>
+                <select
+                  id="itemsPerPage"
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  className=" p-1 outline-none text-sm rounded px-2"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
             </div>
-          </div>
             <div className="flex flex-row flex-wrap gap-1.5">
               <SearchInput
                 value={searchValue}
@@ -394,9 +394,11 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
               )}
             </div>
           </div>
-          <div className={`bg-white  mx-4 rounded-lg mt-1 overflow-x-auto  p-3 ${
-            report.length < 8 ? "h-4/5" : "h-fit"
-          }`}>
+          <div
+            className={`bg-white  mx-4 rounded-lg mt-1 overflow-x-auto  p-3 ${
+              report.length < 8 ? "h-4/5" : "h-fit"
+            }`}
+          >
             <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
               <div className="flex flex-wrap gap-3">
                 <p className="text-lg  whitespace-nowrap">View Report</p>
@@ -414,7 +416,7 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
                       Yet to be Assigned
                     </option>
                     {dataUsers &&
-                      dataUsers.map((option,index) => (
+                      dataUsers.map((option, index) => (
                         <option key={index} value={option.user_name}>
                           {option.user_name}
                         </option>
@@ -444,11 +446,8 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
                     <option hidden>Status</option>
                     <option value="All">All</option>
                     {status &&
-                      status.map((option,index) => (
-                        <option
-                          key={index}
-                          value={option.status_name}
-                        >
+                      status.map((option, index) => (
+                        <option key={index} value={option.status_name}>
                           {option.status_name}
                         </option>
                       ))}
@@ -579,7 +578,13 @@ const [itemsPerPage, setItemsPerPage] = useState(10);
                         <p
                           className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  capitalize text-slate-900"
                           onClick={() =>
-                            navigate(`/view2?grievanceId=${report.grievance_id}&deptName=${encodeURIComponent(report.dept_name)}`)
+                            navigate(
+                              `/view2?grievanceId=${
+                                report.grievance_id
+                              }&deptName=${encodeURIComponent(
+                                report.dept_name
+                              )}`
+                            )
                           }
                         >
                           {report.grievance_id}

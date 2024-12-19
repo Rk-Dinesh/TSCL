@@ -103,7 +103,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
 
     setCurrentItems(filteredGrievances.slice(firstIndex, lastIndex));
     setTotalPages(Math.ceil(filteredGrievances.length / itemsPerPage));
-  }, [filteredGrievances, currentPage,itemsPerPage]);
+  }, [filteredGrievances, currentPage, itemsPerPage]);
 
   const fetchZone = async () => {
     try {
@@ -504,21 +504,21 @@ const RequestHead = ({ permissions, include, endpoint }) => {
   const handleItemsPerPageChange = (event) => {
     const value = parseInt(event.target.value, 10);
     setItemsPerPage(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   return (
     <div className="mb-8">
       <div className="  font-lexend h-screen ">
         <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-        <div className="flex gap-3">
+          <div className="flex gap-3">
             <DateRangeComp onChange={handleDateRangeChange} />
             <div className="flex items-center gap-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
               >
-                Table Contents
+                Page Entries
               </label>
               <select
                 id="itemsPerPage"
@@ -570,7 +570,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               <option hidden>Department</option>
               <option value="All">All</option>
               {department &&
-                department.map((option,index) => (
+                department.map((option, index) => (
                   <option key={index} value={option.dept_name}>
                     {option.dept_name}
                   </option>
@@ -587,11 +587,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               <option hidden>Complaint</option>
               <option value="All">All</option>
               {Complaint &&
-                Complaint.map((option,index) => (
-                  <option
-                    key={index}
-                    value={option.complaint_type_title}
-                  >
+                Complaint.map((option, index) => (
+                  <option key={index} value={option.complaint_type_title}>
                     {option.complaint_type_title}
                   </option>
                 ))}
@@ -607,7 +604,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               <option hidden>Zone</option>
               <option value="All">All</option>
               {zone &&
-                zone.map((option,index) => (
+                zone.map((option, index) => (
                   <option key={index} value={option.zone_name}>
                     {option.zone_name}
                   </option>
@@ -626,7 +623,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               {ward &&
                 ward
                   .filter((ward) => ward.zone_name === selectedZone)
-                  .map((option,index) => (
+                  .map((option, index) => (
                     <option key={index} value={option.ward_name}>
                       {option.ward_name}
                     </option>
@@ -645,7 +642,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               {Street &&
                 Street.filter(
                   (streets) => streets.ward_name === selectedWard
-                ).map((option,index) => (
+                ).map((option, index) => (
                   <option key={index} value={option.street_name}>
                     {option.street_name}
                   </option>
@@ -673,7 +670,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                     Yet to be Assigned
                   </option>
                   {dataUsers &&
-                    dataUsers.map((option,index) => (
+                    dataUsers.map((option, index) => (
                       <option key={index} value={option.user_name}>
                         {option.user_name}
                       </option>
@@ -703,7 +700,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                   <option hidden>Status</option>
                   <option value="All">All</option>
                   {status &&
-                    status.map((option,index) => (
+                    status.map((option, index) => (
                       <option key={index} value={option.status_name}>
                         {option.status_name}
                       </option>
@@ -719,11 +716,8 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                   <option hidden>Complaint Type</option>
                   <option value="All">All</option>
                   {Complainttype &&
-                    Complainttype.map((option,index) => (
-                      <option
-                        key={index}
-                        value={option.complaint_type}
-                      >
+                    Complainttype.map((option, index) => (
+                      <option key={index} value={option.complaint_type}>
                         {option.complaint_type}
                       </option>
                     ))}
@@ -731,9 +725,11 @@ const RequestHead = ({ permissions, include, endpoint }) => {
               </div>
             </div>
           </div>
-          <div className={`bg-white  mx-4 rounded-lg mt-1 overflow-x-auto p-3 ${
-            report.length < 8 ? "h-4/5" : "h-fit"
-          }`}>
+          <div
+            className={`bg-white  mx-4 rounded-lg mt-1 overflow-x-auto p-3 ${
+              report.length < 8 ? "h-4/5" : "h-fit"
+            }`}
+          >
             <table className="w-full md:mt-1 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
@@ -822,7 +818,11 @@ const RequestHead = ({ permissions, include, endpoint }) => {
                       <p
                         className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  capitalize text-slate-900"
                         onClick={() =>
-                          navigate(`/view3?grievanceId=${report.grievance_id}&deptName=${encodeURIComponent(report.dept_name)}`)
+                          navigate(
+                            `/view3?grievanceId=${
+                              report.grievance_id
+                            }&deptName=${encodeURIComponent(report.dept_name)}`
+                          )
                         }
                       >
                         {report.grievance_id}
