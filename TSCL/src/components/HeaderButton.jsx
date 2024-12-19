@@ -13,7 +13,7 @@ const HeaderButton = ({
       </h1>
       {hasCreatePermission && (
         <button
-          className="flex flex-row gap-2 font-lexend items-center border bg-blue-500 text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm shadow-md"
+          className="flex flex-row gap-2 font-lexend items-center border bg-primary text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm shadow-md"
           onClick={onClick}
         >
           <FaPlus className='text-sm' /> Add {title}

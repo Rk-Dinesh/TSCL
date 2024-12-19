@@ -25,7 +25,7 @@ const SearchHeader = ({
         </div>
         {hasCreatePermission && (
           <button
-            className="flex flex-row gap-2 font-lexend items-center border-2 bg-blue-500 text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm"
+            className="flex flex-row gap-2 font-lexend items-center border-2 bg-primary text-white rounded-full py-1.5 w-fit justify-between px-3 md:text-base text-sm"
             onClick={onClick}
           >
             <FaPlus /> Add {title}

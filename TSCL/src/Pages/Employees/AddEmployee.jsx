@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -11,13 +11,9 @@ const AddEmployeeSchema = yup.object().shape({
   emp_name: yup.string().trim().required("Employee Name is required"),
   dept_name: yup.string().required("Department is required"),
   phone: yup
-    .string()
-    .test(
-      "len",
-      "Phone Number must be 10 characters",
-      (val) => val.length === 10
-    )
-    .required("Phone Number is required"),
+  .string()
+  .matches(/^\d{10}$/, "Must be 10 digits and contain only numbers")
+  .required("Phone Number is required"),
   email: yup
     .string()
     .email("Invalid Email Id")
@@ -39,16 +35,30 @@ const AddEmployeeSchema = yup.object().shape({
 
 const AddEmployee = (props) => {
   const { ExistingDesignation, ExistingDept } = props;
+  const [filterDesifnation, setFilterDesifnation] = useState([])
   const [selectedDesignId, setSelectedDesignId] = useState("");
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm({
     resolver: yupResolver(AddEmployeeSchema),
     mode: "all",
   });
+
+  const departName = watch('dept_name');
+
+  useEffect(() => {
+    if (departName) {
+    const filtered = ExistingDesignation.filter((desg)=> desg.dept_name === departName);
+    setFilterDesifnation(filtered)
+    } else {
+      setFilterDesifnation([]);
+      setSelectedDesignId('')
+    }
+  }, [departName]);
 
   const handleDesgnationChange = (event) => {
     const selectedDesginationName = event.target.value;
@@ -130,7 +140,7 @@ const AddEmployee = (props) => {
                   id="dept_name"
                   {...register("dept_name")}
                 >
-                  <option value="">Department</option>
+                  <option value=""> Select Department</option>
                   {ExistingDept.map((dept, index) => (
                     <option key={index} value={dept.dept_name}>
                       {dept.dept_name}
@@ -141,6 +151,35 @@ const AddEmployee = (props) => {
               {errors.dept_name && (
                 <p className="text-red-500 text-xs text-end ">
                   {errors.dept_name.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <div className="grid grid-cols-3">
+                <label
+                  className="text-black text-lg font-medium mb-2 col-span-2"
+                  htmlFor="designation"
+                >
+                  Desgination :
+                </label>
+                <select
+                  className="text-sm text-black border border-gray-900 rounded-lg border-none outline-none"
+                  id="designation"
+                  {...register("designation")}
+                  onChange={handleDesgnationChange}
+                >
+                  <option value="">Select Designation</option>
+                  {filterDesifnation && filterDesifnation.map((desgn, index) => (
+                    <option key={index} value={desgn.designation}>
+                      {desgn.designation}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {errors.designation && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.designation.message}
                 </p>
               )}
             </div>
@@ -246,7 +285,7 @@ const AddEmployee = (props) => {
                   Date of Birth :
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   id="dob"
                   className="text-end outline-none col-span-2"
                   placeholder="DOB"
@@ -260,34 +299,7 @@ const AddEmployee = (props) => {
               )}
             </div>
 
-            <div>
-              <div className="grid grid-cols-3">
-                <label
-                  className="text-black text-lg font-medium mb-2 col-span-2"
-                  htmlFor="designation"
-                >
-                  Desgination :
-                </label>
-                <select
-                  className="text-sm text-black border border-gray-900 rounded-lg border-none outline-none"
-                  id="designation"
-                  {...register("designation")}
-                  onChange={handleDesgnationChange}
-                >
-                  <option value="">Designation</option>
-                  {ExistingDesignation.map((desgn, index) => (
-                    <option key={index} value={desgn.designation}>
-                      {desgn.designation}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {errors.designation && (
-                <p className="text-red-500 text-xs text-end ">
-                  {errors.designation.message}
-                </p>
-              )}
-            </div>
+           
           </div>
 
           <div className="py-6">

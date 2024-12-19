@@ -23,7 +23,7 @@ const AddAdminSchema = yup.object().shape({
     .email("Invalid Email Id")
     .required("Email Id is required"),
   address: yup.string().required("Address is required"),
-  login_password: yup.string().required("Password is required"),
+
   pincode: yup
     .string()
     .test("len", "Pincode must be 6 characters", (val) => val.length === 6)
@@ -176,6 +176,7 @@ const AddAdmin = (props) => {
                   className="w-6/5 text-end outline-none col-span-2"
                   placeholder="Department "
                   {...register("dept_name")}
+                  disabled
                 />
               </div>
               {errors.dept_name && (
@@ -199,6 +200,7 @@ const AddAdmin = (props) => {
                   className="w-6/5 text-end outline-none col-span-2"
                   placeholder="Phone Number"
                   {...register("phone")}
+                  disabled
                 />
               </div>
               {errors.phone && (
@@ -222,6 +224,7 @@ const AddAdmin = (props) => {
                   className="text-end outline-none col-span-2"
                   placeholder="abc@gmail.com"
                   {...register("email")}
+                  disabled
                 />
               </div>
               {errors.email && (
@@ -245,6 +248,7 @@ const AddAdmin = (props) => {
                   className="text-end outline-none col-span-2"
                   placeholder="Address"
                   {...register("address")}
+                  disabled
                 />
               </div>
               {errors.address && (
@@ -268,6 +272,7 @@ const AddAdmin = (props) => {
                   className="text-end outline-none col-span-2"
                   placeholder="Pincode"
                   {...register("pincode")}
+                  disabled
                 />
               </div>
               {errors.pincode && (
@@ -306,28 +311,6 @@ const AddAdmin = (props) => {
               )}
             </div>
 
-            <div>
-              <div className="grid grid-cols-3 gap-3">
-                <label
-                  className="text-black text-base font-medium mb-2 col-span-1"
-                  htmlFor="login_password"
-                >
-                  Password:
-                </label>
-                <input
-                  type="password"
-                  id="login_password"
-                  className="text-end outline-none col-span-2"
-                  placeholder="Password"
-                  {...register("login_password")}
-                />
-              </div>
-              {errors.login_password && (
-                <p className="text-red-500 text-xs text-end ">
-                  {errors.login_password.message}
-                </p>
-              )}
-            </div>
             <p className="text-gray-500 my-1">Auto Assign Options :</p>
 
             <div>

@@ -7,7 +7,7 @@ const PredictiveAnalysis = () => {
     <div className="  font-lexend mx-2 my-5 h-screen  ">
      
      <p className="text-[#023047] text-base text-center font-medium my-1  whitespace-nowrap bg-white rounded-lg py-3 px-3">
-     Predictive Analysis Tab (1 year data required to process, We can say this as an AI feature.)
+     Predictive Analysis Tab (1 year data required to process.)
           </p>
       <div className="grid grid-cols-12 gap-2  mt-3 mb-2">
         <div className="md:col-span-6 col-span-12 p-3 border-2 bg-white rounded-lg py-2 overflow-x-auto no-scrollbar shadow-md h-[320px]">

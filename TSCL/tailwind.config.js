@@ -11,7 +11,7 @@ export default {
       },
     
       colors:{
-        'primary': '#4078E4',
+        'primary': '#2A4898',
         'secondary': '#FBFAFA',
          'search': '#E8E2E2',
          'paginate-br' : '#BDBDBD',
@@ -21,3 +21,5 @@ export default {
   },
   plugins: [],
 }
+
+//#21409A #FBFAFA
