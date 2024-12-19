@@ -215,7 +215,7 @@ function App() {
                 }
               />
             )}
-             {memoizedFeatures["organization"] && (
+             {/* {memoizedFeatures["organization"] && (
               <Route
                 path="/origin"
                 element={
@@ -224,7 +224,7 @@ function App() {
                   />
                 }
               />
-            )}
+            )} */}
             {memoizedFeatures["designation"] && (
               <Route
                 path="/designation"
