@@ -10,6 +10,7 @@ import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 const AddAdminSchema = yup.object().shape({
   user_name: yup.string().trim().required("User Name is required"),
   dept_name: yup.string().required("Department is required"),
+  designation: yup.string().required("designation is required"),
   phone: yup
     .string()
     .test(
@@ -83,6 +84,7 @@ const AddAdmin = (props) => {
     if (selectedEmployee) {
       setSelectedRoleId("");
       setValue("dept_name", selectedEmployee.dept_name);
+      setValue("designation", selectedEmployee.designation);
       setValue("phone", selectedEmployee.phone);
       setValue("email", selectedEmployee.email);
       setValue("address", selectedEmployee.address);
@@ -182,6 +184,29 @@ const AddAdmin = (props) => {
               {errors.dept_name && (
                 <p className="text-red-500 text-xs text-end ">
                   {errors.dept_name.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <div className="grid grid-cols-3 gap-3">
+                <label
+                  className="text-black text-base font-medium mb-2 col-span-1"
+                  htmlFor="designation"
+                >
+                  Designation:
+                </label>
+                <input
+                  type="text"
+                  id="designation"
+                  className="w-6/5 text-end outline-none col-span-2"
+                  placeholder="Designation "
+                  {...register("designation")}
+                  disabled
+                />
+              </div>
+              {errors.designation && (
+                <p className="text-red-500 text-xs text-end ">
+                  {errors.designation.message}
                 </p>
               )}
             </div>

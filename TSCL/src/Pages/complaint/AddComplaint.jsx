@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { IoMdClose } from "react-icons/io";
 import { API } from "../../Host";
 import axios from "axios";
+import decryptData from "../../Decrypt";
 
 const steps = [
   {
@@ -62,8 +63,10 @@ const escdetailSchema = yup.object().shape({
 
 const AddComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
+  const token = localStorage.getItem("token");
+  const [ExistingDesignation, setExistingDesignation] = useState([])
 
-  const { ExistingDept, ExistingRoles } = props;
+  const { ExistingDept } = props;
 
   let currentStepSchema;
   switch (stepNumber) {
@@ -79,6 +82,7 @@ const AddComplaint = (props) => {
 
   useEffect(() => {}, [stepNumber]);
 
+
   const {
     register,
     formState: { errors },
@@ -87,6 +91,23 @@ const AddComplaint = (props) => {
     resolver: yupResolver(currentStepSchema),
     mode: "all",
   });
+
+  useEffect(()=>{
+    axios
+    .get(`${API}/designation/getactive`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      const responseData = decryptData(response.data.data);
+      const reverseData = responseData.reverse();
+      setExistingDesignation(reverseData);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  },[])
 
   const onSubmit = async (data) => {
     if (stepNumber !== steps.length - 1) {
@@ -228,6 +249,7 @@ const AddComplaint = (props) => {
                             <option value="">Select Type</option>
                             <option value="month">Month</option>
                             <option value="day">Days</option>
+                            <option value="minute">Minute</option>
                           </select>
                           {errors.tat_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -305,6 +327,7 @@ const AddComplaint = (props) => {
                             <option value="">Select Type</option>
                             <option value="month">Month</option>
                             <option value="day">Days</option>
+                            <option value="minute">Minute</option>
                           </select>
                           {errors.escalation_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -344,10 +367,10 @@ const AddComplaint = (props) => {
                             {...register("role_l1")}
                             id="role_l1"
                           >
-                            <option value="">Select an Role</option>
-                            {ExistingRoles.map((role, index) => (
-                              <option key={index} value={role.role_name}>
-                                {role.role_name}
+                            <option value="">Select an Designation</option>
+                            {ExistingDesignation && ExistingDesignation.map((role, index) => (
+                              <option key={index} value={role.designation}>
+                                {role.designation}
                               </option>
                             ))}
                           </select>
@@ -389,10 +412,10 @@ const AddComplaint = (props) => {
                             {...register("role_l2")}
                             id="role_l2"
                           >
-                            <option value="">Select an Role</option>
-                            {ExistingRoles.map((role, index) => (
-                              <option key={index} value={role.role_name}>
-                                {role.role_name}
+                            <option value="">Select an Designation</option>
+                            {ExistingDesignation && ExistingDesignation.map((role, index) => (
+                              <option key={index} value={role.designation}>
+                                {role.designation}
                               </option>
                             ))}
                           </select>
@@ -434,10 +457,10 @@ const AddComplaint = (props) => {
                             {...register("role_l3")}
                             id="role_l3"
                           >
-                            <option value="">Select an Role</option>
-                            {ExistingRoles.map((role, index) => (
-                              <option key={index} value={role.role_name}>
-                                {role.role_name}
+                            <option value="">Select an Designation</option>
+                            {ExistingDesignation && ExistingDesignation.map((role, index) => (
+                              <option key={index} value={role.designation}>
+                                {role.designation}
                               </option>
                             ))}
                           </select>

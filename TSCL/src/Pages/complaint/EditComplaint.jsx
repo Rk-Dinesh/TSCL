@@ -75,8 +75,9 @@ const EditComplaint = (props) => {
   const [role2, setRole2] = useState(null);
   const [role3, setRole3] = useState(null);
   const token = localStorage.getItem("token");
+    const [ExistingDesignation, setExistingDesignation] = useState([])
 
-  const { ExistingDept, ExistingRoles, comptId } = props;
+  const { ExistingDept,  comptId } = props;
 
   let currentStepSchema;
   switch (stepNumber) {
@@ -101,6 +102,23 @@ const EditComplaint = (props) => {
     resolver: yupResolver(currentStepSchema),
     mode: "all",
   });
+
+  useEffect(()=>{
+    axios
+    .get(`${API}/designation/getactive`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      const responseData = decryptData(response.data.data);
+      const reverseData = responseData.reverse();
+      setExistingDesignation(reverseData);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  },[])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -282,6 +300,7 @@ const EditComplaint = (props) => {
                             </option>
                             <option value="month">Month</option>
                             <option value="day">Days</option>
+                            <option value="minute">Minute</option>
                           </select>
                           {errors.tat_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -363,6 +382,7 @@ const EditComplaint = (props) => {
                             </option>
                             <option value="month">Month</option>
                             <option value="day">Days</option>
+                            <option value="minute">Minute</option>
                           </select>
                           {errors.escalation_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -405,9 +425,9 @@ const EditComplaint = (props) => {
                             <option value={role1} disabled>
                               {role1}
                             </option>
-                            {ExistingRoles.map((role,index) => (
-                              <option key={index} value={role.role_name}>
-                                {role.role_name}
+                            {ExistingDesignation && ExistingDesignation.map((role, index) => (
+                              <option key={index} value={role.designation}>
+                                {role.designation}
                               </option>
                             ))}
                           </select>
@@ -452,9 +472,9 @@ const EditComplaint = (props) => {
                             <option value={role2} disabled>
                               {role2}
                             </option>
-                            {ExistingRoles.map((role,index) => (
-                              <option key={index} value={role.role_name}>
-                                {role.role_name}
+                            {ExistingDesignation && ExistingDesignation.map((role, index) => (
+                              <option key={index} value={role.designation}>
+                                {role.designation}
                               </option>
                             ))}
                           </select>
@@ -499,9 +519,9 @@ const EditComplaint = (props) => {
                             <option value={role3} disabled>
                               {role3}
                             </option>
-                            {ExistingRoles.map((role,index) => (
-                              <option key={index} value={role.role_name}>
-                                {role.role_name}
+                            {ExistingDesignation && ExistingDesignation.map((role, index) => (
+                              <option key={index} value={role.designation}>
+                                {role.designation}
                               </option>
                             ))}
                           </select>

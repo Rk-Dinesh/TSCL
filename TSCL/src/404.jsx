@@ -17,7 +17,7 @@ const NotFound = () => {
             home page.{" "}
           </p>
           <Link
-            to={"/dashboard"}
+            to={"/"}
             className="inline-flex text-green-700   font-medium rounded-lg text-lg px-5 py-2.5 text-center  my-4"
           >
             Back to Homepage 

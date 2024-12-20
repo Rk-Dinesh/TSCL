@@ -35,7 +35,7 @@ const Complaint = ({ permissions }) => {
   const [deleteId, setdeleteId] = useState(null);
 
   const [comptId, setComptId] = useState(null);
-  const [ExistingRoles, setExistingRoles] = useState(null);
+  // const [ExistingRoles, setExistingRoles] = useState(null);
   const [ExistingDept, setExistingDept] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,7 +58,7 @@ const Complaint = ({ permissions }) => {
   useEffect(() => {
     handlerefresh();
     fetchExistingDepts();
-    fetchExistingRoles();
+    // fetchExistingRoles();
   }, [searchValue, currentPage]);
 
   const paginate = (pageNumber) => {
@@ -102,7 +102,7 @@ const Complaint = ({ permissions }) => {
         }
       );
       const responseData = decryptData(response.data.data);
-      setExistingRoles(responseData);
+      // setExistingRoles(responseData);
     } catch (error) {
       console.error("Error fetching existing Roles:", error);
     }
@@ -571,7 +571,7 @@ const Complaint = ({ permissions }) => {
           toggleModal={toggleModal}
           handlerefresh={handlerefresh}
           ExistingDept={ExistingDept}
-          ExistingRoles={ExistingRoles}
+          // ExistingRoles={ExistingRoles}
         />
       )}
       {editModal && (
@@ -579,7 +579,7 @@ const Complaint = ({ permissions }) => {
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
           ExistingDept={ExistingDept}
-          ExistingRoles={ExistingRoles}
+          // ExistingRoles={ExistingRoles}
           comptId={comptId}
         />
       )}

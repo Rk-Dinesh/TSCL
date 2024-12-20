@@ -17,11 +17,7 @@ const Header = () => {
   };
 
   const handleLogoutClick = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("dept");
-    localStorage.removeItem("code");
-    localStorage.removeItem("role");
-    localStorage.removeItem("name");
+    localStorage.clear()
     navigate("/");
     setIsDropdownOpen(false);
   };

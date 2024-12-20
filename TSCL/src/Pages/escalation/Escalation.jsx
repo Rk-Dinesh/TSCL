@@ -31,7 +31,7 @@ const Escalation = ({ permissions }) => {
 
   const [organization, setOrganization] = useState([]);
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const designation = localStorage.getItem("designation");
   const dept = localStorage.getItem("dept");
   const [selectedDoc, setSelectedDoc] = useState(null);
 
@@ -50,7 +50,7 @@ const Escalation = ({ permissions }) => {
   const handlerefresh = () => {
     axios
       .get(
-        `${API}/grievance-escalation/getbydeptrole?escalation_department=${dept}&escalation_to=${role}`,
+        `${API}/grievance-escalation/getbydeptrole?escalation_department=${dept}&escalation_to=${designation}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
