@@ -13,6 +13,8 @@ import HeaderButton from "../../components/HeaderButton";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
+import { AiOutlineThunderbolt } from "react-icons/ai";
+import ManyTicketTransfer from "../grievancesadmin/ManyTicketTransfer";
 
 const Request = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -35,26 +37,11 @@ const Request = ({ permissions, include, endpoint }) => {
   const [statusColors, setStatusColors] = useState({});
   const [status, setStatus] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [istransferModal, setIstransferModal] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
-    const fetchgrievance = async () => {
-      try {
-        const response = await axios.get(`${API}/new-grievance/${endpoint}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const responseData = decryptData(response.data.data);
-        setReport(responseData);
-        const filteredCenters = responseData.filter((grievances) =>
-          Object.values(grievances).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-
-        setFilteredGrievances(filteredCenters);
-      } catch (error) {}
-    };
+ 
 
     const fetchComplaintType = async () => {
       try {
@@ -70,10 +57,29 @@ const Request = ({ permissions, include, endpoint }) => {
       }
     };
 
-    fetchgrievance();
+    handlerefresh();
     fetchComplaintType();
     fetchActiveStatus();
   }, []);
+
+  const handlerefresh = async () => {
+    try {
+      const response = await axios.get(`${API}/new-grievance/${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = decryptData(response.data.data);
+      setReport(responseData);
+      const filteredCenters = responseData.filter((grievances) =>
+        Object.values(grievances).some((value) =>
+          value.toString().toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+
+      setFilteredGrievances(filteredCenters);
+    } catch (error) {}
+  };
 
   useEffect(() => {
     const filteredCenters = report.filter((grievances) =>
@@ -279,7 +285,21 @@ const Request = ({ permissions, include, endpoint }) => {
     setCurrentPage(1);
   };
 
+  const handleCheckboxChange = (userId) => {
+    setSelectedRows((prevSelectedRows) =>
+      prevSelectedRows.includes(userId)
+        ? prevSelectedRows.filter((id) => id !== userId)
+        : [...prevSelectedRows, userId]
+    );
+  };
+
+  const toggleTModal = () => {
+    setIstransferModal(!istransferModal);
+    setSelectedRows([]);
+  };
+
   return (
+    <>
     <div className="">
       <div className="  font-lexend h-screen ">
         {include === "yes" && (
@@ -367,10 +387,27 @@ const Request = ({ permissions, include, endpoint }) => {
               </button>
             </div>
           </div>
+          {include == "yes" && (
+            <div className="my-2 mx-3 flex flex-wrap gap-2 ">
+              <button
+                className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
+                onClick={() => setIstransferModal(true)}
+              >
+                Multi-Transfer
+              </button>
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full mt-2 ">
               <thead className=" border-b border-gray-300  ">
                 <tr className="">
+                  {include === "yes" && (
+                    <th className="">
+                      <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                        <AiOutlineThunderbolt className="text-xl text-center text-primary" />
+                      </p>
+                    </th>
+                  )}
                   <th className="">
                     <p className=" mx-3 my-2 font-lexend  font-medium whitespace-nowrap">
                       #
@@ -423,6 +460,28 @@ const Request = ({ permissions, include, endpoint }) => {
               <tbody>
                 {currentItemsOnPage.map((report, index) => (
                   <tr className=" border-b border-gray-300  " key={index}>
+                        {include === "yes" && (
+                        <td className=" flex gap-2 items-center justify-center ">
+                          <div className="flex items-center ">
+                            <input
+                              type="checkbox"
+                              className="w-4 h-4 mt-4  text-dark bg-gray-800 border-gray-800 rounded"
+                              checked={selectedRows.includes(
+                                report.grievance_id
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(report.grievance_id)
+                              }
+                            />
+                            <label
+                              className="sr-only"
+                              htmlFor="checkbox-table-search-1"
+                            >
+                              checkbox
+                            </label>
+                          </div>
+                        </td>
+                      )}
                     <td className="">
                       <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700">
                         {firstIndex + index + 1 < 10
@@ -519,6 +578,14 @@ const Request = ({ permissions, include, endpoint }) => {
         <p className="text-transparent">transparent</p>
       </div>
     </div>
+    {istransferModal && (
+        <ManyTicketTransfer
+          toggleTModal={toggleTModal}
+          selectedRows={selectedRows}
+          handlerefresh={handlerefresh}
+        />
+      )}
+    </>
   );
 };
 
