@@ -17,8 +17,8 @@ import FileUploadButton from "../../../components/FileUploadButton";
 import DocumentDownload from "../../../components/DocumentDownload";
 import HeaderButton from "../../../components/HeaderButton";
 
-const csvData = `zone_id,zone_name,ward_name,status,created_by_user
-Z***,ZoneName,WardName,Status,admin`;
+const csvData = `zone_id,ward_name
+Z***,WardName`;
 
 const Ward = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -71,6 +71,8 @@ const Ward = ({ permissions }) => {
         },
       });
       const responseData = decryptData(response.data.data);
+      // const sortedWards = responseData.sort((a, b) => a.ward_name.localeCompare(b.ward_name));
+      // const sortedWards = responseData.sort((a, b) => Number(a.ward_name) - Number(b.ward_name));
       setWard(responseData);
 
       const filteredCenters = responseData.filter((wards) =>
@@ -162,27 +164,35 @@ const Ward = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append('created_by_user', localStorage.getItem('name'));
 
-      const response = await axios.post(`${API}/ward/uploadcsv`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        const response = await axios.post(`${API}/ward/uploadcsv`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
 
-      if (response.status === 200) {
-        setButtonText("Bulk Upload");
-        setFile(null);
-        handlerefresh();
-        toast.success("Data Uploaded Successfully");
-      } else {
-        toast.error("Data failed to Upload");
-      }
+        if (response.status === 200) {
+            setButtonText("Bulk Upload");
+            setFile(null);
+            handlerefresh();
+            toast.success('Data Uploaded successfully');
+        }
     } catch (error) {
-      console.log(error);
+        
+        if (error.response && error.response.data && error.response.data.error) {
+            toast.error(error.response.data.error); 
+            setButtonText("Bulk Upload");
+            setFile(null);
+        } else {
+            toast.error("An unexpected error occurred"); 
+            setButtonText("Bulk Upload");
+            setFile(null);
+        }
     }
-  };
+};
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };

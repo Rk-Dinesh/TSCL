@@ -15,7 +15,7 @@ import RequestTab from "./Pages/request/RequestTab";
 import RequestAdminTab from "./Pages/grievancesadmin/RequestAdminTab";
 import RequestJETab from "./Pages/grievanceJE/RequestJETab";
 import RequestHeadTab from "./Pages/grievanceHead/RequestHeadTab";
-// import EnquiryResource from "./Pages/EnquiryResource/EnquiryResource";
+import EnquiryResource from "./Pages/EnquiryResource/EnquiryResource";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -215,7 +215,7 @@ function App() {
                 }
               />
             )}
-             {/* {memoizedFeatures["organization"] && (
+             {memoizedFeatures["organization"] && (
               <Route
                 path="/origin"
                 element={
@@ -224,7 +224,7 @@ function App() {
                   />
                 }
               />
-            )} */}
+            )}
             {memoizedFeatures["designation"] && (
               <Route
                 path="/designation"

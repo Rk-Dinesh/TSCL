@@ -12,6 +12,8 @@ import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
+import ManyTicketTransfer from "../grievancesadmin/ManyTicketTransfer";
+import { AiOutlineThunderbolt } from "react-icons/ai";
 
 const RequestJE = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -31,6 +33,8 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   const code = localStorage.getItem("code");
   const navigate = useNavigate();
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [istransferModal, setIstransferModal] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const [selected, setSelected] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -39,6 +43,11 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   const [statusColors, setStatusColors] = useState({});
 
   useEffect(() => {
+    handlerefresh();
+    fetchActiveStatus();
+  }, []);
+
+  const handlerefresh = () => {
     axios
       .get(`${API}/new-grievance/${endpoint}?assign_user=${code}`, {
         headers: {
@@ -60,9 +69,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
       .catch((error) => {
         console.error(error);
       });
-
-    fetchActiveStatus();
-  }, []);
+  };
 
   useEffect(() => {
     const filteredCenters = report.filter((grievances) =>
@@ -286,224 +293,287 @@ const RequestJE = ({ permissions, include, endpoint }) => {
     setCurrentPage(1);
   };
 
-  return (
-    <div className="">
-      <div className="  font-lexend h-screen ">
-        <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-          <div className="flex gap-3">
-            <DateRangeComp onChange={handleDateRangeChange} />
-            <div className="flex items-center gap-3">
-              <label
-                htmlFor="itemsPerPage"
-                className="font-medium text-gray-600"
-              >
-                Page Entries
-              </label>
-              <select
-                id="itemsPerPage"
-                value={itemsPerPage}
-                onChange={handleItemsPerPageChange}
-                className=" p-1 outline-none text-sm rounded px-2"
-              >
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex flex-row flex-wrap gap-1.5">
-            <SearchInput
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Grievances"
-            />
+  const handleCheckboxChange = (userId) => {
+    setSelectedRows((prevSelectedRows) =>
+      prevSelectedRows.includes(userId)
+        ? prevSelectedRows.filter((id) => id !== userId)
+        : [...prevSelectedRows, userId]
+    );
+  };
 
-            {hasDownloadPermission && (
-              <DocumentDownload
-                selectedDoc={selectedDoc}
-                onChange={setDocs}
-                exportData={exportData}
+  const toggleTModal = () => {
+    setIstransferModal(!istransferModal);
+    setSelectedRows([]);
+  };
+
+  return (
+    <>
+      <div className="">
+        <div className="  font-lexend h-screen ">
+          <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
+            <div className="flex gap-3">
+              <DateRangeComp onChange={handleDateRangeChange} />
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="itemsPerPage"
+                  className="font-medium text-gray-600"
+                >
+                  Page Entries
+                </label>
+                <select
+                  id="itemsPerPage"
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  className=" p-1 outline-none text-sm rounded px-2"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex flex-row flex-wrap gap-1.5">
+              <SearchInput
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Grievances"
               />
+
+              {hasDownloadPermission && (
+                <DocumentDownload
+                  selectedDoc={selectedDoc}
+                  onChange={setDocs}
+                  exportData={exportData}
+                />
+              )}
+            </div>
+          </div>
+          <div
+            className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
+              report.length < 8 ? "h-4/5" : "h-fit"
+            }`}
+          >
+            <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
+              <div className="flex flex-wrap gap-3">
+                <p className="text-lg  whitespace-nowrap">View Report</p>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                <div className="flex gap-2 flex-wrap">
+                  <select
+                    className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
+                    onChange={(e) => handlePriority(e.target.value)}
+                    value={selectedPrior || ""}
+                  >
+                    <option hidden>Priority</option>
+                    <option value="All">All</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <select
+                    className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
+                    onChange={(e) => handleStatus(e.target.value)}
+                    value={selectedStatus || ""}
+                  >
+                    <option hidden>Status</option>
+                    <option value="All">All</option>
+                    {status &&
+                      status.map((option, index) => (
+                        <option key={index} value={option.status_name}>
+                          {option.status_name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <button
+                  className={`w-20 py-1.5 ${
+                    selected === "All"
+                      ? "bg-primary text-white"
+                      : "bg-white text-black"
+                  } rounded-full shadow-lg`}
+                  onClick={() => handleComplaintTypeClick("All")}
+                >
+                  All
+                </button>
+              </div>
+            </div>
+            {include == "yes" && (
+              <div className="my-2 mx-3 flex flex-wrap gap-2 ">
+                <button
+                  className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
+                  onClick={() => setIstransferModal(true)}
+                >
+                  Multi-Transfer
+                </button>
+              </div>
             )}
-          </div>
-        </div>
-        <div
-          className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
-            report.length < 8 ? "h-4/5" : "h-fit"
-          }`}
-        >
-          <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
-            <div className="flex flex-wrap gap-3">
-              <p className="text-lg  whitespace-nowrap">View Report</p>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <div className="flex gap-2 flex-wrap">
-                <select
-                  className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
-                  onChange={(e) => handlePriority(e.target.value)}
-                  value={selectedPrior || ""}
-                >
-                  <option hidden>Priority</option>
-                  <option value="All">All</option>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                </select>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                <select
-                  className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
-                  onChange={(e) => handleStatus(e.target.value)}
-                  value={selectedStatus || ""}
-                >
-                  <option hidden>Status</option>
-                  <option value="All">All</option>
-                  {status &&
-                    status.map((option, index) => (
-                      <option key={index} value={option.status_name}>
-                        {option.status_name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <button
-                className={`w-20 py-1.5 ${
-                  selected === "All"
-                    ? "bg-primary text-white"
-                    : "bg-white text-black"
-                } rounded-full shadow-lg`}
-                onClick={() => handleComplaintTypeClick("All")}
-              >
-                All
-              </button>
-            </div>
-          </div>
-          <div className=" rounded-lg  py-3 overflow-x-auto ">
-            <table className="w-full mt-2 ">
-              <thead className=" border-b border-gray-300  ">
-                <tr className="">
-                  <th className="">
-                    <p className=" mx-6 my-2 font-lexend  font-medium whitespace-nowrap">
-                      #
-                    </p>
-                  </th>
-                  <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                      Complaint No
-                    </p>
-                  </th>
-                  <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                      Complaint
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Date and Time <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Raised by <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Priority
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItemsOnPage.map((report, index) => (
-                  <tr className=" border-b border-gray-300  " key={index}>
-                    <td className="">
-                      <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowraptext-gray-700">
-                        {firstIndex + index + 1 < 10
-                          ? `0${firstIndex + index + 1}`
-                          : firstIndex + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <p
-                        className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
-                        onClick={() =>
-                          navigate(`/view3?grievanceId=${report.grievance_id}`)
-                        }
-                      >
-                        {report.grievance_id}
+            <div className=" rounded-lg  py-3 overflow-x-auto ">
+              <table className="w-full mt-2 ">
+                <thead className=" border-b border-gray-300  ">
+                  <tr className="">
+                    {include === "yes" && (
+                      <th className="">
+                        <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                          <AiOutlineThunderbolt className="text-xl text-center text-primary" />
+                        </p>
+                      </th>
+                    )}
+                    <th className="">
+                      <p className=" mx-6 my-2 font-lexend  font-medium whitespace-nowrap">
+                        #
                       </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
-                        {report.complaint}
+                    </th>
+                    <th>
+                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                        Complaint No
                       </p>
-                    </td>
-                    <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
-                        {formatDate1(report.createdAt)}
+                    </th>
+                    <th>
+                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                        Complaint
                       </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
-                        {report.public_user_name}
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Date and Time <RiExpandUpDownLine />
                       </p>
-                    </td>
-                    <td>
-                      <p
-                        className={`border-2 w-26 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
-                          report.priority === "High"
-                            ? "text-red-500 border-red-500"
-                            : report.priority === "Medium"
-                            ? "text-sky-500 border-sky-500"
-                            : report.priority === "Low"
-                            ? "text-green-500 border-green-500"
-                            : ""
-                        }`}
-                      >
-                        {report.priority}
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Raised by <RiExpandUpDownLine />
                       </p>
-                    </td>
-                    <td>
-                      <p
-                        className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "
-                        style={{
-                          borderColor: statusColors[report.status] || "gray",
-                          color: statusColors[report.status] || "black",
-                          fontSize: 14,
-                        }}
-                      >
-                        {report.status}
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Priority
+                        <RiExpandUpDownLine />
                       </p>
-                    </td>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Status <RiExpandUpDownLine />
+                      </p>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {currentItemsOnPage.map((report, index) => (
+                    <tr className=" border-b border-gray-300  " key={index}>
+                      {include === "yes" && (
+                        <td className=" flex gap-2 items-center justify-center ">
+                          <div className="flex items-center ">
+                            <input
+                              type="checkbox"
+                              className="w-4 h-4 mt-4  text-dark bg-gray-800 border-gray-800 rounded"
+                              checked={selectedRows.includes(
+                                report.grievance_id
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(report.grievance_id)
+                              }
+                            />
+                            <label
+                              className="sr-only"
+                              htmlFor="checkbox-table-search-1"
+                            >
+                              checkbox
+                            </label>
+                          </div>
+                        </td>
+                      )}
+                      <td className="">
+                        <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowraptext-gray-700">
+                          {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                        </div>
+                      </td>
+                      <td>
+                        <p
+                          className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
+                          onClick={() =>
+                            navigate(
+                              `/view3?grievanceId=${report.grievance_id}`
+                            )
+                          }
+                        >
+                          {report.grievance_id}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                          {report.complaint}
+                        </p>
+                      </td>
+                      <td>
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                          {formatDate1(report.createdAt)}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                          {report.public_user_name}
+                        </p>
+                      </td>
+                      <td>
+                        <p
+                          className={`border-2 w-26 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
+                            report.priority === "High"
+                              ? "text-red-500 border-red-500"
+                              : report.priority === "Medium"
+                              ? "text-sky-500 border-sky-500"
+                              : report.priority === "Low"
+                              ? "text-green-500 border-green-500"
+                              : ""
+                          }`}
+                        >
+                          {report.priority}
+                        </p>
+                      </td>
+                      <td>
+                        <p
+                          className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "
+                          style={{
+                            borderColor: statusColors[report.status] || "gray",
+                            color: statusColors[report.status] || "black",
+                            fontSize: 14,
+                          }}
+                        >
+                          {report.status}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <div className=" mt-1 mb-5 mx-7">
-          <Pagination
-            Length={filteredGrievances.length}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            firstIndex={firstIndex}
-            lastIndex={lastIndex}
-            paginate={paginate}
-            hasNextPage={lastIndex >= filteredGrievances.length}
-          />
+          <div className=" mt-1 mb-5 mx-7">
+            <Pagination
+              Length={filteredGrievances.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredGrievances.length}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      {istransferModal && (
+        <ManyTicketTransfer
+          toggleTModal={toggleTModal}
+          selectedRows={selectedRows}
+          handlerefresh={handlerefresh}
+        />
+      )}
+    </>
   );
 };
 

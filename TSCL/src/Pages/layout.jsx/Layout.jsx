@@ -41,7 +41,7 @@ const Layout = ({ permissions }) => {
         permissions["street"] && { title: "Street", to: "/street" }
       ].filter(Boolean) 
     } : null,
-    // permissions["organization"] && { title: "Enquiry Resource", icon: <GoOrganization />, to: "/origin" },
+    permissions["organization"] && { title: "Enquiry Resource", icon: <GoOrganization />, to: "/origin" },
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <CiBoxList />, to: "/complainttype" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },

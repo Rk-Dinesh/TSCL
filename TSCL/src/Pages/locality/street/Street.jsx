@@ -18,8 +18,8 @@ import DocumentDownload from "../../../components/DocumentDownload";
 import HeaderButton from "../../../components/HeaderButton";
 import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
 
-const csvData = `street_name,ward_id,ward_name,zone_id,zone_name,status,created_by_user
- streetName,Ward***,WardName,Z***,ZoneName,Status,admin`;
+const csvData = `ward_id,street_name
+ Ward***,streetName`;
 
 const Street = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -54,7 +54,7 @@ const Street = ({ permissions }) => {
   useEffect(() => {
     handlerefresh();
     fetchExistingWards();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -156,33 +156,41 @@ const Street = ({ permissions }) => {
     }
   };
 
+
   const uploadFile = async (file) => {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
+      console.log(file);
+      
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append('created_by_user', localStorage.getItem('name'));
 
-      const response = await axios.post(
-        API_ENDPOINTS.UPLOAD_STREET.url,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        const response = await axios.post(`${API}/street/uploadcsv`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        if (response.status === 200) {
+            setButtonText("Bulk Upload");
+            setFile(null);
+            handlerefresh();
+            toast.success('Data Uploaded successfully');
         }
-      );
-
-      if (response.status === 200) {
-        setButtonText("Bulk Upload");
-        setFile(null);
-        handlerefresh();
-        toast.success("Data Uploaded Successfully");
-      } else {
-        toast.error("Data failed to Upload");
-      }
     } catch (error) {
-      console.log(error);
+        
+        if (error.response && error.response.data && error.response.data.error) {
+            toast.error(error.response.data.error); 
+            setButtonText("Bulk Upload");
+            setFile(null);
+        } else {
+            toast.error("An unexpected error occurred"); 
+            setButtonText("Bulk Upload");
+            setFile(null);
+        }
     }
-  };
+};
+
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -314,10 +322,12 @@ const Street = ({ permissions }) => {
             onClick={() => setIsModal(true)}
           />
 
-          <div className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
+          <div
+            className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
               street.length < 8 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"

@@ -1,25 +1,22 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
-// import AddOrganization from "./AddOrganization";
-import { downloadCSV, formatDate } from "../../Host";
+import { API, downloadCSV, formatDate } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
 import decryptData from "../../Decrypt";
-// import EditOrganization from "./EditOrganization";
-// import DeleteModal from "../Modal/DeleteModal";
+import DeleteModal from "../Modal/DeleteModal";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Pagination from "../../components/Pagination";
 import BulkUploadButton from "../../components/BulkUploadButton";
 import SearchInput from "../../components/SearchInput";
-import FileUploadButton from "../../components/FileUploadButton";
 import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
-import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
+import AddEnquiryResource from "./AddEnquiryResource";
+import EditEnquiryResource from "./EditEnquiryResource";
 
-const csvData = `org_name,status,created_by_user
-organization,active,admin`;
+
 
 const EnquiryResource = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -30,7 +27,7 @@ const EnquiryResource = ({ permissions }) => {
   const [isModal, setIsModal] = useState(false);
 
   const [editModal, setEditModal] = useState(false);
-  const [orgId, setOrgId] = useState(null);
+  const [ResId, setResId] = useState(null);
 
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [deleteId, setdeleteId] = useState(null);
@@ -42,12 +39,9 @@ const EnquiryResource = ({ permissions }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
 
-  const [organization, setOrganization] = useState([]);
+  const [resource, setResource] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const token = localStorage.getItem("token");
-
-  const [file, setFile] = useState(null);
-  const [buttonText, setButtonText] = useState("Bulk Upload");
   const [selectedDoc, setSelectedDoc] = useState(null);
 
   const toggleDropdown = (index) => {
@@ -68,15 +62,17 @@ const EnquiryResource = ({ permissions }) => {
 
   const handlerefresh = () => {
     axios
-      .get(API_ENDPOINTS.GET_ORGANIZATION.url, {
-        headers: API_ENDPOINTS.GET_ORGANIZATION.headers,
+      .get(`${API}/resource/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
       })
       .then((response) => {
         const reponseData = decryptData(response.data.data);
-        setOrganization(reponseData);
+        setResource(reponseData);
 
-        const filteredCenters = reponseData.filter((org) =>
-          Object.values(org).some((value) =>
+        const filteredCenters = reponseData.filter((res) =>
+          Object.values(res).some((value) =>
             value.toString().toLowerCase().includes(searchValue.toLowerCase())
           )
         );
@@ -97,7 +93,7 @@ const EnquiryResource = ({ permissions }) => {
   };
   const toggleEModal = () => {
     setEditModal(!editModal);
-    setOrgId(null);
+    setResId(null);
   };
 
   const toggleDeleteCloseModal = () => {
@@ -107,8 +103,8 @@ const EnquiryResource = ({ permissions }) => {
 
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  const filteredCenters = organization.filter((org) =>
-    Object.values(org).some((value) =>
+  const filteredCenters = resource.filter((res) =>
+    Object.values(res).some((value) =>
       value.toString().toLowerCase().includes(searchValue.toLowerCase())
     )
   );
@@ -120,14 +116,15 @@ const EnquiryResource = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      const DELETEENDPOINT = API_ENDPOINTS.DELETE_ORGANIZATION(deleteId);
-      await axios.delete(DELETEENDPOINT.url, {
-        headers: API_ENDPOINTS.DELETE_ORGANIZATION.headers,
-      });
+      const response = await axios.delete(`${API}/resource/delete?res_id=${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
       toggleDeleteCloseModal();
       handlerefresh();
-      setOrganization(
-        organization.filter((status) => organization.org_id !== deleteId)
+      setResource(
+        resource.filter((status) => resource.res_id !== deleteId)
       );
       toast.success("Deleted successfully");
     } catch (error) {
@@ -135,47 +132,7 @@ const EnquiryResource = ({ permissions }) => {
     }
   };
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-    setButtonText("Upload");
-  };
 
-  const handleButtonClick = () => {
-    if (buttonText === "Bulk Upload") {
-      document.getElementById("fileInput").click();
-    } else {
-      // Call your  here to upload the file
-      uploadFile(file);
-    }
-  };
-
-  const uploadFile = async (file) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await axios.post(
-        API_ENDPOINTS.CSV_ORGANIZATION.url,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setButtonText("Bulk Upload");
-        setFile(null);
-        handlerefresh();
-        toast.success("Data Uploaded Successfully");
-      } else {
-        toast.error("Data failed to Upload");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -183,9 +140,9 @@ const EnquiryResource = ({ permissions }) => {
   const exportData = async (format) => {
     if (format === "csv") {
       // CSV Export
-      const exportedData = organization.map((row) => ({
-        org_id: row.org_id,
-        org_name: row.org_name,
+      const exportedData = resource.map((row) => ({
+        res_id: row.res_id,
+        res_name: row.res_name,
         status: row.status,
         created_by_user: row.created_by_user,
       }));
@@ -200,7 +157,7 @@ const EnquiryResource = ({ permissions }) => {
 
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", "Organization_data.csv");
+      link.setAttribute("download", "Resource_data.csv");
       link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
@@ -208,7 +165,7 @@ const EnquiryResource = ({ permissions }) => {
     } else if (format === "pdf") {
       try {
         const rowsPerPage = 30;
-        const totalPages = Math.ceil(organization.length / rowsPerPage);
+        const totalPages = Math.ceil(resource.length / rowsPerPage);
 
         const pdf = new jsPDF("l", "mm", "a4");
         let yOffset = 0;
@@ -217,13 +174,13 @@ const EnquiryResource = ({ permissions }) => {
           const startIndex = (currentPage - 1) * rowsPerPage;
           const endIndex = Math.min(
             startIndex + rowsPerPage,
-            organization.length
+            resource.length
           );
-          const currentPageData = organization.slice(startIndex, endIndex);
+          const currentPageData = resource.slice(startIndex, endIndex);
 
           const tableData = currentPageData.map((row) => [
-            row.org_id,
-            row.org_name,
+            row.res_id,
+            row.res_name,
             row.status,
             row.created_by_user,
           ]);
@@ -231,7 +188,7 @@ const EnquiryResource = ({ permissions }) => {
           pdf.text(`Page ${currentPage}`, 10, yOffset + 10);
           pdf.autoTable({
             startY: yOffset + 15,
-            head: [["OrgID", "OrgName", "Status", "createdBy"]],
+            head: [["ResID", "ResName", "Status", "createdBy"]],
             body: tableData,
             theme: "striped",
           });
@@ -242,7 +199,7 @@ const EnquiryResource = ({ permissions }) => {
           }
         }
 
-        pdf.save("Organization_data.pdf");
+        pdf.save("Resource_data.pdf");
       } catch (error) {
         console.error("Error exporting data:", error);
       }
@@ -261,16 +218,10 @@ const EnquiryResource = ({ permissions }) => {
             <SearchInput
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Organization"
+              placeholder="Search Enquiry Resource"
             />
-            {hasCreatePermission && (
-              <FileUploadButton
-                onChange={handleFileChange}
-                buttonText={buttonText}
-                accept=".csv"
-                onClick={handleButtonClick}
-              />
-            )}
+     
+   
             {hasDownloadPermission && (
               <DocumentDownload
                 selectedDoc={selectedDoc}
@@ -280,7 +231,7 @@ const EnquiryResource = ({ permissions }) => {
             )}
           </div>
           <HeaderButton
-            title="Organization"
+            title="Enquiry Resource"
             hasCreatePermission={hasCreatePermission}
             onClick={() => setIsModal(true)}
           />
@@ -297,7 +248,7 @@ const EnquiryResource = ({ permissions }) => {
                     </th>
                     <th className="">
                       <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Org Name <RiExpandUpDownLine />
+                        Resource Name <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
@@ -328,7 +279,7 @@ const EnquiryResource = ({ permissions }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItemsOnPage.map((org, index) => (
+                  {currentItemsOnPage.map((res, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
                         <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
@@ -337,29 +288,30 @@ const EnquiryResource = ({ permissions }) => {
                             : firstIndex + index + 1}
                         </div>
                       </td>
-                      <td className="">
+                      <td className="flex items-center gap-2 ml-4">
+                        <img src={`data:image/jpeg;base64,${res.image}`} alt="Icon" className="w-6 h-6"/>
                         <p className="capitalize mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
-                          {org.org_name}
+                          {res.res_name}
                         </p>
                       </td>
                       <td>
                         <p className="capitalize mx-1.5  my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
-                          {org.status}
+                          {res.status}
                         </p>
                       </td>
                       <td>
                         <p className="capitalize mx-1.5  my-2  font-lexend text-start whitespace-nowrap text-sm text-gray-800">
-                          {org.created_by_user}
+                          {res.created_by_user}
                         </p>
                       </td>
                       <td>
                         <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-800 ">
-                          {formatDate(org.createdAt)}
+                          {formatDate(res.createdAt)}
                         </p>
                       </td>
                       <td>
                         <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-800">
-                          {formatDate(org.updatedAt)}
+                          {formatDate(res.updatedAt)}
                         </p>
                       </td>
                       <td>
@@ -375,7 +327,7 @@ const EnquiryResource = ({ permissions }) => {
                                   className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                   onClick={() => {
                                     setEditModal(true);
-                                    setOrgId(org.org_id);
+                                    setResId(res.res_id);
                                     toggleDropdown();
                                   }}
                                 >
@@ -387,7 +339,7 @@ const EnquiryResource = ({ permissions }) => {
                                   className="block px-3 py-1.5 text-sm text-black hover:bg-gray-200 w-full text-left"
                                   onClick={() => {
                                     setIsDeleteModal(true);
-                                    setdeleteId(org.org_id);
+                                    setdeleteId(res.res_id);
                                     toggleDropdown();
                                   }}
                                 >
@@ -408,7 +360,7 @@ const EnquiryResource = ({ permissions }) => {
           <div className=" my-2 mb-5 mx-7">
             <BulkUploadButton handleDownload={handleDownload} />
             <Pagination
-              Length={organization.length}
+              Length={resource.length}
               currentPage={currentPage}
               totalPages={totalPages}
               firstIndex={firstIndex}
@@ -419,17 +371,17 @@ const EnquiryResource = ({ permissions }) => {
           </div>
         </div>
       </div>
-      {/* {isModal && (
-        <AddOrganization
+      {isModal && (
+        <AddEnquiryResource
           toggleModal={toggleModal}
           handlerefresh={handlerefresh}
         />
       )}
       {editModal && (
-        <EditOrganization
+        <EditEnquiryResource
           toggleModal={toggleEModal}
           handlerefresh={handlerefresh}
-          orgId={orgId}
+          ResId={ResId}
         />
       )}
       {isDeleteModal && (
@@ -437,7 +389,7 @@ const EnquiryResource = ({ permissions }) => {
           toggleDeleteModal={toggleDeleteCloseModal}
           delete={handleDelete}
         />
-      )} */}
+      )}
     </Fragment>
   );
 };
