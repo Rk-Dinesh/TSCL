@@ -436,6 +436,12 @@ const Request = ({ permissions, include, endpoint }) => {
                   </th>
                   <th>
                     <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                     Complaint
+                      <RiExpandUpDownLine />
+                    </p>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Assigned JE <RiExpandUpDownLine />
                     </p>
                   </th>
@@ -445,11 +451,11 @@ const Request = ({ permissions, include, endpoint }) => {
                       Date and Time <RiExpandUpDownLine />
                     </p>
                   </th>
-                  <th>
+                  {/* <th>
                     <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
                       Priority <RiExpandUpDownLine />
                     </p>
-                  </th>
+                  </th> */}
                   <th>
                     <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                       Status <RiExpandUpDownLine />
@@ -519,6 +525,12 @@ const Request = ({ permissions, include, endpoint }) => {
                     </td>
                     <td>
                       {" "}
+                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                        {report.complaint}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
                       <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
                         {report.assign_username
                           ? report.assign_username
@@ -530,7 +542,7 @@ const Request = ({ permissions, include, endpoint }) => {
                         {formatDate1(report.createdAt)}
                       </p>
                     </td>
-                    <td>
+                    {/* <td>
                       <p
                         className={`border-2 w-26 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
                           report.priority === "High"
@@ -544,7 +556,7 @@ const Request = ({ permissions, include, endpoint }) => {
                       >
                         {report.priority}
                       </p>
-                    </td>
+                    </td> */}
                     <td>
                       <p
                         className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "

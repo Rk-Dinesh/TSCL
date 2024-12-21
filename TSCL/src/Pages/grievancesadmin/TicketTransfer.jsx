@@ -111,7 +111,7 @@ const TicketTransfer = (props) => {
           `${API}/grievance-log/post`,
           {
             grievance_id: props.transerId,
-            log_details: `Ticket from ${props.transferDept[0]} ${props.transferDept[1]} complaint is transfered to ${data.dept_name} ${data.complaint} complaint`,
+            log_details: `Ticket from ${props.transferDept[0]} ${props.transferDept[1]} complaint is transfered to ${data.dept_name} ${data.complaint} complaint by ${localStorage.getItem('name')}`,
             created_by_user: "admin",
           },
           {

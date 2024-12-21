@@ -93,6 +93,7 @@ const ManyTicketTransfer = (props) => {
       transferDetails: {
         ...data,
       },
+      user:localStorage.getItem('name')
     };
 
     try {

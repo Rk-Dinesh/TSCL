@@ -249,14 +249,14 @@ const Grivences = ({ permissions, include, endpoint }) => {
     <Fragment>
       <div className="bg-blue-100 overflow-y-auto no-scrollbar mb-5">
         <div className="h-screen">
-          {include === "yes" && (
+          {/* {include === "yes" && (
             <HeaderButton
               title="Grievances"
               hasCreatePermission={hasCreatePermission}
               onClick={handleform}
             />
-          )}
-          <div className="flex flex-row gap-1.5 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
+          )} */}
+          <div className="flex flex-row gap-1.5 p-2 mt-6 mx-4 flex-wrap md:justify-between items-center">
             <div className="flex gap-3">
               <DateRangeComp onChange={handleDateRangeChange} />
               <div className="flex items-center gap-3">

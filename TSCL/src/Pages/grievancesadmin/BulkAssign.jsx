@@ -68,6 +68,7 @@ const BulkAssign = (props) => {
         assign_user: assignUserId,
         assign_userphone: assignUserPhone,
       },
+      user:localStorage.getItem('name')
     };
 
     try {

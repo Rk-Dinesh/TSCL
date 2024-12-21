@@ -311,6 +311,8 @@ const GrievanceForm = () => {
       status: "new",
       statusflow: "new",
       priority: getPriorityFromComplaintType(data.complaint_type_title),
+      operator:localStorage.getItem('name'),
+      operator_id:localStorage.getItem('code')
     };
 
    

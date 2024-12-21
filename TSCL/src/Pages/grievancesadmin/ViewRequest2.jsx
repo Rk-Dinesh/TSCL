@@ -215,8 +215,8 @@ const ViewRequest2 = () => {
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: `Work Assigned to ${assignUserName}`,
-            created_by_user: "admin",
+            log_details: `Work Assigned to ${assignUserName} by ${localStorage.getItem('name')}`,
+            created_by_user: localStorage.getItem('name'),
           },
           {
             headers: {
