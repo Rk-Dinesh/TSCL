@@ -19,6 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchZone } from "../redux/slice/zone";
 import { fetchWard } from "../redux/slice/ward";
 import SearchableDropdown from "../../components/SearchableDropDown";
+import { fetchOrigin } from "../redux/slice/origin";
+import logo from "../../assets/images/logo1.png";
 
 const RequestJE = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -47,7 +49,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   const [selectedZone, setSelectedZone] = useState(null);
   const [selectedWard, setSelectedWard] = useState(null);
   const [selectedPrior, setSelectedPrior] = useState(null);
-
+  const [grievanceImages, setGrievanceImages] = useState({});
   const [statusColors, setStatusColors] = useState({});
 
   useEffect(() => {
@@ -58,13 +60,22 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   useEffect(() => {
     dispatch(fetchZone());
     dispatch(fetchWard());
+    dispatch(fetchOrigin());
   }, [dispatch]);
 
   const Zone = useSelector((state) => state.zone);
-
-
   const Ward = useSelector((state) => state.ward);
+  const Origin = useSelector((state) => state.origin);
 
+  useEffect(() => {
+    if (Origin && Origin?.data) {
+      const imageMapping = Origin?.data?.reduce((acc, resource) => {
+        acc[resource.res_name] = resource.image;
+        return acc;
+      }, {});
+      setGrievanceImages(imageMapping);
+    }
+  }, [Origin]);
 
   const handlerefresh = () => {
     axios
@@ -511,6 +522,11 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                       </p>
                     </th>
                     <th>
+                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Origin
+                      </p>
+                    </th>
+                    <th>
                       <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
                         Complaint
                       </p>
@@ -601,6 +617,14 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                         >
                           {report.grievance_id}
                         </p>
+                      </td>
+                      <td className="flex gap-1 items-center justify-center text-gray-700">
+                        <img
+                          src={grievanceImages[report.grievance_mode] || logo}
+                          alt={report.grievance_mode}
+                          className="w-6 h-6 mx-1.5 my-2 rounded-full"
+                        />
+                        {/* <p className="capitalize text-sm">{report.grievance_mode}</p> */}
                       </td>
                       <td>
                         {" "}
