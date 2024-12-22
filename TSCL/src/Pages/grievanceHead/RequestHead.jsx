@@ -668,7 +668,9 @@ const RequestHead = ({ permissions, include, endpoint }) => {
             </select>
           </div>
         </div>
-        <div className="bg-white h-4/5 mx-3 rounded-lg mt-4  p-3">
+        <div className={`bg-white  mx-4 rounded-lg mt-3 overflow-x-auto p-3 ${
+              report.length < 8 ? "h-4/5" : "h-fit"
+            }`}>
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="md:text-lg text-sm whitespace-nowrap">
