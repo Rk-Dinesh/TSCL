@@ -324,7 +324,7 @@ const Street = ({ permissions }) => {
 
           <div
             className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
-              street.length < 8 ? "h-3/5" : "h-fit"
+              street.length < 6 ? "h-3/5" : "h-fit"
             }`}
           >
             <div className="flex items-center gap-3 mx-3">

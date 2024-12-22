@@ -38,7 +38,7 @@ const Designation = ({ permissions }) => {
   const [ExistingDepartments, setExistingDepartments] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [designation, setDesignation] = useState([]);
@@ -59,7 +59,7 @@ const Designation = ({ permissions }) => {
     handlerefresh();
     fetchExistingOrganiZations();
     fetchExistingDepartments();
-  }, [searchValue, currentPage]);
+  }, [searchValue, currentPage,itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -298,6 +298,12 @@ const Designation = ({ permissions }) => {
     downloadCSV(csvData);
   };
 
+  const handleItemsPerPageChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setItemsPerPage(value);
+    setCurrentPage(1);
+  };
+
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
@@ -331,7 +337,28 @@ const Designation = ({ permissions }) => {
             onClick={() => setIsModal(true)}
           />
 
-          <div className="bg-white mx-4 rounded-lg my-2 overflow-x-auto h-3/5 no-scrollbar">
+          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+              designation.length < 5 ? "h-3/5" : "h-fit"
+            }`}>
+          <div className="flex items-center gap-3 mx-3">
+              <label
+                htmlFor="itemsPerPage"
+                className="font-medium text-gray-600"
+              >
+                Page Entries
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className=" p-1 outline-none text-sm rounded px-2"
+              >
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
             <table className="w-full  mt-3">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">

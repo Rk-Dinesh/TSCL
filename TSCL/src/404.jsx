@@ -19,6 +19,7 @@ const NotFound = () => {
           <Link
             to={"/"}
             className="inline-flex text-green-700   font-medium rounded-lg text-lg px-5 py-2.5 text-center  my-4"
+            onClick={()=>localStorage.clear()}
           >
             Back to Homepage 
           </Link>

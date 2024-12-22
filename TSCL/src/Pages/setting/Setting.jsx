@@ -20,7 +20,7 @@ const Settings = ({ permissions }) => {
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+ const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [role, setRole] = useState([]);
@@ -37,7 +37,7 @@ const Settings = ({ permissions }) => {
 
   useEffect(() => {
     handlerefresh();
-  }, [searchValue, currentPage]);
+  }, [searchValue, currentPage,itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -106,6 +106,12 @@ const Settings = ({ permissions }) => {
     }
   };
 
+  const handleItemsPerPageChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setItemsPerPage(value);
+    setCurrentPage(1);
+  };
+
   return (
     <Fragment>
       <div className="  bg-blue-100 overflow-y-auto no-scrollbar">
@@ -118,8 +124,29 @@ const Settings = ({ permissions }) => {
             setSearchValue={setSearchValue}
           />
 
-          <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
-            <div className="overflow-x-auto  no-scrollbar">
+          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+              role.length < 7 ? "h-3/5" : "h-fit"
+            }`}>
+          <div className="flex items-center gap-3 mx-3">
+              <label
+                htmlFor="itemsPerPage"
+                className="font-medium text-gray-600"
+              >
+                Page Entries
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className=" p-1 outline-none text-sm rounded px-2"
+              >
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <div className="overflow-x-auto  ">
               <table className="w-full  mt-3">
                 <thead className=" border-b-2 border-gray-300">
                   <tr className="border-b-2 border-gray-300">

@@ -17,7 +17,7 @@ const SearchableDropdown = ({ Ward, handleWard }) => {
    setDropdown(false)
   };
 
-  const filteredWards = Ward?.data.filter((ward) =>
+  const filteredWards = Ward?.data?.filter((ward) =>
     ward.ward_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

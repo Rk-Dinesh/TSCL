@@ -24,7 +24,7 @@ const Template = ({ permissions }) => {
   const [deleteId, setdeleteId] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [template, setTemplate] = useState([]);
@@ -39,7 +39,7 @@ const Template = ({ permissions }) => {
 
   useEffect(() => {
     handlerefresh();
-  }, [searchValue, currentPage]);
+  }, [searchValue, currentPage,itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -116,6 +116,11 @@ const Template = ({ permissions }) => {
       toast.error("Failed to delete");
     }
   };
+  const handleItemsPerPageChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setItemsPerPage(value);
+    setCurrentPage(1);
+  };
 
   return (
     <Fragment>
@@ -129,9 +134,30 @@ const Template = ({ permissions }) => {
             setSearchValue={setSearchValue}
           />
 
-          <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
-            <div className="overflow-x-auto  no-scrollbar">
-              <table className="w-full  mt-3">
+          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+              template.length < 6 ? "h-3/5" : "h-fit"
+            }`}>
+          <div className="flex items-center gap-3 mx-3">
+              <label
+                htmlFor="itemsPerPage"
+                className="font-medium text-gray-600"
+              >
+                Page Entries
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className=" p-1 outline-none text-sm rounded px-2"
+              >
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <div className="overflow-x-auto  ">
+              <table className="w-full  mt-1">
                 <thead className=" border-b-2 border-gray-300">
                   <tr className="border-b-2 border-gray-300">
                     <th className="">

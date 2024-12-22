@@ -61,10 +61,10 @@ const RequestJE = ({ permissions, include, endpoint }) => {
   }, [dispatch]);
 
   const Zone = useSelector((state) => state.zone);
-  console.log(Zone);
+
 
   const Ward = useSelector((state) => state.ward);
-  console.log(Ward);
+
 
   const handlerefresh = () => {
     axios
@@ -413,7 +413,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                     <option hidden>Zone</option>
                     <option value="All">All</option>
                     {Zone &&
-                      Zone.data.map((option, index) => (
+                      Zone?.data?.map((option, index) => (
                         <option key={index} value={option.zone_name}>
                           {option.zone_name}
                         </option>
