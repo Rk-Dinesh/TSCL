@@ -71,6 +71,8 @@ const GrievanceForm = () => {
   const [statusColors, setStatusColors] = useState({});
   const [grievance, setGrievance] = useState([]);
   const [status, setStatus] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   useEffect(() => {
     dispatch(fetchDepartment());
@@ -277,18 +279,6 @@ const GrievanceForm = () => {
       user_status: "active",
     };
 
-    const getPriorityFromComplaintType = (complaintTypeTitle) => {
-      const complaint = Complaint.data.find(
-        (complaint) => complaint.complaint_type_title === complaintTypeTitle
-      );
-      return complaint ? complaint.priority : null;
-    };
-
-    const getZone = (zonaName) => {
-      const zone = Ward.data.find((value) => value.ward_name === zonaName);
-      return zone ? zone.zone_name : null;
-    };
-
     let public_user_id;
     if (autoFillData) {
       const response = await axios.post(`${API}/public-user/post`, userInfo);
@@ -301,7 +291,6 @@ const GrievanceForm = () => {
       grievance_mode: data.grievance_mode,
       complaint_type_title: data.complaint,
       dept_name: data.dept_name,
-      zone_name: getZone(data.ward_name),
       ward_name: data.ward_name,
       street_name: data.street_name,
       pincode: data.pincode,
@@ -311,9 +300,6 @@ const GrievanceForm = () => {
       public_user_id: public_user_id,
       public_user_name: data.public_user_name,
       phone: data.phone,
-      status: "new",
-      statusflow: "new",
-      priority: getPriorityFromComplaintType(data.complaint_type_title),
       operator: localStorage.getItem("name"),
       operator_id: localStorage.getItem("code"),
     };
@@ -388,126 +374,133 @@ const GrievanceForm = () => {
     }
   };
 
+  const handleTemplateSelect = (template) => {
+    setSelectedTemplate(template);
+    setValue("complaint_details", template.desc); // Assuming `setValue` is used to update the form field
+    setModalOpen(false); // Close the modal after selecting the template
+  };
+
   return (
-    <div className="grid grid-cols-12 gap-3 mx-3  overflow-y-auto no-scrollbar">
-      <div className="bg-blue-100 lg:col-span-6 md:col-span-12 col-span-12   text-start h-fit   font-lexend ">
-        <h1 className="text-xl my-5">Grievance Form</h1>
-        <div className="  bg-white w-full h-fit rounded-lg ">
-          <div className="border-b-2 border-search">
-            <h1 className=" text-xl px-3 py-3">Request by</h1>
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col flex-wrap overflow-hidden my-5 gap-2">
-              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
-                <label
-                  className="block text-black text-lg font-medium mb-2"
-                  htmlFor="phone"
-                >
-                  Phone
-                </label>
-                <div className="flex flex-col">
-                  <input
-                    type="text"
-                    id="phone"
-                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
-                    placeholder="Phone Number"
-                    {...register("phone")}
-                  />
-                  {errors.phone && (
-                    <p className="text-red-500 text-xs text-start px-2 pt-2">
-                      {errors.phone.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
-                <label
-                  className="block text-black text-lg font-medium mb-2"
-                  htmlFor="public_user_name"
-                >
-                  Name
-                </label>
-                <div className="flex flex-col">
-                  <input
-                    type="text"
-                    id="public_user_name"
-                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
-                    placeholder="User Name"
-                    {...register("public_user_name")}
-                    defaultValue={
-                      autoFillData ? autoFillData.public_user_name : ""
-                    }
-                  />
-                  {errors.public_user_name && (
-                    <p className="text-red-500 text-xs text-start px-2 pt-2">
-                      {errors.public_user_name.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
-                <label
-                  className="block text-black text-lg font-medium mb-2"
-                  htmlFor="email"
-                >
-                  Email id
-                </label>
-                <div className="flex flex-col">
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
-                    placeholder="abc@gmail.com"
-                    {...register("email")}
-                    defaultValue={autoFillData ? autoFillData.email : ""}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-xs text-start px-2 pt-2">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
-                <label
-                  className="block text-black text-lg font-medium mb-2 py-2"
-                  htmlFor="address"
-                >
-                  Address
-                </label>
-                <div className="flex flex-col">
-                  <input
-                    type="text"
-                    id="address"
-                    className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
-                    placeholder="Enter your Address"
-                    {...register("address")}
-                    defaultValue={autoFillData ? autoFillData.address : ""}
-                  />
-                  {errors.address && (
-                    <p className="text-red-500 text-xs text-start px-2 pt-2">
-                      {errors.address.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+    <>
+      <div className="grid grid-cols-12 gap-3 mx-3  overflow-y-auto no-scrollbar">
+        <div className="bg-blue-100 lg:col-span-6 md:col-span-12 col-span-12   text-start h-fit   font-lexend ">
+          <h1 className="text-xl my-5">Grievance Form</h1>
+          <div className="  bg-white w-full h-fit rounded-lg ">
+            <div className="border-b-2 border-search">
+              <h1 className=" text-xl px-3 py-3">Request by</h1>
             </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col flex-wrap overflow-hidden my-5 gap-2">
+                <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
+                  <label
+                    className="block text-black text-lg font-medium mb-2"
+                    htmlFor="phone"
+                  >
+                    Phone
+                  </label>
+                  <div className="flex flex-col">
+                    <input
+                      type="text"
+                      id="phone"
+                      className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
+                      placeholder="Phone Number"
+                      {...register("phone")}
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
+                        {errors.phone.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
+                  <label
+                    className="block text-black text-lg font-medium mb-2"
+                    htmlFor="public_user_name"
+                  >
+                    Name
+                  </label>
+                  <div className="flex flex-col">
+                    <input
+                      type="text"
+                      id="public_user_name"
+                      className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
+                      placeholder="User Name"
+                      {...register("public_user_name")}
+                      defaultValue={
+                        autoFillData ? autoFillData.public_user_name : ""
+                      }
+                    />
+                    {errors.public_user_name && (
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
+                        {errors.public_user_name.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-            <div className=" flex-col justify-center items-center max-w-[592px] bg-white h-fit rounded-lg mt-5">
-              <div className="border-b-2 border-search">
-                <h1 className=" text-xl px-3 py-3">Grievance Details</h1>
+                <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
+                  <label
+                    className="block text-black text-lg font-medium mb-2"
+                    htmlFor="email"
+                  >
+                    Email id
+                  </label>
+                  <div className="flex flex-col">
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
+                      placeholder="abc@gmail.com"
+                      {...register("email")}
+                      defaultValue={autoFillData ? autoFillData.email : ""}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
+                  <label
+                    className="block text-black text-lg font-medium mb-2 py-2"
+                    htmlFor="address"
+                  >
+                    Address
+                  </label>
+                  <div className="flex flex-col">
+                    <input
+                      type="text"
+                      id="address"
+                      className="w-full md:w-80 text-start border-2  rounded-lg ml-2 px-2 py-2 outline-none"
+                      placeholder="Enter your Address"
+                      {...register("address")}
+                      defaultValue={autoFillData ? autoFillData.address : ""}
+                    />
+                    {errors.address && (
+                      <p className="text-red-500 text-xs text-start px-2 pt-2">
+                        {errors.address.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex flex-col flex-wrap overflow-y-auto my-5 gap-2 no-scrollbar">
-                <div className="flex flex-col md:grid md:grid-cols-3  font-normal mx-10  ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="grievance_mode"
-                  >
-                    Origin
-                  </label>
-                  {/* <div className=" md:col-span-2">
+              <div className=" flex-col justify-center items-center max-w-[592px] bg-white h-fit rounded-lg mt-5">
+                <div className="border-b-2 border-search">
+                  <h1 className=" text-xl px-3 py-3">Grievance Details</h1>
+                </div>
+
+                <div className="flex flex-col flex-wrap overflow-y-auto my-5 gap-2 no-scrollbar">
+                  <div className="flex flex-col md:grid md:grid-cols-3  font-normal mx-10  ">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="grievance_mode"
+                    >
+                      Origin
+                    </label>
+                    {/* <div className=" md:col-span-2">
                     <select
                       className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -532,463 +525,451 @@ const GrievanceForm = () => {
                       </p>
                     )}
                   </div> */}
-                  <div className="md:col-span-2">
-                    <CustomDropdownWithImages
-                      options={Origin?.data}
-                      register={register("grievance_mode")}
-                      error={errors.grievance_mode}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 gap-1 ">
-                  <label
-                    className="block text-black text-base font-medium mb-2 md:col-span-1"
-                    htmlFor="complaint"
-                  >
-                    Complaint Type
-                  </label>
-                  <div className=" md:col-span-2">
-                    <select
-                      className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("complaint")}
-                    >
-                      <option value="" disabled>
-                        Select a Complaint Type
-                      </option>
-
-                      {Complainttype.data &&
-                        Complainttype.data.map((option, index) => (
-                          <option key={index} value={option.complaint_type}>
-                            {option.complaint_type}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.complaint && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.complaint.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="dept_name"
-                  >
-                    Department
-                  </label>
-                  <div className="md:col-span-2">
-                    <select
-                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("dept_name")}
-                    >
-                      <option value="" disabled>
-                        Select a Department
-                      </option>
-                      {Department.data &&
-                        Department.data.map((option, index) => (
-                          <option key={index} value={option.dept_name}>
-                            {option.dept_name}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.dept_name && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.dept_name.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="complaint_type_title"
-                  >
-                    Complaint
-                  </label>
-                  <div className=" md:col-span-2">
-                    <select
-                      className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("complaint_type_title")}
-                    >
-                      <option value="" disabled>
-                        Select a Complaint
-                      </option>
-
-                      {filteredComplaints &&
-                        filteredComplaints.map((option, index) => (
-                          <option
-                            key={index}
-                            value={option.complaint_type_title}
-                          >
-                            {option.complaint_type_title}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.complaint_type_title && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.complaint_type_title.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="zone_name"
-                  >
-                    Zone
-                  </label>
-                  <div className="md:col-span-2">
-                    <select
-                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("zone_name")}
-                    >
-                      <option value="" disabled>
-                        Select a Zone
-                      </option>
-
-                      {Zone.data &&
-                        Zone.data.map((option) => (
-                          <option key={option.zone_id} value={option.zone_name}>
-                            {option.zone_name}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.zone_name && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.zone_name.message}
-                      </p>
-                    )}
-                  </div>
-                </div> */}
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="ward_name"
-                  >
-                    Ward
-                  </label>
-                  <div className=" md:col-span-2">
-                    <select
-                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("ward_name")}
-                    >
-                      <option value="" disabled>
-                        Select a Ward
-                      </option>
-
-                      {Ward.data &&
-                        Ward.data.map((option, index) => (
-                          <option key={index} value={option.ward_name}>
-                            {option.ward_name}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.ward_name && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.ward_name.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="street_name"
-                  >
-                    Street
-                  </label>
-                  <div className="md:col-span-2">
-                    <select
-                      className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      {...register("street_name")}
-                    >
-                      <option value="" disabled>
-                        Select a Street
-                      </option>
-
-                      {filteredStreets &&
-                        filteredStreets.map((option, index) => (
-                          <option key={index} value={option.street_name}>
-                            {option.street_name}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.street_name && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.street_name.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="gflex flex-col md:grid md:grid-cols-3   font-normal mx-10">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="pincode"
-                  >
-                    Pincode
-                  </label>
-                  <div className="flex flex-col md:col-span-2">
-                    <input
-                      type="text"
-                      id="pincode"
-                      className="w-full text-start border-2  rounded-lg  px-2 py-2 outline-none"
-                      placeholder="Pincode"
-                      {...register("pincode")}
-                      defaultValue={autoFillData ? autoFillData.pincode : ""}
-                    />
-                    {errors.pincode && (
-                      <p className="text-red-500 text-xs text-start px-2 pt-2">
-                        {errors.pincode.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col md:grid md:grid-cols-3 font-normal mx-10">
-                  <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
-                    htmlFor="complaintaddress"
-                  >
-                    Complaint Address
-                  </label>
-
-                  <div className="flex flex-col md:col-span-2 border rounded p-1">
-                    <div className="flex items-center gap-3 mb-2 mx-1">
-                      <input
-                        type="checkbox"
-                        id="sameAsResidentAddress"
-                        checked={isSameAddress}
-                        onChange={(e) => {
-                          setIsSameAddress(e.target.checked);
-                          if (e.target.checked) {
-                            setValue("complaintaddress", residentAddress);
-                          } else {
-                            setValue("complaintaddress", "");
-                          }
-                        }}
+                    <div className="md:col-span-2">
+                      <CustomDropdownWithImages
+                        options={Origin?.data}
+                        register={register("grievance_mode")}
+                        error={errors.grievance_mode}
                       />
-                      <label
-                        className="text-black text-sm font-medium"
-                        htmlFor="sameAsResidentAddress"
-                      >
-                        Same as Resident Address
-                      </label>
                     </div>
-                    <hr className="w-full" />
-                    <textarea
-                      id="complaintaddress"
-                      rows="5"
-                      className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
-                      placeholder="Complaint Address here..."
-                      {...register("complaintaddress")} // Ensure this matches the schema
-                    ></textarea>
-                    {errors.complaintaddress && (
-                      <p className="text-red-500 text-xs text-start px-2">
-                        {errors.complaintaddress.message}
-                      </p>
-                    )}
                   </div>
-                </div>
-
-                <div className=" flex flex-col md:grid md:grid-cols-3   font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg  font-medium mb-2 md:col-span-1"
-                    htmlFor="complaint_details"
-                  >
-                    Description
-                  </label>
-
-                  <div className="flex flex-col md:col-span-2 border rounded p-1">
-                    <div className="flex justify-around items-center -mb-1 gap-3">
+                  <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 gap-1 ">
+                    <label
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
+                      htmlFor="complaint"
+                    >
+                      Complaint Type
+                    </label>
+                    <div className=" md:col-span-2">
                       <select
-                        className="block w-full  px-2 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                        className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                         defaultValue=""
-                        onChange={(e) => {
-                          const selectedTemplateId = e.target.value;
-                          const selectedTemplate = filteredTemplates.find(
-                            (template) =>
-                              template.temp_id === selectedTemplateId
-                          );
-                          if (selectedTemplate) {
-                            setValue(
-                              "complaint_details",
-                              selectedTemplate.desc
-                            );
-                          }
-                        }}
+                        {...register("complaint")}
                       >
-                        <option value="" hidden>
-                          Select a Template
+                        <option value="" disabled>
+                          Select a Complaint Type
                         </option>
 
-                        {filteredTemplates &&
-                          filteredTemplates.map((option, index) => (
-                            <option key={index} value={option.temp_id}>
-                              {option.temp_title}
+                        {Complainttype.data &&
+                          Complainttype.data.map((option, index) => (
+                            <option key={index} value={option.complaint_type}>
+                              {option.complaint_type}
                             </option>
                           ))}
                       </select>
-                      <select
-                        className="block px-4 py-3 text-sm rounded-lg outline-none"
-                        onChange={(e) => {
-                          const targetLanguage = e.target.value;
-                          const text = watch("complaint_details");
-                          handleTranslate(text, targetLanguage).then(
-                            (translatedText) => {
-                              setValue("complaint_details", translatedText);
-                            }
-                          );
-                        }}
-                      >
-                        <option hidden value="">
-                          LAN
-                        </option>
-                        <option value="ta">EN - TA</option>
-                        <option value="en">TA - EN</option>
-                      </select>
+                      {errors.complaint && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.complaint.message}
+                        </p>
+                      )}
                     </div>
-                    <hr className="w-full" />
-                    <textarea
-                      id="complaint_details"
-                      rows="5"
-                      className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
-                      placeholder="Description here..."
-                      {...register("complaint_details")}
-                    ></textarea>
-                    {errors.complaint_details && (
-                      <p className="text-red-500 text-xs text-start px-2">
-                        {errors.complaint_details.message}
-                      </p>
-                    )}
                   </div>
-                </div>
-                <div className=" flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
-                  <label
-                    className="block text-black text-lg  font-medium mb-2 md:col-span-1"
-                    htmlFor="file"
-                  >
-                    Attachment{" "}
-                    <p className="text-xs ">
-                      (optional / <br /> upto 5 files allowed)
-                    </p>
-                  </label>
-                  <div className="flex flex-col md:col-span-2">
-                    <input
-                      type="file"
-                      id="file"
-                      multiple
-                      accept=".jpeg, .jpg, .png"
-                      className=" w-full py-2 px-2 rounded-lg outline-none"
-                      onChange={handleFileChange}
-                    />
-                    {files.length >= 5 && (
-                      <p className="text-red-500 text-sm">
-                        Maximum 5 files allowed
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className=" text-center my-3">
-                <button
-                  type="submit"
-                  className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 mb-4"
-                >
-                  Submit
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
-        <h1 className="text-xl my-5">Recent Grievances</h1>
-        <div className="bg-white rounded-lg my-2 py-3 overflow-x-auto h-2/5 no-scrollbar">
-          <table className="w-full mt-2 mx-3">
-            <thead className="border-b border-gray-300">
-              <tr className="">
-                <th>
-                  <p className=" my-2 text-start font-lexend font-normal text-base whitespace-nowrap">
-                    Complaint
-                  </p>
-                </th>
-
-                <th>
-                  <p className="flex gap-2 items-center justify-start mx-2 my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Raised by
-                  </p>
-                </th>
-                <th>
-                  <p className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Department
-                  </p>
-                </th>
-
-                <th>
-                  <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Assigned JE
-                  </p>
-                </th>
-                <th>
-                  <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                    Date/Time
-                  </p>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {grievance.slice(0, 10).map((report, index) => (
-                <tr key={index}>
-                  <td>
-                    <p
-                      className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
-                      onClick={() =>
-                        navigate(`/view?grievanceId=${report.grievance_id}`)
-                      }
+                  <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="dept_name"
                     >
-                      {report.grievance_id}
-                    </p>
-                  </td>
+                      Department
+                    </label>
+                    <div className="md:col-span-2">
+                      <select
+                        className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                        defaultValue=""
+                        {...register("dept_name")}
+                      >
+                        <option value="" disabled>
+                          Select a Department
+                        </option>
+                        {Department.data &&
+                          Department.data.map((option, index) => (
+                            <option key={index} value={option.dept_name}>
+                              {option.dept_name}
+                            </option>
+                          ))}
+                      </select>
+                      {errors.dept_name && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.dept_name.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="complaint_type_title"
+                    >
+                      Complaint
+                    </label>
+                    <div className=" md:col-span-2">
+                      <select
+                        className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                        defaultValue=""
+                        {...register("complaint_type_title")}
+                      >
+                        <option value="" disabled>
+                          Select a Complaint
+                        </option>
 
-                  <td>
-                    {" "}
-                    <p className="capitalize text-center mx-2   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                      {report.public_user_name}
+                        {filteredComplaints &&
+                          filteredComplaints.map((option, index) => (
+                            <option
+                              key={index}
+                              value={option.complaint_type_title}
+                            >
+                              {option.complaint_type_title}
+                            </option>
+                          ))}
+                      </select>
+                      {errors.complaint_type_title && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.complaint_type_title.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="ward_name"
+                    >
+                      Ward
+                    </label>
+                    <div className=" md:col-span-2">
+                      <select
+                        className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                        defaultValue=""
+                        {...register("ward_name")}
+                      >
+                        <option value="" disabled>
+                          Select a Ward
+                        </option>
+
+                        {Ward.data &&
+                          Ward.data.map((option, index) => (
+                            <option key={index} value={option.ward_name}>
+                              {option.ward_name}
+                            </option>
+                          ))}
+                      </select>
+                      {errors.ward_name && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.ward_name.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="street_name"
+                    >
+                      Street
+                    </label>
+                    <div className="md:col-span-2">
+                      <select
+                        className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                        defaultValue=""
+                        {...register("street_name")}
+                      >
+                        <option value="" disabled>
+                          Select a Street
+                        </option>
+
+                        {filteredStreets &&
+                          filteredStreets.map((option, index) => (
+                            <option key={index} value={option.street_name}>
+                              {option.street_name}
+                            </option>
+                          ))}
+                      </select>
+                      {errors.street_name && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.street_name.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="gflex flex-col md:grid md:grid-cols-3   font-normal mx-10">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="pincode"
+                    >
+                      Pincode
+                    </label>
+                    <div className="flex flex-col md:col-span-2">
+                      <input
+                        type="text"
+                        id="pincode"
+                        className="w-full text-start border-2  rounded-lg  px-2 py-2 outline-none"
+                        placeholder="Pincode"
+                        {...register("pincode")}
+                        defaultValue={autoFillData ? autoFillData.pincode : ""}
+                      />
+                      {errors.pincode && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.pincode.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col md:grid md:grid-cols-3 font-normal mx-10">
+                    <label
+                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      htmlFor="complaintaddress"
+                    >
+                      Complaint Address
+                    </label>
+
+                    <div className="flex flex-col md:col-span-2 border rounded p-1">
+                      <div className="flex items-center gap-3 mb-2 mx-1">
+                        <input
+                          type="checkbox"
+                          id="sameAsResidentAddress"
+                          checked={isSameAddress}
+                          onChange={(e) => {
+                            setIsSameAddress(e.target.checked);
+                            if (e.target.checked) {
+                              setValue("complaintaddress", residentAddress);
+                            } else {
+                              setValue("complaintaddress", "");
+                            }
+                          }}
+                        />
+                        <label
+                          className="text-black text-sm font-medium"
+                          htmlFor="sameAsResidentAddress"
+                        >
+                          Same as Resident Address
+                        </label>
+                      </div>
+                      <hr className="w-full" />
+                      <textarea
+                        id="complaintaddress"
+                        rows="5"
+                        className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
+                        placeholder="Complaint Address here..."
+                        {...register("complaintaddress")} // Ensure this matches the schema
+                      ></textarea>
+                      {errors.complaintaddress && (
+                        <p className="text-red-500 text-xs text-start px-2">
+                          {errors.complaintaddress.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className=" flex flex-col md:grid md:grid-cols-3   font-normal mx-10 ">
+                    <div className="md:col-span-1">
+                      <label
+                        className="block text-black text-lg  font-medium mb-2 "
+                        htmlFor="complaint_details"
+                      >
+                        Description
+                      </label>
+                      <p
+                        className="bg-green-500 w-28 py-1.5 text-center text-white rounded-lg shadow-lg my-5 text-sm"
+                        onClick={() => setModalOpen(true)}
+                      >
+                        Template
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col md:col-span-2 border rounded p-1">
+                      <div className="flex justify-end items-center -mb-1 gap-3">
+                        <select
+                          className="block px-4 py-3 text-sm rounded-lg outline-none"
+                          onChange={(e) => {
+                            const targetLanguage = e.target.value;
+                            const text = watch("complaint_details");
+                            handleTranslate(text, targetLanguage).then(
+                              (translatedText) => {
+                                setValue("complaint_details", translatedText);
+                              }
+                            );
+                          }}
+                        >
+                          <option hidden value="">
+                            LAN
+                          </option>
+                          <option value="ta">EN - TA</option>
+                          <option value="en">TA - EN</option>
+                        </select>
+                      </div>
+                      <hr className="w-full" />
+                      <textarea
+                        id="complaint_details"
+                        rows="5"
+                        className="block py-2.5 pl-3 w-full text-sm text-gray-900 rounded border-none outline-none focus:outline-none focus:shadow-outline mb-2"
+                        placeholder="Description here..."
+                        {...register("complaint_details")}
+                      ></textarea>
+                      {errors.complaint_details && (
+                        <p className="text-red-500 text-xs text-start px-2">
+                          {errors.complaint_details.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className=" flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                    <label
+                      className="block text-black text-lg  font-medium mb-2 md:col-span-1"
+                      htmlFor="file"
+                    >
+                      Attachment{" "}
+                      <p className="text-xs ">
+                        (optional / <br /> upto 5 files allowed)
+                      </p>
+                    </label>
+                    <div className="flex flex-col md:col-span-2">
+                      <input
+                        type="file"
+                        id="file"
+                        multiple
+                        accept=".jpeg, .jpg, .png"
+                        className=" w-full py-2 px-2 rounded-lg outline-none"
+                        onChange={handleFileChange}
+                      />
+                      {files.length >= 5 && (
+                        <p className="text-red-500 text-sm">
+                          Maximum 5 files allowed
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className=" text-center my-3">
+                  <button
+                    type="submit"
+                    className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 mb-4"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
+          <h1 className="text-xl my-5">Recent Grievances</h1>
+          <div className="bg-white rounded-lg my-2 py-3 overflow-x-auto h-2/5 no-scrollbar">
+            <table className="w-full mt-2 mx-3">
+              <thead className="border-b border-gray-300">
+                <tr className="">
+                  <th>
+                    <p className=" my-2 text-start font-lexend font-normal text-base whitespace-nowrap">
+                      Complaint
                     </p>
-                  </td>
-                  <td>
-                    {" "}
-                    <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                      {report.dept_name}
+                  </th>
+
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-2 my-2 font-lexend font-normal text-base whitespace-nowrap">
+                      Raised by
                     </p>
-                  </td>
-                  <td>
-                    <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                      {report.assign_username
-                        ? report.assign_username
-                        : "Yet to be assigned"}
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                      Department
                     </p>
-                  </td>
-                  <td>
-                    <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                      {formatDate1(report.createdAt)}
+                  </th>
+
+                  <th>
+                    <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                      Assigned JE
                     </p>
-                  </td>
+                  </th>
+                  <th>
+                    <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                      Date/Time
+                    </p>
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {grievance.slice(0, 10).map((report, index) => (
+                  <tr key={index}>
+                    <td>
+                      <p
+                        className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
+                        onClick={() =>
+                          navigate(`/view?grievanceId=${report.grievance_id}`)
+                        }
+                      >
+                        {report.grievance_id}
+                      </p>
+                    </td>
+
+                    <td>
+                      {" "}
+                      <p className="capitalize text-center mx-2   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                        {report.public_user_name}
+                      </p>
+                    </td>
+                    <td>
+                      {" "}
+                      <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                        {report.dept_name}
+                      </p>
+                    </td>
+                    <td>
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
+                        {report.assign_username
+                          ? report.assign_username
+                          : "Yet to be assigned"}
+                      </p>
+                    </td>
+                    <td>
+                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                        {formatDate1(report.createdAt)}
+                      </p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg w-3/4 md:w-1/2 max-w-2xl">
+            <h2 className="text-2xl font-semibold mb-4 text-start">
+              Templates
+            </h2>
+
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {filteredTemplates.map((template, index) => (
+                <button
+                  key={index}
+                  className="flex justify-between items-start w-full py-3 px-4 text-sm text-black border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none"
+                  onClick={() => handleTemplateSelect(template)}
+                >
+                  <div>
+                    <p className="font-medium text-md text-start">
+                      {template.temp_title}
+                    </p>
+                    <hr className="mt-2 w-full" />
+                    <p className="text-base text-gray-700 mt-1 text-start">
+                      {template.desc}
+                    </p>
+                  </div>
+                  <span className="text-blue-500 font-medium ">Select</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                className="py-1.5 px-5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none"
+                onClick={() => setModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
