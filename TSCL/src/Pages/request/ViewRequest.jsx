@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import { API, formatDate1 } from "../../Host";
+import { API, formatDate1, formatDate2 } from "../../Host";
 import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "./ViewAttachment";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SimilarReq from "../grievances/SimilarReq";
+import GrievanceDetailsModal from "./GrievanceDetailsModal";
+import { IoIosEye } from "react-icons/io";
 
 const ViewRequest = () => {
   const [data, setData] = useState(null);
@@ -18,13 +20,15 @@ const ViewRequest = () => {
   const location = useLocation();
   // const grievanceId = location.state?.grievanceId;
   const queryParams = new URLSearchParams(location.search);
-  const grievanceId = queryParams.get('grievanceId');
+  const grievanceId = queryParams.get("grievanceId");
   const token = localStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [isSimilarReq, setIsSimilarReq] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [logData, setLogData] = useState([]);
   const navigate = useNavigate();
+  const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
+  const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -131,6 +135,11 @@ const ViewRequest = () => {
 
   const togglReModal = () => {
     setIsSimilarReq(!setIsSimilarReq);
+  };
+
+  const handleGrievanceClick = (grievanceId) => {
+    setSelectedGrievanceId(grievanceId);
+    setIsGrievanceModalOpen(true);
   };
 
   return (
@@ -266,25 +275,25 @@ const ViewRequest = () => {
               <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
                 <p className="pt-2 text-lg ">Similar Request</p>
                 <hr className="my-3 w-full" />
-                <div
-                  className="overflow-auto no-scrollbar"
-                  onClick={() => setIsSimilarReq(true)}
-                >
+                <div className="overflow-auto no-scrollbar">
                   <table className="w-full bg-gray-200 rounded ">
                     <thead>
                       <tr>
                         <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                          Date/Time
+                          Grievance
                         </th>
                         <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                          Complaint No
+                          Department
                         </th>
                         <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                          Status
+                          Origin
                         </th>
-                        {/* <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                         Action
-                        </th> */}
+                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                          Date
+                        </th>
+                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-300">
@@ -294,29 +303,31 @@ const ViewRequest = () => {
                             className="border-b-2 border-gray-300"
                             key={index}
                           >
-                            <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                              {formatDate1(data.createdAt)}
-                            </td>
-                            <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                            <td
+                              className="text-center mx-3 py-2.5 whitespace-nowrap"
+                              onClick={() =>
+                                handleGrievanceClick(data.grievance_id)
+                              }
+                            >
                               {data.grievance_id}
                             </td>
-                            <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
-                              {data.status}
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 capitalize">
+                              {data.dept_name}
                             </td>
-                            {/* <td>
-                              <div
-                                className="mx-3 my-3 whitespace-nowrap"
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 capitalize">
+                              {data.grievance_mode}
+                            </td>
+                            <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 ">
+                              {formatDate2(data.createdAt)}
+                            </td>
+                            <td className="flex justify-center mt-3">
+                              <IoIosEye
+                                className="text-xl"
                                 onClick={() =>
-                                  navigate(`/view`, {
-                                    state: {
-                                      grievanceId: data.grievance_id,
-                                    },
-                                  })
+                                  handleGrievanceClick(data.grievance_id)
                                 }
-                              >
-                                <BsThreeDotsVertical />
-                              </div>
-                            </td> */}
+                              />
+                            </td>
                           </tr>
                         ))
                       ) : (
@@ -433,6 +444,13 @@ const ViewRequest = () => {
           </div>
         </div>
       </div>
+      {isGrievanceModalOpen && (
+        <GrievanceDetailsModal
+          grievanceId={selectedGrievanceId}
+          closeModal={() => setIsGrievanceModalOpen(false)}
+        />
+      )}
+
       {isviewModal && (
         <ViewAttachment
           endpoint={endpoint}

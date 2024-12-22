@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import { API, formatDate1 } from "../../Host";
+import { API, formatDate1, formatDate2 } from "../../Host";
 import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "../request/ViewAttachment";
@@ -10,6 +10,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import TicketTransfer from "./TicketTransfer";
 import SimilarReq from "../grievances/SimilarReq";
+import { IoIosEye } from "react-icons/io";
+import GrievanceDetailsModal from "../request/GrievanceDetailsModal";
 
 const GrievanceSchema = yup.object().shape({
   assign_username: yup.string().required(" required "),
@@ -33,9 +35,10 @@ const ViewRequest2 = () => {
   // const deptName = location.state?.deptName;
 
   const queryParams = new URLSearchParams(location.search);
-  const grievanceId = queryParams.get('grievanceId');
-  const deptName = queryParams.get('deptName');
-
+  const grievanceId = queryParams.get("grievanceId");
+  const deptName = queryParams.get("deptName");
+  const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
+  const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
   const token = localStorage.getItem("token");
   const [isviewModal, setIsviewModal] = useState(false);
   const [isSimilarReq, setIsSimilarReq] = useState(false);
@@ -215,8 +218,10 @@ const ViewRequest2 = () => {
           `${API}/grievance-log/post`,
           {
             grievance_id: grievanceId,
-            log_details: `Work Assigned to ${assignUserName} by ${localStorage.getItem('name')}`,
-            created_by_user: localStorage.getItem('name'),
+            log_details: `Work Assigned to ${assignUserName} by ${localStorage.getItem(
+              "name"
+            )}`,
+            created_by_user: localStorage.getItem("name"),
           },
           {
             headers: {
@@ -231,6 +236,11 @@ const ViewRequest2 = () => {
     } catch (error) {
       console.error("Error in posting data", error);
     }
+  };
+
+  const handleGrievanceClick = (grievanceId) => {
+    setSelectedGrievanceId(grievanceId);
+    setIsGrievanceModalOpen(true);
   };
 
   return (
@@ -302,7 +312,7 @@ const ViewRequest2 = () => {
                         </option>
 
                         {dataUsers &&
-                          dataUsers.map((option,index) => (
+                          dataUsers.map((option, index) => (
                             <option
                               key={index}
                               value={option.user_name}
@@ -382,11 +392,11 @@ const ViewRequest2 = () => {
                       <p className="col-span-2 capitalize">: {data.pincode}</p>
                     </div>
                     <div className="grid grid-cols-4">
-                    <p className="col-span-2">Complaint Address: </p>
-                    <p className="col-start-1 col-span-4 mt-2 capitalize">
-                      {data.complaintaddress}
-                    </p>
-                  </div>
+                      <p className="col-span-2">Complaint Address: </p>
+                      <p className="col-start-1 col-span-4 mt-2 capitalize">
+                        {data.complaintaddress}
+                      </p>
+                    </div>
                     <div className="grid grid-cols-4">
                       <p className="col-span-2">Description: </p>
                       <p className="col-start-1 col-span-4 mt-2 capitalize">
@@ -419,21 +429,24 @@ const ViewRequest2 = () => {
                 <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
                   <p className="pt-2 text-lg ">Similar Request</p>
                   <hr className="my-3 w-full" />
-                  <div
-                    className="overflow-auto no-scrollbar"
-                    onClick={() => setIsSimilarReq(true)}
-                  >
+                  <div className="overflow-auto no-scrollbar">
                     <table className="w-full bg-gray-200 rounded ">
                       <thead>
                         <tr>
                           <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                            Date/Time
+                            Grievance
                           </th>
                           <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                            Complaint No
+                            Department
                           </th>
                           <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                            Status
+                            Origin
+                          </th>
+                          <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                            Date
+                          </th>
+                          <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                            Action
                           </th>
                         </tr>
                       </thead>
@@ -444,14 +457,30 @@ const ViewRequest2 = () => {
                               className="border-b-2 border-gray-300"
                               key={index}
                             >
-                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                                {formatDate1(data.createdAt)}
-                              </td>
-                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
+                              <td
+                                className="text-center mx-3 py-2.5 whitespace-nowrap"
+                                onClick={() =>
+                                  handleGrievanceClick(data.grievance_id)
+                                }
+                              >
                                 {data.grievance_id}
                               </td>
-                              <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
-                                {data.status}
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 capitalize">
+                                {data.dept_name}
+                              </td>
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 capitalize">
+                                {data.grievance_mode}
+                              </td>
+                              <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 ">
+                                {formatDate2(data.createdAt)}
+                              </td>
+                              <td className="flex justify-center mt-3">
+                                <IoIosEye
+                                  className="text-xl"
+                                  onClick={() =>
+                                    handleGrievanceClick(data.grievance_id)
+                                  }
+                                />
                               </td>
                             </tr>
                           ))
@@ -575,6 +604,12 @@ const ViewRequest2 = () => {
           endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
+        />
+      )}
+      {isGrievanceModalOpen && (
+        <GrievanceDetailsModal
+          grievanceId={selectedGrievanceId}
+          closeModal={() => setIsGrievanceModalOpen(false)}
         />
       )}
       {istransferModal && (

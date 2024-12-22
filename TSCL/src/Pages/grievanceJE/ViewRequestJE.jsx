@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import { API, formatDate1 } from "../../Host";
+import { API, formatDate1, formatDate2 } from "../../Host";
 import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
 import ViewAttachment from "../request/ViewAttachment";
@@ -10,6 +10,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import SimilarRequest from "./SimilarRequest";
 import SimilarReq from "../grievances/SimilarReq";
+import { IoIosEye } from "react-icons/io";
+import GrievanceDetailsModal from "../request/GrievanceDetailsModal";
 
 const Worksheet = yup.object().shape({
   worksheet_name: yup.string().required("worksheet is required"),
@@ -37,6 +39,8 @@ const ViewRequestJE = () => {
   const [logData, setLogData] = useState([]);
   const [files, setFiles] = useState([]);
   const [worksheet, setWorksheet] = useState(null);
+    const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
+    const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -347,6 +351,11 @@ const ViewRequestJE = () => {
     }
   };
 
+  const handleGrievanceClick = (grievanceId) => {
+    setSelectedGrievanceId(grievanceId);
+    setIsGrievanceModalOpen(true);
+  };
+
   return (
     <Fragment>
       <div className="h-screen overflow-y-auto no-scrollbar">
@@ -500,56 +509,75 @@ const ViewRequestJE = () => {
                     )}
                   </div>
                 </div>
-                <div className="md:col-span-6 col-span-12 border px-1 py-3 rounded ">
-                  <p className="pt-2 text-lg ">Similar Request</p>
-                  <hr className="my-3 w-full" />
-                  <div
-                    className="overflow-auto no-scrollbar"
-                    onClick={() => setIsSimilarReq(true)}
-                  >
-                    <table className="w-full bg-gray-200 rounded  ">
-                      <thead>
-                        <tr>
-                          <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                            Date/Time
-                          </th>
-                          <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                            Complaint No
-                          </th>
-                          <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-300">
-                        {matchData && matchData.length > 0 ? (
-                          matchData.map((data, index) => (
-                            <tr
-                              className="border-b-2 border-gray-300"
-                              key={index}
-                            >
-                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                                {formatDate1(data.createdAt)}
-                              </td>
-                              <td className="text-center mx-3 py-2.5 whitespace-nowrap">
-                                {data.grievance_id}
-                              </td>
-                              <td className="text-center mx-3 py-2.5 text-green-600 whitespace-nowrap capitalize">
-                                {data.status}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td className="text-center py-2.5" colSpan="3">
-                              No matching data found
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                   <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded ">
+                                <p className="pt-2 text-lg ">Similar Request</p>
+                                <hr className="my-3 w-full" />
+                                <div className="overflow-auto no-scrollbar">
+                                  <table className="w-full bg-gray-200 rounded ">
+                                    <thead>
+                                      <tr>
+                                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                                          Grievance
+                                        </th>
+                                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                                          Department
+                                        </th>
+                                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                                          Origin
+                                        </th>
+                                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                                          Date
+                                        </th>
+                                        <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                                          Action
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-300">
+                                      {matchData && matchData.length > 0 ? (
+                                        matchData.map((data, index) => (
+                                          <tr
+                                            className="border-b-2 border-gray-300"
+                                            key={index}
+                                          >
+                                            <td
+                                              className="text-center mx-3 py-2.5 whitespace-nowrap"
+                                              onClick={() =>
+                                                handleGrievanceClick(data.grievance_id)
+                                              }
+                                            >
+                                              {data.grievance_id}
+                                            </td>
+                                            <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 capitalize">
+                                              {data.dept_name}
+                                            </td>
+                                            <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 capitalize">
+                                              {data.grievance_mode}
+                                            </td>
+                                            <td className="text-center mx-3 py-2.5 whitespace-nowrap text-gray-600 ">
+                                              {formatDate2(data.createdAt)}
+                                            </td>
+                                            <td className="flex justify-center mt-3">
+                                              <IoIosEye
+                                                className="text-xl"
+                                                onClick={() =>
+                                                  handleGrievanceClick(data.grievance_id)
+                                                }
+                                              />
+                                            </td>
+                                          </tr>
+                                        ))
+                                      ) : (
+                                        <tr>
+                                          <td className="text-center py-2.5" colSpan="3">
+                                            No matching data found
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
               </div>
 
               <div className="grid grid-cols-12 gap-2 mx-3 my-3">
@@ -700,6 +728,12 @@ const ViewRequestJE = () => {
           endpoint={endpoint}
           toggleModal={toggleModal}
           attachmentFile={attachmentFile}
+        />
+      )}
+      {isGrievanceModalOpen && (
+        <GrievanceDetailsModal
+          grievanceId={selectedGrievanceId}
+          closeModal={() => setIsGrievanceModalOpen(false)}
         />
       )}
       {isSimilar && (
