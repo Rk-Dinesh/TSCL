@@ -15,13 +15,16 @@ import BulkAssign from "./BulkAssign";
 import SearchInput from "../../components/SearchInput";
 import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrigin } from "../redux/slice/origin";
+import logo from "../../assets/images/logo1.png";
 
 const RequestAdmin = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
-
+  const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -35,6 +38,7 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
   const [isBulkassign, setIsBulkassign] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [grievanceImages, setGrievanceImages] = useState({});
 
   const token = localStorage.getItem("token");
   const dept = localStorage.getItem("dept");
@@ -52,7 +56,20 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
     handlerefresh();
     fetchActiveStatus();
     fetchDeptUser();
+    dispatch(fetchOrigin());
   }, []);
+
+  const Origin = useSelector((state) => state.origin);
+
+  useEffect(() => {
+    if (Origin && Origin?.data) {
+      const imageMapping = Origin?.data?.reduce((acc, resource) => {
+        acc[resource.res_name] = resource.image;
+        return acc;
+      }, {});
+      setGrievanceImages(imageMapping);
+    }
+  }, [Origin]);
 
   const handlerefresh = () => {
     axios
@@ -503,6 +520,11 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
                       </p>
                     </th>
                     <th>
+                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Origin
+                      </p>
+                    </th>
+                    <th>
                       <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                         Complaint
                         <RiExpandUpDownLine />
@@ -589,6 +611,17 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
                         >
                           {report.grievance_id}
                         </p>
+                      </td>
+                      <td className="flex gap-1 items-center justify-center text-gray-700">
+                        <img
+                          src={
+                            grievanceImages[report.grievance_mode] ||
+                            logo
+                          }
+                          alt={report.grievance_mode}
+                          className="w-6 h-6 mx-1.5 my-2 rounded-full"
+                        />
+                        {/* <p className="capitalize text-sm">{report.grievance_mode}</p> */}
                       </td>
                       <td>
                         {" "}

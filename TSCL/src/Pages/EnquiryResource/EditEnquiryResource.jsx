@@ -10,7 +10,7 @@ import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 import { API } from "../../Host";
 
 const ResourceSchema = yup.object().shape({
-  res_name: yup.string().required("Resource is required"),
+  res_name: yup.string().required("Resource is required").lowercase(),
   status: yup
     .string()
     .test(
@@ -70,7 +70,7 @@ const EditEnquiryResource = (props) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-      const base64Image = reader.result.split(",")[1];
+      const base64Image = reader.result;
       setImageBase64(base64Image);
       setImagePreview(base64Image); 
       setImageError(false);
@@ -181,7 +181,7 @@ const EditEnquiryResource = (props) => {
               <div className="mt-4 flex  justify-center">
                
                 <img
-                  src={`data:image/jpeg;base64,${imagePreview}`}
+                  src={imagePreview}
                   alt="Uploaded Preview"
                   className="w-32 h-32 object-cover border rounded-lg"
                 />

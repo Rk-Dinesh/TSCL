@@ -15,13 +15,16 @@ import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
 import { AiOutlineThunderbolt } from "react-icons/ai";
 import ManyTicketTransfer from "../grievancesadmin/ManyTicketTransfer";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrigin } from "../redux/slice/origin";
+import logo from "../../assets/images/logo1.png";
 
 const Request = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
-
+  const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -39,10 +42,9 @@ const Request = ({ permissions, include, endpoint }) => {
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [istransferModal, setIstransferModal] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [grievanceImages, setGrievanceImages] = useState({});
 
   useEffect(() => {
- 
-
     const fetchComplaintType = async () => {
       try {
         const response = await axios.get(`${API}/complainttype/getactive`, {
@@ -60,7 +62,20 @@ const Request = ({ permissions, include, endpoint }) => {
     handlerefresh();
     fetchComplaintType();
     fetchActiveStatus();
+    dispatch(fetchOrigin());
   }, []);
+
+  const Origin = useSelector((state) => state.origin);
+
+  useEffect(() => {
+    if (Origin && Origin?.data) {
+      const imageMapping = Origin?.data?.reduce((acc, resource) => {
+        acc[resource.res_name] = resource.image;
+        return acc;
+      }, {});
+      setGrievanceImages(imageMapping);
+    }
+  }, [Origin]);
 
   const handlerefresh = async () => {
     try {
@@ -300,173 +315,174 @@ const Request = ({ permissions, include, endpoint }) => {
 
   return (
     <>
-    <div className="">
-      <div className="  font-lexend h-screen ">
-        {include === "yes" && (
-          <HeaderButton
-            title="Grievances"
-            hasCreatePermission={hasCreatePermission}
-            onClick={handleform}
-          />
-        )}
-        <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
-          <div className="flex gap-3">
-            <DateRangeComp onChange={handleDateRangeChange} />
-            <div className="flex items-center gap-3">
-              <label
-                htmlFor="itemsPerPage"
-                className="font-medium text-gray-600"
-              >
-                Page Entries
-              </label>
-              <select
-                id="itemsPerPage"
-                value={itemsPerPage}
-                onChange={handleItemsPerPageChange}
-                className=" p-1 outline-none text-sm rounded px-2"
-              >
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex flex-row flex-wrap gap-1.5">
-            <SearchInput
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search Grievances"
+      <div className="">
+        <div className="  font-lexend h-screen ">
+          {include === "yes" && (
+            <HeaderButton
+              title="Grievances"
+              hasCreatePermission={hasCreatePermission}
+              onClick={handleform}
             />
-
-            {hasDownloadPermission && (
-              <DocumentDownload
-                selectedDoc={selectedDoc}
-                onChange={setDocs}
-                exportData={exportData}
-              />
-            )}
-          </div>
-        </div>
-
-        <div
-          className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
-            report.length < 8 ? "h-4/5" : "h-fit"
-          }`}
-        >
-          <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
-            <div className="flex flex-wrap gap-3">
-              <p className="text-lg  whitespace-nowrap">View Report</p>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {complainttype.map((type, index) => (
-                <div key={index}>
-                  <button
-                    className={`px-2 py-1.5 capitalize ${
-                      selectedComplaintType === type.complaint_type
-                        ? "bg-primary text-white"
-                        : "bg-blue-100 text-primary"
-                    } rounded-full shadow-lg`}
-                    onClick={() =>
-                      handleComplaintTypeClick(type.complaint_type)
-                    }
-                  >
-                    {type.complaint_type}
-                  </button>
-                </div>
-              ))}
-              <button
-                className={`w-20 py-1.5 ${
-                  selectedComplaintType === "All"
-                    ? "bg-primary text-white"
-                    : "bg-blue-100 text-primary"
-                } rounded-full shadow-lg`}
-                onClick={() => handleComplaintTypeClick("All")}
-              >
-                All
-              </button>
-            </div>
-          </div>
-          {include == "yes" && (
-            <div className="my-2 mx-3 flex flex-wrap gap-2 ">
-              <button
-                className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
-                onClick={() => setIstransferModal(true)}
-              >
-                Multi-Transfer
-              </button>
-            </div>
           )}
-          <div className="overflow-x-auto">
-            <table className="w-full mt-2 ">
-              <thead className=" border-b border-gray-300  ">
-                <tr className="">
-                  {include === "yes" && (
+          <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
+            <div className="flex gap-3">
+              <DateRangeComp onChange={handleDateRangeChange} />
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="itemsPerPage"
+                  className="font-medium text-gray-600"
+                >
+                  Page Entries
+                </label>
+                <select
+                  id="itemsPerPage"
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  className=" p-1 outline-none text-sm rounded px-2"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex flex-row flex-wrap gap-1.5">
+              <SearchInput
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search Grievances"
+              />
+
+              {hasDownloadPermission && (
+                <DocumentDownload
+                  selectedDoc={selectedDoc}
+                  onChange={setDocs}
+                  exportData={exportData}
+                />
+              )}
+            </div>
+          </div>
+
+          <div
+            className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
+              report.length < 8 ? "h-4/5" : "h-fit"
+            }`}
+          >
+            <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
+              <div className="flex flex-wrap gap-3">
+                <p className="text-lg  whitespace-nowrap">View Report</p>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {complainttype.map((type, index) => (
+                  <div key={index}>
+                    <button
+                      className={`px-2 py-1.5 capitalize ${
+                        selectedComplaintType === type.complaint_type
+                          ? "bg-primary text-white"
+                          : "bg-blue-100 text-primary"
+                      } rounded-full shadow-lg`}
+                      onClick={() =>
+                        handleComplaintTypeClick(type.complaint_type)
+                      }
+                    >
+                      {type.complaint_type}
+                    </button>
+                  </div>
+                ))}
+                <button
+                  className={`w-20 py-1.5 ${
+                    selectedComplaintType === "All"
+                      ? "bg-primary text-white"
+                      : "bg-blue-100 text-primary"
+                  } rounded-full shadow-lg`}
+                  onClick={() => handleComplaintTypeClick("All")}
+                >
+                  All
+                </button>
+              </div>
+            </div>
+            {include == "yes" && (
+              <div className="my-2 mx-3 flex flex-wrap gap-2 ">
+                <button
+                  className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
+                  onClick={() => setIstransferModal(true)}
+                >
+                  Multi-Transfer
+                </button>
+              </div>
+            )}
+            <div className="overflow-x-auto">
+              <table className="w-full mt-2 ">
+                <thead className=" border-b border-gray-300  ">
+                  <tr className="">
+                    {include === "yes" && (
+                      <th className="">
+                        <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                          <AiOutlineThunderbolt className="text-xl text-center text-primary" />
+                        </p>
+                      </th>
+                    )}
                     <th className="">
-                      <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
-                        <AiOutlineThunderbolt className="text-xl text-center text-primary" />
+                      <p className=" mx-3 my-2 font-lexend  font-medium whitespace-nowrap">
+                        #
                       </p>
                     </th>
-                  )}
-                  <th className="">
-                    <p className=" mx-3 my-2 font-lexend  font-medium whitespace-nowrap">
-                      #
-                    </p>
-                  </th>
-                  <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                      Complaint No
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Raised by <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Complaint Type <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Department
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                     Complaint
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Assigned JE <RiExpandUpDownLine />
-                    </p>
-                  </th>
+                    <th>
+                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                        Complaint No
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Origin
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Raised by <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Complaint Type <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Department
+                        <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Complaint
+                        <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Assigned JE <RiExpandUpDownLine />
+                      </p>
+                    </th>
 
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Date and Time <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  {/* <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Priority <RiExpandUpDownLine />
-                    </p>
-                  </th> */}
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItemsOnPage.map((report, index) => (
-                  <tr className=" border-b border-gray-300  " key={index}>
-                        {include === "yes" && (
+                    <th>
+                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Date and Time <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                    
+                    <th>
+                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Status <RiExpandUpDownLine />
+                      </p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItemsOnPage.map((report, index) => (
+                    <tr className=" border-b border-gray-300  " key={index}>
+                      {include === "yes" && (
                         <td className=" flex gap-2 items-center justify-center ">
                           <div className="flex items-center ">
                             <input
@@ -488,61 +504,74 @@ const Request = ({ permissions, include, endpoint }) => {
                           </div>
                         </td>
                       )}
-                    <td className="">
-                      <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700">
-                        {firstIndex + index + 1 < 10
-                          ? `0${firstIndex + index + 1}`
-                          : firstIndex + index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <p
-                        className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  text-slate-900 "
-                        onClick={() =>
-                          navigate(`/view?grievanceId=${report.grievance_id}`)
-                        }
-                      >
-                        {report.grievance_id}
-                      </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {report.public_user_name}
-                      </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {report.complaint_type_title}
-                      </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {report.dept_name}
-                      </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {report.complaint}
-                      </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                        {report.assign_username
-                          ? report.assign_username
-                          : "Yet to be assigned"}
-                      </p>
-                    </td>
-                    <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {formatDate1(report.createdAt)}
-                      </p>
-                    </td>
-                    {/* <td>
+                      <td className="">
+                        <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700">
+                          {firstIndex + index + 1 < 10
+                            ? `0${firstIndex + index + 1}`
+                            : firstIndex + index + 1}
+                        </div>
+                      </td>
+                      <td>
+                        <p
+                          className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1  text-slate-900 "
+                          onClick={() =>
+                            navigate(`/view?grievanceId=${report.grievance_id}`)
+                          }
+                        >
+                          {report.grievance_id}
+                        </p>
+                      </td>
+                      <td className="flex gap-1 items-center justify-center text-gray-700">
+                        <img
+                          src={
+                            grievanceImages[report.grievance_mode] ||
+                            logo
+                          }
+                          alt={report.grievance_mode}
+                          className="w-6 h-6 mx-1.5 my-2 rounded-full"
+                        />
+                        {/* <p className="capitalize text-sm">{report.grievance_mode}</p> */}
+                      </td>
+                      <td>
+                        {" "}
+                        <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {report.public_user_name}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {report.complaint_type_title}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {report.dept_name}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className="capitalize text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {report.complaint}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
+                          {report.assign_username
+                            ? report.assign_username
+                            : "Yet to be assigned"}
+                        </p>
+                      </td>
+                      <td>
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {formatDate1(report.createdAt)}
+                        </p>
+                      </td>
+                     
+
+                      {/* <td>
                       <p
                         className={`border-2 w-26 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
                           report.priority === "High"
@@ -557,40 +586,40 @@ const Request = ({ permissions, include, endpoint }) => {
                         {report.priority}
                       </p>
                     </td> */}
-                    <td>
-                      <p
-                        className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "
-                        style={{
-                          borderColor: statusColors[report.status] || "gray",
-                          color: statusColors[report.status] || "black",
-                          fontSize: 14,
-                        }}
-                      >
-                        {report.status}
-                      </p>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <td>
+                        <p
+                          className="border-2 w-28 rounded-full text-center py-1 tex-sm font-normal mx-2 capitalize  "
+                          style={{
+                            borderColor: statusColors[report.status] || "gray",
+                            color: statusColors[report.status] || "black",
+                            fontSize: 14,
+                          }}
+                        >
+                          {report.status}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <div className=" mt-2 mb-5 mx-7">
-          <Pagination
-            Length={filteredGrievances.length}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            firstIndex={firstIndex}
-            lastIndex={lastIndex}
-            paginate={paginate}
-            hasNextPage={lastIndex >= filteredGrievances.length}
-          />
+          <div className=" mt-2 mb-5 mx-7">
+            <Pagination
+              Length={filteredGrievances.length}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              firstIndex={firstIndex}
+              lastIndex={lastIndex}
+              paginate={paginate}
+              hasNextPage={lastIndex >= filteredGrievances.length}
+            />
+          </div>
+          <p className="text-transparent">transparent</p>
         </div>
-        <p className="text-transparent">transparent</p>
       </div>
-    </div>
-    {istransferModal && (
+      {istransferModal && (
         <ManyTicketTransfer
           toggleTModal={toggleTModal}
           selectedRows={selectedRows}

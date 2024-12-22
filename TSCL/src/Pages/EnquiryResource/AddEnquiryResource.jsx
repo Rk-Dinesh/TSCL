@@ -8,7 +8,7 @@ import SaveCancel from "../../components/SavaCancel";
 import { API } from "../../Host";
 
 const OrganizationSchema = yup.object().shape({
-  res_name: yup.string().required("Resource is required"),
+  res_name: yup.string().required("Resource is required").lowercase(),
 });
 
 const AddEnquiryResource = (props) => {
@@ -33,7 +33,7 @@ const AddEnquiryResource = (props) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-      setImageBase64(reader.result.split(",")[1]); 
+      setImageBase64(reader.result);  
       setImageError(false); 
     };
     reader.readAsDataURL(file);

@@ -14,6 +14,8 @@ import { fetchComplainttype } from "../redux/slice/complainttype";
 import decryptData from "../../Decrypt";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { fetchWard } from "../redux/slice/ward";
+import { fetchOrigin } from "../redux/slice/origin";
+import CustomDropdownWithImages from "../../components/CustomDropdownWithImages";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -62,14 +64,13 @@ const GrievanceForm = () => {
   const [filteredWards, setFilteredWards] = useState([]);
   const [filteredStreets, setFilteredStreets] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
-  const [filteredTemplates, setFilteredTemplates] = useState([])
+  const [filteredTemplates, setFilteredTemplates] = useState([]);
   const [files, setFiles] = useState([]);
   const [translatedLan, setTranslatedLan] = useState("");
   const token = localStorage.getItem("token");
   const [statusColors, setStatusColors] = useState({});
   const [grievance, setGrievance] = useState([]);
   const [status, setStatus] = useState([]);
-  
 
   useEffect(() => {
     dispatch(fetchDepartment());
@@ -77,6 +78,7 @@ const GrievanceForm = () => {
     // dispatch(fetchZone());
     dispatch(fetchWard());
     dispatch(fetchComplainttype());
+    dispatch(fetchOrigin());
   }, [dispatch]);
 
   const Department = useSelector((state) => state.department);
@@ -84,6 +86,7 @@ const GrievanceForm = () => {
   // const Zone = useSelector((state) => state.zone);
   const Ward = useSelector((state) => state.ward);
   const Complainttype = useSelector((state) => state.complainttype);
+  const Origin = useSelector((state) => state.origin);
 
   const {
     register,
@@ -101,7 +104,7 @@ const GrievanceForm = () => {
   // const zoneName = watch("zone_name");
   const wardName = watch("ward_name");
   const deptName = watch("dept_name");
-  const complaintName =watch('complaint_type_title')
+  const complaintName = watch("complaint_type_title");
   const residentAddress = watch("address");
 
   useEffect(() => {
@@ -168,8 +171,6 @@ const GrievanceForm = () => {
     }
   }, [deptName]);
 
-
-
   useEffect(() => {
     if (wardName) {
       axios
@@ -231,11 +232,14 @@ const GrievanceForm = () => {
   useEffect(() => {
     if (deptName && complaintName) {
       axios
-        .get(`${API}/template/getbyquery?dept_name=${deptName}&complaint_type=${complaintName}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .get(
+          `${API}/template/getbyquery?dept_name=${deptName}&complaint_type=${complaintName}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           try {
             const responseData = decryptData(response.data.data);
@@ -248,9 +252,8 @@ const GrievanceForm = () => {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
-    } 
-  }, [deptName,complaintName]);
-
+    }
+  }, [deptName, complaintName]);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -311,11 +314,9 @@ const GrievanceForm = () => {
       status: "new",
       statusflow: "new",
       priority: getPriorityFromComplaintType(data.complaint_type_title),
-      operator:localStorage.getItem('name'),
-      operator_id:localStorage.getItem('code')
+      operator: localStorage.getItem("name"),
+      operator_id: localStorage.getItem("code"),
     };
-
-   
 
     try {
       const response1 = await axios.post(
@@ -367,7 +368,7 @@ const GrievanceForm = () => {
 
       reset();
 
-      navigate(`/view?grievanceId=${grievanceId}`)
+      navigate(`/view?grievanceId=${grievanceId}`);
     } catch (error) {
       console.log(error);
       toast.error("An error occurred during submission. Please try again.");
@@ -506,7 +507,7 @@ const GrievanceForm = () => {
                   >
                     Origin
                   </label>
-                  <div className=" md:col-span-2">
+                  {/* <div className=" md:col-span-2">
                     <select
                       className="block w-full  px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                       defaultValue=""
@@ -515,20 +516,33 @@ const GrievanceForm = () => {
                       <option value="" disabled>
                         Select an Origin
                       </option>
-                      <option value="Whatsapp">Whatsapp</option>
-                      <option value="Call">Call</option>
-                      <option value="Website">Website</option>
+                      {Origin.data &&
+                        Origin.data.map((option,index) => (
+                          <option
+                            key={index}
+                            value={option.res_name}
+                          >
+                           <img src={option.image} alt="icon" className="w-6 h-6"/> {option.res_name}
+                          </option>
+                        ))}
                     </select>
                     {errors.grievance_mode && (
                       <p className="text-red-500 text-xs text-start px-2 pt-2">
                         {errors.grievance_mode.message}
                       </p>
                     )}
+                  </div> */}
+                  <div className="md:col-span-2">
+                    <CustomDropdownWithImages
+                      options={Origin?.data}
+                      register={register("grievance_mode")}
+                      error={errors.grievance_mode}
+                    />
                   </div>
                 </div>
-                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
+                <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 gap-1 ">
                   <label
-                    className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                    className="block text-black text-base font-medium mb-2 md:col-span-1"
                     htmlFor="complaint"
                   >
                     Complaint Type
@@ -544,11 +558,8 @@ const GrievanceForm = () => {
                       </option>
 
                       {Complainttype.data &&
-                        Complainttype.data.map((option,index) => (
-                          <option
-                            key={index}
-                            value={option.complaint_type}
-                          >
+                        Complainttype.data.map((option, index) => (
+                          <option key={index} value={option.complaint_type}>
                             {option.complaint_type}
                           </option>
                         ))}
@@ -577,7 +588,7 @@ const GrievanceForm = () => {
                         Select a Department
                       </option>
                       {Department.data &&
-                        Department.data.map((option,index) => (
+                        Department.data.map((option, index) => (
                           <option key={index} value={option.dept_name}>
                             {option.dept_name}
                           </option>
@@ -608,7 +619,7 @@ const GrievanceForm = () => {
                       </option>
 
                       {filteredComplaints &&
-                        filteredComplaints.map((option,index) => (
+                        filteredComplaints.map((option, index) => (
                           <option
                             key={index}
                             value={option.complaint_type_title}
@@ -674,7 +685,7 @@ const GrievanceForm = () => {
                       </option>
 
                       {Ward.data &&
-                        Ward.data.map((option,index) => (
+                        Ward.data.map((option, index) => (
                           <option key={index} value={option.ward_name}>
                             {option.ward_name}
                           </option>
@@ -705,11 +716,8 @@ const GrievanceForm = () => {
                       </option>
 
                       {filteredStreets &&
-                        filteredStreets.map((option,index) => (
-                          <option
-                            key={index}
-                            value={option.street_name}
-                          >
+                        filteredStreets.map((option, index) => (
+                          <option key={index} value={option.street_name}>
                             {option.street_name}
                           </option>
                         ))}
@@ -800,34 +808,34 @@ const GrievanceForm = () => {
 
                   <div className="flex flex-col md:col-span-2 border rounded p-1">
                     <div className="flex justify-around items-center -mb-1 gap-3">
-                    <select
-                      className="block w-full  px-2 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
-                      defaultValue=""
-                      onChange={(e) => {
-                        const selectedTemplateId = e.target.value;
-                        const selectedTemplate = filteredTemplates.find(
-                          (template) => template.temp_id === selectedTemplateId
-                        );
-                        if (selectedTemplate) {
-                          setValue("complaint_details", selectedTemplate.desc);
-                        }
-                      }}
-                
-                    >
-                      <option value="" hidden>
-                        Select a Template
-                      </option>
+                      <select
+                        className="block w-full  px-2 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
+                        defaultValue=""
+                        onChange={(e) => {
+                          const selectedTemplateId = e.target.value;
+                          const selectedTemplate = filteredTemplates.find(
+                            (template) =>
+                              template.temp_id === selectedTemplateId
+                          );
+                          if (selectedTemplate) {
+                            setValue(
+                              "complaint_details",
+                              selectedTemplate.desc
+                            );
+                          }
+                        }}
+                      >
+                        <option value="" hidden>
+                          Select a Template
+                        </option>
 
-                      {filteredTemplates &&
-                        filteredTemplates.map((option,index) => (
-                          <option
-                            key={index}
-                            value={option.temp_id}
-                          >
-                            {option.temp_title}
-                          </option>
-                        ))}
-                    </select>
+                        {filteredTemplates &&
+                          filteredTemplates.map((option, index) => (
+                            <option key={index} value={option.temp_id}>
+                              {option.temp_title}
+                            </option>
+                          ))}
+                      </select>
                       <select
                         className="block px-4 py-3 text-sm rounded-lg outline-none"
                         onChange={(e) => {
@@ -915,7 +923,7 @@ const GrievanceForm = () => {
 
                 <th>
                   <p className="flex gap-2 items-center justify-start mx-2 my-2 font-lexend font-normal text-base whitespace-nowrap">
-                  Raised by
+                    Raised by
                   </p>
                 </th>
                 <th>
@@ -926,7 +934,7 @@ const GrievanceForm = () => {
 
                 <th>
                   <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                  Assigned JE
+                    Assigned JE
                   </p>
                 </th>
                 <th>
@@ -940,10 +948,11 @@ const GrievanceForm = () => {
               {grievance.slice(0, 10).map((report, index) => (
                 <tr key={index}>
                   <td>
-                    <p className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
-                    onClick={() =>
-                      navigate(`/view?grievanceId=${report.grievance_id}`)
-                    }
+                    <p
+                      className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
+                      onClick={() =>
+                        navigate(`/view?grievanceId=${report.grievance_id}`)
+                      }
                     >
                       {report.grievance_id}
                     </p>
@@ -952,7 +961,7 @@ const GrievanceForm = () => {
                   <td>
                     {" "}
                     <p className="capitalize text-center mx-2   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                    {report.public_user_name}
+                      {report.public_user_name}
                     </p>
                   </td>
                   <td>
@@ -962,16 +971,16 @@ const GrievanceForm = () => {
                     </p>
                   </td>
                   <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                        {report.assign_username
-                          ? report.assign_username
-                          : "Yet to be assigned"}
-                      </p>
+                    <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
+                      {report.assign_username
+                        ? report.assign_username
+                        : "Yet to be assigned"}
+                    </p>
                   </td>
                   <td>
-                  <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {formatDate1(report.createdAt)}
-                      </p>
+                    <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                      {formatDate1(report.createdAt)}
+                    </p>
                   </td>
                 </tr>
               ))}

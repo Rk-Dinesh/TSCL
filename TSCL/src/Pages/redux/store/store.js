@@ -7,10 +7,11 @@ import ComplaintReducer from "../slice/complaint"
 import PublicUserReducer from "../slice/public_user"
 import OrganizationReducer from "../slice/organization"
 import ComplainttypeReducer from "../slice/complainttype"
+import OriginReducer from "../slice/origin"
 
 
 export const store = configureStore({
-    devTools:true,
+    devTools:false,
     reducer:{
         department: DepartmentReducer,
         complaint:ComplaintReducer,
@@ -19,7 +20,8 @@ export const store = configureStore({
         street: StreetReducer,
         publicUser:PublicUserReducer,
         organization:OrganizationReducer,
-        complainttype:ComplainttypeReducer
+        complainttype:ComplainttypeReducer,
+        origin:OriginReducer,
        
 
     }
