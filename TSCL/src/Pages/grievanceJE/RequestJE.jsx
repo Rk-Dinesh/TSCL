@@ -14,12 +14,18 @@ import DocumentDownload from "../../components/DocumentDownload";
 import DateRangeComp from "../../components/DateRangeComp";
 import ManyTicketTransfer from "../grievancesadmin/ManyTicketTransfer";
 import { AiOutlineThunderbolt } from "react-icons/ai";
+import { IoIosEye } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchZone } from "../redux/slice/zone";
+import { fetchWard } from "../redux/slice/ward";
+import SearchableDropdown from "../../components/SearchableDropDown";
 
 const RequestJE = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
   const hasDownloadPermission = permissions?.includes("download");
+  const dispatch = useDispatch();
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +44,8 @@ const RequestJE = ({ permissions, include, endpoint }) => {
 
   const [selected, setSelected] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [selectedWard, setSelectedWard] = useState(null);
   const [selectedPrior, setSelectedPrior] = useState(null);
 
   const [statusColors, setStatusColors] = useState({});
@@ -46,6 +54,17 @@ const RequestJE = ({ permissions, include, endpoint }) => {
     handlerefresh();
     fetchActiveStatus();
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchZone());
+    dispatch(fetchWard());
+  }, [dispatch]);
+
+  const Zone = useSelector((state) => state.zone);
+  console.log(Zone);
+
+  const Ward = useSelector((state) => state.ward);
+  console.log(Ward);
 
   const handlerefresh = () => {
     axios
@@ -143,6 +162,22 @@ const RequestJE = ({ permissions, include, endpoint }) => {
     }
     paginate(1);
   };
+  const handleZone = (zone) => {
+    if (zone === "All") {
+      setSelectedZone(null);
+    } else {
+      setSelectedZone(zone);
+    }
+    paginate(1);
+  };
+  const handleWard = (ward) => {
+    if (ward === "All") {
+      setSelectedWard(null);
+    } else {
+      setSelectedWard(ward);
+    }
+    paginate(1);
+  };
   const handlePriority = (prior) => {
     if (prior === "All") {
       setSelectedPrior(null);
@@ -161,8 +196,18 @@ const RequestJE = ({ permissions, include, endpoint }) => {
         selectedStatus === null ? true : report.status === selectedStatus;
       const priorityMatch =
         selectedPrior === null ? true : report.priority === selectedPrior;
+      const zoneMatch =
+        selectedZone === null ? true : report.zone_name === selectedZone;
+      const wardMatch =
+        selectedWard === null ? true : report.ward_name === selectedWard;
 
-      return complaintTypeMatch && statusMatch && priorityMatch;
+      return (
+        complaintTypeMatch &&
+        statusMatch &&
+        priorityMatch &&
+        zoneMatch &&
+        wardMatch
+      );
     })
     .slice(firstIndex, lastIndex);
 
@@ -362,6 +407,40 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                 <div className="flex gap-2 flex-wrap">
                   <select
                     className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
+                    onChange={(e) => handleZone(e.target.value)}
+                    value={selectedZone || ""}
+                  >
+                    <option hidden>Zone</option>
+                    <option value="All">All</option>
+                    {Zone &&
+                      Zone.data.map((option, index) => (
+                        <option key={index} value={option.zone_name}>
+                          {option.zone_name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                {/* <div className="flex gap-2 flex-wrap">
+                  <select
+                    className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
+                    onChange={(e) => handleWard(e.target.value)}
+                    value={selectedWard || ""}
+                  >
+                    <option hidden>Ward</option>
+                    <option value="All">All</option>
+                    {Ward &&
+                      Ward.data.map((option, index) => (
+                        <option key={index} value={option.ward_name}>
+                          {option.ward_name}
+                        </option>
+                      ))}
+                  </select>
+                </div> */}
+                <SearchableDropdown Ward={Ward} handleWard={handleWard} />
+
+                <div className="flex gap-2 flex-wrap">
+                  <select
+                    className="block w-full  px-1 py-2 text-center  text-sm bg-primary text-white  border border-none rounded-full  hover:border-gray-200 outline-none capitalize shadow-lg"
                     onChange={(e) => handlePriority(e.target.value)}
                     value={selectedPrior || ""}
                   >
@@ -437,24 +516,44 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                       </p>
                     </th>
                     <th>
+                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                        Ward
+                      </p>
+                    </th>
+                    <th>
+                      <p className="mx-1.5 my-2 text-center font-lexend font-medium  whitespace-nowrap">
+                        Street
+                      </p>
+                    </th>
+
+                    <th>
                       <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Date and Time <RiExpandUpDownLine />
+                        Raised by
+                      </p>
+                    </th>
+                    <th>
+                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                        Phone
                       </p>
                     </th>
                     <th>
                       <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Raised by <RiExpandUpDownLine />
+                        Date and Time
                       </p>
                     </th>
                     <th>
                       <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                         Priority
-                        <RiExpandUpDownLine />
                       </p>
                     </th>
                     <th>
                       <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
+                        Status
+                      </p>
+                    </th>
+                    <th>
+                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
+                        Action
                       </p>
                     </th>
                   </tr>
@@ -510,19 +609,38 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                         </p>
                       </td>
                       <td>
+                        {" "}
                         <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
-                          {formatDate1(report.createdAt)}
+                          {report.ward_name}
                         </p>
                       </td>
                       <td>
                         {" "}
                         <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                          {report.street_name}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className=" text-start ml-4 my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
                           {report.public_user_name}
                         </p>
                       </td>
                       <td>
+                        {" "}
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                          {report.phone}
+                        </p>
+                      </td>
+                      <td>
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalizetext-gray-700">
+                          {formatDate1(report.createdAt)}
+                        </p>
+                      </td>
+
+                      <td>
                         <p
-                          className={`border-2 w-26 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
+                          className={`border-2 w-28 rounded-full text-center py-1.5 mx-2 text-sm font-medium capitalize  ${
                             report.priority === "High"
                               ? "text-red-500 border-red-500"
                               : report.priority === "Medium"
@@ -546,6 +664,19 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                         >
                           {report.status}
                         </p>
+                      </td>
+                      <td className="flex justify-center relative group">
+                        <IoIosEye
+                          className="text-xl"
+                          onClick={() =>
+                            navigate(
+                              `/view3?grievanceId=${report.grievance_id}`
+                            )
+                          }
+                        />
+                        <span className="tooltip hidden group-hover:block absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-400 text-white text-xs rounded py-1 px-2">
+                          View
+                        </span>
                       </td>
                     </tr>
                   ))}
