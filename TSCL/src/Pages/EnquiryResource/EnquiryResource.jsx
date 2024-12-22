@@ -289,7 +289,7 @@ const EnquiryResource = ({ permissions }) => {
                         </div>
                       </td>
                       <td className="flex items-center gap-2 ml-4">
-                        <img src={res.image} alt="Icon" className="w-6 h-6"/>
+                        <img src={res.image} alt="Icon" className="w-6 h-6 rounded-full"/>
                         <p className="capitalize mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
                           {res.res_name}
                         </p>

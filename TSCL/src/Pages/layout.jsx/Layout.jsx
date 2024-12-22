@@ -10,7 +10,7 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { ImUserCheck } from "react-icons/im";
 import { GoOrganization } from "react-icons/go";
-import { MdOutlineContactSupport } from "react-icons/md";
+import { MdModeComment, MdOutlineContactSupport } from "react-icons/md";
 import { BsShieldExclamation } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
@@ -41,7 +41,7 @@ const Layout = ({ permissions }) => {
         permissions["street"] && { title: "Street", to: "/street" }
       ].filter(Boolean) 
     } : null,
-    permissions["organization"] && { title: "Enquiry Resource", icon: <GoOrganization />, to: "/origin" },
+    permissions["organization"] && { title: "Enquiry Resource", icon: <MdModeComment />, to: "/origin" },
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <CiBoxList />, to: "/complainttype" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },

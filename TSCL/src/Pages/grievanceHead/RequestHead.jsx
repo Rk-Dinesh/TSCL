@@ -183,7 +183,7 @@ const RequestHead = ({ permissions, include, endpoint }) => {
 
       setDataUsers(responseData);
     } catch (err) {
-      sconsole.error("Error fetching existing ActiveStatus:", err);
+      console.error("Error fetching existing ActiveStatus:", err);
     }
   };
 
