@@ -27,7 +27,7 @@ const ViewRequestJE = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState("");
   // const grievanceId = location.state?.grievanceId;
   const queryParams = new URLSearchParams(location.search);
   const grievanceId = queryParams.get("grievanceId");
@@ -57,37 +57,7 @@ const ViewRequestJE = () => {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const responseData = decryptData(response.data.data);
-        setData(responseData);
-        const responsefilter = await axios.get(
-          `${API}/new-grievance/filter?zone_name=${responseData.zone_name}&ward_name=${responseData.ward_name}&street_name=${responseData.street_name}&dept_name=${responseData.dept_name}&complaint=${responseData.complaint}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = decryptData(responsefilter.data.data);
-        const filteredData = data.filter(
-          (item) => item.grievance_id !== grievanceId
-        );
-        setMatchData(filteredData);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+
     const fetchDeptStatus = async () => {
       try {
         const response = await axios.get(`${API}/status/getactive`, {
@@ -167,6 +137,38 @@ const ViewRequestJE = () => {
     fetchLog();
     fetchDataFileWorksheet();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const responseData = decryptData(response.data.data);
+      setData(responseData);
+      const responsefilter = await axios.get(
+        `${API}/new-grievance/filter?zone_name=${responseData.zone_name}&ward_name=${responseData.ward_name}&street_name=${responseData.street_name}&dept_name=${responseData.dept_name}&complaint=${responseData.complaint}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = decryptData(responsefilter.data.data);
+      const filteredData = data.filter(
+        (item) => item.grievance_id !== grievanceId
+      );
+      setMatchData(filteredData);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleModal = () => {
     setIsviewModal(!isviewModal);
@@ -430,9 +432,9 @@ const ViewRequestJE = () => {
             `${API}/grievance-log/post`,
             {
               grievance_id: grievanceId,
-              log_details: `Assigned work is ${
-                 status
-              } updated by ${localStorage.getItem("name")}`,
+              log_details: `Assigned work is ${status} updated by ${localStorage.getItem(
+                "name"
+              )}`,
               created_by_user: localStorage.getItem("name"),
             },
             {
@@ -462,6 +464,33 @@ const ViewRequestJE = () => {
   const handleGrievanceClick = (grievanceId) => {
     setSelectedGrievanceId(grievanceId);
     setIsGrievanceModalOpen(true);
+  };
+
+  const handleRead = async () => {
+   
+    try {
+      const response = await axios.post(
+        `${API}/new-grievance/notify?grievance_id=${grievanceId}`,
+        {
+          escalation_notify_read:'yes'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Message Read!");
+        fetchData()
+      } else {
+        toast.error("Failed ");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("An error occurred while sending the message.");
+    }
   };
 
   return (
@@ -505,6 +534,22 @@ const ViewRequestJE = () => {
                 </div>
               </div>
               <hr />
+              {data?.escalation_notify  && data.escalation_notify_read === 'no' ? (
+                <div className=" bg-black mx-2 px-2 py-1  ">
+                  <div className=" flex justify-end">
+                  <p className="bg-red-600 text-white  w-4 h-4 text-center   text-xs "
+                  onClick={handleRead}>
+                    X
+                  </p>
+                  </div>
+                  <p className="mx-3 mb-2  text-white">
+                    Notification : {data.escalation_notify}
+                  </p>
+                </div>
+              ) : (
+                <></>
+              )}
+
               <div className="grid grid-cols-12 gap-2 mx-3 my-4">
                 <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded">
                   <p className="pt-2 text-lg">Grievance Details</p>

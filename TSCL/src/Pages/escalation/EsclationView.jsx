@@ -11,10 +11,6 @@ import { toast } from "react-toastify";
 import { IoIosEye } from "react-icons/io";
 import GrievanceDetailsModal from "../request/GrievanceDetailsModal";
 
-const Worksheet = yup.object().shape({
-  worksheet_name: yup.string().required("worksheet is required"),
-});
-
 const EscalationView = () => {
   const [data, setData] = useState(null);
   const [dataFile, setDataFile] = useState(null);
@@ -34,19 +30,8 @@ const EscalationView = () => {
   const [logData, setLogData] = useState([]);
   const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
   const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-  } = useForm({
-    resolver: yupResolver(Worksheet),
-    mode: "onBlur",
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +84,6 @@ const EscalationView = () => {
         setLoading(false);
       }
     };
-    
 
     const fetchDataFile = async () => {
       try {
@@ -172,6 +156,54 @@ const EscalationView = () => {
   const handleGrievanceClick = (grievanceId) => {
     setSelectedGrievanceId(grievanceId);
     setIsGrievanceModalOpen(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!message.trim()) {
+      toast.error("Message cannot be empty.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${API}/new-grievance/notify?grievance_id=${grievanceId}`,
+        {
+          escalation_notify: message,
+          escalation_notify_read:'no'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Message sent successfully!");
+        await axios.post(
+          `${API}/grievance-log/post`,
+          {
+            grievance_id: grievanceId,
+            log_details: `Notification given by ${localStorage.getItem(
+              "name"
+            )}: Message: ${message}`,
+            created_by_user: localStorage.getItem("name"),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMessage("");
+        history.back();
+      } else {
+        toast.error("Failed to send the message.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("An error occurred while sending the message.");
+    }
   };
 
   return (
@@ -337,7 +369,7 @@ const EscalationView = () => {
                           label: "Escalated User",
                           value: escalate.escalated_user,
                         },
-                        
+
                         {
                           label: "Escalated Due Days",
                           value: escalate.escalated_due,
@@ -355,7 +387,6 @@ const EscalationView = () => {
                           label: "Created At",
                           value: formatDate1(escalate.createdAt),
                         },
-        
                       ].map(({ label, value }) => (
                         <div key={label} className="grid grid-cols-4">
                           <p className="col-span-2 font-medium">{label}</p>
@@ -444,36 +475,44 @@ const EscalationView = () => {
                 <p className="text-base my-4 font-semibold text-gray-700">
                   Notify Engineer About Escalation:
                 </p>
-                <div className="space-y-4">
-                 
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Message:
-                    </label>
-                    <textarea
-                      id="message"
-                      rows="4"
-                      className="block w-full px-3 py-2 border rounded-md shadow-sm outline-none sm:text-sm"
-                      placeholder="Write your message here..."
-                    ></textarea>
-                  </div>
+                {data?.escalation_notify && data.escalation_notify_read === 'no' ? (
+                  <p className="text-sm text-gray-700">
+                   <strong> Notification Sent</strong> : {data.escalation_notify}
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Message:
+                      </label>
+                      <textarea
+                        id="message"
+                        rows="4"
+                        className="block w-full px-3 py-2 border rounded-md shadow-sm outline-none sm:text-sm"
+                        placeholder="Write your message here..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                      ></textarea>
+                    </div>
 
-                 
-                  <button
-                    className="px-5 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 "
-                    
-                  >
-                    Send Message
-                  </button>
-                </div>
+                    <button
+                      className="px-5 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700"
+                      onClick={handleSubmit}
+                    >
+                      Send Message
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-12 gap-2 mx-3 my-1">
                 <div className="md:col-span-12 col-span-12">
-                  <p className="mb-2 text-base my-4 font-semibold text-gray-700">Complaint History</p>
+                  <p className="mb-2 text-base my-4 font-semibold text-gray-700">
+                    Complaint History
+                  </p>
                   <div className="bg-gray-100 py-3 h-[530px]">
                     <div className="mx-8">
                       <p className="py-3 font-semibold">

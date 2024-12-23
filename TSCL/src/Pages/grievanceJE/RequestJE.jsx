@@ -600,12 +600,19 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                         </td>
                       )}
                       <td className="">
-                        <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowraptext-gray-700">
+                        <div className="text-center text-sm mx-3 my-2 font-lexend whitespace-nowrap text-gray-700 flex items-center justify-center">
                           {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}
+                          {report?.escalation_notify &&
+                            report?.escalation_notify_read === "no" && (
+                              <span
+                                className="ml-2 w-3 h-3 bg-red-600 rounded-full"
+                              ></span>
+                            )}
                         </div>
                       </td>
+
                       <td>
                         <p
                           className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
