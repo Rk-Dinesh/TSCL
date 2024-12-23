@@ -57,7 +57,6 @@ const ViewRequestJE = () => {
   });
 
   useEffect(() => {
-
     const fetchDeptStatus = async () => {
       try {
         const response = await axios.get(`${API}/status/getactive`, {
@@ -367,6 +366,8 @@ const ViewRequestJE = () => {
       if (response.status === 200) {
         toast.success("Worksheet Uploaded Successfully");
 
+      
+
         // Log the worksheet update
         await axios.post(
           `${API}/grievance-log/post`,
@@ -413,6 +414,20 @@ const ViewRequestJE = () => {
             console.error("Error uploading attachment", error);
             toast.error("Error uploading attachment");
           }
+        }
+
+        if(status === 'closed'){
+          await axios.post(
+            `${API}/new-grievance/worksheetJE?grievance_id=${grievanceId}`,
+            {
+              worksheet_JE: workSheet,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         }
 
         const statusResponse = await axios.post(
@@ -467,12 +482,11 @@ const ViewRequestJE = () => {
   };
 
   const handleRead = async () => {
-   
     try {
       const response = await axios.post(
         `${API}/new-grievance/notify?grievance_id=${grievanceId}`,
         {
-          escalation_notify_read:'yes'
+          escalation_notify_read: "yes",
         },
         {
           headers: {
@@ -483,7 +497,7 @@ const ViewRequestJE = () => {
 
       if (response.status === 200) {
         toast.success("Message Read!");
-        fetchData()
+        fetchData();
       } else {
         toast.error("Failed ");
       }
@@ -534,13 +548,16 @@ const ViewRequestJE = () => {
                 </div>
               </div>
               <hr />
-              {data?.escalation_notify  && data.escalation_notify_read === 'no' ? (
+              {data?.escalation_notify &&
+              data.escalation_notify_read === "no" ? (
                 <div className=" bg-black mx-2 px-2 py-1  ">
                   <div className=" flex justify-end">
-                  <p className="bg-red-600 text-white  w-4 h-4 text-center   text-xs "
-                  onClick={handleRead}>
-                    X
-                  </p>
+                    <p
+                      className="bg-red-600 text-white  w-4 h-4 text-center   text-xs "
+                      onClick={handleRead}
+                    >
+                      X
+                    </p>
                   </div>
                   <p className="mx-3 mb-2  text-white">
                     Notification : {data.escalation_notify}

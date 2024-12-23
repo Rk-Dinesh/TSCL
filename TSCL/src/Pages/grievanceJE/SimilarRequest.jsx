@@ -40,11 +40,12 @@ const SimilarRequest = (props) => {
             },
           }
         )
+       
       );
       await Promise.all(updatePromises);
-
+      
       const logPromises = selectedItems.map((grievanceId) => {
-        return Promise.all([
+        const promises = [
           axios.post(
             `${API}/grievance-log/post`,
             {
@@ -64,7 +65,7 @@ const SimilarRequest = (props) => {
             `${API}/grievance-log/post`,
             {
               grievance_id: grievanceId,
-              log_details: `  SR : Worksheet Updated by ${localStorage.getItem(
+              log_details: `SR: Worksheet Updated by ${localStorage.getItem(
                 "name"
               )} : ${worksheet}`,
               created_by_user: localStorage.getItem("name"),
@@ -79,11 +80,11 @@ const SimilarRequest = (props) => {
             `${API}/grievance-worksheet/post`,
             {
               grievance_id: grievanceId,
-              worksheet_name: `  SR : Worksheet Updated by ${localStorage.getItem(
+              worksheet_name: `SR: Worksheet Updated by ${localStorage.getItem(
                 "name"
               )} : ${worksheet}`,
               created_by_user: localStorage.getItem("name"),
-              status:selectedStatus,
+              status: selectedStatus,
             },
             {
               headers: {
@@ -91,9 +92,29 @@ const SimilarRequest = (props) => {
               },
             }
           ),
-        ]);
+        ];
+      
+        if (selectedStatus === "closed") {
+          promises.push(
+            axios.post(
+              `${API}/new-grievance/worksheetJE?grievance_id=${grievanceId}`,
+              {
+                worksheet_JE: worksheet,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+          );
+        }
+      
+        return Promise.all(promises);
       });
+      
       await Promise.all(logPromises);
+      
 
       toast.success(
         "Status and logs updated successfully for selected grievances."

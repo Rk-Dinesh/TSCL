@@ -8,6 +8,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import SimilarReq from "../grievances/SimilarReq";
 import GrievanceDetailsModal from "./GrievanceDetailsModal";
 import { IoIosEye } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const ViewRequest = () => {
   const [data, setData] = useState(null);
@@ -31,37 +32,7 @@ const ViewRequest = () => {
   const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const responseData = decryptData(response.data.data);
-        setData(responseData);
-        const responsefilter = await axios.get(
-          `${API}/new-grievance/filter?zone_name=${responseData.zone_name}&ward_name=${responseData.ward_name}&street_name=${responseData.street_name}&dept_name=${responseData.dept_name}&complaint=${responseData.complaint}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = decryptData(responsefilter.data.data);
-        const filteredData = data.filter(
-          (item) => item.grievance_id !== grievanceId
-        );
-        setMatchData(filteredData);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+   
     const fetchDataFile = async () => {
       try {
         const response = await axios.get(
@@ -81,24 +52,7 @@ const ViewRequest = () => {
       }
     };
 
-    const fetchLog = async () => {
-      try {
-        const response = await axios.get(
-          `${API}/grievance-log/getbyid?grievance_id=${grievanceId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const responseData = decryptData(response.data.data);
-        setLogData(responseData);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+   
     const fetchDataFileWorksheet = async () => {
       try {
         const response = await axios.get(
@@ -124,6 +78,97 @@ const ViewRequest = () => {
     fetchDataFileWorksheet();
   }, []);
 
+  const fetchLog = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/grievance-log/getbyid?grievance_id=${grievanceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const responseData = decryptData(response.data.data);
+      setLogData(responseData);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/new-grievance/getbyid?grievance_id=${grievanceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const responseData = decryptData(response.data.data);
+      setData(responseData);
+      const responsefilter = await axios.get(
+        `${API}/new-grievance/filter?zone_name=${responseData.zone_name}&ward_name=${responseData.ward_name}&street_name=${responseData.street_name}&dept_name=${responseData.dept_name}&complaint=${responseData.complaint}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = decryptData(responsefilter.data.data);
+      const filteredData = data.filter(
+        (item) => item.grievance_id !== grievanceId
+      );
+      setMatchData(filteredData);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReOpen = async () => {
+    try {
+      const response = await axios.post(
+        `${API}/new-grievance/reopen?grievance_id=${grievanceId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Ticket Re-Opened Successfully");
+        await axios.post(
+          `${API}/grievance-log/post`,
+          {
+            grievance_id: grievanceId,
+            log_details: `Ticket No ${grievanceId} is Re-Opened by ${localStorage.getItem(
+              "name"
+            )}`,
+            created_by_user: localStorage.getItem("name"),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        fetchData()
+        fetchLog()
+      } else {
+        toast.error("Failed ");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("An error occurred while sending the message.");
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>No data found</p>;
@@ -142,11 +187,34 @@ const ViewRequest = () => {
     setIsGrievanceModalOpen(true);
   };
 
+  
   return (
     <Fragment>
       <div className="h-screen overflow-y-auto no-scrollbar">
         <div className="md:mx-6 mx-2  my-5 font-lexend">
-          <p>Complaint Details #{data.grievance_id}</p>
+          <div className="flex justify-between">
+            <p>Complaint Details #{data.grievance_id}</p>
+            {data.status === "closed" &&
+              (() => {
+                const createdAt = new Date(data.createdAt);
+                const today = new Date();
+                const timeDifference = today - createdAt; 
+                const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+                return daysDifference <= 7 ? (
+                  <button className="bg-green-600 px-3 py-1.5 rounded-md shadow-md text-white text-sm"
+                  onClick={() => {
+                    const userConfirmed = window.confirm("Are you sure you want to Re-open the ticket?");
+                    if (userConfirmed) {
+                      handleReOpen();
+                    }
+                  }}
+                  >
+                    Re-open Ticket
+                  </button>
+                ) : null;
+              })()}
+          </div>
           <div className="bg-white mt-2 pb-3">
             <p className="px-5 py-2 text-lg">Request By :</p>
             <div className="flex justify-between gap-3 mx-3 my-3 items-center flex-wrap">

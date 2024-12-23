@@ -2,7 +2,6 @@ import { useState } from "react";
 
 const SearchableDropdown = ({ Ward, handleWard }) => {
   const [searchTerm, setSearchTerm] = useState("");
- 
   const [dropdown, setDropdown] = useState(false);
 
   const handleChange = (event) =>{

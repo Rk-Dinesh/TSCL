@@ -15,6 +15,7 @@ import HeaderButton from "../../components/HeaderButton";
 import DateRangeComp from "../../components/DateRangeComp";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrigin } from "../redux/slice/origin";
+import logo from "../../assets/images/logo1.png";
 
 const Grivences = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");

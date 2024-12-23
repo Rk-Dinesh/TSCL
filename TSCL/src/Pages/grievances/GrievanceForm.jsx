@@ -6,7 +6,7 @@ import { fetchDepartment } from "../redux/slice/department";
 import { fetchComplaint } from "../redux/slice/complaint";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { API, formatDate1 } from "../../Host";
+import { API, formatDate1, formatDate2 } from "../../Host";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,8 @@ import { RiExpandUpDownLine } from "react-icons/ri";
 import { fetchWard } from "../redux/slice/ward";
 import { fetchOrigin } from "../redux/slice/origin";
 import CustomDropdownWithImages from "../../components/CustomDropdownWithImages";
+import { IoIosEye } from "react-icons/io";
+import GrievanceDetailsModal from "../request/GrievanceDetailsModal";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -68,11 +70,13 @@ const GrievanceForm = () => {
   const [files, setFiles] = useState([]);
   const [translatedLan, setTranslatedLan] = useState("");
   const token = localStorage.getItem("token");
-  const [statusColors, setStatusColors] = useState({});
+
   const [grievance, setGrievance] = useState([]);
-  const [status, setStatus] = useState([]);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
+  const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchDepartment());
@@ -108,45 +112,6 @@ const GrievanceForm = () => {
   const deptName = watch("dept_name");
   const complaintName = watch("complaint_type_title");
   const residentAddress = watch("address");
-
-  useEffect(() => {
-    axios
-      .get(`${API}/new-grievance/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const responseData = decryptData(response.data.data);
-        const reverseData = responseData.reverse();
-        setGrievance(reverseData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    fetchActiveStatus();
-  }, []);
-
-  const fetchActiveStatus = async () => {
-    try {
-      const response = await axios.get(`${API}/status/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const responseData = decryptData(response.data.data);
-      const colorMapping = responseData.reduce((acc, status) => {
-        acc[status.status_name] = status.color;
-        return acc;
-      }, {});
-
-      setStatus(responseData);
-      setStatusColors(colorMapping);
-    } catch (err) {
-      console.error("Error fetching existing ActiveStatus:", err);
-    }
-  };
 
   useEffect(() => {
     if (deptName) {
@@ -228,6 +193,26 @@ const GrievanceForm = () => {
       setValue("address", "");
       setValue("pincode", "");
       setAutoFillData(null);
+    }
+  }, [contactNumber]);
+
+  useEffect(() => {
+    if (contactNumber && contactNumber.length === 10) {
+      axios
+        .get(`${API}/new-grievance/getbyphone?phone=${contactNumber}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setGrievance(responseData);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setGrievance([]);
     }
   }, [contactNumber]);
 
@@ -379,6 +364,13 @@ const GrievanceForm = () => {
     setValue("complaint_details", template.desc); // Assuming `setValue` is used to update the form field
     setModalOpen(false); // Close the modal after selecting the template
   };
+
+  const handleGrievanceClick = (grievanceId) => {
+    setSelectedGrievanceId(grievanceId);
+    setIsGrievanceModalOpen(true);
+  };
+
+  
 
   return (
     <>
@@ -863,68 +855,69 @@ const GrievanceForm = () => {
                   </th>
 
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-2 my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    <p className="text-start mx-1 my-2 font-lexend font-normal text-base whitespace-nowrap">
                       Raised by
                     </p>
                   </th>
                   <th>
-                    <p className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    <p className="text-start mx-1  my-2 font-lexend font-normal text-base whitespace-nowrap">
                       Department
                     </p>
                   </th>
 
                   <th>
-                    <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
-                      Assigned JE
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    <p className="text-start my-2 font-lexend font-normal text-base whitespace-nowrap">
                       Date/Time
                     </p>
+                  </th>
+                  <th className="items-center mx-3 py-2 font-lexend whitespace-nowrap">
+                    Action
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {grievance.slice(0, 10).map((report, index) => (
-                  <tr key={index}>
-                    <td>
-                      <p
-                        className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
-                        onClick={() =>
-                          navigate(`/view?grievanceId=${report.grievance_id}`)
-                        }
-                      >
-                        {report.grievance_id}
-                      </p>
-                    </td>
+                {grievance &&
+                  grievance?.slice(0, 10).map((report, index) => (
+                    <tr key={index}>
+                      <td>
+                        <p
+                          className="border-2 w-20 border-slate-900 rounded-lg text-center py-1 my-1 text-sm   text-slate-900"
+                          onClick={() =>
+                            handleGrievanceClick(report.grievance_id)
+                          }
+                        >
+                          {report.grievance_id}
+                        </p>
+                      </td>
 
-                    <td>
-                      {" "}
-                      <p className="capitalize text-center mx-2   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {report.public_user_name}
-                      </p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {report.dept_name}
-                      </p>
-                    </td>
-                    <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm capitalize text-gray-700">
-                        {report.assign_username
-                          ? report.assign_username
-                          : "Yet to be assigned"}
-                      </p>
-                    </td>
-                    <td>
-                      <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
-                        {formatDate1(report.createdAt)}
-                      </p>
-                    </td>
-                  </tr>
-                ))}
+                      <td>
+                        {" "}
+                        <p className="capitalize  mx-1   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {report.public_user_name}
+                        </p>
+                      </td>
+                      <td>
+                        {" "}
+                        <p className="capitalize text-start   my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {report.dept_name}
+                        </p>
+                      </td>
+
+                      <td>
+                        <p className=" text-start mx-1.5  my-2 font-lexend whitespace-nowrap text-sm text-gray-700">
+                          {formatDate2(report.createdAt)}
+                        </p>
+                      </td>
+                      <td className="flex justify-center mt-3">
+                        <IoIosEye
+                          className="text-xl"
+                          onClick={() =>
+                            handleGrievanceClick(report.grievance_id)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -968,6 +961,12 @@ const GrievanceForm = () => {
             </div>
           </div>
         </div>
+      )}
+      {isGrievanceModalOpen && (
+        <GrievanceDetailsModal
+          grievanceId={selectedGrievanceId}
+          closeModal={() => setIsGrievanceModalOpen(false)}
+        />
       )}
     </>
   );
