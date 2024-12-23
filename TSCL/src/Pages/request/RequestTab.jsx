@@ -9,7 +9,7 @@ function RequestTab({permissions}) {
 
 
   return (
-    <div className="overflow-auto no-scrollbar">
+    <div className="overflow-y-auto no-scrollbar">
       {/* <ul className="flex mb-2 list-none justify-center mt-1">
         <li className="-mb-px mr-1">
           <a
