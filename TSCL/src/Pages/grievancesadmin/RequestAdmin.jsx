@@ -370,7 +370,7 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
 
   return (
     <Fragment>
-      <div className="  mb-10">
+      <div className="bg-blue-100 overflow-y-auto no-scrollbar">
         <div className="  font-lexend h-screen ">
           <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center">
             <div className="flex gap-3">
@@ -412,7 +412,7 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
             </div>
           </div>
           <div
-            className={`bg-white  mx-4 rounded-lg mt-1 overflow-x-auto  p-3 ${
+            className={`bg-white  mx-4 rounded-lg mt-1   p-3 ${
               report.length < 8 ? "h-4/5" : "h-fit"
             }`}
           >

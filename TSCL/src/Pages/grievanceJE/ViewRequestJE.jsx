@@ -347,7 +347,7 @@ const ViewRequestJE = () => {
       )}: ${workSheet}`,
       grievance_id: grievanceId,
       created_by_user: localStorage.getItem("name"),
-      status: data.status,
+      status: status,
     };
 
     try {
@@ -413,7 +413,6 @@ const ViewRequestJE = () => {
           }
         }
 
-        // Update the status
         const statusResponse = await axios.post(
           `${API}/new-grievance/updatestatus?grievance_id=${grievanceId}`,
           { status: status },
@@ -427,7 +426,6 @@ const ViewRequestJE = () => {
         if (statusResponse.status === 200) {
           toast.success("Status Updated Successfully");
 
-          // Log the status update
           await axios.post(
             `${API}/grievance-log/post`,
             {
@@ -443,9 +441,12 @@ const ViewRequestJE = () => {
               },
             }
           );
-
-          // Navigate to the request view page
-          navigate("/requestview3");
+          if (matchData.length === 0) {
+            navigate("/requestview3");
+          } else {
+            setIsSimilar(true);
+            setWorksheet(watch("worksheet_name"));
+          }
         } else {
           toast.error("Failed to update status.");
         }
@@ -480,7 +481,7 @@ const ViewRequestJE = () => {
                   <div className="flex gap-3 mb-3 items-center">
                     <p> Current Status: </p>
 
-                    <span className="text-sm border-2 border-gray-500 w-28 text-center py-1.5 ml-1 rounded-full">
+                    <span className="text-sm border-2 border-gray-500 w-28 text-center py-1.5 ml-1 rounded-full capitalize">
                       {data.status}
                     </span>
                   </div>

@@ -16,6 +16,7 @@ import RequestAdminTab from "./Pages/grievancesadmin/RequestAdminTab";
 import RequestJETab from "./Pages/grievanceJE/RequestJETab";
 import RequestHeadTab from "./Pages/grievanceHead/RequestHeadTab";
 import EnquiryResource from "./Pages/EnquiryResource/EnquiryResource";
+import EscalationView from "./Pages/escalation/EsclationView";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -310,12 +311,15 @@ function App() {
             )}
 
             {memoizedFeatures["escalate"] && (
+              <>
               <Route
                 path="/escalate"
                 element={
                   <Escalation permissions={memoizedFeatures["escalate"]} />
                 }
               />
+               <Route path="/escalateview" element={<EscalationView />} />
+              </>
             )}
 
             {memoizedFeatures["escalation"] && (
