@@ -325,7 +325,13 @@ const EscalationCommissioner = ({ permissions }) => {
                         </div>
                       </td>
                       <td>
-                        <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 ">
+                        <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
+                         onClick={() =>
+                          navigate(
+                            `/escalateview?grievanceId=${escalate.grievance_id}`
+                          )
+                        }
+                        >
                           {escalate.grievance_id}
                         </p>
                       </td>
