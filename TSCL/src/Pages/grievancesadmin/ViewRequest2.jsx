@@ -486,7 +486,7 @@ const ViewRequest2 = () => {
                           ))
                         ) : (
                           <tr>
-                            <td className="text-center py-2.5" colSpan="3">
+                            <td className="text-center py-2.5" colSpan="5">
                               No matching data found
                             </td>
                           </tr>
