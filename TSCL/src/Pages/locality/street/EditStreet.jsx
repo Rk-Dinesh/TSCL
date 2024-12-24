@@ -33,6 +33,7 @@ const EditStreet = (props) => {
   const [wardId, setWardId] = useState(null);
   const [zoneName, setZoneName] = useState(null);
   const [WardName, setWardName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -79,6 +80,7 @@ const EditStreet = (props) => {
   }, [WardName, ExistingWards]);
 
   const onSubmit = async (data) => {
+   
     const formData = {
       ...data,
       zone_id: zoneId,
@@ -87,6 +89,7 @@ const EditStreet = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const UPDATE_STREET = API_ENDPOINTS.UPDATE_STREET(streetId);
       const response = await axios.post(UPDATE_STREET.url, formData, {
         headers: UPDATE_STREET.headers,
@@ -94,6 +97,7 @@ const EditStreet = (props) => {
 
       if (response.status === 200) {
         toast.success("Street updated Successfully");
+        setIsLoading(false)
         setZoneId(null);
         setWardId(null);
         setZoneName(null);
@@ -102,10 +106,12 @@ const EditStreet = (props) => {
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -187,7 +193,7 @@ const EditStreet = (props) => {
               )}
             </div>
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

@@ -65,6 +65,7 @@ const AddComplaint = (props) => {
   const [stepNumber, setStepNumber] = useState(0);
   const token = localStorage.getItem("token");
   const [ExistingDesignation, setExistingDesignation] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
   const { ExistingDept } = props;
 
@@ -113,6 +114,7 @@ const AddComplaint = (props) => {
     if (stepNumber !== steps.length - 1) {
       setStepNumber(stepNumber + 1);
     } else {
+     
       const formData = {
         ...data,
         status: "active",
@@ -120,6 +122,7 @@ const AddComplaint = (props) => {
       };
 
       try {
+        setIsLoading(true)
         const token = localStorage.getItem("token");
         const response = await axios.post(`${API}/complaint/post`, formData, {
           headers: {
@@ -129,14 +132,17 @@ const AddComplaint = (props) => {
 
         if (response.status === 200) {
           toast.success("Complaint created Successfully");
+          setIsLoading(false)
           props.toggleModal();
           props.handlerefresh();
         } else {
           console.error("Error in posting data", response);
+          setIsLoading(false)
           toast.error("Failed to Upload");
         }
       } catch (error) {
         console.error("Error in posting data", error);
+        setIsLoading(false)
       }
     }
   };

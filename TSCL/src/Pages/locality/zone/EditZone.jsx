@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API } from "../../../Host";
 import { toast } from "react-toastify";
@@ -21,6 +21,7 @@ const ZoneSchema = yup.object().shape({
 
 const EditZone = (props) => {
   const { zoneId } = props;
+  const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
 
   const {
@@ -56,11 +57,13 @@ const EditZone = (props) => {
   }, [zoneId, setValue]);
 
   const onSubmit = async (data) => {
+   
     const formData = {
       ...data,
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         `${API}/zone/update?zone_id=${zoneId}`,
         formData,
@@ -73,14 +76,17 @@ const EditZone = (props) => {
 
       if (response.status === 200) {
         toast.success("Zone Updated Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -135,7 +141,7 @@ const EditZone = (props) => {
               </p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

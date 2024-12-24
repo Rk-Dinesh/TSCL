@@ -37,6 +37,7 @@ const AddEmployee = (props) => {
   const { ExistingDesignation, ExistingDept } = props;
   const [filterDesifnation, setFilterDesifnation] = useState([])
   const [selectedDesignId, setSelectedDesignId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -78,6 +79,7 @@ const AddEmployee = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         API_ENDPOINTS.POST_EMPLOYEE.url,
         formData,
@@ -88,14 +90,17 @@ const AddEmployee = (props) => {
 
       if (response.status === 200) {
         toast.success(response.data.message);
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -303,7 +308,7 @@ const AddEmployee = (props) => {
           </div>
 
           <div className="py-6">
-            <SaveCancel onCancel={props.toggleModal} />
+            <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
           </div>
         </form>
       </div>

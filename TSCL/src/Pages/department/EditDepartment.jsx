@@ -32,6 +32,7 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
  
   const [orgId, setOrgId] = useState(null);
   const [orgName, setOrgName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { register, formState: { errors }, handleSubmit,setValue, watch } = useForm({
     resolver: yupResolver(departmentSchema),
@@ -68,11 +69,13 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
   }, [orgName, ExistingOrganiZations]);
 
   const onSubmit = async (data) => {
+   
     const formData = {
       ...data,
     };
 
     try {
+      setIsLoading(true)
       const UPDATEDEPARTMENT = API_ENDPOINTS.UPDATE_DEPARTMENT(deptId)
       const response = await axios.post(UPDATEDEPARTMENT.url, formData,{
         headers:UPDATEDEPARTMENT.headers
@@ -81,16 +84,19 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
 
       if (response.status === 200) {
         toast.success('Department Updated Successfully');
+        setIsLoading(false)
         setOrgName(null);
         setOrgId(null);
         toggleModal();
         handlerefresh();
       } else {
         console.error('Error in posting data', response);
+        setIsLoading(false)
         toast.error('Failed to Upload');
       }
     } catch (error) {
       console.error('Error in posting data', error);
+      setIsLoading(false)
     }
   };
 
@@ -168,7 +174,7 @@ const EditDepartment = ({ ExistingOrganiZations, toggleModal, handlerefresh,dept
             )}
             </div>
           </div>
-          <SaveCancel onCancel={toggleModal} />
+          <SaveCancel onCancel={toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

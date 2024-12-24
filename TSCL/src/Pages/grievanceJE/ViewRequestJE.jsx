@@ -428,6 +428,15 @@ const ViewRequestJE = () => {
               },
             }
           );
+          await axios.post(
+            `${API}/new-grievance/highlight?grievance_id=${grievanceId}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         }
 
         const statusResponse = await axios.post(

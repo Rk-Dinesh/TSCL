@@ -34,6 +34,7 @@ const PasswordAdmin = (props) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
 
   const handleTogglePasswordVisibility = () => {
@@ -46,6 +47,7 @@ const PasswordAdmin = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         `${API}/user/userforgotpassword?phone=${props.phoneID}`,
         formData,
@@ -58,13 +60,16 @@ const PasswordAdmin = (props) => {
 
       if (response.status === 200) {
         toast.success(response.data.message);
+        setIsLoading(false)
         props.togglePassModal();
       } else {
         //console.error("Error in posting data", response);
         toast.error(response.data.message);
+        setIsLoading(false)
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -117,7 +122,7 @@ const PasswordAdmin = (props) => {
             )}
           </div>
           <div className="py-6">
-            <SaveCancel onCancel={props.togglePassModal} />
+            <SaveCancel onCancel={props.togglePassModal} isLoading={isLoading}/>
           </div>
         </form>
       </div>

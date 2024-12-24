@@ -9,14 +9,6 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
-import GrivencesTable from "./Pages/dashboard/Tab/GrievanceTable";
-import GrievanceTab from "./Pages/grievances/GrievanceTab";
-import RequestTab from "./Pages/request/RequestTab";
-import RequestAdminTab from "./Pages/grievancesadmin/RequestAdminTab";
-import RequestJETab from "./Pages/grievanceJE/RequestJETab";
-import RequestHeadTab from "./Pages/grievanceHead/RequestHeadTab";
-import EnquiryResource from "./Pages/EnquiryResource/EnquiryResource";
-import EscalationView from "./Pages/escalation/EsclationView";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -29,7 +21,9 @@ const Complaint = lazy(() => import("./Pages/complaint/Complaint"));
 const ComplaintType = lazy(() =>
   import("./Pages/complaint_type/ComplaintType")
 );
-const Grivences = lazy(() => import("./Pages/grievances/Grievances"));
+const EnquiryResource = lazy(() => import("./Pages/EnquiryResource/EnquiryResource"));
+const GrievanceTab = lazy(() => import("./Pages/grievances/GrievanceTab"));
+const GrivencesTable = lazy(() => import("./Pages/dashboard/Tab/GrievanceTable"));
 const GrievanceForm = lazy(() => import("./Pages/grievances/GrievanceForm"));
 const Admin = lazy(() => import("./Pages/adminuser/Admin"));
 const User = lazy(() => import("./Pages/publicuser/User"));
@@ -40,17 +34,18 @@ const RoleAccessLevelForm = lazy(() =>
 const RoleAccessLevelEdit = lazy(() =>
   import("./Pages/setting/RoleAccessEdit")
 );
-const Request = lazy(() => import("./Pages/request/Request"));
+const RequestTab = lazy(() => import("./Pages/request/RequestTab"));
 const ViewRequest = lazy(() => import("./Pages/request/ViewRequest"));
 const OTP = lazy(() => import("./Pages/auth/OTP"));
 const SignUp = lazy(() => import("./Pages/auth/SignUp"));
 const Expire = lazy(() => import("./Pages/expiresToken/Expire"));
-const RequestAdmin = lazy(() => import("./Pages/grievancesadmin/RequestAdmin"));
+const RequestAdminTab = lazy(() => import("./Pages/grievancesadmin/RequestAdminTab"));
 const ViewRequest2 = lazy(() => import("./Pages/grievancesadmin/ViewRequest2"));
-const RequestJE = lazy(() => import("./Pages/grievanceJE/RequestJE"));
+const RequestJETab = lazy(() => import("./Pages/grievanceJE/RequestJETab"));
+const EscalationView = lazy(() => import("./Pages/escalation/EsclationView"));
 const ViewRequestJE = lazy(() => import("./Pages/grievanceJE/ViewRequestJE"));
 const Status = lazy(() => import("./Pages/status/Status"));
-const RequestHead = lazy(() => import("./Pages/grievanceHead/RequestHead"));
+const RequestHeadTab = lazy(() => import("./Pages/grievanceHead/RequestHeadTab"));
 const Profile = lazy(() => import("./Pages/layout.jsx/Profile"));
 const Escalation = lazy(() => import("./Pages/escalation/Escalation"));
 const EscalationCommissioner = lazy(() =>

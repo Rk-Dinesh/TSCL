@@ -23,6 +23,7 @@ const AddWard = (props) => {
 
   const [zoneId, setZoneId] = useState(null);
   const [ZoneName, setZoneName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -47,6 +48,7 @@ const AddWard = (props) => {
   }, [ZoneName, ExistingZones]);
 
   const onSubmit = async (data) => {
+    
     const formData = {
       ...data,
       zone_id: zoneId,
@@ -55,6 +57,7 @@ const AddWard = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token");
       const response = await axios.post(`${API}/ward/post`, formData, {
         headers: {
@@ -64,14 +67,17 @@ const AddWard = (props) => {
 
       if (response.status === 200) {
         toast.success("Ward created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -127,7 +133,7 @@ const AddWard = (props) => {
               )}
             </div>
           </div>
-          <SaveCancel onCancel={props.toggleCloseModal} />
+          <SaveCancel onCancel={props.toggleCloseModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

@@ -74,6 +74,7 @@ const EditComplaint = (props) => {
   const [role1, setRole1] = useState(null);
   const [role2, setRole2] = useState(null);
   const [role3, setRole3] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
     const [ExistingDesignation, setExistingDesignation] = useState([])
 
@@ -161,11 +162,13 @@ const EditComplaint = (props) => {
     if (stepNumber !== steps.length - 1) {
       setStepNumber(stepNumber + 1);
     } else {
+      
       const formData = {
         ...data,
       };
 
       try {
+        setIsLoading(true)
         const response = await axios.post(
           `${API}/complaint/update?complaint_id=${comptId}`,
           formData,
@@ -178,14 +181,17 @@ const EditComplaint = (props) => {
 
         if (response.status === 200) {
           toast.success("Complaint Updated Successfully");
+          setIsLoading(false)
           props.toggleModal();
           props.handlerefresh();
         } else {
           console.error("Error in posting data", response);
+          setIsLoading(false)
           toast.error("Failed to Upload");
         }
       } catch (error) {
         console.error("Error in posting data", error);
+        setIsLoading(false)
       }
     }
   };

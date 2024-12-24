@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -21,6 +21,7 @@ const OrganizationSchema = yup.object().shape({
 
 const EditOrganization = (props) => {
   const { orgId } = props;
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -51,12 +52,14 @@ const EditOrganization = (props) => {
   }, [orgId, setValue]);
 
   const onSubmit = async (data) => {
+   
     const token = localStorage.getItem("token");
     const formData = {
       ...data,
     };
 
     try {
+      setIsLoading(true)
       const UPDATEORGANIZATION = API_ENDPOINTS.UPDATE_ORGANIZATION(orgId);
       const response = await axios.post(UPDATEORGANIZATION.url, formData, {
         headers: UPDATEORGANIZATION.headers,
@@ -64,14 +67,17 @@ const EditOrganization = (props) => {
 
       if (response.status === 200) {
         toast.success("Org Updated Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -126,7 +132,7 @@ const EditOrganization = (props) => {
             )}
           </div>
 
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

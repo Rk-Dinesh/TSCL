@@ -32,6 +32,7 @@ const TemplateSchema = yup.object().shape({
 const EditTemplate = (props) => {
   const dispatch = useDispatch();
   const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
   const { tempId } = props;
 
@@ -104,6 +105,7 @@ const EditTemplate = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(`${API}/template/update?temp_id=${tempId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -112,14 +114,17 @@ const EditTemplate = (props) => {
 
       if (response.status === 200) {
         toast.success("Updated Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to update template");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
       toast.error("Failed to update template");
     }
   };
@@ -202,7 +207,7 @@ const EditTemplate = (props) => {
             )}
           </div>
 
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

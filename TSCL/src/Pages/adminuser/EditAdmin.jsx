@@ -37,6 +37,7 @@ const EditAdmin = (props) => {
   const [roleId, setRoleId] = useState(null);
   const [filteredWards, setFilteredWards] = useState([]);
   const [zoneNames, setZoneNames] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -110,6 +111,7 @@ const EditAdmin = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const UPDATE_ADMIN = API_ENDPOINTS.UPDATE_ADMIN(adminId);
       const response = await axios.post(UPDATE_ADMIN.url, formData, {
         headers: UPDATE_ADMIN.headers,
@@ -117,15 +119,18 @@ const EditAdmin = (props) => {
 
       if (response.status === 200) {
         toast.success(response.data.message);
+        setIsLoading(false)
         setRoleName(null);
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -386,7 +391,7 @@ const EditAdmin = (props) => {
             </div>
           </div>
           <div className="py-6">
-            <SaveCancel onCancel={props.toggleModal} />
+            <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
           </div>
         </form>
       </div>

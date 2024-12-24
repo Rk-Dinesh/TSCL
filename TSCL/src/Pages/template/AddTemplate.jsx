@@ -32,6 +32,7 @@ const TemplateSchema = yup.object().shape({
 const AddTemplate = (props) => {
   const dispatch = useDispatch();
   const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
 
   const {
@@ -87,6 +88,7 @@ const AddTemplate = (props) => {
     
 
     try {
+      setIsLoading(true)
       const response = await axios.post(`${API}/template/post`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -95,14 +97,17 @@ const AddTemplate = (props) => {
 
       if (response.status === 200) {
         toast.success(" created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -203,7 +208,7 @@ const AddTemplate = (props) => {
             )}
           </div>
 
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

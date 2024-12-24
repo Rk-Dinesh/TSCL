@@ -24,6 +24,7 @@ const AddStreet = (props) => {
   const [wardId, setWardId] = useState(null);
   const [zoneName, setZoneName] = useState(null);
   const [WardName, setWardName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -49,6 +50,7 @@ const AddStreet = (props) => {
   }, [WardName, ExistingWards]);
 
   const onSubmit = async (data) => {
+    
     const formData = {
       ...data,
       zone_id: zoneId,
@@ -59,6 +61,7 @@ const AddStreet = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token");
       const response = await axios.post(`${API}/street/post`, formData, {
         headers: {
@@ -68,14 +71,17 @@ const AddStreet = (props) => {
 
       if (response.status === 200) {
         toast.success("Street created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -131,7 +137,7 @@ const AddStreet = (props) => {
               )}
             </div>
           </div>
-          <SaveCancel onCancel={props.toggleCloseModal} />
+          <SaveCancel onCancel={props.toggleCloseModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

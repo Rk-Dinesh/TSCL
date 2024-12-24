@@ -106,6 +106,15 @@ const SimilarRequest = (props) => {
                   Authorization: `Bearer ${token}`,
                 },
               }
+            ),
+           axios.post(
+              `${API}/new-grievance/highlight?grievance_id=${grievanceId}`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
             )
           );
         }

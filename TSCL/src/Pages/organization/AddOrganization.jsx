@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ const OrganizationSchema = yup.object().shape({
 });
 
 const AddOrganization = (props) => {
+  const [isLoading, setIsLoading] = useState(false)
   const {
     register,
     formState: { errors },
@@ -23,6 +24,7 @@ const AddOrganization = (props) => {
   });
 
   const onSubmit = async (data) => {
+   
     const formData = {
       ...data,
       status: "active",
@@ -30,6 +32,7 @@ const AddOrganization = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         API_ENDPOINTS.POST_ORGANIZATION.url,
         formData,
@@ -40,14 +43,17 @@ const AddOrganization = (props) => {
 
       if (response.status === 200) {
         toast.success("Org created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -76,7 +82,7 @@ const AddOrganization = (props) => {
               <p className="text-red-500">{errors.org_name.message}</p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

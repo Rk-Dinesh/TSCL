@@ -14,6 +14,7 @@ const OrganizationSchema = yup.object().shape({
 const AddEnquiryResource = (props) => {
   const [imageBase64, setImageBase64] = useState("");
   const [imageError, setImageError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -55,6 +56,7 @@ const AddEnquiryResource = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(`${API}/resource/post`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -63,14 +65,17 @@ const AddEnquiryResource = (props) => {
 
       if (response.status === 200) {
         toast.success("Resource created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -120,7 +125,7 @@ const AddEnquiryResource = (props) => {
               <p className="text-green-500 mt-2">Image uploaded successfully.</p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

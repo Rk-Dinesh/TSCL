@@ -26,6 +26,7 @@ const EditEnquiryResource = (props) => {
   const [imagePreview, setImagePreview] = useState(null); // For showing the preview
   const [imageBase64, setImageBase64] = useState("");
   const [imageError, setImageError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -80,12 +81,14 @@ const EditEnquiryResource = (props) => {
 
   const onSubmit = async (data) => {
     const token = localStorage.getItem("token");
+  
     const formData = {
       ...data,
       image: imageBase64, 
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         `${API}/resource/update?res_id=${ResId}`,formData,
         {
@@ -97,14 +100,17 @@ const EditEnquiryResource = (props) => {
 
       if (response.status === 200) {
         toast.success("Resource Updated Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Update");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -189,7 +195,7 @@ const EditEnquiryResource = (props) => {
             )}
           </div>
 
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

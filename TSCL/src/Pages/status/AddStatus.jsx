@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ const StatusSchema = yup.object().shape({
 });
 
 const AddStatus = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -35,6 +36,7 @@ const AddStatus = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token");
       const response = await axios.post(`${API}/status/post`, formData, {
         headers: {
@@ -44,14 +46,17 @@ const AddStatus = (props) => {
 
       if (response.status === 200) {
         toast.success(" created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -106,7 +111,7 @@ const AddStatus = (props) => {
               <p className="text-red-500">{errors.color.message}</p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

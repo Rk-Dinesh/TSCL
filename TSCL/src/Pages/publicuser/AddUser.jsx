@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -29,6 +29,7 @@ const AddUserSchema = yup.object().shape({
 });
 
 const AddUser = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -51,6 +52,7 @@ const AddUser = (props) => {
     const token = localStorage.getItem("token");
 
     try {
+      setIsLoading(true)
       const response = await axios.post(`${API}/public-user/post`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -59,14 +61,17 @@ const AddUser = (props) => {
 
       if (response.status === 200) {
         toast.success("Public User created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -191,7 +196,7 @@ const AddUser = (props) => {
           </div>
 
           <div className="py-6">
-            <SaveCancel onCancel={props.toggleModal} />
+            <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
           </div>
         </form>
       </div>

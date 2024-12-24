@@ -25,6 +25,7 @@ const AddDepartment = ({
 }) => {
   const [orgId, setOrgId] = useState(null);
   const [orgName, setOrgName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -48,6 +49,7 @@ const AddDepartment = ({
   }, [orgName, ExistingOrganiZations]);
 
   const onSubmit = async (data) => {
+   
     const formData = {
       ...data,
       org_id: orgId,
@@ -56,6 +58,7 @@ const AddDepartment = ({
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         API_ENDPOINTS.POST_DEPARTMENT.url,
         formData,
@@ -66,14 +69,17 @@ const AddDepartment = ({
 
       if (response.status === 200) {
         toast.success("Department created Successfully");
+        setIsLoading(false)
         toggleModal();
         handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -99,7 +105,7 @@ const AddDepartment = ({
                 onChange={(e) => setOrgName(e.target.value)}
               >
                 <option value="">Select Organization</option>
-                {ExistingOrganiZations.map((org,index) => (
+                {ExistingOrganiZations.map((org, index) => (
                   <option key={index} value={org.org_name}>
                     {org.org_name}
                   </option>
@@ -129,7 +135,7 @@ const AddDepartment = ({
               )}
             </div>
           </div>
-          <SaveCancel onCancel={toggleModal} />
+          <SaveCancel onCancel={toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

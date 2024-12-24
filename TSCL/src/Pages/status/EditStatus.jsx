@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -26,7 +26,7 @@ const StatusSchema = yup.object().shape({
 
 const EditStatus = (props) => {
   const { status_id } = props;
-
+const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
   const {
     register,
@@ -68,6 +68,7 @@ const EditStatus = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         `${API}/status/update?status_id=${status_id}`,
         formData,
@@ -80,14 +81,17 @@ const EditStatus = (props) => {
 
       if (response.status === 200) {
         toast.success(" Updated Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -168,7 +172,7 @@ const EditStatus = (props) => {
               </p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

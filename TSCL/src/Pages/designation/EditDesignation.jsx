@@ -39,6 +39,7 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
  
   const [orgName, setOrgName] = useState(null);
   const [DeptName, setDeptName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { register, formState: { errors }, handleSubmit,setValue, watch } = useForm({
     resolver: yupResolver(desginationSchema),
@@ -74,6 +75,7 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
     };
 
     try {
+      setIsLoading(true)
     const UPDATE_DESIGNATION= API_ENDPOINTS.UPDATE_DESIGNATION(desgId)
       const response = await axios.post(UPDATE_DESIGNATION.url, formData,{
         headers:UPDATE_DESIGNATION.headers
@@ -82,16 +84,19 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
 
       if (response.status === 200) {
         toast.success('Desgination Updated Successfully');
+        setIsLoading(false)
         setOrgName(null);
        setDeptName(null);
         toggleModal();
         handlerefresh();
       } else {
         console.error('Error in posting data', response);
+        setIsLoading(false)
         toast.error('Failed to Upload');
       }
     } catch (error) {
       console.error('Error in posting data', error);
+      setIsLoading(false)
     }
   };
 
@@ -194,7 +199,7 @@ const EditDesgination = ({ ExistingOrganiZations,ExistingDepartments, toggleModa
             )}
             </div>
           </div>
-          <SaveCancel onCancel={toggleModal} />
+          <SaveCancel onCancel={toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

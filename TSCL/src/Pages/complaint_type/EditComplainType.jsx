@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React,{useEffect, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ const ComplaintSchema = yup.object().shape({
 
 const EditComplaintType = (props) => {
 const {comptId}= props;
+const [isLoading, setIsLoading] = useState(false);
 
 
   const {
@@ -54,12 +55,13 @@ const {comptId}= props;
   }, [comptId, setValue]);
 
   const onSubmit = async (data) => {
-   
+
     const formData = {
       ...data,
     };
 
     try {
+      setIsLoading(true)
       const UPDATE_COMPLAINTTYPE= API_ENDPOINTS.UPDATE_COMPLAINTTYPE(comptId)
       const response = await axios.post(UPDATE_COMPLAINTTYPE.url, formData,{
         headers:UPDATE_COMPLAINTTYPE.headers,
@@ -67,14 +69,17 @@ const {comptId}= props;
 
       if (response.status === 200) { 
         toast.success(" created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
   return (
@@ -126,7 +131,7 @@ const {comptId}= props;
               </p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
        
       </div>

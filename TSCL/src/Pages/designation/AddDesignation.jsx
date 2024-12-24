@@ -31,6 +31,8 @@ const AddDesgination = ({
   toggleModal,
   handlerefresh,
 }) => {
+
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -48,6 +50,7 @@ const AddDesgination = ({
     };
 
     try {
+      setIsLoading(true)
       const response = await axios.post(
         API_ENDPOINTS.POST_DESIGANATION.url,
         formData,
@@ -58,14 +61,17 @@ const AddDesgination = ({
 
       if (response.status === 200) {
         toast.success("Designatiom created Successfully");
+        setIsLoading(false)
         toggleModal();
         handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -148,7 +154,7 @@ const AddDesgination = ({
               )}
             </div>
           </div>
-          <SaveCancel onCancel={toggleModal} />
+          <SaveCancel onCancel={toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>

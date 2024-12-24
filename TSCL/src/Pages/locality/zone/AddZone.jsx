@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { API } from "../../../Host";
 import { toast } from "react-toastify";
@@ -12,6 +12,7 @@ const ZoneSchema = yup.object().shape({
 });
 
 const AddZone = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -23,6 +24,7 @@ const AddZone = (props) => {
   });
 
   const onSubmit = async (data) => {
+    
     const formData = {
       ...data,
       status: "active",
@@ -30,6 +32,7 @@ const AddZone = (props) => {
     };
 
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token");
       const response = await axios.post(`${API}/zone/post`, formData, {
         headers: {
@@ -39,14 +42,17 @@ const AddZone = (props) => {
 
       if (response.status === 200) {
         toast.success("Zone created Successfully");
+        setIsLoading(false)
         props.toggleModal();
         props.handlerefresh();
       } else {
         console.error("Error in posting data", response);
+        setIsLoading(false)
         toast.error("Failed to Upload");
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setIsLoading(false)
     }
   };
 
@@ -75,7 +81,7 @@ const AddZone = (props) => {
               <p className="text-red-500">{errors.zone_name.message}</p>
             )}
           </div>
-          <SaveCancel onCancel={props.toggleModal} />
+          <SaveCancel onCancel={props.toggleModal} isLoading={isLoading}/>
         </form>
       </div>
     </div>
