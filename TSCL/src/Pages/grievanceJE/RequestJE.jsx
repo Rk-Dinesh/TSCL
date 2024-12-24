@@ -356,12 +356,10 @@ const RequestJE = ({ permissions, include, endpoint }) => {
         : [...prevSelectedRows, userId]
     );
   };
-
   const toggleTModal = () => {
     setIstransferModal(!istransferModal);
     setSelectedRows([]);
   };
-
   return (
     <>
       <div className="">
@@ -576,7 +574,14 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                 </thead>
                 <tbody>
                   {currentItemsOnPage.map((report, index) => (
-                    <tr className=" border-b border-gray-300  " key={index}>
+                    <tr
+                      className={`${
+                        report.isHighlighted === "yes"
+                          ? "bg-yellow-200"
+                          : "border-gray-300"
+                      } border-b`}
+                      key={index}
+                    >
                       {include === "yes" && (
                         <td className=" flex gap-2 items-center justify-center ">
                           <div className="flex items-center ">
@@ -606,9 +611,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                             : firstIndex + index + 1}
                           {report?.escalation_notify &&
                             report?.escalation_notify_read === "no" && (
-                              <span
-                                className="ml-2 w-3 h-3 bg-red-600 rounded-full"
-                              ></span>
+                              <span className="ml-2 w-3 h-3 bg-red-600 rounded-full"></span>
                             )}
                         </div>
                       </td>
