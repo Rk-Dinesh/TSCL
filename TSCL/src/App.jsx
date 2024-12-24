@@ -211,12 +211,12 @@ function App() {
                 }
               />
             )}
-             {memoizedFeatures["organization"] && (
+             {memoizedFeatures["enquiryresource"] && (
               <Route
                 path="/origin"
                 element={
                   <EnquiryResource
-                    permissions={memoizedFeatures["organization"]}
+                    permissions={memoizedFeatures["enquiryresource"]}
                   />
                 }
               />

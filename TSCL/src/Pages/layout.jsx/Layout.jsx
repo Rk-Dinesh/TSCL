@@ -41,9 +41,11 @@ const Layout = ({ permissions }) => {
         permissions["street"] && { title: "Street", to: "/street" }
       ].filter(Boolean) 
     } : null,
-    permissions["organization"] && { title: "Enquiry Resource", icon: <MdModeComment />, to: "/origin" },
-    permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
+    permissions["enquiryresource"] && { title: "Enquiry Resource", icon: <MdModeComment />, to: "/origin" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <CiBoxList />, to: "/complainttype" },
+    permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
+    permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
+    permissions["template"] && { title: "Template", icon: <CgTemplate />, to: "/template" },
     permissions["grievance"] && { title: "Grievances", icon: <BsShieldExclamation />, to: "/grievances" },
     permissions["requestview1"] && { title: "Operator", icon: <BsShieldExclamation />, to: "/requestview1" },
     permissions["requestview2"] && { title: "Dept Head", icon: <BsShieldExclamation />, to: "/requestview2" },
@@ -53,10 +55,10 @@ const Layout = ({ permissions }) => {
     permissions["emp"] && { title: "Employee", icon: <ImUserCheck />, to: "/emp" },
     permissions["admin"] && { title: "Admin User", icon: <MdOutlineAdminPanelSettings />, to: "/admin" },
     permissions["user"] && { title: "Public User", icon: <FaRegCircleUser />, to: "/user" },
-    permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
+   
     permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
-    permissions["template"] && { title: "Template", icon: <CgTemplate />, to: "/template" },
+
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
     
    

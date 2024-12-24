@@ -25,6 +25,7 @@ const RoleAccessLevelForm = () => {
     { name: "Status", value: "status", checked: false },
     { name: "Setting", value: "setting", checked: false },
     { name: "Template", value: "template", checked: false },
+    { name: "EnquiryResource", value: "enquiryresource", checked: false },
     { name: "Escalation", title: true },
     { name: "Escalation", value: "escalate", checked: false },
     { name: "Escalation Commissioner", value: "escalation", checked: false },
