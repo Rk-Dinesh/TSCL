@@ -575,11 +575,13 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                 <tbody>
                   {currentItemsOnPage.map((report, index) => (
                     <tr
-                      className={`${
-                        report.isHighlighted === "yes"
-                          ? "bg-yellow-200"
-                          : "border-gray-300"
-                      } border-b`}
+                    className={`${
+                      report.isEsacalted === "yes"
+                        ? "bg-red-500"
+                        : report.isHighlighted === "yes"
+                        ? "bg-yellow-200"
+                        : "border-gray-300"
+                    } border-b`}                    
                       key={index}
                     >
                       {include === "yes" && (
@@ -611,7 +613,7 @@ const RequestJE = ({ permissions, include, endpoint }) => {
                             : firstIndex + index + 1}
                           {report?.escalation_notify &&
                             report?.escalation_notify_read === "no" && (
-                              <span className="ml-2 w-3 h-3 bg-red-600 rounded-full"></span>
+                              <span className="ml-2 w-3 h-3 bg-blue-600 rounded-full"></span>
                             )}
                         </div>
                       </td>

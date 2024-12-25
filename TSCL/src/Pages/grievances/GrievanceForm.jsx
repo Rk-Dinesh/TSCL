@@ -18,6 +18,7 @@ import { fetchOrigin } from "../redux/slice/origin";
 import CustomDropdownWithImages from "../../components/CustomDropdownWithImages";
 import { IoIosEye } from "react-icons/io";
 import GrievanceDetailsModal from "../request/GrievanceDetailsModal";
+import { FaSearch } from "react-icons/fa";
 
 // Validation Schemas
 const UserInfoSchema = yup.object().shape({
@@ -370,22 +371,20 @@ const GrievanceForm = () => {
     setIsGrievanceModalOpen(true);
   };
 
-  
-
   return (
     <>
       <div className="grid grid-cols-12 gap-3 mx-3  overflow-y-auto no-scrollbar">
         <div className="bg-blue-100 lg:col-span-6 md:col-span-12 col-span-12   text-start h-fit   font-lexend ">
-          <h1 className="text-xl my-5">Grievance Form</h1>
+          <h1 className="text-lg my-5">Grievance Form</h1>
           <div className="  bg-white w-full h-fit rounded-lg ">
             <div className="border-b-2 border-search">
-              <h1 className=" text-xl px-3 py-3">Request by</h1>
+              <h1 className=" text-lg font-bold px-3 py-3">Request by</h1>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="flex flex-col flex-wrap overflow-hidden my-5 gap-2">
                 <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                   <label
-                    className="block text-black text-lg font-medium mb-2"
+                    className="block text-black text-base font-medium mb-2"
                     htmlFor="phone"
                   >
                     Phone
@@ -407,7 +406,7 @@ const GrievanceForm = () => {
                 </div>
                 <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                   <label
-                    className="block text-black text-lg font-medium mb-2"
+                    className="block text-black text-base font-medium mb-2"
                     htmlFor="public_user_name"
                   >
                     Name
@@ -433,7 +432,7 @@ const GrievanceForm = () => {
 
                 <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                   <label
-                    className="block text-black text-lg font-medium mb-2"
+                    className="block text-black text-base font-medium mb-2"
                     htmlFor="email"
                   >
                     Email id
@@ -456,7 +455,7 @@ const GrievanceForm = () => {
                 </div>
                 <div className="flex flex-col md:flex-row  md:justify-between font-normal mx-10">
                   <label
-                    className="block text-black text-lg font-medium mb-2 py-2"
+                    className="block text-black text-base font-medium mb-2 py-2"
                     htmlFor="address"
                   >
                     Address
@@ -481,13 +480,13 @@ const GrievanceForm = () => {
 
               <div className=" flex-col justify-center items-center max-w-[592px] bg-white h-fit rounded-lg mt-5">
                 <div className="border-b-2 border-search">
-                  <h1 className=" text-xl px-3 py-3">Grievance Details</h1>
+                  <h1 className=" text-lg font-bold  px-3 py-3">Grievance Details</h1>
                 </div>
 
                 <div className="flex flex-col flex-wrap overflow-y-auto my-5 gap-2 no-scrollbar">
                   <div className="flex flex-col md:grid md:grid-cols-3  font-normal mx-10  ">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="grievance_mode"
                     >
                       Origin
@@ -558,7 +557,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="dept_name"
                     >
                       Department
@@ -588,7 +587,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="complaint_type_title"
                     >
                       Complaint
@@ -622,7 +621,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="ward_name"
                     >
                       Ward
@@ -653,7 +652,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="street_name"
                     >
                       Street
@@ -684,7 +683,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="gflex flex-col md:grid md:grid-cols-3   font-normal mx-10">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="pincode"
                     >
                       Pincode
@@ -707,7 +706,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="flex flex-col md:grid md:grid-cols-3 font-normal mx-10">
                     <label
-                      className="block text-black text-lg font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base font-medium mb-2 md:col-span-1"
                       htmlFor="complaintaddress"
                     >
                       Complaint Address
@@ -754,7 +753,7 @@ const GrievanceForm = () => {
                   <div className=" flex flex-col md:grid md:grid-cols-3   font-normal mx-10 ">
                     <div className="md:col-span-1">
                       <label
-                        className="block text-black text-lg  font-medium mb-2 "
+                        className="block text-black text-base  font-medium mb-2 "
                         htmlFor="complaint_details"
                       >
                         Description
@@ -805,7 +804,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className=" flex flex-col md:grid md:grid-cols-3    font-normal mx-10 ">
                     <label
-                      className="block text-black text-lg  font-medium mb-2 md:col-span-1"
+                      className="block text-black text-base  font-medium mb-2 md:col-span-1"
                       htmlFor="file"
                     >
                       Attachment{" "}
@@ -843,30 +842,83 @@ const GrievanceForm = () => {
           </div>
         </div>
         <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
-          <h1 className="text-xl my-5">Recent Grievances</h1>
+        <h1 className="text-lg my-5">Telecaller Details & Grievance List</h1>
+          <div className=" bg-white shadow-sm border rounded-lg p-4">
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2 className="text-lg font-bold">Telecaller Details</h2>
+            </div>
+
+            <div className="space-y-4">
+
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="telecallerNo"
+                  className="w-32 text-gray-600 font-medium"
+                >
+                  Telecaller No.
+                </label>
+                <input
+                  type="text"
+                  id="telecallerNo"
+                  placeholder="1234567890"
+                  className="flex-1 border rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
+                <FaSearch />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="telecallerName"
+                  className="w-32 text-gray-600 font-medium"
+                >
+                  Telecaller Name
+                </label>
+                <span className="text-gray-700">{localStorage.getItem('name')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="recordedLink"
+                  className="w-32 text-gray-600 font-medium"
+                >
+                  Recorded Link
+                </label>
+                <a
+                  href="https://www.google.co.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  https://www.google.co.in/
+                </a>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-white rounded-lg my-2 py-3 overflow-x-auto h-2/5 no-scrollbar">
             <table className="w-full mt-2 mx-3">
               <thead className="border-b border-gray-300">
                 <tr className="">
                   <th>
-                    <p className=" my-2 text-start font-lexend font-normal text-base whitespace-nowrap">
+                    <p className=" my-2 text-start font-lexend font-bold text-base  whitespace-nowrap">
                       Complaint
                     </p>
                   </th>
 
                   <th>
-                    <p className="text-start mx-1 my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    <p className="text-start mx-1 my-2 font-lexend font-bold text-base whitespace-nowrap">
                       Raised by
                     </p>
                   </th>
                   <th>
-                    <p className="text-start mx-1  my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    <p className="text-start mx-1  my-2 font-lexend font-bold text-base whitespace-nowrap">
                       Department
                     </p>
                   </th>
 
                   <th>
-                    <p className="text-start my-2 font-lexend font-normal text-base whitespace-nowrap">
+                    <p className="text-start my-2 font-lexend font-bold text-base whitespace-nowrap">
                       Date/Time
                     </p>
                   </th>

@@ -306,7 +306,7 @@ const EditComplaint = (props) => {
                             </option>
                             <option value="month">Month</option>
                             <option value="day">Days</option>
-                            <option value="minute">Minute</option>
+                            {/* <option value="minute">Minute</option> */}
                           </select>
                           {errors.tat_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
@@ -388,7 +388,7 @@ const EditComplaint = (props) => {
                             </option>
                             <option value="month">Month</option>
                             <option value="day">Days</option>
-                            <option value="minute">Minute</option>
+                            {/* <option value="minute">Minute</option> */}
                           </select>
                           {errors.escalation_type && (
                             <p className="text-red-500 text-sm text-center -mt-3">
