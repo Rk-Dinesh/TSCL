@@ -1,0 +1,1 @@
+import{j as t}from"./index-Cb3AN3R3.js";const r=({handleDownload:e})=>t.jsx("div",{className:"text-center",children:t.jsx("button",{className:"bg-primary px-3 py-2 rounded-full text-white text-sm font-alegerya",onClick:()=>e(),children:"Bulk Upload Template"})});export{r as B};
