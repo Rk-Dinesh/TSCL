@@ -18,8 +18,8 @@ import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
 import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
-const csvData = `emp_name,designation_id,designation,dept_name,phone,email,address,pincode,status,created_by_user
-name,DE***,designation,Department,1234567890,abc@gmail.com,address,123456,active,admin`;
+const csvData = `emp_name,designation_id,designation,dept_name,phone,email,address,pincode
+name,DE***,designation,Department,1234567890,abc@gmail.com,address,123456`;
 
 const Employee = ({ permissions }) => {
   const [isModal, setIsModal] = useState(false);
@@ -178,7 +178,7 @@ const Employee = ({ permissions }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      localStorage;
+      formData.append('created_by_user', localStorage.getItem('name'));
 
       const response = await axios.post(
         API_ENDPOINTS.CSV_EMPLOYEE.url,

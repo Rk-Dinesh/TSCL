@@ -19,8 +19,8 @@ import DocumentDownload from "../../components/DocumentDownload";
 import HeaderButton from "../../components/HeaderButton";
 import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
 
-const csvData = `designation,dept_name,org_name,status,created_by_user
-Designation,Department,Organization,active,admin`;
+const csvData = `designation,dept_name,org_name
+Designation,Department,Organization`;
 
 const Designation = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -185,6 +185,7 @@ const Designation = ({ permissions }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append('created_by_user', localStorage.getItem('name'));
 
       const response = await axios.post(
         API_ENDPOINTS.UPLOAD_DESIGNATION.url,

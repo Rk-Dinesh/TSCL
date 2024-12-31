@@ -144,6 +144,7 @@ const Zone = ({ permissions }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append('created_by_user', localStorage.getItem('name'));
 
       const response = await axios.post(`${API}/zone/uploadcsv`, formData, {
         headers: {
