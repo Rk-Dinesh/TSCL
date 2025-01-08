@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { RiExpandUpDownLine } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddStreet from "./AddSreet";
-import { downloadCSV, formatDate } from "../../../Host";
+import { API, downloadCSV, formatDate } from "../../../Host";
 import axios from "axios";
 import decryptData from "../../../Decrypt";
 import EditStreet from "./EditStreet";
@@ -185,6 +185,8 @@ const Street = ({ permissions }) => {
             setFile(null);
         } else {
             toast.error("An unexpected error occurred"); 
+            console.log(error);
+            
             setButtonText("Bulk Upload");
             setFile(null);
         }
