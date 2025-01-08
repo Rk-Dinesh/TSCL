@@ -17,8 +17,8 @@ import FileUploadButton from "../../../components/FileUploadButton";
 import DocumentDownload from "../../../components/DocumentDownload";
 import HeaderButton from "../../../components/HeaderButton";
 
-const csvData = `zone_name,status,created_by_user
-ZoneName,active,admin`;
+const csvData = `zone_name
+ZoneName`;
 
 const Zone = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
