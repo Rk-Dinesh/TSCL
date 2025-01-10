@@ -41,6 +41,7 @@ const Ward = ({ permissions }) => {
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [fileupload, setFileupload] = useState(false);
 
   const [ward, setWard] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -164,6 +165,7 @@ const Ward = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
+      setFileupload(true)
         const formData = new FormData();
         formData.append("file", file);
         formData.append('created_by_user', localStorage.getItem('name'));
@@ -179,6 +181,7 @@ const Ward = ({ permissions }) => {
             setFile(null);
             handlerefresh();
             toast.success('Data Uploaded successfully');
+            setFileupload(false)
         }
     } catch (error) {
         
@@ -186,10 +189,12 @@ const Ward = ({ permissions }) => {
             toast.error(error.response.data.error); 
             setButtonText("Bulk Upload");
             setFile(null);
+            setFileupload(false)
         } else {
             toast.error("An unexpected error occurred"); 
             setButtonText("Bulk Upload");
             setFile(null);
+            setFileupload(false)
         }
     }
 };
@@ -303,6 +308,7 @@ const Ward = ({ permissions }) => {
                 buttonText={buttonText}
                 accept=".csv"
                 onClick={handleButtonClick}
+                fileupload={fileupload}
               />
             )}
             {hasDownloadPermission && (

@@ -49,6 +49,7 @@ const Organization = ({ permissions }) => {
   const [file, setFile] = useState(null);
   const [buttonText, setButtonText] = useState("Bulk Upload");
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [fileupload, setFileupload] = useState(false);
 
   const toggleDropdown = (index) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
@@ -151,6 +152,7 @@ const Organization = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
+      setFileupload(true)
       const formData = new FormData();
       formData.append("file", file);
 
@@ -169,11 +171,14 @@ const Organization = ({ permissions }) => {
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
+        setFileupload(false)
       } else {
         toast.error("Data failed to Upload");
+        setFileupload(false)
       }
     } catch (error) {
       console.log(error);
+      setFileupload(false)
     }
   };
   const setDocs = (event) => {
@@ -269,6 +274,7 @@ const Organization = ({ permissions }) => {
                 buttonText={buttonText}
                 accept=".csv"
                 onClick={handleButtonClick}
+                fileupload={fileupload}
               />
             )}
             {hasDownloadPermission && (

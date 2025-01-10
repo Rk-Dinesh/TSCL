@@ -32,7 +32,7 @@ const Admin = ({ permissions }) => {
   const [isChange, setIsChange] = useState(false);
   const [phoneID, setPhoneID] = useState(null);
   const [adminId, setAdminId] = useState(null);
-
+const [fileupload, setFileupload] = useState(false);
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [deleteId, setdeleteId] = useState(null);
 
@@ -208,6 +208,7 @@ const Admin = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
+      setFileupload(true)
       const formData = new FormData();
       formData.append("file", file);
 
@@ -226,11 +227,14 @@ const Admin = ({ permissions }) => {
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
+        setFileupload(false)
       } else {
         toast.error("Data failed to Upload");
+        setFileupload(false)
       }
     } catch (error) {
       console.log(error);
+      setFileupload(false)
     }
   };
   const setDocs = (event) => {
@@ -360,6 +364,7 @@ const Admin = ({ permissions }) => {
                 buttonText={buttonText}
                 accept=".csv"
                 onClick={handleButtonClick}
+                fileupload={fileupload}
               />
             )}
 

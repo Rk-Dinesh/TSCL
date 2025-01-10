@@ -1,4 +1,4 @@
-const BASE_URL = "http://13.60.180.9:4000";
+const BASE_URL = "https://api.maduraismartcity.com";
 
 
 
@@ -78,7 +78,7 @@ const API_ENDPOINTS = {
     headers: authHeaders,
   }),
   CSV_COMPLAINT: {
-    url: `${BASE_URL}}/complaint/uploadcsv`,
+    url: `${BASE_URL}/complaint/uploadcsv`,
     headers: authHeaders,
   },
   POST_COMPLAINT: { url: `${BASE_URL}}/complaint/post`, headers: authHeaders },

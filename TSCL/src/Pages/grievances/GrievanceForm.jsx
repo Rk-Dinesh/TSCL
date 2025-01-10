@@ -480,7 +480,9 @@ const GrievanceForm = () => {
 
               <div className=" flex-col justify-center items-center max-w-[592px] bg-white h-fit rounded-lg mt-5">
                 <div className="border-b-2 border-search">
-                  <h1 className=" text-lg font-bold  px-3 py-3">Grievance Details</h1>
+                  <h1 className=" text-lg font-bold  px-3 py-3">
+                    Grievance Details
+                  </h1>
                 </div>
 
                 <div className="flex flex-col flex-wrap overflow-y-auto my-5 gap-2 no-scrollbar">
@@ -531,7 +533,7 @@ const GrievanceForm = () => {
                     >
                       Complaint Type
                     </label>
-                    <div className=" md:col-span-2">
+                    {/* <div className=" md:col-span-2">
                       <select
                         className="block w-full   px-4 py-3  text-sm text-black border border-gray-200 rounded-lg bg-gray-50   hover:border-gray-200 outline-none"
                         defaultValue=""
@@ -548,6 +550,21 @@ const GrievanceForm = () => {
                             </option>
                           ))}
                       </select>
+                      {errors.complaint && (
+                        <p className="text-red-500 text-xs text-start px-2 pt-2">
+                          {errors.complaint.message}
+                        </p>
+                      )}
+                    </div> */}
+                    <div className="flex flex-col md:col-span-2">
+                      <p className="text-start border-2 rounded-lg px-2 py-2 bg-gray-100">
+                        Individual
+                      </p>
+                      <input
+                        type="hidden"
+                        {...register("complaint")}
+                        value="individual"
+                      />
                       {errors.complaint && (
                         <p className="text-red-500 text-xs text-start px-2 pt-2">
                           {errors.complaint.message}
@@ -842,14 +859,13 @@ const GrievanceForm = () => {
           </div>
         </div>
         <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
-        <h1 className="text-lg my-5">Telecaller Details & Grievance List</h1>
+          <h1 className="text-lg my-5">Telecaller Details & Grievance List</h1>
           <div className=" bg-white shadow-sm border rounded-lg p-4">
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2 className="text-lg font-bold">Telecaller Details</h2>
             </div>
 
             <div className="space-y-4">
-
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="telecallerNo"
@@ -864,7 +880,7 @@ const GrievanceForm = () => {
                   className="flex-1 border rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
-                <FaSearch />
+                  <FaSearch />
                 </button>
               </div>
 
@@ -875,7 +891,9 @@ const GrievanceForm = () => {
                 >
                   Telecaller Name
                 </label>
-                <span className="text-gray-700">{localStorage.getItem('name')}</span>
+                <span className="text-gray-700">
+                  {localStorage.getItem("name")}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <label

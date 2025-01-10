@@ -3,7 +3,7 @@ import RequestJE from "./RequestJE";
 
 function RequestJETab({permissions}) {
   const [activeTab, setActiveTab] = useState("tab1");
-  const include = 'yes';
+  const include = 'no';
 
 
   return (

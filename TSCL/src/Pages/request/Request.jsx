@@ -18,6 +18,7 @@ import ManyTicketTransfer from "../grievancesadmin/ManyTicketTransfer";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrigin } from "../redux/slice/origin";
 import logo from "../../assets/images/logo1.png";
+import BulkAssign from "../grievancesadmin/BulkAssign";
 
 const Request = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -41,6 +42,7 @@ const Request = ({ permissions, include, endpoint }) => {
   const [status, setStatus] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [istransferModal, setIstransferModal] = useState(false);
+  const [isBulkassign, setIsBulkassign] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [grievanceImages, setGrievanceImages] = useState({});
 
@@ -313,6 +315,11 @@ const Request = ({ permissions, include, endpoint }) => {
     setSelectedRows([]);
   };
 
+    const toggleAModal = () => {
+    setIsBulkassign(!isBulkassign);
+    setSelectedRows([]);
+  };
+
   return (
     <>
       <div className="">
@@ -373,7 +380,7 @@ const Request = ({ permissions, include, endpoint }) => {
               <div className="flex flex-wrap gap-3">
                 <p className="text-lg  whitespace-nowrap">View Report</p>
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              {/* <div className="flex flex-wrap gap-1.5">
                 {complainttype.map((type, index) => (
                   <div key={index}>
                     <button
@@ -400,10 +407,16 @@ const Request = ({ permissions, include, endpoint }) => {
                 >
                   All
                 </button>
-              </div>
+              </div> */}
             </div>
             {include == "yes" && (
               <div className="my-2 mx-3 flex flex-wrap gap-2 ">
+                <button
+                  className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
+                  onClick={() => setIsBulkassign(true)}
+                >
+                  Multi-Assign
+                </button>
                 <button
                   className="bg-blue-300 shadow-md px-3 py-1 rounded-full text-white text-sm"
                   onClick={() => setIstransferModal(true)}
@@ -622,6 +635,13 @@ const Request = ({ permissions, include, endpoint }) => {
       {istransferModal && (
         <ManyTicketTransfer
           toggleTModal={toggleTModal}
+          selectedRows={selectedRows}
+          handlerefresh={handlerefresh}
+        />
+      )}
+       {isBulkassign && (
+        <BulkAssign
+          toggleAModal={toggleAModal}
           selectedRows={selectedRows}
           handlerefresh={handlerefresh}
         />

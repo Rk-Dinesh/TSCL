@@ -25,6 +25,7 @@ const Layout = ({ permissions }) => {
   const location = useLocation();
   const [open, setOpen] = useState(true);
   const [submenuopen, Setsubmenuopen] = useState(false);
+  const userName = localStorage.getItem('fname') + " " + localStorage.getItem('lname');
  
   const Menus = [
     //permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },
@@ -79,7 +80,7 @@ const Layout = ({ permissions }) => {
           fontSize="small"
         />
 
-        <span className="row-span-2 flex flex-col items-center gap-6 mt-3 mb-2">
+        <span className="row-span-2 flex flex-col items-center gap-2 mt-3 mb-2">
           <img
             src={logo}
             alt="Image"
@@ -88,15 +89,15 @@ const Layout = ({ permissions }) => {
             }`}
           />
           <h1
-            className={`text-xl text-white font-alegerya transition-opacity duration-500 ${
+            className={`text-xl text-white text-center font-alegerya transition-opacity duration-500 ${
               !open && "opacity-0"
             }`}
           >
-            Admin Panel
+          {userName}
           </h1>
         </span>
 
-        <div className="row-span-10 mt-4  overflow-auto no-scrollbar">
+        <div className="row-span-10 mt-8  overflow-auto no-scrollbar">
           <ul className="pt-2">
             {Menus.map((menu, index) => (
               <React.Fragment key={index} >
