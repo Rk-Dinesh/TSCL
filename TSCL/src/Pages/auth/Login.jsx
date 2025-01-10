@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
 const UserSchema = yup.object().shape({
-  identifier: yup.string().required("User Name is required"),
+  identifier: yup.string().required("Identifier is required"),
   login_password: yup.string().required("password is required"),
 });
 
