@@ -74,21 +74,21 @@ const Login = ({ setToken }) => {
 
   return (
     <div className="h-screen  bg-primary py-6 flex flex-col md:items-center gap-8 justify-center ">
-      <div className="flex items-center justify-center gap-3 ">
+      <div className="flex flex-col items-center justify-center gap-1 ">
         <img src={logo} alt="Image" className="w-24 h-24" />
-        <p className="text-6xl text-secondary">MSCL</p>
+        <p className="text-3xl font-semibold drop-shadow-xl text-secondary">MADURAI SMART CITY</p>
       </div>
       <div className="mx-3  ">
         <div className="p-6  md:max-w-[600px] w-full  md:bg-white  rounded-lg ">
           <div className="font-lexend text-start mt-2">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <p className="text-xl md:text-black text-gray-200  md:mx-2  my-2 ">
-                Sign In
+              <p className="text-lg font-medium md:text-black text-gray-200  md:mx-2  my-2 ">
+                SIGN IN
               </p>
 
-              <div className=" grid md:grid-cols-3 grid-col-2  font-normal md:mx-4 py-3">
+              <div className=" grid md:grid-cols-3 grid-col-2 items-center font-normal md:mx-4 py-3">
                 <label
-                  className="flex md:text-black text-slate-800 text-lg font-medium mb-2 col-span-1 "
+                  className="flex md:text-black text-slate-800 text-base font-medium  col-span-1 "
                   htmlFor="identifier"
                 >
                   Email / Phone
@@ -97,8 +97,8 @@ const Login = ({ setToken }) => {
                 <input
                   type="text"
                   id="identifier"
-                  className="md:col-span-2 col-span-1 w-full border rounded-lg py-1.5 px-2 outline-none"
-                  placeholder="email address or phone number"
+                  className="md:col-span-2 col-span-1 w-full border rounded-lg py-1.5 px-5 outline-none"
+                  placeholder="Email  / Mobile number"
                   {...register("identifier")}
                 />
                 {errors.identifier && (
@@ -108,9 +108,9 @@ const Login = ({ setToken }) => {
                 )}
               </div>
 
-              <div className=" grid md:grid-cols-3 grid-col-2   font-normal md:mx-4 py-3">
+              <div className=" grid md:grid-cols-3 grid-col-2 items-center   font-normal md:mx-4 py-3">
                 <label
-                  className="md:text-black text-slate-800  text-lg font-medium mb-2 col-span-1"
+                  className="md:text-black text-slate-800  text-base font-medium  col-span-1"
                   htmlFor="login_password"
                 >
                   Password
@@ -120,7 +120,7 @@ const Login = ({ setToken }) => {
                   type="password"
                   id="login_password"
                   className="md:col-span-2 col-span-1 w-full  border  rounded-lg py-1.5 px-2 outline-none"
-                  placeholder="* * * * * * * * *"
+                  placeholder="* * * * * * * * "
                   {...register("login_password")}
                 />
                 {errors.login_password && (
