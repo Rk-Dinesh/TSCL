@@ -25,7 +25,7 @@ const Layout = ({ permissions }) => {
   const location = useLocation();
   const [open, setOpen] = useState(true);
   const [submenuopen, Setsubmenuopen] = useState(false);
-  const userName = localStorage.getItem('fname') + " " + localStorage.getItem('lname');
+  const userName = localStorage.getItem('name') ;
  
   const Menus = [
     //permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },

@@ -528,7 +528,7 @@ const GrievanceForm = () => {
                   </div>
                   <div className="flex flex-col md:grid md:grid-cols-3    font-normal mx-10 gap-1 ">
                     <label
-                      className="block text-black text-base font-medium mb-2 md:col-span-1"
+                      className=" text-black text-base font-medium mb-2 md:col-span-1 hidden"
                       htmlFor="complaint"
                     >
                       Complaint Type
@@ -556,7 +556,7 @@ const GrievanceForm = () => {
                         </p>
                       )}
                     </div> */}
-                    <div className="flex flex-col md:col-span-2">
+                    <div className=" md:col-span-2 hidden">
                       <p className="text-start border-2 rounded-lg px-2 py-2 bg-gray-100">
                         Individual
                       </p>
