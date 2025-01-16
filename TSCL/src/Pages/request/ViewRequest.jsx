@@ -32,7 +32,6 @@ const ViewRequest = () => {
   const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
 
   useEffect(() => {
-   
     const fetchDataFile = async () => {
       try {
         const response = await axios.get(
@@ -52,7 +51,6 @@ const ViewRequest = () => {
       }
     };
 
-   
     const fetchDataFileWorksheet = async () => {
       try {
         const response = await axios.get(
@@ -158,8 +156,8 @@ const ViewRequest = () => {
             },
           }
         );
-        fetchData()
-        fetchLog()
+        fetchData();
+        fetchLog();
       } else {
         toast.error("Failed ");
       }
@@ -187,7 +185,6 @@ const ViewRequest = () => {
     setIsGrievanceModalOpen(true);
   };
 
-  
   return (
     <Fragment>
       <div className="h-screen overflow-y-auto no-scrollbar">
@@ -196,19 +193,25 @@ const ViewRequest = () => {
             <p>Complaint Details #{data.grievance_id}</p>
             {data.status === "closed" &&
               (() => {
-                const createdAt = new Date(data.createdAt);
+                const updatedAt = new Date(data.ticketclosedtime);
+
                 const today = new Date();
-                const timeDifference = today - createdAt; 
+
+                const timeDifference = today - updatedAt;
+
                 const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
 
                 return daysDifference <= 7 ? (
-                  <button className="bg-green-600 px-3 py-1.5 rounded-md shadow-md text-white text-sm"
-                  onClick={() => {
-                    const userConfirmed = window.confirm("Are you sure you want to Re-open the ticket?");
-                    if (userConfirmed) {
-                      handleReOpen();
-                    }
-                  }}
+                  <button
+                    className="bg-green-600 px-3 py-1.5 rounded-md shadow-md text-white text-sm"
+                    onClick={() => {
+                      const userConfirmed = window.confirm(
+                        "Are you sure you want to Re-open the ticket?"
+                      );
+                      if (userConfirmed) {
+                        handleReOpen();
+                      }
+                    }}
                   >
                     Re-open Ticket
                   </button>
