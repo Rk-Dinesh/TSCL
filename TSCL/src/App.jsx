@@ -9,6 +9,7 @@ import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
+import DepartmentWise from "./Pages/reports/DepartmentWise";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -139,6 +140,10 @@ function App() {
                 <Route
                   path="/escalation"
                   element={<EscalationCommissioner />}
+                />
+                <Route 
+                 path="/deptwise"
+                 element={<DepartmentWise />}
                 />
               </>
             )}

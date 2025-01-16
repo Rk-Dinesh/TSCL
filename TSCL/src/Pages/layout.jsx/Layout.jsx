@@ -59,7 +59,14 @@ const Layout = ({ permissions }) => {
    
     permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
-
+    permissions["zone"] || permissions["ward"] || permissions["street"] ? {
+      title: "Reports",
+      icon: <MdModeComment />,
+      submenu: true,
+      submenuItems: [
+        permissions["zone"] && { title: "Department Wise", to: "/deptwise" },
+      ].filter(Boolean) 
+    } : null,
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
     
    
