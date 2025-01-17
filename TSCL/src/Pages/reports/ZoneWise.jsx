@@ -5,7 +5,7 @@ import { API } from "../../Host";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "jspdf-autotable";
-import { saveAs } from "file-saver";
+import html2pdf from 'html2pdf.js';
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
 
@@ -106,18 +106,23 @@ const ZoneWise = () => {
     document.body.removeChild(link);
   };
 
-  const handleExportPDF = () => {
-    const input = document.getElementById("report-section");
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, "PNG", 10, 20, pdfWidth - 20, pdfHeight - 20);
-      pdf.save("DepartmentWiseReport.pdf");
-    });
+ const handleExportPDF = () => {
+    const element = document.getElementById("report-section");
+  
+    // Options for the html2pdf library
+    const options = {
+      margin:       10,  // Margin for the PDF
+      filename:     "ZoneWiseReport.pdf", // Default filename
+      image:        { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
+      html2canvas:  { scale: 1.5 },  // Higher scale for better resolution
+      jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" } // PDF settings
+    };
+  
+    // Generate PDF using html2pdf.js
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save(); // Save the generated PDF
   };
 
   const setDocs = (event) => {
@@ -265,6 +270,210 @@ const ZoneWise = () => {
             </thead>
             <tbody>
   {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+    {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+    {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+    {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+    {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+    {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+    {report.map((zoneData, index) => (
     zoneData.departments.map((department, deptIndex) => (
       <tr key={`${index}-${deptIndex}`} className="text-gray-500">
         {deptIndex === 0 && (

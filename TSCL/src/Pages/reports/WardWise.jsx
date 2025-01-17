@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logo1.png";
 import axios from "axios";
 import { API } from "../../Host";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2pdf from 'html2pdf.js';
 import "jspdf-autotable";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
@@ -111,18 +110,24 @@ const WardWise = () => {
   };
 
   const handleExportPDF = () => {
-    const input = document.getElementById("report-section");
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, "PNG", 10, 20, pdfWidth - 20, pdfHeight - 20);
-      pdf.save("DepartmentWiseReport.pdf");
-    });
+    const element = document.getElementById("report-section");
+  
+    // Options for the html2pdf library
+    const options = {
+      margin:       10,  // Margin for the PDF
+      filename:     "WardWiseReport.pdf", // Default filename
+      image:        { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
+      html2canvas:  { scale: 1.5 },  // Higher scale for better resolution
+      jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" } // PDF settings
+    };
+  
+    // Generate PDF using html2pdf.js
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save(); // Save the generated PDF
   };
+  
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
