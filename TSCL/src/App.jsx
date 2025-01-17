@@ -10,6 +10,8 @@ import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
 import DepartmentWise from "./Pages/reports/DepartmentWise";
+import ZoneWise from "./Pages/reports/ZoneWise";
+import WardWise from "./Pages/reports/WardWise";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -144,6 +146,14 @@ function App() {
                 <Route 
                  path="/deptwise"
                  element={<DepartmentWise />}
+                />
+                <Route 
+                 path="/zonewise"
+                 element={<ZoneWise />}
+                />
+                 <Route 
+                 path="/wardwise"
+                 element={<WardWise />}
                 />
               </>
             )}

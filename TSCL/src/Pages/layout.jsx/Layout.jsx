@@ -65,6 +65,8 @@ const Layout = ({ permissions }) => {
       submenu: true,
       submenuItems: [
         permissions["zone"] && { title: "Department Wise", to: "/deptwise" },
+        permissions["ward"] && { title: "Zone Wise", to: "/zonewise" },
+        permissions["street"] && { title: "Ward Wise", to: "/wardwise" },
       ].filter(Boolean) 
     } : null,
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },

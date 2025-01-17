@@ -9,19 +9,19 @@ import { saveAs } from "file-saver";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
 
-const DepartmentWise = () => {
+const ZoneWise = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [department, setDepartment] = useState("");
+  const [zone, setZone] = useState("");
   const [error, setError] = useState("");
   const [report, setReport] = useState([]);
-   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${API}/new-grievance/departmentGrievanceCounts`
+          `${API}/new-grievance/zoneDepartmentGrievances`
         );
         setReport(response.data);
       } catch (error) {
@@ -33,7 +33,7 @@ const DepartmentWise = () => {
   }, []);
 
   const handleSubmit = async () => {
-    if (!startDate || !endDate || !department) {
+    if (!startDate || !endDate || !zone) {
       setError("All fields are required.");
       return;
     }
@@ -52,12 +52,12 @@ const DepartmentWise = () => {
     const formData = {
       startDate,
       endDate,
-      department,
+      zone,
     };
 
     try {
       const response = await axios.get(
-        `${API}/new-grievance/departmentGrievanceCounts`,
+        `${API}/new-grievance/zoneDepartmentGrievances`,
         {
           params: formData,
         }
@@ -73,28 +73,24 @@ const DepartmentWise = () => {
     const csvData = [];
     csvData.push([
       "S.No",
+      "Zone",
       "Department",
-      "Total Received",
-      "Resolved",
-      "Escalated",
+      "Received",
+      "Closed",
       "Pending",
-      "Repeated Received",
-      "Repeated Resolved",
-      "Repeated Escalated",
     ]);
 
-    report.forEach((data, index) => {
-      csvData.push([
-        index + 1,
-        data.department,
-        data.total.count,
-        data.total.resolved,
-        data.total.escalated,
-        data.total.pending,
-        data.repeated.count,
-        data.repeated.resolved,
-        data.repeated.escalated,
-      ]);
+    report.forEach((zoneData, index) => {
+      zoneData.departments.forEach((department) => {
+        csvData.push([
+          index + 1,
+          zoneData.zone,
+          department.department,
+          department.received,
+          department.closed,
+          department.pending,
+        ]);
+      });
     });
 
     const csvContent =
@@ -104,7 +100,7 @@ const DepartmentWise = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Department_Wise_Report.csv");
+    link.setAttribute("download", "Zone_Wise_Report.csv");
     document.body.appendChild(link); // Required for Firefox
     link.click();
     document.body.removeChild(link);
@@ -123,7 +119,6 @@ const DepartmentWise = () => {
       pdf.save("DepartmentWiseReport.pdf");
     });
   };
-  
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -135,6 +130,7 @@ const DepartmentWise = () => {
         <h3 className="text-primary font-semibold text-lg my-2">
           Department Wise Report
         </h3>
+        {/* Form Fields */}
         <div className="grid grid-cols-12 gap-8 items-center">
           <div className="col-span-4">
             <label htmlFor="" className="block my-2 text-slate-700">
@@ -163,20 +159,21 @@ const DepartmentWise = () => {
           </div>
           <div className="col-span-4">
             <label htmlFor="" className="block my-2 text-slate-700">
-              Select Department
+              Select Zone
             </label>
             <select
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
+              value={zone}
+              onChange={(e) => setZone(e.target.value)}
               className="outline-none border-2 border-gray-300 rounded-md py-2.5 px-4 w-full text-gray-500"
             >
-              <option value="">Select a Department</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Public Health">Public Health</option>
+              <option value="">Select a Zone</option>
+              <option value="East Zone 1">East Zone 1</option>
+              <option value="North Zone 2">North Zone 2</option>
             </select>
           </div>
         </div>
         {error && <p className="text-red-500 my-2">{error}</p>}
+        {/* Export Options */}
         <div className="flex justify-end items-center gap-3 my-3">
           <select
             name="export-options"
@@ -188,21 +185,21 @@ const DepartmentWise = () => {
             <option value="csv">CSV</option>
             <option value="pdf">PDF</option>
           </select>
-           {selectedDoc === null && (
-                  <HiOutlineDocument className="text-2xl text-gray-500" />
-                )}
-                {selectedDoc === "csv" && (
-                  <PiFileCsvLight
-                    className="text-3xl text-gray-500"
-                    onClick={() => handleExportCSV()}
-                  />
-                )}
-                {selectedDoc === "pdf" && (
-                  <PiFilePdfDuotone
-                    className="text-3xl text-gray-500"
-                    onClick={() => handleExportPDF()}
-                  />
-                )}
+          {selectedDoc === null && (
+            <HiOutlineDocument className="text-2xl text-gray-500" />
+          )}
+          {selectedDoc === "csv" && (
+            <PiFileCsvLight
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportCSV()}
+            />
+          )}
+          {selectedDoc === "pdf" && (
+            <PiFilePdfDuotone
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportPDF()}
+            />
+          )}
           <button
             onClick={handleSubmit}
             className="w-32 py-1.5 text-white outline-none bg-primary rounded-md"
@@ -211,6 +208,7 @@ const DepartmentWise = () => {
           </button>
         </div>
       </div>
+      {/* Report Section */}
       <div
         className="max-w-4xl mx-auto my-6 bg-white p-2 shadow-lg rounded-lg font-lexend "
         id="report-section"
@@ -242,94 +240,67 @@ const DepartmentWise = () => {
           </div>
         </div>
         <div className="overflow-auto">
-        <table className="w-full border-collapse border border-gray-300 text-sm mt-4">
-          <thead>
-            <tr className="bg-gray-100 text-gray-700">
-              <th
-                className="border border-gray-300 px-4 py-3 text-left"
-                rowSpan="1"
-              >
-                S.no
-              </th>
-              <th
-                className="border border-gray-300 px-4 py-3 text-left "
-                rowSpan="1"
-              >
-                Department
-              </th>
-              <th
-                className="border border-gray-300 px-4 py-3 text-center"
-                colSpan="4"
-              >
-                Total
-              </th>
-              <th
-                className="border border-gray-300 px-4 py-3 text-center"
-                colSpan="3"
-              >
-                Repeated
-              </th>
-            </tr>
-            <tr className="bg-gray-100 text-gray-500">
-              <th className="border border-gray-300 px-4 py-3 text-center"></th>
-              <th className="border border-gray-300 px-4 py-3 text-center"></th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Received
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Resolved
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Escalated
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Pending
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Received
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Resolved
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Escalated
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {report.map((data, index) => (
-              <tr key={index} className="text-gray-500">
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 px-4 py-3">
-                  {data.department}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.count}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.resolved}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.escalated}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.pending}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.repeated.count}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.repeated.resolved}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.repeated.escalated}
-                </td>
+          <table className="w-full border-collapse border border-gray-300 text-sm mt-4">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700">
+                <th className="border border-gray-300 px-4 py-3 text-left">
+                  S.no
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left">
+                  Zone
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left">
+                  Department
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Received
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Closed
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Pending
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+  {report.map((zoneData, index) => (
+    zoneData.departments.map((department, deptIndex) => (
+      <tr key={`${index}-${deptIndex}`} className="text-gray-500">
+        {deptIndex === 0 && (
+          <>
+            <td
+              className="border border-gray-300 px-4 py-3 text-center"
+              rowSpan={zoneData.departments.length}
+            >
+              {index + 1}
+            </td>
+            <td
+              className="border border-gray-300 px-4 py-3"
+              rowSpan={zoneData.departments.length}
+            >
+              {zoneData.zone}
+            </td>
+          </>
+        )}
+        <td className="border border-gray-300 px-4 py-3">
+          {department.department}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.received}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.closed}
+        </td>
+        <td className="border border-gray-300 px-4 py-3 text-center">
+          {department.pending}
+        </td>
+      </tr>
+    ))
+  ))}
+</tbody>
+
+          </table>
         </div>
         <div className="text-gray-600 text-xs my-3 text-center">
           <p>
@@ -342,4 +313,4 @@ const DepartmentWise = () => {
   );
 };
 
-export default DepartmentWise;
+export default ZoneWise;
