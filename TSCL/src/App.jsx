@@ -12,6 +12,7 @@ import axios from "axios";
 import DepartmentWise from "./Pages/reports/DepartmentWise";
 import ZoneWise from "./Pages/reports/ZoneWise";
 import WardWise from "./Pages/reports/WardWise";
+import EmployeeWise from "./Pages/reports/EmployeeWise";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -154,6 +155,10 @@ function App() {
                  <Route 
                  path="/wardwise"
                  element={<WardWise />}
+                />
+                   <Route 
+                 path="/employeewise"
+                 element={<EmployeeWise />}
                 />
               </>
             )}

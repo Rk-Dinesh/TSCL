@@ -4,15 +4,16 @@ import axios from "axios";
 import { API } from "../../Host";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import html2pdf from 'html2pdf.js';
 import "jspdf-autotable";
-import html2pdf from "html2pdf.js";
+import { saveAs } from "file-saver";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
 
-const ZoneWise = () => {
+const EmployeeWise = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [zone, setZone] = useState("");
+  const [department, setDepartment] = useState("");
   const [error, setError] = useState("");
   const [report, setReport] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -21,7 +22,7 @@ const ZoneWise = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${API}/new-grievance/zoneDepartmentGrievances`
+          `${API}/new-grievance/employeeGrievances`
         );
         setReport(response.data);
       } catch (error) {
@@ -33,7 +34,7 @@ const ZoneWise = () => {
   }, []);
 
   const handleSubmit = async () => {
-    if (!startDate || !endDate || !zone) {
+    if (!startDate || !endDate || !department) {
       setError("All fields are required.");
       return;
     }
@@ -52,12 +53,12 @@ const ZoneWise = () => {
     const formData = {
       startDate,
       endDate,
-      zone,
+      department,
     };
 
     try {
       const response = await axios.get(
-        `${API}/new-grievance/zoneDepartmentGrievances`,
+        `${API}/new-grievance/employeeGrievances`,
         {
           params: formData,
         }
@@ -73,24 +74,28 @@ const ZoneWise = () => {
     const csvData = [];
     csvData.push([
       "S.No",
-      "Zone",
+      "Name",
+      "ID",
       "Department",
+      "Zone",
+      "Ward",
       "Received",
-      "Closed",
+      "Resolved",
       "Pending",
     ]);
 
-    report.forEach((zoneData, index) => {
-      zoneData.departments.forEach((department) => {
-        csvData.push([
-          index + 1,
-          zoneData.zone,
-          department.department,
-          department.received,
-          department.closed,
-          department.pending,
-        ]);
-      });
+    report.forEach((data, index) => {
+      csvData.push([
+        index + 1,
+        data.employeeName,
+        data.employeeId,
+        data.department,
+        data.zone,
+        data.ward,
+        data.received,
+        data.resolved,
+        data.pending,
+      ]);
     });
 
     const csvContent =
@@ -100,7 +105,7 @@ const ZoneWise = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Zone_Wise_Report.csv");
+    link.setAttribute("download", "Employee_Wise_Report.csv");
     document.body.appendChild(link); // Required for Firefox
     link.click();
     document.body.removeChild(link);
@@ -108,18 +113,21 @@ const ZoneWise = () => {
 
   const handleExportPDF = () => {
     const element = document.getElementById("report-section");
-
+  
     // Options for the html2pdf library
     const options = {
-      margin: 10, // Margin for the PDF
-      filename: "ZoneWiseReport.pdf", // Default filename
-      image: { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
-      html2canvas: { scale: 1.5 }, // Higher scale for better resolution
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, // PDF settings
+      margin:       2,  // Margin for the PDF
+      filename:     "WardWiseReport.pdf", // Default filename
+      image:        { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
+      html2canvas:  { scale: 1.5 },  // Higher scale for better resolution
+      jsPDF:        { unit: "mm", format: "a4", orientation: "landscape" } // PDF settings
     };
-
+  
     // Generate PDF using html2pdf.js
-    html2pdf().from(element).set(options).save(); // Save the generated PDF
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save(); // Save the generated PDF
   };
 
   const setDocs = (event) => {
@@ -130,9 +138,8 @@ const ZoneWise = () => {
     <div className="mx-3 my-3 overflow-y-auto ">
       <div className="bg-white rounded-lg font-lexend py-3 px-8">
         <h3 className="text-primary font-semibold text-lg my-2">
-          Zone Wise Report
+          Employee Wise Report
         </h3>
-        {/* Form Fields */}
         <div className="grid grid-cols-12 gap-8 items-center">
           <div className="col-span-4">
             <label htmlFor="" className="block my-2 text-slate-700">
@@ -161,21 +168,20 @@ const ZoneWise = () => {
           </div>
           <div className="col-span-4">
             <label htmlFor="" className="block my-2 text-slate-700">
-              Select Zone
+              Select Department
             </label>
             <select
-              value={zone}
-              onChange={(e) => setZone(e.target.value)}
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
               className="outline-none border-2 border-gray-300 rounded-md py-2.5 px-4 w-full text-gray-500"
             >
-              <option value="">Select a Zone</option>
-              <option value="East Zone 1">East Zone 1</option>
-              <option value="North Zone 2">North Zone 2</option>
+              <option value="">Select a Department</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Public Health">Public Health</option>
             </select>
           </div>
         </div>
         {error && <p className="text-red-500 my-2">{error}</p>}
-        {/* Export Options */}
         <div className="flex justify-end items-center gap-3 my-3">
           <select
             name="export-options"
@@ -210,7 +216,6 @@ const ZoneWise = () => {
           </button>
         </div>
       </div>
-      {/* Report Section */}
       <div
         className="max-w-4xl mx-auto my-6 bg-white p-2 shadow-lg rounded-lg font-lexend "
         id="report-section"
@@ -223,7 +228,7 @@ const ZoneWise = () => {
                 Madurai Municipal Corporation
               </h1>
               <p className="text-sm text-center mt-2 text-gray-300">
-                Zone Wise report
+                Employee Wise report
               </p>
               {startDate && (
                 <p className="text-sm text-center mt-2 text-gray-300">
@@ -248,17 +253,26 @@ const ZoneWise = () => {
                 <th className="border border-gray-300 px-4 py-3 text-left">
                   S.no
                 </th>
-                <th className="border border-gray-300 px-4 py-3 text-left">
+                <th className="border border-gray-300 px-4 py-3 text-left ">
+                  Employee
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left ">
+                  ID
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Department
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
                   Zone
                 </th>
-                <th className="border border-gray-300 px-4 py-3 text-left">
-                  Department
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Ward
                 </th>
                 <th className="border border-gray-300 px-4 py-3 text-center">
                   Received
                 </th>
                 <th className="border border-gray-300 px-4 py-3 text-center">
-                  Closed
+                  Resolved
                 </th>
                 <th className="border border-gray-300 px-4 py-3 text-center">
                   Pending
@@ -266,40 +280,37 @@ const ZoneWise = () => {
               </tr>
             </thead>
             <tbody>
-              {report.map((zoneData, index) =>
-                zoneData.departments.map((department, deptIndex) => (
-                  <tr key={`${index}-${deptIndex}`} className="text-gray-500">
-                    {deptIndex === 0 && (
-                      <>
-                        <td
-                          className="border border-gray-300 px-4 py-3 text-center"
-                          rowSpan={zoneData.departments.length}
-                        >
-                          {index + 1}
-                        </td>
-                        <td
-                          className="border border-gray-300 px-4 py-3"
-                          rowSpan={zoneData.departments.length}
-                        >
-                          {zoneData.zone}
-                        </td>
-                      </>
-                    )}
-                    <td className="border border-gray-300 px-4 py-3">
-                      {department.department}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-3 text-center">
-                      {department.received}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-3 text-center">
-                      {department.closed}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-3 text-center">
-                      {department.pending}
-                    </td>
-                  </tr>
-                ))
-              )}
+              {report.map((data, index) => (
+                <tr key={index} className="text-gray-500">
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3">
+                    {data.employeeName}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.employeeId}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.department}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.zone}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.ward}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.received}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.closed}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.pending}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -314,4 +325,4 @@ const ZoneWise = () => {
   );
 };
 
-export default ZoneWise;
+export default EmployeeWise;

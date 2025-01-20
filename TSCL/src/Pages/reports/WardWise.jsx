@@ -137,7 +137,7 @@ const WardWise = () => {
     <div className="mx-3 my-3 overflow-y-auto ">
       <div className="bg-white rounded-lg font-lexend py-3 px-8">
         <h3 className="text-primary font-semibold text-lg my-2">
-          Department Wise Report
+          Ward Wise Report
         </h3>
         {/* Form Fields */}
         <div className="grid grid-cols-12 gap-8 items-center">
@@ -231,7 +231,7 @@ const WardWise = () => {
                 Madurai Municipal Corporation
               </h1>
               <p className="text-sm text-center mt-2 text-gray-300">
-                Department Wise report
+                Ward Wise report
               </p>
               {startDate && (
                 <p className="text-sm text-center mt-2 text-gray-300">

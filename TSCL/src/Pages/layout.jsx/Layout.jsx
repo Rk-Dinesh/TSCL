@@ -67,6 +67,7 @@ const Layout = ({ permissions }) => {
         permissions["zone"] && { title: "Department Wise", to: "/deptwise" },
         permissions["ward"] && { title: "Zone Wise", to: "/zonewise" },
         permissions["street"] && { title: "Ward Wise", to: "/wardwise" },
+        permissions["street"] && { title: "Employee Wise", to: "/employeewise" },
       ].filter(Boolean) 
     } : null,
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },
