@@ -35,6 +35,11 @@ const RoleAccessLevelForm = () => {
     { name: "Department Admin", value: "requestview2", checked: false },
     { name: "Engineer", value: "requestview3", checked: false },
     { name: "Operator", value: "requestview1", checked: false },
+    { name: "Reports", title: true }, // Title without value, checkbox, etc.
+    { name: "Department Report", value: "departmentreport", checked: false },
+    { name: "Zone Report", value: "zonereport", checked: false },
+    { name: "Ward Report", value: "wardreport", checked: false },
+    { name: "Employee Report", value: "employeereport", checked: false },
   ]);
 
   const [errors, setErrors] = useState({
@@ -184,7 +189,7 @@ const RoleAccessLevelForm = () => {
                   <div key={index} className=" flex gap-2 items-center mb-4">
                     <h3 className="text-base text-primary">{feature.name}</h3>
                     <p className="text-red-500 text-sm">
-                      ( Select one option from the list )
+                      ( Select Any option from the list )
                     </p>
                   </div>
                 );

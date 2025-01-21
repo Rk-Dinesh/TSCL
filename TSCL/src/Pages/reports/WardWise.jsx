@@ -2,12 +2,27 @@ import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logo1.png";
 import axios from "axios";
 import { API } from "../../Host";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
 import "jspdf-autotable";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  AlignmentType,
+  WidthType,
+  BorderStyle,
+} from "docx";
+import { AiOutlineFileWord } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWard } from "../redux/slice/ward";
 
 const WardWise = () => {
+  const dispatch = useDispatch();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [ward, setWard] = useState("");
@@ -28,7 +43,10 @@ const WardWise = () => {
     };
 
     fetchData();
+    dispatch(fetchWard());
   }, []);
+
+  const Ward = useSelector((state) => state.ward);
 
   const handleSubmit = async () => {
     if (!startDate || !endDate || !ward) {
@@ -111,23 +129,116 @@ const WardWise = () => {
 
   const handleExportPDF = () => {
     const element = document.getElementById("report-section");
-  
+
     // Options for the html2pdf library
     const options = {
-      margin:       10,  // Margin for the PDF
-      filename:     "WardWiseReport.pdf", // Default filename
-      image:        { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
-      html2canvas:  { scale: 1.5 },  // Higher scale for better resolution
-      jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" } // PDF settings
+      margin: 10, // Margin for the PDF
+      filename: "WardWiseReport.pdf", // Default filename
+      image: { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
+      html2canvas: { scale: 1.5 }, // Higher scale for better resolution
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, // PDF settings
     };
-  
+
     // Generate PDF using html2pdf.js
-    html2pdf()
-      .from(element)
-      .set(options)
-      .save(); // Save the generated PDF
+    html2pdf().from(element).set(options).save(); // Save the generated PDF
   };
-  
+
+  const handleExportWord = () => {
+    const tableRows = [];
+
+    // Add the table header row
+    tableRows.push(
+      new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph("S.No")] }),
+          new TableCell({ children: [new Paragraph("Zone")] }),
+          new TableCell({ children: [new Paragraph("Ward")] }),
+          new TableCell({ children: [new Paragraph("Department")] }),
+          new TableCell({ children: [new Paragraph("Received")] }),
+          new TableCell({ children: [new Paragraph("Resolved")] }),
+          new TableCell({ children: [new Paragraph("Pending")] }),
+        ],
+      })
+    );
+
+    // Generate table rows from the report data
+    let serialNumber = 1;
+    report.forEach((zoneData) => {
+      zoneData.wards.forEach((wardData) => {
+        wardData.departments.forEach((departmentData) => {
+          tableRows.push(
+            new TableRow({
+              children: [
+                new TableCell({
+                  children: [new Paragraph(String(serialNumber++))],
+                }),
+                new TableCell({ children: [new Paragraph(zoneData.zone)] }),
+                new TableCell({ children: [new Paragraph(wardData.ward)] }),
+                new TableCell({
+                  children: [new Paragraph(departmentData.department)],
+                }),
+                new TableCell({
+                  children: [new Paragraph(String(departmentData.received))],
+                }),
+                new TableCell({
+                  children: [new Paragraph(String(departmentData.closed))],
+                }),
+                new TableCell({
+                  children: [new Paragraph(String(departmentData.pending))],
+                }),
+              ],
+            })
+          );
+        });
+      });
+    });
+
+    // Create the table
+    const table = new Table({
+      rows: tableRows,
+      width: {
+        size: 100,
+        type: WidthType.PERCENTAGE,
+      },
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      },
+    });
+
+    // Create the document
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [
+            new Paragraph({
+              text: "Madurai Municipal Corporation",
+              heading: "Heading1",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: "Ward Wise Report",
+              heading: "Heading2",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: `Report Date Range: ${startDate} to ${endDate}`,
+              alignment: AlignmentType.CENTER,
+            }),
+            table,
+          ],
+        },
+      ],
+    });
+
+    // Generate and download the Word document
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(blob, "Ward_Wise_Report.docx");
+    });
+  };
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -176,10 +287,12 @@ const WardWise = () => {
               className="outline-none border-2 border-gray-300 rounded-md py-2.5 px-4 w-full text-gray-500"
             >
               <option value="">Select a Ward</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="5">5</option>
-              <option value="11">11</option>
+              {Ward.data &&
+                Ward.data.map((option, index) => (
+                  <option key={index} value={option.ward_name}>
+                    {option.ward_name}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -195,6 +308,7 @@ const WardWise = () => {
             <option value="">Export</option>
             <option value="csv">CSV</option>
             <option value="pdf">PDF</option>
+            <option value="word">Word</option>
           </select>
           {selectedDoc === null && (
             <HiOutlineDocument className="text-2xl text-gray-500" />
@@ -209,6 +323,12 @@ const WardWise = () => {
             <PiFilePdfDuotone
               className="text-3xl text-gray-500"
               onClick={() => handleExportPDF()}
+            />
+          )}
+          {selectedDoc === "word" && (
+            <AiOutlineFileWord
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportWord()}
             />
           )}
           <button

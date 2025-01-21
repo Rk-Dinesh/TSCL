@@ -8,14 +8,27 @@ import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  AlignmentType,
+} from "docx";
+import { AiOutlineFileWord } from "react-icons/ai";
+import { fetchDepartment } from "../redux/slice/department";
+import { useDispatch, useSelector } from "react-redux";
 
 const DepartmentWise = () => {
+  const dispatch = useDispatch();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [department, setDepartment] = useState("");
   const [error, setError] = useState("");
   const [report, setReport] = useState([]);
-   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +43,10 @@ const DepartmentWise = () => {
     };
 
     fetchData();
+    dispatch(fetchDepartment());
   }, []);
+
+  const Department = useSelector((state) => state.department);
 
   const handleSubmit = async () => {
     if (!startDate || !endDate || !department) {
@@ -123,7 +139,86 @@ const DepartmentWise = () => {
       pdf.save("DepartmentWiseReport.pdf");
     });
   };
-  
+
+  const handleExportWord = () => {
+    const tableRows = report.map((data, index) => {
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph(String(index + 1))] }),
+          new TableCell({ children: [new Paragraph(data.department)] }),
+          new TableCell({
+            children: [new Paragraph(String(data.total.count))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.total.resolved))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.total.escalated))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.total.pending))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.repeated.count))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.repeated.resolved))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.repeated.escalated))],
+          }),
+        ],
+      });
+    });
+
+    const table = new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph("S.No")] }),
+            new TableCell({ children: [new Paragraph("Department")] }),
+            new TableCell({ children: [new Paragraph("Total Received")] }),
+            new TableCell({ children: [new Paragraph("Total Resolved")] }),
+            new TableCell({ children: [new Paragraph("Total Escalated")] }),
+            new TableCell({ children: [new Paragraph("Total Pending")] }),
+            new TableCell({ children: [new Paragraph("Repeated Received")] }),
+            new TableCell({ children: [new Paragraph("Repeated Resolved")] }),
+            new TableCell({ children: [new Paragraph("Repeated Escalated")] }),
+          ],
+        }),
+        ...tableRows,
+      ],
+    });
+
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [
+            new Paragraph({
+              text: "Madurai Municipal Corporation",
+              heading: "Heading1",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: "Department Wise Report",
+              heading: "Heading2",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: `Report Date Range: ${startDate} to ${endDate}`,
+              alignment: AlignmentType.CENTER,
+            }),
+            table,
+          ],
+        },
+      ],
+    });
+
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(blob, "Department_Wise_Report.docx");
+    });
+  };
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -171,8 +266,12 @@ const DepartmentWise = () => {
               className="outline-none border-2 border-gray-300 rounded-md py-2.5 px-4 w-full text-gray-500"
             >
               <option value="">Select a Department</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Public Health">Public Health</option>
+              {Department.data &&
+                Department.data.map((option, index) => (
+                  <option key={index} value={option.dept_name}>
+                    {option.dept_name}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -187,22 +286,29 @@ const DepartmentWise = () => {
             <option value="">Export</option>
             <option value="csv">CSV</option>
             <option value="pdf">PDF</option>
+            <option value="word">Word</option>
           </select>
-           {selectedDoc === null && (
-                  <HiOutlineDocument className="text-2xl text-gray-500" />
-                )}
-                {selectedDoc === "csv" && (
-                  <PiFileCsvLight
-                    className="text-3xl text-gray-500"
-                    onClick={() => handleExportCSV()}
-                  />
-                )}
-                {selectedDoc === "pdf" && (
-                  <PiFilePdfDuotone
-                    className="text-3xl text-gray-500"
-                    onClick={() => handleExportPDF()}
-                  />
-                )}
+          {selectedDoc === null && (
+            <HiOutlineDocument className="text-2xl text-gray-500" />
+          )}
+          {selectedDoc === "csv" && (
+            <PiFileCsvLight
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportCSV()}
+            />
+          )}
+          {selectedDoc === "pdf" && (
+            <PiFilePdfDuotone
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportPDF()}
+            />
+          )}
+          {selectedDoc === "word" && (
+            <AiOutlineFileWord
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportWord()}
+            />
+          )}
           <button
             onClick={handleSubmit}
             className="w-32 py-1.5 text-white outline-none bg-primary rounded-md"
@@ -242,94 +348,94 @@ const DepartmentWise = () => {
           </div>
         </div>
         <div className="overflow-auto">
-        <table className="w-full border-collapse border border-gray-300 text-sm mt-4">
-          <thead>
-            <tr className="bg-gray-100 text-gray-700">
-              <th
-                className="border border-gray-300 px-4 py-3 text-left"
-                rowSpan="1"
-              >
-                S.no
-              </th>
-              <th
-                className="border border-gray-300 px-4 py-3 text-left "
-                rowSpan="1"
-              >
-                Department
-              </th>
-              <th
-                className="border border-gray-300 px-4 py-3 text-center"
-                colSpan="4"
-              >
-                Total
-              </th>
-              <th
-                className="border border-gray-300 px-4 py-3 text-center"
-                colSpan="3"
-              >
-                Repeated
-              </th>
-            </tr>
-            <tr className="bg-gray-100 text-gray-500">
-              <th className="border border-gray-300 px-4 py-3 text-center"></th>
-              <th className="border border-gray-300 px-4 py-3 text-center"></th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Received
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Resolved
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Escalated
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Pending
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Received
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Resolved
-              </th>
-              <th className="border border-gray-300 px-4 py-3 text-center">
-                Escalated
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {report.map((data, index) => (
-              <tr key={index} className="text-gray-500">
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 px-4 py-3">
-                  {data.department}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.count}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.resolved}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.escalated}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.total.pending}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.repeated.count}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.repeated.resolved}
-                </td>
-                <td className="border border-gray-300 px-4 py-3 text-center">
-                  {data.repeated.escalated}
-                </td>
+          <table className="w-full border-collapse border border-gray-300 text-sm mt-4">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700">
+                <th
+                  className="border border-gray-300 px-4 py-3 text-left"
+                  rowSpan="1"
+                >
+                  S.no
+                </th>
+                <th
+                  className="border border-gray-300 px-4 py-3 text-left "
+                  rowSpan="1"
+                >
+                  Department
+                </th>
+                <th
+                  className="border border-gray-300 px-4 py-3 text-center"
+                  colSpan="4"
+                >
+                  Total
+                </th>
+                <th
+                  className="border border-gray-300 px-4 py-3 text-center"
+                  colSpan="3"
+                >
+                  Repeated
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              <tr className="bg-gray-100 text-gray-500">
+                <th className="border border-gray-300 px-4 py-3 text-center"></th>
+                <th className="border border-gray-300 px-4 py-3 text-center"></th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Received
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Resolved
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Escalated
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Pending
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Received
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Resolved
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Escalated
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.map((data, index) => (
+                <tr key={index} className="text-gray-500">
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3">
+                    {data.department}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.total.count}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.total.resolved}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.total.escalated}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.total.pending}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.repeated.count}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.repeated.resolved}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-3 text-center">
+                    {data.repeated.escalated}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         <div className="text-gray-600 text-xs my-3 text-center">
           <p>

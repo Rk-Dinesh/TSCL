@@ -7,9 +7,24 @@ import html2canvas from "html2canvas";
 import "jspdf-autotable";
 import html2pdf from "html2pdf.js";
 import { HiOutlineDocument } from "react-icons/hi";
+import { AiOutlineFileWord } from "react-icons/ai";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  AlignmentType,
+  WidthType,
+  BorderStyle,
+} from "docx";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchZone } from "../redux/slice/zone";
 
 const ZoneWise = () => {
+  const dispatch = useDispatch();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [zone, setZone] = useState("");
@@ -30,8 +45,10 @@ const ZoneWise = () => {
     };
 
     fetchData();
+    dispatch(fetchZone());
   }, []);
 
+  const Zone = useSelector((state) => state.zone);
   const handleSubmit = async () => {
     if (!startDate || !endDate || !zone) {
       setError("All fields are required.");
@@ -122,6 +139,101 @@ const ZoneWise = () => {
     html2pdf().from(element).set(options).save(); // Save the generated PDF
   };
 
+  const handleExportWord = () => {
+    const tableRows = [];
+
+    // Add the table header row
+    tableRows.push(
+      new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph("S.No")] }),
+          new TableCell({ children: [new Paragraph("Zone")] }),
+          new TableCell({ children: [new Paragraph("Department")] }),
+          new TableCell({ children: [new Paragraph("Received")] }),
+          new TableCell({ children: [new Paragraph("Resolved")] }),
+          new TableCell({ children: [new Paragraph("Pending")] }),
+        ],
+      })
+    );
+
+    // Generate table rows from the report data
+    let serialNumber = 1;
+    report.forEach((zoneData) => {
+     
+      zoneData.departments.forEach((departmentData) => {
+          tableRows.push(
+            new TableRow({
+              children: [
+                new TableCell({
+                  children: [new Paragraph(String(serialNumber++))],
+                }),
+                new TableCell({ children: [new Paragraph(zoneData.zone)] }),
+                new TableCell({
+                  children: [new Paragraph(departmentData.department)],
+                }),
+                new TableCell({
+                  children: [new Paragraph(String(departmentData.received))],
+                }),
+                new TableCell({
+                  children: [new Paragraph(String(departmentData.closed))],
+                }),
+                new TableCell({
+                  children: [new Paragraph(String(departmentData.pending))],
+                }),
+              ],
+            })
+          );
+        });
+      
+    });
+
+    // Create the table
+    const table = new Table({
+      rows: tableRows,
+      width: {
+        size: 100,
+        type: WidthType.PERCENTAGE,
+      },
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      },
+    });
+
+    // Create the document
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [
+            new Paragraph({
+              text: "Madurai Municipal Corporation",
+              heading: "Heading1",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: "Zone Wise Report",
+              heading: "Heading2",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: `Report Date Range: ${startDate} to ${endDate}`,
+              alignment: AlignmentType.CENTER,
+            }),
+            table,
+          ],
+        },
+      ],
+    });
+
+    // Generate and download the Word document
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(blob, "Zone_Wise_Report.docx");
+    });
+  };
+
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -169,8 +281,12 @@ const ZoneWise = () => {
               className="outline-none border-2 border-gray-300 rounded-md py-2.5 px-4 w-full text-gray-500"
             >
               <option value="">Select a Zone</option>
-              <option value="East Zone 1">East Zone 1</option>
-              <option value="North Zone 2">North Zone 2</option>
+              {Zone.data &&
+                Zone.data.map((option, index) => (
+                  <option key={index} value={option.zone_name}>
+                    {option.zone_name}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -186,6 +302,7 @@ const ZoneWise = () => {
             <option value="">Export</option>
             <option value="csv">CSV</option>
             <option value="pdf">PDF</option>
+            <option value="word">Word</option>
           </select>
           {selectedDoc === null && (
             <HiOutlineDocument className="text-2xl text-gray-500" />
@@ -200,6 +317,12 @@ const ZoneWise = () => {
             <PiFilePdfDuotone
               className="text-3xl text-gray-500"
               onClick={() => handleExportPDF()}
+            />
+          )}
+          {selectedDoc === "word" && (
+            <AiOutlineFileWord
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportWord()}
             />
           )}
           <button

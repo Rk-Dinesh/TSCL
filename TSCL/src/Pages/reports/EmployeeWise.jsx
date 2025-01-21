@@ -4,13 +4,26 @@ import axios from "axios";
 import { API } from "../../Host";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  AlignmentType,
+} from "docx";
+import { AiOutlineFileWord } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDepartment } from "../redux/slice/department";
 
 const EmployeeWise = () => {
+  const dispatch = useDispatch();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [department, setDepartment] = useState("");
@@ -31,7 +44,10 @@ const EmployeeWise = () => {
     };
 
     fetchData();
+    dispatch(fetchDepartment());
   }, []);
+
+  const Department = useSelector((state) => state.department);
 
   const handleSubmit = async () => {
     if (!startDate || !endDate || !department) {
@@ -113,21 +129,98 @@ const EmployeeWise = () => {
 
   const handleExportPDF = () => {
     const element = document.getElementById("report-section");
-  
+
     // Options for the html2pdf library
     const options = {
-      margin:       2,  // Margin for the PDF
-      filename:     "WardWiseReport.pdf", // Default filename
-      image:        { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
-      html2canvas:  { scale: 1.5 },  // Higher scale for better resolution
-      jsPDF:        { unit: "mm", format: "a4", orientation: "landscape" } // PDF settings
+      margin: 2, // Margin for the PDF
+      filename: "WardWiseReport.pdf", // Default filename
+      image: { type: "jpeg", quality: 0.75 }, // Image settings for html2canvas
+      html2canvas: { scale: 1.5 }, // Higher scale for better resolution
+      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" }, // PDF settings
     };
-  
+
     // Generate PDF using html2pdf.js
-    html2pdf()
-      .from(element)
-      .set(options)
-      .save(); // Save the generated PDF
+    html2pdf().from(element).set(options).save(); // Save the generated PDF
+  };
+
+  const handleExportWord = () => {
+    const tableRows = report.map((data, index) => {
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph(String(index + 1))] }),
+          new TableCell({ children: [new Paragraph(data.employeeName)] }),
+          new TableCell({
+            children: [new Paragraph(String(data.employeeId))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.department))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.zone))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.ward))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.received))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.closed))],
+          }),
+          new TableCell({
+            children: [new Paragraph(String(data.pending))],
+          }),
+        ],
+      });
+    });
+
+    const table = new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph("S.No")] }),
+            new TableCell({ children: [new Paragraph("Name")] }),
+            new TableCell({ children: [new Paragraph("ID")] }),
+            new TableCell({ children: [new Paragraph("Department")] }),
+            new TableCell({ children: [new Paragraph("Zone")] }),
+            new TableCell({ children: [new Paragraph("Ward")] }),
+            new TableCell({ children: [new Paragraph("Received")] }),
+            new TableCell({ children: [new Paragraph("Resolved")] }),
+            new TableCell({ children: [new Paragraph("Pending")] }),
+          ],
+        }),
+        ...tableRows,
+      ],
+    });
+
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [
+            new Paragraph({
+              text: "Madurai Municipal Corporation",
+              heading: "Heading1",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: "Employee Wise Report",
+              heading: "Heading2",
+              alignment: AlignmentType.CENTER,
+            }),
+            new Paragraph({
+              text: `Report Date Range: ${startDate} to ${endDate}`,
+              alignment: AlignmentType.CENTER,
+            }),
+            table,
+          ],
+        },
+      ],
+    });
+
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(blob, "Employee_Wise_Report.docx");
+    });
   };
 
   const setDocs = (event) => {
@@ -176,8 +269,12 @@ const EmployeeWise = () => {
               className="outline-none border-2 border-gray-300 rounded-md py-2.5 px-4 w-full text-gray-500"
             >
               <option value="">Select a Department</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Public Health">Public Health</option>
+              {Department.data &&
+                Department.data.map((option, index) => (
+                  <option key={index} value={option.dept_name}>
+                    {option.dept_name}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -192,6 +289,7 @@ const EmployeeWise = () => {
             <option value="">Export</option>
             <option value="csv">CSV</option>
             <option value="pdf">PDF</option>
+            <option value="word">Word</option>
           </select>
           {selectedDoc === null && (
             <HiOutlineDocument className="text-2xl text-gray-500" />
@@ -206,6 +304,12 @@ const EmployeeWise = () => {
             <PiFilePdfDuotone
               className="text-3xl text-gray-500"
               onClick={() => handleExportPDF()}
+            />
+          )}
+          {selectedDoc === "word" && (
+            <AiOutlineFileWord
+              className="text-3xl text-gray-500"
+              onClick={() => handleExportWord()}
             />
           )}
           <button
