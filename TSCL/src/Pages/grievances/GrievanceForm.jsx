@@ -859,8 +859,8 @@ const GrievanceForm = () => {
           </div>
         </div>
         <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
-          <h1 className="text-lg my-5">Telecaller Details & Grievance List</h1>
-          <div className=" bg-white shadow-sm border rounded-lg p-4">
+          <h1 className="text-lg my-5">Grievance List</h1>
+          {/* <div className=" bg-white shadow-sm border rounded-lg p-4">
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2 className="text-lg font-bold">Telecaller Details</h2>
             </div>
@@ -912,7 +912,7 @@ const GrievanceForm = () => {
                 </a>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white rounded-lg my-2 py-3 overflow-x-auto h-2/5 no-scrollbar">
             <table className="w-full mt-2 mx-3">
