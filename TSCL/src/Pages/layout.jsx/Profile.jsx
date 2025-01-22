@@ -203,7 +203,7 @@ const Profile = () => {
                     className="w-full md:w-80 text-start border-2 bg-gray-200  rounded-lg mx-2  px-2 py-2 outline-none text-gray-600"
                     placeholder="abc@gmail.com"
                     {...register("email")}
-                    readOnly
+                   
                   />
                 </div>
 

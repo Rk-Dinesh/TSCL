@@ -20,9 +20,7 @@ const AddAdminSchema = yup.object().shape({
     )
     .required("Phone Number is required"),
   email: yup
-    .string()
-    .email("Invalid Email Id")
-    .required("Email Id is required"),
+    .string(),
   address: yup.string().required("Address is required"),
 
   pincode: yup
@@ -43,6 +41,7 @@ const AddAdminSchema = yup.object().shape({
 const AddAdmin = (props) => {
   const { ExistingRoles, ExistingEmployees, isZone, isWard } = props;
   const [selectedRoleId, setSelectedRoleId] = useState("");
+  const [emp_id, setEmp_id] = useState('')
   const [filteredWards, setFilteredWards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,6 +89,7 @@ const AddAdmin = (props) => {
       setValue("email", selectedEmployee.email);
       setValue("address", selectedEmployee.address);
       setValue("pincode", selectedEmployee.pincode);
+      setEmp_id(selectedEmployee.emp_id);
     }
   };
 
@@ -107,6 +107,7 @@ const AddAdmin = (props) => {
       status: "active",
       created_by_user: localStorage.getItem("name"),
       role_id: selectedRoleId,
+      emp_id:emp_id,
     };
 
     try {
