@@ -242,7 +242,6 @@ const EmployeeWise = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Toggle sorting order
   };
 
-
   return (
     <div className="mx-3 my-3 overflow-y-auto ">
       <div className="bg-white rounded-lg font-lexend py-3 px-8">
@@ -392,18 +391,20 @@ const EmployeeWise = () => {
                   Received
                 </th>
                 <th
-  className={`border border-gray-300 px-4 py-3 text-center cursor-pointer hover:bg-gray-100 ${
-    sortOrder ? "text-blue-600 font-semibold" : "text-gray-700"
-  }`}
-  onClick={handleSort}
->
-  <div className="flex items-center justify-center gap-2">
-    Resolved
-    {sortOrder === "asc" && <FaArrowUp className="text-sm" />}
-    {sortOrder === "desc" && <FaArrowDown className="text-sm" />}
-    {!sortOrder && <FaSort className="text-sm text-gray-400" />}
-  </div>
-</th>
+                  className={`border border-gray-300 px-4 py-3 text-center cursor-pointer hover:bg-gray-100 ${
+                    sortOrder ? "text-blue-600 font-semibold" : "text-gray-700"
+                  }`}
+                  onClick={handleSort}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    Resolved
+                    {sortOrder === "asc" && <FaArrowUp className="text-sm" />}
+                    {sortOrder === "desc" && (
+                      <FaArrowDown className="text-sm" />
+                    )}
+                    {!sortOrder && <FaSort className="text-sm text-gray-400" />}
+                  </div>
+                </th>
                 <th className="border border-gray-300 px-4 py-3 text-center">
                   Pending
                 </th>
