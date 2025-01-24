@@ -490,6 +490,12 @@ const Request = ({ permissions, include, endpoint }) => {
                         Status <RiExpandUpDownLine />
                       </p>
                     </th>
+
+                    <th>
+                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
+                        Action <RiExpandUpDownLine />
+                      </p>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -609,6 +615,16 @@ const Request = ({ permissions, include, endpoint }) => {
                           }}
                         >
                           {report.status}
+                        </p>
+                      </td>
+                      <td>
+                        <p
+                          className=" w-16  bg-blue-400 text-white rounded-lg text-center py-0.5 my-1 mx-2   "
+                          onClick={() =>
+                            navigate(`/grievance-update?grievanceId=${report.grievance_id}`)
+                          }
+                        >
+                         Edit
                         </p>
                       </td>
                     </tr>

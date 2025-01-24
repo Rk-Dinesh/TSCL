@@ -13,6 +13,7 @@ import DepartmentWise from "./Pages/reports/DepartmentWise";
 import ZoneWise from "./Pages/reports/ZoneWise";
 import WardWise from "./Pages/reports/WardWise";
 import EmployeeWise from "./Pages/reports/EmployeeWise";
+import UpdateGrievanceForm from "./Pages/grievances/GrievanceUpdate";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -291,6 +292,7 @@ function App() {
                 />
                 <Route path="/form" element={<GrievanceForm />} />
                 <Route path="/view" element={<ViewRequest />} />
+                
               </>
             )}
             {memoizedFeatures["requestview1"] && (
@@ -306,6 +308,7 @@ function App() {
 
                 <Route path="/view" element={<ViewRequest />} />
                 <Route path="/form" element={<GrievanceForm />} />
+                <Route path="/grievance-update" element={<UpdateGrievanceForm />} />
               </>
             )}
 

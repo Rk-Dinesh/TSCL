@@ -62,6 +62,7 @@ const CombinedSchema = yup
 const GrievanceForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [Loading, setLoading] = useState(false)
   const [isSameAddress, setIsSameAddress] = useState(false);
   const [autoFillData, setAutoFillData] = useState(null);
   const [filteredWards, setFilteredWards] = useState([]);
@@ -254,6 +255,7 @@ const GrievanceForm = () => {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true)
     const userInfo = {
       public_user_name: data.public_user_name,
       phone: data.phone,
@@ -339,11 +341,12 @@ const GrievanceForm = () => {
       }
 
       reset();
-
+      setLoading(false)
       navigate(`/view?grievanceId=${grievanceId}`);
     } catch (error) {
       console.log(error);
       toast.error("An error occurred during submission. Please try again.");
+      setLoading(false)
     }
   };
 
@@ -362,8 +365,8 @@ const GrievanceForm = () => {
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
-    setValue("complaint_details", template.desc); // Assuming `setValue` is used to update the form field
-    setModalOpen(false); // Close the modal after selecting the template
+    setValue("complaint_details", template.desc); 
+    setModalOpen(false); 
   };
 
   const handleGrievanceClick = (grievanceId) => {
@@ -850,8 +853,9 @@ const GrievanceForm = () => {
                   <button
                     type="submit"
                     className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 mb-4"
+                    disabled={Loading}
                   >
-                    Submit
+                      {Loading ? 'Submitting Form...' : 'Submit'}
                   </button>
                 </div>
               </div>
@@ -859,8 +863,8 @@ const GrievanceForm = () => {
           </div>
         </div>
         <div className=" lg:col-span-6 md:col-span-12 col-span-12 font-lexend">
-          <h1 className="text-lg my-5">Grievance List</h1>
-          {/* <div className=" bg-white shadow-sm border rounded-lg p-4">
+          <h1 className="text-lg my-5">Telecaller & Grievance List</h1>
+          <div className=" bg-white shadow-sm border rounded-lg p-4">
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2 className="text-lg font-bold">Telecaller Details</h2>
             </div>
@@ -912,7 +916,7 @@ const GrievanceForm = () => {
                 </a>
               </div>
             </div>
-          </div> */}
+          </div>
 
           <div className="bg-white rounded-lg my-2 py-3 overflow-x-auto h-2/5 no-scrollbar">
             <table className="w-full mt-2 mx-3">
