@@ -1,102 +1,294 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { API } from "../../Host";
+import { fetchDepartment } from "../redux/slice/department";
+import { fetchZone } from "../redux/slice/zone";
+import decryptData from "../../Decrypt";
+import API_ENDPOINTS from "../../ApiEndpoints/api/ApiClient";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+const schema = yup.object().shape({
+  grievance_mode: yup.string().required("Grievance mode is required"),
+  dept_name: yup.string().required("Department is required"),
+  complaint: yup.string().required("Complaint is required"),
+  zone_name: yup.string().required("Zone is required"),
+  ward_name: yup.string().required("Ward is required"),
+  street_name: yup.string().required("Street is required"),
+  complaintaddress: yup
+    .string()
+    .required("Complaint address is required")
+    .min(5, "Address should have at least 5 characters"),
+  complaint_details: yup
+    .string()
+    .required("Complaint details are required")
+    .min(10, "Details should have at least 10 characters"),
+});
 
 const UpdateGrievanceForm = () => {
-  const [formData, setFormData] = useState({
-    grievance_mode: "",
-    dept_name: "",
-    complaint: "",
-    zone_name: "",
-    ward_name: "",
-    street_name: "",
-    complaintaddress: "",
-    complaint_details: "",
-  });
+  const navigate = useNavigate()
+  const grievanceId = new URLSearchParams(window.location.search).get(
+    "grievanceId"
+  );
 
-  const [options, setOptions] = useState({
-    grievanceModes: [],
-    departments: [],
-    complaints: [],
-    zones: [],
-    wards: [],
-    streets: [],
-  });
+  const [Departments, setDepartments] = useState([]);
+  const [Zone, setZone] = useState([]);
+  const [initialValues, setInitialValues] = useState(null)
 
-  // Fetch options for selects
   useEffect(() => {
-    // Fetch options from APIs or hard-code them
-    setOptions({
-      grievanceModes: ["Online", "Offline"],
-      departments: ["Sanitation", "Electricity", "Water"],
-      complaints: ["Broken Streetlight", "Garbage Overflow", "Potholes"],
-      zones: ["Zone 1", "Zone 2", "Zone 3"],
-      wards: ["Ward A", "Ward B", "Ward C"],
-      streets: ["Street 1", "Street 2", "Street 3"],
-    });
+    const fetchDepartment = async () => {
+      try {
+        const response = await axios.get(
+          API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.url,
+          {
+            headers: API_ENDPOINTS.GET_DEPT_DESIGNATIONACTIVE.headers,
+          }
+        );
+        const responseData = decryptData(response.data.data);
+        setDepartments(responseData);
+      } catch (error) {
+        console.error("Error fetching existing Departments:", error);
+      }
+    };
+
+    const fetchZones = async () => {
+      try {
+        const response = await axios.get(`${API}/zone/getactive`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const responseData = decryptData(response.data.data);
+        setZone(responseData);
+      } catch (error) {
+        console.error("Error fetching existing roles:", error);
+      }
+    };
+
+    fetchDepartment();
+    fetchZones();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      grievance_mode: "",
+      dept_name: "",
+      complaint: "",
+      zone_name: "",
+      ward_name: "",
+      street_name: "",
+      complaintaddress: "",
+      complaint_details: "",
+    },
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const [filteredWards, setFilteredWards] = useState([]);
+  const [filteredStreets, setFilteredStreets] = useState([]);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    axios
+      .get(`${API}/new-grievance/getbyid?grievance_id=${grievanceId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setInitialValues(responseData);
+        //console.log(responseData);
+
+        Object.keys(responseData).forEach((key) => {
+          setValue(key, responseData[key]);
+        });
+      })
+      .catch((error) => console.error("Error fetching grievance data:", error));
+  }, [grievanceId, setValue]);
+
+  const deptName = watch("dept_name");
+  const zoneName = watch("zone_name");
+  const wardName = watch("ward_name");
+
+  useEffect(() => {
+    if (deptName) {
+      axios
+        .get(`${API}/complaint/getdept?dept_name=${deptName}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setFilteredComplaints(responseData);
+          setValue("complaint", "");
+        })
+        .catch((error) => console.error("Error fetching complaints:", error));
+    } else {
+      setFilteredComplaints([]);
+    }
+  }, [deptName]);
+
+  useEffect(() => {
+    if (zoneName) {
+      axios
+        .get(`${API}/ward/getzone?zone_name=${zoneName}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setFilteredWards(responseData);
+          setValue("ward_name", "");
+        })
+        .catch((error) => console.error("Error fetching wards:", error));
+    } else {
+      setFilteredWards([]);
+      setFilteredStreets([]);
+    }
+  }, [zoneName]);
+
+  useEffect(() => {
+    if (wardName) {
+      axios
+        .get(`${API}/street/getward?ward_name=${wardName}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          const responseData = decryptData(response.data.data);
+          setFilteredStreets(responseData);
+          setValue("street_name", "");
+        })
+        .catch((error) => console.error("Error fetching streets:", error));
+    } else {
+      setFilteredStreets([]);
+    }
+  }, [wardName]);
+
+  const onSubmit = async (data) => {
     try {
+     
+      let logDetails = "";
+  
+      if (data.grievance_mode !== initialValues.grievance_mode) {
+        logDetails += `Grievance Mode changed from '${initialValues.grievance_mode}' to '${data.grievance_mode}'. `;
+      }
+      if (data.dept_name !== initialValues.dept_name) {
+        logDetails += `Department Name changed from '${initialValues.dept_name}' to '${data.dept_name}'. `;
+      }
+      if (data.complaint !== initialValues.complaint) {
+        logDetails += `Complaint changed from '${initialValues.complaint}' to '${data.complaint}'. `;
+      }
+      if (data.ward_name !== initialValues.ward_name) {
+        logDetails += `Ward Name changed from '${initialValues.ward_name}' to '${data.ward_name}'. `;
+      }
+      if (data.street_name !== initialValues.street_name) {
+        logDetails += `Street Name changed from '${initialValues.street_name}' to '${data.street_name}'. `;
+      }
+      if (data.complaintaddress !== initialValues.complaintaddress) {
+        logDetails += `Complaint Address changed from '${initialValues.complaintaddress}' to '${data.complaintaddress}'. `;
+      }
+      if (data.complaint_details !== initialValues.complaint_details) {
+        logDetails += `Complaint Details changed from '${initialValues.complaint_details}' to '${data.complaint_details}'. `;
+      }
+  
+      // If no changes were made, set a default message
+      if (!logDetails) {
+        logDetails = "No significant changes were made.";
+      }
+  
+      // Prepare formData for updating the grievance
+      const formData = {
+        grievance_mode: data.grievance_mode,
+        dept_name: data.dept_name,
+        complaint: data.complaint,
+        ward_name: data.ward_name,
+        street_name: data.street_name,
+        complaintaddress: data.complaintaddress,
+        complaint_details: data.complaint_details,
+      };
+  
+      // API call to update grievance
       const response = await axios.put(
-        `/update-grievance?grievance_id=your_grievance_id`,
-        formData
+        `${API}/new-grievance/update-grievance?grievance_id=${grievanceId}`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      alert("Grievance updated successfully");
-      console.log(response.data);
+  
+      toast.success("Grievance updated successfully!");
+  
+      // Log changes to grievance logs
+      await axios.post(
+        `${API}/grievance-log/post`,
+        {
+          grievance_id: grievanceId,
+          log_details: `${logDetails} by opertor ${localStorage.getItem('name')}`,
+          created_by_user: localStorage.getItem("name"),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Navigate back to the request view
+      navigate("/requestview1");
     } catch (error) {
       console.error("Error updating grievance:", error);
-      alert("Failed to update grievance");
+      toast.error("Failed to update grievance");
     }
   };
+  
 
   return (
-    <div className="max-w-5xl mx-8  bg-white shadow-md rounded-lg p-6 mt-8">
-      <h2 className="text-xl font-bold mb-6 text-gray-800">
-        Update Grievance
-      </h2>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-5xl mx-8 bg-white shadow-md rounded-lg p-6 mt-8 font-lexend">
+      <h2 className="text-xl font-bold mb-6 text-gray-800">Update Grievance</h2>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Grievance Mode
             </label>
-            <select
-              name="grievance_mode"
-              value={formData.grievance_mode}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
-            >
-              <option value="">Select</option>
-              {options.grievanceModes.map((mode) => (
-                <option key={mode} value={mode}>
-                  {mode}
-                </option>
-              ))}
-            </select>
+            <input
+              type="text"
+              {...register("grievance_mode")}
+              className="w-full border border-gray-300 bg-gray-200 rounded-lg p-2 outline-none"
+              readOnly
+            />
+            {errors.grievance_mode && (
+              <p className="text-red-500 text-sm">
+                {errors.grievance_mode.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Department
             </label>
             <select
-              name="dept_name"
-              value={formData.dept_name}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              {...register("dept_name")}
+              className="w-full border border-gray-300 rounded-lg p-2 outline-none"
             >
               <option value="">Select</option>
-              {options.departments.map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
+              {Departments &&
+                Departments.map((dept) => (
+                  <option key={dept.id} value={dept.dept_name}>
+                    {dept.dept_name}
+                  </option>
+                ))}
             </select>
+            {errors.dept_name && (
+              <p className="text-red-500 text-sm">{errors.dept_name.message}</p>
+            )}
           </div>
         </div>
 
@@ -106,36 +298,42 @@ const UpdateGrievanceForm = () => {
               Complaint
             </label>
             <select
-              name="complaint"
-              value={formData.complaint}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              {...register("complaint")}
+              className="w-full border border-gray-300 rounded-lg p-2 outline-none"
             >
               <option value="">Select</option>
-              {options.complaints.map((complaint) => (
-                <option key={complaint} value={complaint}>
-                  {complaint}
+              {filteredComplaints.map((complaint) => (
+                <option
+                  key={complaint.id}
+                  value={complaint.complaint_type_title}
+                >
+                  {complaint.complaint_type_title}
                 </option>
               ))}
             </select>
+            {errors.complaint && (
+              <p className="text-red-500 text-sm">{errors.complaint.message}</p>
+            )}
           </div>
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Zone
             </label>
             <select
-              name="zone_name"
-              value={formData.zone_name}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              {...register("zone_name")}
+              className="w-full border border-gray-300 rounded-lg p-2 outline-none"
             >
               <option value="">Select</option>
-              {options.zones.map((zone) => (
-                <option key={zone} value={zone}>
-                  {zone}
-                </option>
-              ))}
+              {Zone &&
+                Zone.map((zone) => (
+                  <option key={zone.id} value={zone.zone_name}>
+                    {zone.zone_name}
+                  </option>
+                ))}
             </select>
+            {errors.zone_name && (
+              <p className="text-red-500 text-sm">{errors.zone_name.message}</p>
+            )}
           </div>
         </div>
 
@@ -145,36 +343,40 @@ const UpdateGrievanceForm = () => {
               Ward
             </label>
             <select
-              name="ward_name"
-              value={formData.ward_name}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              {...register("ward_name")}
+              className="w-full border border-gray-300 rounded-lg p-2 outline-none"
             >
               <option value="">Select</option>
-              {options.wards.map((ward) => (
-                <option key={ward} value={ward}>
-                  {ward}
+              {filteredWards.map((ward) => (
+                <option key={ward.id} value={ward.ward_name}>
+                  {ward.ward_name}
                 </option>
               ))}
             </select>
+            {errors.ward_name && (
+              <p className="text-red-500 text-sm">{errors.ward_name.message}</p>
+            )}
           </div>
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Street
             </label>
             <select
-              name="street_name"
-              value={formData.street_name}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              {...register("street_name")}
+              className="w-full border border-gray-300 rounded-lg p-2 outline-none"
             >
               <option value="">Select</option>
-              {options.streets.map((street) => (
-                <option key={street} value={street}>
-                  {street}
+              {filteredStreets.map((street) => (
+                <option key={street.id} value={street.street_name}>
+                  {street.street_name}
                 </option>
               ))}
             </select>
+            {errors.street_name && (
+              <p className="text-red-500 text-sm">
+                {errors.street_name.message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -182,12 +384,16 @@ const UpdateGrievanceForm = () => {
           <label className="block mb-2 text-sm font-medium text-gray-700">
             Complaint Address
           </label>
-          <textarea
-            name="complaintaddress"
-            value={formData.complaintaddress}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-2"
-          ></textarea>
+          <input
+            type="text"
+            {...register("complaintaddress")}
+            className="w-full border border-gray-300 rounded-lg p-2 outline-none"
+          />
+          {errors.complaintaddress && (
+            <p className="text-red-500 text-sm">
+              {errors.complaintaddress.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -195,23 +401,25 @@ const UpdateGrievanceForm = () => {
             Complaint Details
           </label>
           <textarea
-            name="complaint_details"
-            value={formData.complaint_details}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-2"
-          ></textarea>
-        </div>
-        <div className="flex gap-3 justify-center">
-        <button
-          type="submit"
-          className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
-        >
-          Update 
-        </button>
-   
+            {...register("complaint_details")}
+            className="w-full border border-gray-300 rounded-lg p-2 outline-none"
+            rows="4"
+          />
+          {errors.complaint_details && (
+            <p className="text-red-500 text-sm">
+              {errors.complaint_details.message}
+            </p>
+          )}
         </div>
 
-       
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
+          >
+            Update Grievance
+          </button>
+        </div>
       </form>
     </div>
   );
