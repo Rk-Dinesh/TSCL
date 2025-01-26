@@ -315,7 +315,7 @@ const Request = ({ permissions, include, endpoint }) => {
     setSelectedRows([]);
   };
 
-    const toggleAModal = () => {
+  const toggleAModal = () => {
     setIsBulkassign(!isBulkassign);
     setSelectedRows([]);
   };
@@ -484,7 +484,7 @@ const Request = ({ permissions, include, endpoint }) => {
                         Date and Time <RiExpandUpDownLine />
                       </p>
                     </th>
-                    
+
                     <th>
                       <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
                         Status <RiExpandUpDownLine />
@@ -542,10 +542,7 @@ const Request = ({ permissions, include, endpoint }) => {
                       </td>
                       <td className="flex gap-1 items-center justify-center text-gray-700">
                         <img
-                          src={
-                            grievanceImages[report.grievance_mode] ||
-                            logo
-                          }
+                          src={grievanceImages[report.grievance_mode] || logo}
                           alt={report.grievance_mode}
                           className="w-6 h-6 mx-1.5 my-2 rounded-full"
                         />
@@ -588,7 +585,6 @@ const Request = ({ permissions, include, endpoint }) => {
                           {formatDate1(report.createdAt)}
                         </p>
                       </td>
-                     
 
                       {/* <td>
                       <p
@@ -618,14 +614,40 @@ const Request = ({ permissions, include, endpoint }) => {
                         </p>
                       </td>
                       <td>
-                        <p
-                          className=" w-16  bg-blue-400 text-white rounded-lg text-center py-0.5 my-1 mx-2   "
-                          onClick={() =>
-                            navigate(`/grievance-update?grievanceId=${report.grievance_id}`)
-                          }
-                        >
-                         Edit
-                        </p>
+                        {(() => {
+                          const updatedAt = new Date(report.createdAt);
+
+                          const today = new Date();
+
+                          const timeDifference = today - updatedAt;
+
+                          const daysDifference =
+                            timeDifference / (1000 * 60 * 60 * 24);
+
+                          return daysDifference <= 1 ? (
+                            <p
+                              className=" w-16  bg-blue-400 text-white rounded-lg text-center py-0.5 my-1 mx-2   "
+                              onClick={() =>
+                                navigate(
+                                  `/grievance-update?grievanceId=${report.grievance_id}`
+                                )
+                              }
+                            >
+                              Edit
+                            </p>
+                          ) : (
+                            <p
+                              className=" w-16  bg-red-400 text-white rounded-lg text-center py-0.5 my-1 mx-2   "
+                              onClick={() =>
+                                navigate(
+                                  `/view?grievanceId=${report.grievance_id}`
+                                )
+                              }
+                            >
+                              Read
+                            </p>
+                          );
+                        })()}
                       </td>
                     </tr>
                   ))}
@@ -655,7 +677,7 @@ const Request = ({ permissions, include, endpoint }) => {
           handlerefresh={handlerefresh}
         />
       )}
-       {isBulkassign && (
+      {isBulkassign && (
         <BulkAssign
           toggleAModal={toggleAModal}
           selectedRows={selectedRows}

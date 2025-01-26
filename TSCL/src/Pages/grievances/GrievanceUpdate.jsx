@@ -239,8 +239,6 @@ const UpdateGrievanceForm = () => {
           },
         }
       );
-  
-      // Navigate back to the request view
       navigate("/requestview1");
     } catch (error) {
       console.error("Error updating grievance:", error);
