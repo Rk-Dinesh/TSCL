@@ -40,6 +40,8 @@ const RoleAccessLevelForm = () => {
     { name: "Zone Report", value: "zonereport", checked: false },
     { name: "Ward Report", value: "wardreport", checked: false },
     { name: "Employee Report", value: "employeereport", checked: false },
+    { name: "Complaint Report", value: "complaintreport", checked: false },
+    { name: "Periodic Report", value: "periodicreport", checked: false },
   ]);
 
   const [errors, setErrors] = useState({

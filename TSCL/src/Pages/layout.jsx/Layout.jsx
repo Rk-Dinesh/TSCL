@@ -59,7 +59,7 @@ const Layout = ({ permissions }) => {
    
     permissions["escalate"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalate" },
     permissions["escalation"] && { title: "Escalation", icon: <AiFillAlert />, to: "/escalation" },
-    permissions["departmentreport"] || permissions["zonereport"] || permissions["wardreport"]|| permissions["employeereport"] ? {
+    permissions["departmentreport"] || permissions["zonereport"] || permissions["wardreport"]|| permissions["employeereport"] || permissions["periodicreport"]|| permissions["complaintreport"] ? {
       title: "Reports",
       icon: <MdModeComment />,
       submenu: true,
@@ -68,6 +68,8 @@ const Layout = ({ permissions }) => {
         permissions["zonereport"] && { title: "Zone Wise", to: "/zonewise" },
         permissions["wardreport"] && { title: "Ward Wise", to: "/wardwise" },
         permissions["employeereport"] && { title: "Employee Wise", to: "/employeewise" },
+        permissions["periodicreport"] && { title: "Periodic Wise", to: "/periodicwise" },
+        permissions["complaintreport"] && { title: "Complaint Wise", to: "/complaintwise" },
       ].filter(Boolean) 
     } : null,
     permissions["setting"] && { title: "Setting", icon: <IoMdSettings />, to: "/setting" },

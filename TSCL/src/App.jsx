@@ -15,6 +15,7 @@ import WardWise from "./Pages/reports/WardWise";
 import EmployeeWise from "./Pages/reports/EmployeeWise";
 import UpdateGrievanceForm from "./Pages/grievances/GrievanceUpdate";
 import PeriodicWise from "./Pages/reports/PeriodicWise";
+import ComplaintWise from "./Pages/reports/ComplaintWise";
 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
@@ -192,12 +193,22 @@ function App() {
                 }
               />
             )}
-            {memoizedFeatures["employeereport"] && (
+            {memoizedFeatures["periodicreport"] && (
               <Route
                 path="/periodicwise"
                 element={
                   <PeriodicWise
-                    permissions={memoizedFeatures["employeereport"]}
+                    permissions={memoizedFeatures["periodicreport"]}
+                  />
+                }
+              />
+            )}
+                {memoizedFeatures["complaintreport"] && (
+              <Route
+                path="/complaintwise"
+                element={
+                  <ComplaintWise
+                    permissions={memoizedFeatures["complaintreport"]}
                   />
                 }
               />
