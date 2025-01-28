@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOrigin } from "../redux/slice/origin";
 import logo from "../../assets/images/logo1.png";
 import BulkAssign from "../grievancesadmin/BulkAssign";
+import { FaPlus } from "react-icons/fa6";
 
 const Request = ({ permissions, include, endpoint }) => {
   const hasCreatePermission = permissions?.includes("create");
@@ -45,6 +46,8 @@ const Request = ({ permissions, include, endpoint }) => {
   const [isBulkassign, setIsBulkassign] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [grievanceImages, setGrievanceImages] = useState({});
+  const [selectedPhone, setSelectedPhone] = useState("");
+  const [hasPermission, setHasPermission] = useState(false);
 
   useEffect(() => {
     const fetchComplaintType = async () => {
@@ -107,6 +110,26 @@ const Request = ({ permissions, include, endpoint }) => {
 
     setFilteredGrievances(filteredCenters);
   }, [searchValue]);
+
+  useEffect(() => {
+    const storedPhone = localStorage.getItem("agentphone");
+    if (storedPhone) {
+      setHasPermission(true);
+    } else {
+      setHasPermission(false);
+    }
+  }, [selectedPhone]);
+
+  const handleSelectChange = (event) => {
+    const phone = event.target.value;
+    setSelectedPhone(phone);
+
+    if (phone) {
+      localStorage.setItem("agentphone", phone);
+    } else {
+      localStorage.removeItem("agentphone");
+    }
+  };
 
   useEffect(() => {
     const lastIndex = currentPage * itemsPerPage;
@@ -325,11 +348,35 @@ const Request = ({ permissions, include, endpoint }) => {
       <div className="">
         <div className="  font-lexend h-screen ">
           {include === "yes" && (
-            <HeaderButton
-              title="Grievances"
-              hasCreatePermission={hasCreatePermission}
-              onClick={handleform}
-            />
+            <div className="flex flex-row gap-1 justify-between items-center my-1 mx-8 flex-wrap">
+              <h1 className="md:text-xl text-lg font-medium whitespace-nowrap">
+                Grievances
+              </h1>
+              {hasCreatePermission && (
+                <div className="flex gap-3 items-center">
+                  <select
+                    className="border border-gray-300 rounded-lg px-2 py-2 text-gray-700 shadow-sm outline-none"
+                    value={selectedPhone}
+                    onChange={handleSelectChange}
+                  >
+                    <option value="" className="text-gray-400">
+                      Select Agent Number
+                    </option>
+                    <option value="9655601220">9655601220</option>
+                    <option value="7708209937">7708209937</option>
+                  </select>
+
+                  {hasPermission && (
+                    <button
+                      className="flex flex-row gap-2 font-lexend items-center border bg-primary text-white rounded-full py-2 px-3 justify-between mb-2 md:text-base text-sm shadow-md"
+                      onClick={handleform}
+                    >
+                      <FaPlus className="text-sm" /> Add Grievances
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           )}
           <div className="flex flex-row  gap-3 p-2 mt-1 mx-4 flex-wrap md:justify-between items-center ">
             <div className="flex gap-3">
