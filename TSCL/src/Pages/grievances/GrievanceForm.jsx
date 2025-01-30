@@ -62,7 +62,7 @@ const CombinedSchema = yup
 const GrievanceForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [Loading, setLoading] = useState(false)
+  const [Loading, setLoading] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
   const [autoFillData, setAutoFillData] = useState(null);
   const [filteredWards, setFilteredWards] = useState([]);
@@ -72,13 +72,13 @@ const GrievanceForm = () => {
   const [files, setFiles] = useState([]);
   const [translatedLan, setTranslatedLan] = useState("");
   const token = localStorage.getItem("token");
-
   const [grievance, setGrievance] = useState([]);
-
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
   const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
+  const [alohaa, setAlohaa] = useState("");
+  const [manualAlohaa, setManualAlohaa] = useState("");
 
   useEffect(() => {
     dispatch(fetchDepartment());
@@ -165,57 +165,145 @@ const GrievanceForm = () => {
     }
   }, [wardName]);
 
+  // useEffect(() => {
+  //   if (contactNumber && contactNumber.length === 10) {
+  //     async function fetchAutoFillData() {
+  //       try {
+  //         const response = await axios.get(
+  //           `${API}/public-user/getbyphone?phone=${contactNumber}`,
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           }
+  //         );
+  //         const responseData = decryptData(response.data.data);
+  //         const autoFillData = responseData;
+  //         setValue("public_user_name", autoFillData.public_user_name);
+  //         setValue("email", autoFillData.email);
+  //         setValue("address", autoFillData.address);
+  //         setValue("pincode", autoFillData.pincode);
+  //         setAutoFillData(autoFillData);
+  //       } catch (error) {
+  //         setAutoFillData(null);
+  //       }
+  //     }
+  //     fetchAutoFillData();
+  //   } else {
+  //     setValue("public_user_name", "");
+  //     setValue("email", "");
+  //     setValue("address", "");
+  //     setValue("pincode", "");
+  //     setAutoFillData(null);
+  //   }
+  // }, [contactNumber]);
+
+  // useEffect(() => {
+  //   if (contactNumber && contactNumber.length === 10) {
+  //     axios
+  //       .get(`${API}/new-grievance/getbyphone?phone=${contactNumber}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         const responseData = decryptData(response.data.data);
+  //         setGrievance(responseData);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       });
+  //   } else {
+  //     setGrievance([]);
+  //   }
+  // }, [contactNumber]);
+
+  //   useEffect(() => {
+  //   if (contactNumber && contactNumber.length === 10) {
+  //     const fetchManualAlohaa = async () => {
+  //       try {
+  //         const agentPhone = localStorage.getItem("agentphone");
+  //         if (!contactNumber || !agentPhone) return;
+
+  //         const response = await axios.get(`${API}/alohaa/lastuser?caller_number=${contactNumber}`);
+  //         const responseData = response.data.data;
+
+  //         if (responseData.agentNumber === agentPhone) {
+  //           setManualAlohaa(responseData.lastCallerNumber);
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching manual alohaa:", error);
+  //       }
+  //     };
+
+  //     if (!alohaa) {
+  //       fetchManualAlohaa();
+  //     }
+  //   }
+  // }, [contactNumber]);
+
   useEffect(() => {
-    if (contactNumber && contactNumber.length === 10) {
-      async function fetchAutoFillData() {
-        try {
-          const response = await axios.get(
-            `${API}/public-user/getbyphone?phone=${contactNumber}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const responseData = decryptData(response.data.data);
-          const autoFillData = responseData;
-          setValue("public_user_name", autoFillData.public_user_name);
-          setValue("email", autoFillData.email);
-          setValue("address", autoFillData.address);
-          setValue("pincode", autoFillData.pincode);
-          setAutoFillData(autoFillData);
-        } catch (error) {
-          setAutoFillData(null);
-        }
-      }
-      fetchAutoFillData();
-    } else {
+    if (!contactNumber || contactNumber.length !== 10) {
       setValue("public_user_name", "");
       setValue("email", "");
       setValue("address", "");
       setValue("pincode", "");
       setAutoFillData(null);
-    }
-  }, [contactNumber]);
-
-  useEffect(() => {
-    if (contactNumber && contactNumber.length === 10) {
-      axios
-        .get(`${API}/new-grievance/getbyphone?phone=${contactNumber}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const responseData = decryptData(response.data.data);
-          setGrievance(responseData);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
       setGrievance([]);
+      setManualAlohaa("");
+      return;
     }
+
+    const fetchAutoFillData = axios
+      .get(`${API}/public-user/getbyphone?phone=${contactNumber}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setValue("public_user_name", responseData.public_user_name);
+        setValue("email", responseData.email);
+        setValue("address", responseData.address);
+        setValue("pincode", responseData.pincode);
+        setAutoFillData(responseData);
+      })
+      .catch(() => setAutoFillData(null));
+
+    const fetchGrievanceData = axios
+      .get(`${API}/new-grievance/getbyphone?phone=${contactNumber}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setGrievance(responseData);
+      })
+      .catch(() => setGrievance([]));
+
+    const fetchManualAlohaa = async () => {
+      try {
+        if (!alohaa) {
+          const agentPhone = localStorage.getItem("agentphone");
+          if (!agentPhone) return;
+
+          const response = await axios.get(
+            `${API}/alohaa/lastuser?caller_number=${contactNumber}`
+          );
+          const responseData = response.data.data;
+
+          if (responseData.agentNumber === agentPhone) {
+            setManualAlohaa(responseData);
+          //  console.log(responseData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching manual alohaa:", error);
+        setManualAlohaa("");
+        setAlohaa("");
+      }
+    };
+
+    Promise.all([fetchAutoFillData, fetchGrievanceData]).then(() =>
+      fetchManualAlohaa()
+    );
   }, [contactNumber]);
 
   useEffect(() => {
@@ -244,6 +332,26 @@ const GrievanceForm = () => {
     }
   }, [deptName, complaintName]);
 
+  const callerDetails = async () => {
+    try {
+      const Agent = localStorage.getItem("agentphone");
+      const response = await axios.get(
+        `${API}/alohaa/lastcall?receiver_number=${Agent}`
+      );
+      const responseData = response.data.data;
+      setAlohaa(responseData);
+     // console.log(responseData);
+      setValue("phone", responseData.lastCallerNumber);
+      toast.success(` Incoming Call on ${responseData.lastCallerNumber}`);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setAlohaa("");
+      setManualAlohaa("")
+      setValue("phone", "");
+      toast.error("No Incoming Call Found");
+    }
+  };
+
   const handleFileChange = (e) => {
     const files = e.target.files;
     if (files.length > 5) {
@@ -255,7 +363,7 @@ const GrievanceForm = () => {
   };
 
   const onSubmit = async (data) => {
-    setLoading(true)
+    setLoading(true);
     const userInfo = {
       public_user_name: data.public_user_name,
       phone: data.phone,
@@ -290,7 +398,13 @@ const GrievanceForm = () => {
       phone: data.phone,
       operator: localStorage.getItem("name"),
       operator_id: localStorage.getItem("code"),
+      is_call_id: alohaa.call_id
+        ? alohaa.call_id
+        : manualAlohaa.call_id
+        ? manualAlohaa.call_id
+        : "",
     };
+    console.log(grievanceDetails);
 
     try {
       const response1 = await axios.post(
@@ -341,12 +455,12 @@ const GrievanceForm = () => {
       }
 
       reset();
-      setLoading(false)
+      setLoading(false);
       navigate(`/view?grievanceId=${grievanceId}`);
     } catch (error) {
       console.log(error);
       toast.error("An error occurred during submission. Please try again.");
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -365,8 +479,8 @@ const GrievanceForm = () => {
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
-    setValue("complaint_details", template.desc); 
-    setModalOpen(false); 
+    setValue("complaint_details", template.desc);
+    setModalOpen(false);
   };
 
   const handleGrievanceClick = (grievanceId) => {
@@ -855,7 +969,7 @@ const GrievanceForm = () => {
                     className=" text-white bg-primary text-base font-lexend rounded-full px-4 py-1.5 mb-4"
                     disabled={Loading}
                   >
-                      {Loading ? 'Submitting Form...' : 'Submit'}
+                    {Loading ? "Submitting Form..." : "Submit"}
                   </button>
                 </div>
               </div>
@@ -881,9 +995,14 @@ const GrievanceForm = () => {
                   type="text"
                   id="telecallerNo"
                   placeholder="1234567890"
-                  className="flex-1 border rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={localStorage.getItem("agentphone") || 1234567890}
+                  className=" w-1/2 border rounded-md px-6 py-2 text-gray-700  ring-2 ring-blue-500 "
+                  readOnly
                 />
-                <button className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
+                <button
+                  className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                  onClick={() => callerDetails()}
+                >
                   <FaSearch />
                 </button>
               </div>
@@ -891,29 +1010,27 @@ const GrievanceForm = () => {
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="telecallerName"
-                  className="w-32 text-gray-600 font-medium"
+                  className="w-36 text-gray-600 font-medium"
                 >
                   Telecaller Name
                 </label>
-                <span className="text-gray-700">
+                <span className="text-slate-900">
                   {localStorage.getItem("name")}
                 </span>
               </div>
+
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="recordedLink"
-                  className="w-32 text-gray-600 font-medium"
+                  className="w-36 text-gray-600 font-medium"
                 >
-                  Recorded Link
+                  Caller Number
                 </label>
-                <a
-                  href="https://www.google.co.in/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  https://www.google.co.in/
-                </a>
+                {alohaa ? (
+                  <p>{alohaa.lastCallerNumber}</p>
+                ) : (
+                  <p>No Incoming calls Found</p>
+                )}
               </div>
             </div>
           </div>

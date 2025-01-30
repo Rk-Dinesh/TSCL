@@ -90,7 +90,7 @@ const Request = ({ permissions, include, endpoint }) => {
         },
       });
       const responseData = decryptData(response.data.data);
-      setReport(responseData);
+      setReport(responseData);      
       const filteredCenters = responseData.filter((grievances) =>
         Object.values(grievances).some((value) =>
           value.toString().toLowerCase().includes(searchValue.toLowerCase())
@@ -360,7 +360,7 @@ const Request = ({ permissions, include, endpoint }) => {
                     onChange={handleSelectChange}
                   >
                     <option value="" className="text-gray-400">
-                      Select Agent Number
+                      {localStorage.getItem("agentphone")? `${localStorage.getItem("agentphone")}` : "Select Agent Number"}
                     </option>
                     <option value="9655601220">9655601220</option>
                     <option value="7708209937">7708209937</option>
