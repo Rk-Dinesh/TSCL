@@ -48,6 +48,7 @@ const Request = ({ permissions, include, endpoint }) => {
   const [grievanceImages, setGrievanceImages] = useState({});
   const [selectedPhone, setSelectedPhone] = useState("");
   const [hasPermission, setHasPermission] = useState(false);
+  const [Agent, setAgent] = useState([])
 
   useEffect(() => {
     const fetchComplaintType = async () => {
@@ -64,8 +65,23 @@ const Request = ({ permissions, include, endpoint }) => {
       }
     };
 
+    const fetchAgent = async () => {
+      try {
+        const response = await axios.get(`${API}/alohaagent/getall`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const responseData = decryptData(response.data.data);
+        setAgent(responseData);
+      } catch (error) {
+        console.error("Error fetching existing Complainttype:", error);
+      }
+    };
+
     handlerefresh();
     fetchComplaintType();
+    fetchAgent()
     fetchActiveStatus();
     dispatch(fetchOrigin());
   }, []);
@@ -362,8 +378,12 @@ const Request = ({ permissions, include, endpoint }) => {
                     <option value="" className="text-gray-400">
                       {localStorage.getItem("agentphone")? `${localStorage.getItem("agentphone")}` : "Select Agent Number"}
                     </option>
-                    <option value="9655601220">9655601220</option>
-                    <option value="7708209937">7708209937</option>
+                    {Agent &&
+                          Agent.map((option, index) => (
+                            <option key={index} value={option.caller_number}>
+                              {option.agent_name}
+                            </option>
+                          ))}
                   </select>
 
                   {hasPermission && (

@@ -8,7 +8,8 @@ import Layout from "./Pages/layout.jsx/Layout";
 import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
-import axios from "axios"; 
+import axios from "axios";
+import AlohaAgent from "./Pages/alohaaAgent/AlohaAgent";
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -21,7 +22,9 @@ const DepartmentWise = lazy(() => import("./Pages/reports/DepartmentWise"));
 const ZoneWise = lazy(() => import("./Pages/reports/ZoneWise"));
 const WardWise = lazy(() => import("./Pages/reports/WardWise"));
 const EmployeeWise = lazy(() => import("./Pages/reports/EmployeeWise"));
-const UpdateGrievanceForm = lazy(() => import("./Pages/grievances/GrievanceUpdate"));
+const UpdateGrievanceForm = lazy(() =>
+  import("./Pages/grievances/GrievanceUpdate")
+);
 const PeriodicWise = lazy(() => import("./Pages/reports/PeriodicWise"));
 const ComplaintWise = lazy(() => import("./Pages/reports/ComplaintWise"));
 const MissedCall = lazy(() => import("./Pages/grievances/MissedCall"));
@@ -234,6 +237,15 @@ function App() {
                   <Organization
                     permissions={memoizedFeatures["organization"]}
                   />
+                }
+              />
+            )}
+
+            {memoizedFeatures["alohaagent"] && (
+              <Route
+                path="/agent"
+                element={
+                  <AlohaAgent permissions={memoizedFeatures["alohaagent"]} />
                 }
               />
             )}

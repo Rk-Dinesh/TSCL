@@ -10,7 +10,7 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { ImUserCheck } from "react-icons/im";
 import { GoOrganization } from "react-icons/go";
-import { MdModeComment, MdOutlineContactSupport } from "react-icons/md";
+import { MdModeComment, MdOutlineContactSupport, MdSupportAgent } from "react-icons/md";
 import { BsShieldExclamation } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
@@ -44,6 +44,7 @@ const Layout = ({ permissions }) => {
     } : null,
     permissions["enquiryresource"] && { title: "Enquiry Resource", icon: <MdModeComment />, to: "/origin" },
     permissions["complainttype"] && { title: "Complaint Type", icon: <CiBoxList />, to: "/complainttype" },
+    permissions["alohaagent"] && { title: "Agent Configure", icon: <MdSupportAgent />, to: "/agent" },
     permissions["status"] && { title: "Status", icon: <FaAlignRight />, to: "/status" },
     permissions["complaint"] && { title: "Complaint", icon: <MdOutlineContactSupport />, to: "/complaint" },
     permissions["template"] && { title: "Template", icon: <CgTemplate />, to: "/template" },
