@@ -8,15 +8,7 @@ import Layout from "./Pages/layout.jsx/Layout";
 import NotFound from "./404";
 import decryptData from "./Decrypt";
 import { API } from "./Host";
-import axios from "axios";
-import DepartmentWise from "./Pages/reports/DepartmentWise";
-import ZoneWise from "./Pages/reports/ZoneWise";
-import WardWise from "./Pages/reports/WardWise";
-import EmployeeWise from "./Pages/reports/EmployeeWise";
-import UpdateGrievanceForm from "./Pages/grievances/GrievanceUpdate";
-import PeriodicWise from "./Pages/reports/PeriodicWise";
-import ComplaintWise from "./Pages/reports/ComplaintWise";
-
+import axios from "axios"; 
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -25,6 +17,14 @@ const Zone = lazy(() => import("./Pages/locality/zone/Zone"));
 const Ward = lazy(() => import("./Pages/locality/ward/Ward"));
 const Street = lazy(() => import("./Pages/locality/street/Street"));
 const Complaint = lazy(() => import("./Pages/complaint/Complaint"));
+const DepartmentWise = lazy(() => import("./Pages/reports/DepartmentWise"));
+const ZoneWise = lazy(() => import("./Pages/reports/ZoneWise"));
+const WardWise = lazy(() => import("./Pages/reports/WardWise"));
+const EmployeeWise = lazy(() => import("./Pages/reports/EmployeeWise"));
+const UpdateGrievanceForm = lazy(() => import("./Pages/grievances/GrievanceUpdate"));
+const PeriodicWise = lazy(() => import("./Pages/reports/PeriodicWise"));
+const ComplaintWise = lazy(() => import("./Pages/reports/ComplaintWise"));
+const MissedCall = lazy(() => import("./Pages/grievances/MissedCall"));
 const ComplaintType = lazy(() =>
   import("./Pages/complaint_type/ComplaintType")
 );
@@ -331,6 +331,7 @@ function App() {
 
                 <Route path="/view" element={<ViewRequest />} />
                 <Route path="/form" element={<GrievanceForm />} />
+                <Route path="/missedcalls" element={<MissedCall />} />
                 <Route
                   path="/grievance-update"
                   element={<UpdateGrievanceForm />}

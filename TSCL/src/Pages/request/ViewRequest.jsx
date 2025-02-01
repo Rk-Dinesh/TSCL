@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Logo from "../../assets/images/logo1.png";
+import { MdOutlinePlayCircle } from "react-icons/md";
 
 const ViewRequest = () => {
   const [isContentVisible, setContentVisible] = useState(false);
@@ -35,6 +36,8 @@ const ViewRequest = () => {
   const navigate = useNavigate();
   const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
   const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     const fetchDataFile = async () => {
@@ -80,6 +83,32 @@ const ViewRequest = () => {
     fetchLog();
     fetchDataFileWorksheet();
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (audioRef.current && !audioRef.current.contains(event.target)) {
+        setIsPlaying(false);
+      }
+    }
+
+    function handleTabChange() {
+      if (document.hidden) {
+        setIsPlaying(false);
+      }
+    }
+    if (isPlaying) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("visibilitychange", handleTabChange);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("visibilitychange", handleTabChange);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("visibilitychange", handleTabChange);
+    };
+  }, [isPlaying]);
 
   const fetchLog = async () => {
     try {
@@ -193,277 +222,283 @@ const ViewRequest = () => {
   const handleDownloadPDF = () => {
     setContentVisible(true);
 
-    const element = pdfContentRef.current; 
+    const element = pdfContentRef.current;
     element.style.visibility = "visible";
-    html2canvas(element, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("portrait", "mm", "a4");
+    html2canvas(element, { scale: 2 })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("portrait", "mm", "a4");
 
-      const imgWidth = 210; 
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("Acknowledgement_Form.pdf");
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        pdf.save("Acknowledgement_Form.pdf");
 
-      setContentVisible(false); 
-      element.style.visibility = "hidden"; 
-    }).catch((err) => {
-      console.error("Error generating canvas for PDF:", err);
-      setContentVisible(false);
-      element.style.visibility = "hidden"; 
-    });
+        setContentVisible(false);
+        element.style.visibility = "hidden";
+      })
+      .catch((err) => {
+        console.error("Error generating canvas for PDF:", err);
+        setContentVisible(false);
+        element.style.visibility = "hidden";
+      });
   };
 
   return (
     <Fragment>
-     
       <div className="h-screen overflow-y-auto no-scrollbar">
-      <div className="px-6 ">
-      <div
-        ref={pdfContentRef} 
-        style={{
-          visibility: "hidden",
-          position: "absolute", 
-          top: "-9999px", 
-          left: "-9999px",
-        }}
-      >
-        <div
-          className=" mx-6 my-4 bg-white border border-black p-4"
-          style={{
-            width: "600px",
-            fontFamily: "Arial",
-            borderRadius: "12px", 
-            border: "2px solid black",
-          }}
-        >
-          <div className="flex justify-between">
-            <img src={Logo} alt="Madurai Logo" className="size-20" />
-            <div className="text-center">
-              <h2 style={{ fontSize: "16px", fontWeight: "bold" }}>
-                INTEGRATED COMPLAINT TRACKING SYSTEM
-              </h2>
-              <p className="mb-4">Acknowledgement Form</p>
+        <div className="px-6 ">
+          <div
+            ref={pdfContentRef}
+            style={{
+              visibility: "hidden",
+              position: "absolute",
+              top: "-9999px",
+              left: "-9999px",
+            }}
+          >
+            <div
+              className=" mx-6 my-4 bg-white border border-black p-4"
+              style={{
+                width: "600px",
+                fontFamily: "Arial",
+                borderRadius: "12px",
+                border: "2px solid black",
+              }}
+            >
+              <div className="flex justify-between">
+                <img src={Logo} alt="Madurai Logo" className="size-20" />
+                <div className="text-center">
+                  <h2 style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    INTEGRATED COMPLAINT TRACKING SYSTEM
+                  </h2>
+                  <p className="mb-4">Acknowledgement Form</p>
+                </div>
+              </div>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginTop: "10px",
+                }}
+              >
+                <tbody className="text-xs">
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Acknowledgment Number:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.grievance_id}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Complaint Date:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {formatDate2(data.createdAt)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Applicant Name:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.public_user_name}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Address:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.street_name}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Zone:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.zone_name}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Ward:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.ward_name}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Mobile Number:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.phone}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Grievance Type:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.complaint}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="font-semibold text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                      }}
+                    >
+                      Description:
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.complaint_details}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table
+                className="text-xs"
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginTop: "10px",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th
+                      className="text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Assigned To
+                    </th>
+                    <th
+                      className="text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Zone
+                    </th>
+                    <th
+                      className="text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Ward No
+                    </th>
+                    <th
+                      className="text-nowrap"
+                      style={{
+                        border: "1px solid black",
+                        padding: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Complaint Location
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      style={{ border: "1px solid black", padding: "8px" }}
+                      colSpan={1}
+                    >
+                      {data.assign_username
+                        ? data.assign_username
+                        : "yet to be assigned"}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.zone_name}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.ward_name}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {data.street_name}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              marginTop: "10px",
-            }}
-          >
-            <tbody className="text-xs">
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Acknowledgment Number:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {data.grievance_id}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Complaint Date:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {formatDate2(data.createdAt)}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Applicant Name:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.public_user_name}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Address:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.street_name}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Zone:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.zone_name}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Ward:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.ward_name}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Mobile Number:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.phone}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                  }}
-                >
-                  Grievance Type:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.complaint}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  className="font-semibold text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                  }}
-                >
-                  Description:
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.complaint_details}
-                </td>
-              </tr>
-            </tbody>
-          </table>
 
-
-          <table
-            className="text-xs"
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              marginTop: "10px",
-            }}
-          >
-            <thead>
-              <tr>
-                <th
-                  className="text-nowrap"
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    textAlign: "center",
-                  }}
-                >
-                  Assigned To
-                </th>
-                <th
-                  className="text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                    textAlign: "center",
-                  }}
-                >
-                  Zone
-                </th>
-                <th
-                  className="text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                    textAlign: "center",
-                  }}
-                >
-                  Ward No
-                </th>
-                <th
-                  className="text-nowrap"
-                  style={{
-                    border: "1px solid black", 
-                    padding: "8px",
-                    textAlign: "center",
-                  }}
-                >
-                  Complaint Location
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td
-                  style={{ border: "1px solid black", padding: "8px" }}
-                  colSpan={1}
-                >
-                 {data.assign_username? data.assign_username : "yet to be assigned"}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>{data.zone_name}</td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>{data.ward_name}</td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                 {data.street_name}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="flex justify-end">
+            <button
+              onClick={handleDownloadPDF}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 "
+            >
+              Download Acknowledgement
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="flex justify-end">
-      <button
-        onClick={handleDownloadPDF}
-        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 "
-      >
-        Download Acknowledgement
-      </button>
-      </div>
-    </div>
         <div className="md:mx-6 mx-2  my-5 font-lexend">
           <div className="flex justify-between">
             <p>Complaint Details #{data.grievance_id}</p>
@@ -542,60 +577,81 @@ const ViewRequest = () => {
             <hr />
             <div className="grid grid-cols-12 gap-2 mx-3 my-4">
               <div className="md:col-span-6 col-span-12 border px-2 py-3 rounded">
-                <p className="pt-2 text-lg">Grievance Details</p>
+                <p className="pt-2 text-lg ">Grievance Details</p>
                 <hr className="my-3" />
                 <div className="flex flex-col gap-3 mx-2 text-base">
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Origin </p>
+                    <p className="col-span-2 font-semibold">Origin </p>
                     <p className="col-span-2 capitalize">
                       : {data.grievance_mode}
                     </p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Complaint Type </p>
+                    <p className="col-span-2 font-semibold">Complaint Type </p>
                     <p className="col-span-2 capitalize">
                       : {data.complaint_type_title}
                     </p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Department </p>
+                    <p className="col-span-2 font-semibold">Department </p>
                     <p className="col-span-2 capitalize">: {data.dept_name}</p>
                   </div>
 
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Complaint </p>
+                    <p className="col-span-2 font-semibold">Complaint </p>
                     <p className="col-span-2 capitalize">: {data.complaint}</p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Zone </p>
+                    <p className="col-span-2 font-semibold">Zone </p>
                     <p className="col-span-2 capitalize">: {data.zone_name}</p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Ward </p>
+                    <p className="col-span-2 font-semibold">Ward </p>
                     <p className="col-span-2 capitalize">: {data.ward_name}</p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Street </p>
+                    <p className="col-span-2 font-semibold">Street </p>
                     <p className="col-span-2 capitalize">
                       : {data.street_name}
                     </p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Pincode </p>
+                    <p className="col-span-2 font-semibold">Pincode </p>
                     <p className="col-span-2 capitalize">: {data.pincode}</p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Complaint Address: </p>
+                    <p className="col-span-2 font-semibold">Complaint Address: </p>
                     <p className="col-start-1 col-span-4 mt-2 capitalize">
                       {data.complaintaddress}
                     </p>
                   </div>
                   <div className="grid grid-cols-4">
-                    <p className="col-span-2">Description: </p>
+                    <p className="col-span-2 font-semibold">Description: </p>
                     <p className="col-start-1 col-span-4 mt-2 capitalize">
                       {data.complaint_details}
                     </p>
                   </div>
+                  {data.is_call_recording_url !== "" ? (
+                    <div className="flex items-center gap-2 font-semibold">
+                      Call Recording:
+                      <p className="flex items-center" ref={audioRef}>
+                        {!isPlaying ? (
+                          <button onClick={() => setIsPlaying(true)} className=" flex  text-blue-500">
+                           <MdOutlinePlayCircle className="size-6 mx-3  " />
+                           Recording Url
+                          </button>
+                        ) : (
+                          <audio controls autoPlay className="h-10 ">
+                            <source
+                              src={data.is_call_recording_url}
+                              type="audio/wav"
+                            />
+                            Your browser does not support the audio element.
+                          </audio>
+                        )}
+                      </p>
+                    </div>
+                  ) : null}
 
                   {dataFile && dataFile.length > 0 && (
                     <div className="grid grid-cols-4">
@@ -790,7 +846,6 @@ const ViewRequest = () => {
             </div>
           </div>
         </div>
-
       </div>
       {isGrievanceModalOpen && (
         <GrievanceDetailsModal

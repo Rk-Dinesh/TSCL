@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { API, formatDate1, formatDate2 } from "../../Host";
 import { useLocation, useNavigate } from "react-router-dom";
 import decryptData from "../../Decrypt";
@@ -12,6 +12,7 @@ import SimilarRequest from "./SimilarRequest";
 import SimilarReq from "../grievances/SimilarReq";
 import { IoIosEye } from "react-icons/io";
 import GrievanceDetailsModal from "../request/GrievanceDetailsModal";
+import { MdOutlinePlayCircle } from "react-icons/md";
 
 const Worksheet = yup.object().shape({
   worksheet_name: yup.string().required("worksheet is required"),
@@ -43,6 +44,8 @@ const ViewRequestJE = () => {
   const [selectedGrievanceId, setSelectedGrievanceId] = useState(null);
   const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
 
   const {
     register,
@@ -137,6 +140,32 @@ const ViewRequestJE = () => {
     fetchDataFileWorksheet();
   }, []);
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (audioRef.current && !audioRef.current.contains(event.target)) {
+        setIsPlaying(false);
+      }
+    }
+
+    function handleTabChange() {
+      if (document.hidden) {
+        setIsPlaying(false);
+      }
+    }
+    if (isPlaying) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("visibilitychange", handleTabChange);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("visibilitychange", handleTabChange);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("visibilitychange", handleTabChange);
+    };
+  }, [isPlaying]);
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -203,132 +232,6 @@ const ViewRequestJE = () => {
     }
   };
 
-  // const handleStatus = async (data) => {
-
-  //   const formData = {
-  //     status: data,
-  //   };
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${API}/new-grievance/updatestatus?grievance_id=${grievanceId}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       toast.success("Status Updated Successfully");
-
-  //       const response = await axios.post(
-  //         `${API}/grievance-log/post`,
-  //         {
-  //           grievance_id: grievanceId,
-  //           log_details: ` Assigned work is ${data} updated by ${localStorage.getItem(
-  //             "name"
-  //           )}`,
-  //           created_by_user: localStorage.getItem("name"),
-  //         },
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       navigate("/requestview3");
-  //     } else {
-  //       console.error("Error in posting data", response);
-  //       toast.error("Failed to Upload");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in posting data", error);
-  //   }
-  // };
-
-  // const onSubmit = async (data) => {
-  //   const workSheet = data.worksheet_name;
-  //   const formData = {
-  //     worksheet_name: ` WorkSheet given by ${localStorage.getItem("name")}: ${
-  //       data.worksheet_name
-  //     } `,
-  //     grievance_id: grievanceId,
-  //     created_by_user: localStorage.getItem("name"),
-  //   };
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${API}/grievance-worksheet/post`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       toast.success("Wroksheet Uploaded Successfully");
-
-  //       const response = await axios.post(
-  //         `${API}/grievance-log/post`,
-  //         {
-  //           grievance_id: grievanceId,
-  //           log_details: ` WorkSheet given by ${localStorage.getItem(
-  //             "name"
-  //           )}: ${workSheet}`,
-  //           created_by_user: localStorage.getItem("name"),
-  //         },
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //     }
-
-  //     if (files.length > 0) {
-  //       if (files.length > 5) {
-  //         toast.error("File limit exceeded. Maximum 5 files allowed.");
-  //       } else {
-  //         try {
-  //           const formData = new FormData();
-  //           for (let i = 0; i < files.length; i++) {
-  //             formData.append("files", files[i]);
-  //           }
-  //           formData.append("grievance_id", grievanceId);
-  //           formData.append("created_by_user", "admin");
-  //           const response2 = await axios.post(
-  //             `${API}/grievance-worksheet-attachment/post`,
-  //             formData,
-  //             {
-  //               headers: {
-  //                 "Content-Type": "multipart/form-data",
-  //               },
-  //             }
-  //           );
-  //           if (response2.status === 200) {
-  //             toast.success("Attachment Uploaded Successfully");
-
-  //             setFiles([]);
-  //           }
-  //         } catch (error) {
-  //           console.error(error);
-  //           toast.error("Error creating attachment");
-  //         }
-  //       }
-  //     }
-  //     if (data.status !== "closed") {
-  //       navigate("/requestview3");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error("An error occurred during submission. Please try again.");
-  //   }
-  // };
-
   const onSubmit = async (data) => {
     const workSheet = data.worksheet_name;
 
@@ -365,8 +268,6 @@ const ViewRequestJE = () => {
 
       if (response.status === 200) {
         toast.success("Worksheet Uploaded Successfully");
-
-      
 
         // Log the worksheet update
         await axios.post(
@@ -416,7 +317,7 @@ const ViewRequestJE = () => {
           }
         }
 
-        if(status === 'closed'){
+        if (status === "closed") {
           await axios.post(
             `${API}/new-grievance/worksheetJE?grievance_id=${grievanceId}`,
             {
@@ -582,63 +483,88 @@ const ViewRequestJE = () => {
                   <hr className="my-3" />
                   <div className="flex flex-col gap-3 mx-2 text-base">
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Origin </p>
+                      <p className="col-span-2 font-semibold">Origin </p>
                       <p className="col-span-2 capitalize">
                         : {data.grievance_mode}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Complaint Type </p>
+                      <p className="col-span-2 font-semibold">Complaint Type </p>
                       <p className="col-span-2 capitalize">
                         : {data.complaint_type_title}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Department </p>
+                      <p className="col-span-2 font-semibold">Department </p>
                       <p className="col-span-2 capitalize">
                         : {data.dept_name}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Complaint </p>
+                      <p className="col-span-2 font-semibold">Complaint </p>
                       <p className="col-span-2 capitalize">
                         : {data.complaint}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Zone </p>
+                      <p className="col-span-2 font-semibold">Zone </p>
                       <p className="col-span-2 capitalize">
                         : {data.zone_name}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Ward </p>
+                      <p className="col-span-2 font-semibold">Ward </p>
                       <p className="col-span-2 capitalize">
                         : {data.ward_name}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Street </p>
+                      <p className="col-span-2 font-semibold">Street </p>
                       <p className="col-span-2 capitalize">
                         : {data.street_name}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Pincode </p>
+                      <p className="col-span-2 font-semibold">Pincode </p>
                       <p className="col-span-2 capitalize">: {data.pincode}</p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Complaint Address: </p>
+                      <p className="col-span-2 font-semibold">Complaint Address: </p>
                       <p className="col-start-1 col-span-4 mt-2 capitalize">
                         {data.complaintaddress}
                       </p>
                     </div>
                     <div className="grid grid-cols-4">
-                      <p className="col-span-2">Description: </p>
+                      <p className="col-span-2 font-semibold">Description: </p>
                       <p className="col-start-1 col-span-4 mt-2 capitalize">
                         {data.complaint_details}
                       </p>
                     </div>
+
+                    {data.is_call_recording_url !== "" ? (
+                      <div className="flex items-center gap-2 font-semibold">
+                        Call Recording:
+                        <p className="flex items-center" ref={audioRef}>
+                          {!isPlaying ? (
+                            <button
+                              onClick={() => setIsPlaying(true)}
+                              className=" flex  text-blue-500"
+                            >
+                              <MdOutlinePlayCircle className="size-6 mx-3  " />
+                              Recording Url
+                            </button>
+                          ) : (
+                            <audio controls autoPlay className="h-10 ">
+                              <source
+                                src={data.is_call_recording_url}
+                                type="audio/wav"
+                              />
+                              Your browser does not support the audio element.
+                            </audio>
+                          )}
+                        </p>
+                      </div>
+                    ) : null}
 
                     {dataFile && dataFile.length > 0 && (
                       <div className="grid grid-cols-4">

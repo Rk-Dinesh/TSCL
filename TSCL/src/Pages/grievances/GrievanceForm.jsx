@@ -904,6 +904,7 @@ const GrievanceForm = () => {
           <div className=" bg-white shadow-sm border rounded-lg p-4">
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2 className="text-lg font-bold">Telecaller Details</h2>
+              <button className="text-white text-sm px-3 py-1.5 bg-red-600 rounded-lg" onClick={()=>navigate('/missedcalls')}> MissedCalls</button>
             </div>
 
             <div className="space-y-4">
