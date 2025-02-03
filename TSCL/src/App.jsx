@@ -10,6 +10,7 @@ import decryptData from "./Decrypt";
 import { API } from "./Host";
 import axios from "axios";
 import AlohaAgent from "./Pages/alohaaAgent/AlohaAgent";
+import ReportGrievanceTable from "./Pages/grievances/ReportGrievanceTable";
 const Tabs = lazy(() => import("./Pages/dashboard/Tab/Tabs"));
 const Template = lazy(() => import("./Pages/template/Template"));
 const Organization = lazy(() => import("./Pages/organization/Organization"));
@@ -145,6 +146,7 @@ function App() {
             }
           >
             <Route path="/profile" element={<Profile />} />
+            <Route path="/reportdata" element={<ReportGrievanceTable />} />
 
             {memoizedFeatures["dashboard"] && (
               <>

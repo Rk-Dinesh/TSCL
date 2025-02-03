@@ -22,9 +22,11 @@ import {
 } from "docx";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDepartment } from "../redux/slice/department";
+import { useNavigate } from "react-router-dom";
 
 const ComplaintWise = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [department, setDepartment] = useState("");
@@ -98,25 +100,25 @@ const ComplaintWise = () => {
       "Pending",
       "Escalated",
     ]);
-  
+
     report.forEach((departmentData, deptIndex) => {
       departmentData.complaints.forEach((complaint, compIndex) => {
         csvData.push([
           deptIndex + 1,
-          departmentData.department, 
+          departmentData.department,
           complaint.complaint,
           complaint.count,
-          complaint.resolved, 
+          complaint.resolved,
           complaint.pending,
-          complaint.escalated, 
+          complaint.escalated,
         ]);
       });
     });
-  
+
     const csvContent =
       "data:text/csv;charset=utf-8," +
       csvData.map((row) => row.join(",")).join("\n");
-  
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -125,7 +127,6 @@ const ComplaintWise = () => {
     link.click();
     document.body.removeChild(link);
   };
-  
 
   const handleExportPDF = () => {
     const element = document.getElementById("report-section");
@@ -145,7 +146,7 @@ const ComplaintWise = () => {
 
   const handleExportWord = () => {
     const tableRows = [];
-  
+
     // Add the table header row
     tableRows.push(
       new TableRow({
@@ -160,7 +161,7 @@ const ComplaintWise = () => {
         ],
       })
     );
-  
+
     // Generate table rows from the report data
     let serialNumber = 1;
     report.forEach((departmentData) => {
@@ -194,7 +195,7 @@ const ComplaintWise = () => {
         );
       });
     });
-  
+
     // Create the table
     const table = new Table({
       rows: tableRows,
@@ -209,7 +210,7 @@ const ComplaintWise = () => {
         right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
       },
     });
-  
+
     // Create the document
     const doc = new Document({
       sections: [
@@ -227,7 +228,9 @@ const ComplaintWise = () => {
               alignment: AlignmentType.CENTER,
             }),
             new Paragraph({
-              text: `Report Date Range: ${startDate || "N/A"} to ${endDate || "N/A"}`,
+              text: `Report Date Range: ${startDate || "N/A"} to ${
+                endDate || "N/A"
+              }`,
               alignment: AlignmentType.CENTER,
             }),
             table,
@@ -235,12 +238,11 @@ const ComplaintWise = () => {
         },
       ],
     });
-  
+
     Packer.toBlob(doc).then((blob) => {
       saveAs(blob, "Department_Complaints_Report.docx");
     });
   };
-  
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -342,109 +344,141 @@ const ComplaintWise = () => {
       </div>
       {/* Report Section */}
       <div
-  className="max-w-4xl mx-auto my-6 bg-white p-2 shadow-lg rounded-lg font-lexend"
-  id="report-section"
->
-  <div className="bg-blue-800 text-white p-4 -m-2 rounded-t-lg">
-    <div className="flex items-start justify-between mt-3 mx-6">
-      <img src={logo} alt="Image" className="w-20 h-20 -mt-3" />
-      <div>
-        <h1 className="text-lg font-semibold text-center">
-          Madurai Municipal Corporation
-        </h1>
-        <p className="text-sm text-center mt-2 text-gray-300">
-          Zone Wise Report
-        </p>
-        {startDate && (
-          <p className="text-sm text-center mt-2 text-gray-300">
-            {startDate} - {endDate}
-          </p>
-        )}
-      </div>
-      <div>
-        <p className="text-sm">
-          Date:{" "}
-          <span className="font-medium">
-            {new Date().toLocaleDateString()}
-          </span>
-        </p>
-      </div>
-    </div>
-  </div>
-  <div className="overflow-auto">
-    <table className="w-full border-collapse border border-gray-300 text-sm mt-4">
-      <thead>
-        <tr className="bg-gray-100 text-gray-700">
-          <th className="border border-gray-300 px-4 py-3 text-left">S.no</th>
-          <th className="border border-gray-300 px-4 py-3 text-left">
-            Department
-          </th>
-          <th className="border border-gray-300 px-4 py-3 text-left">
-            Complaint
-          </th>
-          <th className="border border-gray-300 px-4 py-3 text-center">
-            Received
-          </th>
-          <th className="border border-gray-300 px-4 py-3 text-center">
-            Resolved
-          </th>
-          <th className="border border-gray-300 px-4 py-3 text-center">
-            Pending
-          </th>
-          <th className="border border-gray-300 px-4 py-3 text-center">
-            Escalated
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {report.map((departmentData, deptIndex) =>
-          departmentData.complaints.map((complaint, compIndex) => (
-            <tr key={`${deptIndex}-${compIndex}`} className="text-gray-500">
-              {compIndex === 0 && (
-                <>
-                  <td
-                    className="border border-gray-300 px-4 py-3 text-center"
-                    rowSpan={departmentData.complaints.length}
-                  >
-                    {deptIndex + 1}
-                  </td>
-                  <td
-                    className="border border-gray-300 px-4 py-3"
-                    rowSpan={departmentData.complaints.length}
-                  >
-                    {departmentData.department}
-                  </td>
-                </>
+        className="max-w-4xl mx-auto my-6 bg-white p-2 shadow-lg rounded-lg font-lexend"
+        id="report-section"
+      >
+        <div className="bg-blue-800 text-white p-4 -m-2 rounded-t-lg">
+          <div className="flex items-start justify-between mt-3 mx-6">
+            <img src={logo} alt="Image" className="w-20 h-20 -mt-3" />
+            <div>
+              <h1 className="text-lg font-semibold text-center">
+                Madurai Municipal Corporation
+              </h1>
+              <p className="text-sm text-center mt-2 text-gray-300">
+                Zone Wise Report
+              </p>
+              {startDate && (
+                <p className="text-sm text-center mt-2 text-gray-300">
+                  {startDate} - {endDate}
+                </p>
               )}
-              <td className="border border-gray-300 px-4 py-3">
-                {complaint.complaint}
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                {complaint.count}
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                {complaint.resolved}
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                {complaint.pending}
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                {complaint.escalated}
-              </td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
-  </div>
-  <div className="text-gray-600 text-xs my-3 text-center">
-    <p>
-      Report generated on {new Date().toLocaleDateString()} &nbsp;&nbsp; |
-      &nbsp;&nbsp; Powered by Madurai Municipal Corporation
-    </p>
-  </div>
-</div>;
-
+            </div>
+            <div>
+              <p className="text-sm">
+                Date:{" "}
+                <span className="font-medium">
+                  {new Date().toLocaleDateString()}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="overflow-auto">
+          <table className="w-full border-collapse border border-gray-300 text-sm mt-4">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700">
+                <th className="border border-gray-300 px-4 py-3 text-left">
+                  S.no
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left">
+                  Department
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left">
+                  Complaint
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Received
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Resolved
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Pending
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-center">
+                  Escalated
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.map((departmentData, deptIndex) =>
+                departmentData.complaints.map((complaint, compIndex) => (
+                  <tr
+                    key={`${deptIndex}-${compIndex}`}
+                    className="text-gray-500"
+                  >
+                    {compIndex === 0 && (
+                      <>
+                        <td
+                          className="border border-gray-300 px-4 py-3 text-center"
+                          rowSpan={departmentData.complaints.length}
+                        >
+                          {deptIndex + 1}
+                        </td>
+                        <td
+                          className="border border-gray-300 px-4 py-3"
+                          rowSpan={departmentData.complaints.length}
+                        >
+                          {departmentData.department}
+                        </td>
+                      </>
+                    )}
+                    <td className="border border-gray-300 px-4 py-3">
+                      {complaint.complaint}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(
+                        `/reportdata?dept_name=${departmentData.department}&complaint=${complaint.complaint}`
+                      )
+                    }
+                    >
+                      {complaint.count}
+                    </td>
+                    <td
+                      className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?dept_name=${departmentData.department}&complaint=${complaint.complaint}&exclude_closed=false`
+                        )
+                      }
+                    >
+                      {complaint.resolved}
+                    </td>
+                    <td
+                      className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?dept_name=${departmentData.department}&complaint=${complaint.complaint}&exclude_closed=true`
+                        )
+                      }
+                    >
+                      {complaint.pending}
+                    </td>
+                    <td
+                      className="border border-gray-300 px-4 py-3 text-center  underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?dept_name=${departmentData.department}&complaint=${complaint.complaint}&isEsacalted=yes`
+                        )
+                      }
+                    >
+                      {complaint.escalated}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="text-gray-600 text-xs my-3 text-center">
+          <p>
+            Report generated on {new Date().toLocaleDateString()} &nbsp;&nbsp; |
+            &nbsp;&nbsp; Powered by Madurai Municipal Corporation
+          </p>
+        </div>
+      </div>
+      ;
     </div>
   );
 };

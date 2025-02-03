@@ -22,9 +22,11 @@ import { AiOutlineFileWord } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDepartment } from "../redux/slice/department";
 import { FaArrowDown, FaArrowUp, FaSort } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeWise = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [department, setDepartment] = useState("");
@@ -431,13 +433,34 @@ const EmployeeWise = () => {
                   <td className="border border-gray-300 px-4 py-3 text-center">
                     {data.ward}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td
+                    className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(
+                        `/reportdata?zone_name=${data.zone}&ward_name=${data.ward}&dept_name=${data.department}&dept_name=${data.employeeId}`
+                      )
+                    }
+                  >
                     {data.received}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td
+                    className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(
+                        `/reportdata?zone_name=${data.zone}&ward_name=${data.ward}&dept_name=${data.department}&dept_name=${data.employeeId}&exclude_closed=false`
+                      )
+                    }
+                  >
                     {data.closed}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td
+                    className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(
+                        `/reportdata?zone_name=${data.zone}&ward_name=${data.ward}&dept_name=${data.department}&dept_name=${data.employeeId}&exclude_closed=true`
+                      )
+                    }
+                  >
                     {data.pending}
                   </td>
                 </tr>

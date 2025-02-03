@@ -20,9 +20,11 @@ import {
 import { AiOutlineFileWord } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWard } from "../redux/slice/ward";
+import { useNavigate } from "react-router-dom";
 
 const WardWise = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [ward, setWard] = useState("");
@@ -437,13 +439,30 @@ const WardWise = () => {
                       <td className="border border-gray-300 px-4 py-3">
                         {department.department}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 text-center">
+                      <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?zone_name=${zoneData.zone}&ward_name=${wardData.ward}&dept_name=${department.department}`
+                        )
+                      }>
                         {department.received}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 text-center">
+                      <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                          onClick={() =>
+                            navigate(
+                              `/reportdata?zone_name=${zoneData.zone}&ward_name=${wardData.ward}&dept_name=${department.department}&exclude_closed=false`
+                            )
+                          }
+                          >
                         {department.closed}
                       </td>
-                      <td className="border border-gray-300 px-4 py-3 text-center">
+                      <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                          onClick={() =>
+                            navigate(
+                              `/reportdata?zone_name=${zoneData.zone}&ward_name=${wardData.ward}&dept_name=${department.department}&exclude_closed=true`
+                            )
+                          }
+                          >
                         {department.pending}
                       </td>
                     </tr>

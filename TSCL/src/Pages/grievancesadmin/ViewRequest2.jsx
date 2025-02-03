@@ -30,10 +30,7 @@ const ViewRequest2 = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  // const grievanceId = location.state?.grievanceId;
-
-  // const deptName = location.state?.deptName;
-
+  
   const queryParams = new URLSearchParams(location.search);
   const grievanceId = queryParams.get("grievanceId");
   const deptName = queryParams.get("deptName");

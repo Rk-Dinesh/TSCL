@@ -8,10 +8,21 @@ import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { HiOutlineDocument } from "react-icons/hi";
 import { PiFileCsvLight, PiFilePdfDuotone } from "react-icons/pi";
-import { Document, Packer, Paragraph, Table, TableCell, TableRow, AlignmentType, ImageRun, WidthType } from "docx";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  AlignmentType,
+  ImageRun,
+  WidthType,
+} from "docx";
 import { AiOutlineFileWord } from "react-icons/ai";
 import { fetchDepartment } from "../redux/slice/department";
 import { useDispatch, useSelector } from "react-redux";
+import {  useNavigate } from "react-router-dom";
 
 const DepartmentWise = () => {
   const dispatch = useDispatch();
@@ -21,7 +32,7 @@ const DepartmentWise = () => {
   const [error, setError] = useState("");
   const [report, setReport] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,8 +51,6 @@ const DepartmentWise = () => {
   }, []);
 
   const Department = useSelector((state) => state.department);
-
-  
 
   const handleSubmit = async () => {
     if (!startDate || !endDate || !department) {
@@ -135,19 +144,7 @@ const DepartmentWise = () => {
     });
   };
 
-
-  
   const handleExportWord = async () => {
-  
-   
-    // const fetchImageAsUint8Array = async (imagePath) => {
-    //   const response = await fetch(imagePath);
-    //   const blob = await response.blob();
-    //   return new Uint8Array(await blob.arrayBuffer());
-    // };
-  
-    // const logoData = await fetchImageAsUint8Array(logo);
-  
     const tableRows = report.map((data, index) => {
       return new TableRow({
         children: [
@@ -177,7 +174,7 @@ const DepartmentWise = () => {
         ],
       });
     });
-  
+
     const table = new Table({
       rows: [
         new TableRow({
@@ -196,24 +193,12 @@ const DepartmentWise = () => {
         ...tableRows,
       ],
     });
-  
+
     const doc = new Document({
       sections: [
         {
           properties: {},
           children: [
-            // new Paragraph({
-            //   children: [
-            //     new ImageRun({
-            //       data: logoData,
-            //       transformation: {
-            //         width: 100, 
-            //         height: 70, 
-            //       },
-            //     }),
-            //   ],
-            //   alignment: AlignmentType.CENTER,
-            // }),
             new Paragraph({
               text: "Madurai Municipal Corporation",
               heading: "Heading1",
@@ -233,12 +218,11 @@ const DepartmentWise = () => {
         },
       ],
     });
-  
+
     Packer.toBlob(doc).then((blob) => {
       saveAs(blob, "Department_Wise_Report.docx");
     });
   };
-  
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -431,25 +415,49 @@ const DepartmentWise = () => {
                   <td className="border border-gray-300 px-4 py-3">
                     {data.department}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(`/reportdata?dept_name=${data.department}`)
+                    }>
                     {data.total.count}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td
+                    className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(`/reportdata?dept_name=${data.department}&exclude_closed=false`)
+                    }
+                  >
                     {data.total.resolved}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                  onClick={() =>
+                    navigate(`/reportdata?dept_name=${data.department}&isEsacalted=yes`)
+                  }>
                     {data.total.escalated}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                    onClick={() =>
+                      navigate(`/reportdata?dept_name=${data.department}&exclude_closed=true`)
+                    }>
                     {data.total.pending}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                  onClick={() =>
+                    navigate(`/reportdata?dept_name=${data.department}&isReopened=yes`)
+                  }>
                     {data.repeated.count}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                   onClick={() =>
+                    navigate(`/reportdata?dept_name=${data.department}&isReopened=yes&exclude_closed=false`)
+                  }
+                  >
                     {data.repeated.resolved}
                   </td>
-                  <td className="border border-gray-300 px-4 py-3 text-center">
+                  <td className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                       onClick={() =>
+                        navigate(`/reportdata?dept_name=${data.department}&isEsacalted=yes&isReopened=yes`)
+                      }>
                     {data.repeated.escalated}
                   </td>
                 </tr>

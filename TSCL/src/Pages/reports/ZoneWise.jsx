@@ -22,9 +22,11 @@ import {
 } from "docx";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchZone } from "../redux/slice/zone";
+import { useNavigate } from "react-router-dom";
 
 const ZoneWise = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [zone, setZone] = useState("");
@@ -159,32 +161,30 @@ const ZoneWise = () => {
     // Generate table rows from the report data
     let serialNumber = 1;
     report.forEach((zoneData) => {
-     
       zoneData.departments.forEach((departmentData) => {
-          tableRows.push(
-            new TableRow({
-              children: [
-                new TableCell({
-                  children: [new Paragraph(String(serialNumber++))],
-                }),
-                new TableCell({ children: [new Paragraph(zoneData.zone)] }),
-                new TableCell({
-                  children: [new Paragraph(departmentData.department)],
-                }),
-                new TableCell({
-                  children: [new Paragraph(String(departmentData.received))],
-                }),
-                new TableCell({
-                  children: [new Paragraph(String(departmentData.closed))],
-                }),
-                new TableCell({
-                  children: [new Paragraph(String(departmentData.pending))],
-                }),
-              ],
-            })
-          );
-        });
-      
+        tableRows.push(
+          new TableRow({
+            children: [
+              new TableCell({
+                children: [new Paragraph(String(serialNumber++))],
+              }),
+              new TableCell({ children: [new Paragraph(zoneData.zone)] }),
+              new TableCell({
+                children: [new Paragraph(departmentData.department)],
+              }),
+              new TableCell({
+                children: [new Paragraph(String(departmentData.received))],
+              }),
+              new TableCell({
+                children: [new Paragraph(String(departmentData.closed))],
+              }),
+              new TableCell({
+                children: [new Paragraph(String(departmentData.pending))],
+              }),
+            ],
+          })
+        );
+      });
     });
 
     // Create the table
@@ -411,13 +411,34 @@ const ZoneWise = () => {
                     <td className="border border-gray-300 px-4 py-3">
                       {department.department}
                     </td>
-                    <td className="border border-gray-300 px-4 py-3 text-center">
+                    <td
+                      className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?zone_name=${zoneData.zone}&dept_name=${department.department}`
+                        )
+                      }
+                    >
                       {department.received}
                     </td>
-                    <td className="border border-gray-300 px-4 py-3 text-center">
+                    <td
+                      className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?zone_name=${zoneData.zone}&dept_name=${department.department}&exclude_closed=false`
+                        )
+                      }
+                    >
                       {department.closed}
                     </td>
-                    <td className="border border-gray-300 px-4 py-3 text-center">
+                    <td
+                      className="border border-gray-300 px-4 py-3 text-center underline text-blue-700"
+                      onClick={() =>
+                        navigate(
+                          `/reportdata?zone_name=${zoneData.zone}&dept_name=${department.department}&exclude_closed=true`
+                        )
+                      }
+                    >
                       {department.pending}
                     </td>
                   </tr>
