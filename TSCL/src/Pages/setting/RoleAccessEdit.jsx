@@ -14,7 +14,10 @@ const RoleAccessLevelEdit = () => {
   const [roleName, setRoleName] = useState("");
   const [accessLevels, setAccessLevels] = useState([]);
   const [features, setFeatures] = useState([
-    { name: "Dashboard", value: "dashboard", checked: false },
+    { name: "Dashboard", title: true },
+    { name: "Master Dashboard", value: "dashboard", checked: false },
+    { name: "Admin Dashboard", value: "dashboardengineer", checked: false },
+    { name: "Menus", title: true },
     { name: "Organization", value: "organization", checked: false },
     { name: "Department", value: "department", checked: false },
     { name: "Zone", value: "zone", checked: false },
@@ -94,6 +97,25 @@ const RoleAccessLevelEdit = () => {
 
   const handleFeatureChange = (index) => {
     const newFeatures = [...features];
+    if (
+      newFeatures[index].value === "dashboard" ||
+      newFeatures[index].value === "dashboardengineer"
+    ) {
+      newFeatures.forEach((feature, i) => {
+        if (
+          (feature.value === "dashboard" ||
+            feature.value === "dashboardengineer") &&
+          i !== index
+        ) {
+          feature.checked = false;
+
+          setAccessLevels((prev) =>
+            prev.filter((level) => level.feature !== feature.value)
+          );
+        }
+      });
+    }
+
     newFeatures[index].checked = !newFeatures[index].checked;
 
     if (newFeatures[index].checked) {
@@ -109,6 +131,24 @@ const RoleAccessLevelEdit = () => {
 
     setFeatures(newFeatures);
   };
+
+  // const handleFeatureChange = (index) => {
+  //   const newFeatures = [...features];
+  //   newFeatures[index].checked = !newFeatures[index].checked;
+
+  //   if (newFeatures[index].checked) {
+  //     setAccessLevels((prev) => [
+  //       ...prev,
+  //       { feature: newFeatures[index].value, permissions: [] },
+  //     ]);
+  //   } else {
+  //     setAccessLevels((prev) =>
+  //       prev.filter((level) => level.feature !== newFeatures[index].value)
+  //     );
+  //   }
+
+  //   setFeatures(newFeatures);
+  // };
 
   const handlePermissionChange = (index, permission) => {
     const newAccessLevels = [...accessLevels];
@@ -224,9 +264,15 @@ const RoleAccessLevelEdit = () => {
               feature.title ? (
                 <div key={index} className=" flex gap-2 items-center mb-4">
                   <h3 className="text-base text-primary">{feature.name}</h3>
-                  <p className="text-red-500 text-sm">
-                    ( Select Any option from the list )
-                  </p>
+                  {feature.name === "Grievance" || feature.name ==="Dashboard" ? (
+                    <p className="text-red-500 text-sm">
+                      ( Select One option from the list )
+                    </p>
+                  ) : (
+                    <p className="text-red-500 text-sm">
+                      ( Select Any option from the list )
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div

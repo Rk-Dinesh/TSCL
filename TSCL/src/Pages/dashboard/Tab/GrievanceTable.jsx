@@ -7,7 +7,7 @@ import { API, formatDate1 } from "../../../Host";
 import Pagination from "../../../components/Pagination";
 import SearchHeader from "../../../components/SearchHeader";
 
-const GrivencesTable = () => {
+const GrivencesTable = ({feature}) => {
   const location = useLocation();
   const endpoints = location.state?.endpoint;
   const [searchValue, setSearchValue] = useState("");
@@ -17,13 +17,18 @@ const GrivencesTable = () => {
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("code"); 
   const navigate = useNavigate();
   const [status, setStatus] = useState([]);
   const [statusColors, setStatusColors] = useState({});
 
   useEffect(() => {
+    const apiEndpoint =
+          feature === "dashboardengineer"
+            ? `${API}/new-grievance/${endpoints}?assign_user=${userId}`
+            : `${API}/new-grievance/${endpoints}`;
     axios
-      .get(`${API}/new-grievance/${endpoints}`, {
+      .get(apiEndpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -169,9 +174,7 @@ const GrivencesTable = () => {
                       <p
                         className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1   text-slate-900"
                         onClick={() =>
-                          navigate(`/view`, {
-                            state: { grievanceId: report.grievance_id },
-                          })
+                          navigate(`/view?grievanceId=${report.grievance_id}`)
                         }
                       >
                         {report.grievance_id}

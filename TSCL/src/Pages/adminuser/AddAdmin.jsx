@@ -156,7 +156,7 @@ const AddAdmin = (props) => {
               >
                 <option value="">Employee Name</option>
                 {ExistingEmployees.map((emp, index) => (
-                  <option key={index} value={emp.emp_name}>
+                  <option key={emp.emp_id} value={emp.emp_name}>
                     {emp.emp_name}
                   </option>
                 ))}

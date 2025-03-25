@@ -29,7 +29,8 @@ const Layout = ({ permissions }) => {
  
   const Menus = [
     //permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },
-    permissions["dashboard"] && { title: "Dashboard", icon: <RxHome />, to: "/dashboard" },
+    permissions["dashboard"] && { title: "Master Dashboard", icon: <RxHome />, to: "/dashboard" },
+    permissions["dashboardengineer"] && { title: "Admin Dashboard", icon: <RxHome />, to: "/dashboard" },
     permissions["organization"] && { title: "Organization", icon: <GoOrganization />, to: "/organization" },
     permissions["department"] && { title: "Department", icon: <SiAwsorganizations />, to: "/department" },
     permissions["zone"] || permissions["ward"] || permissions["street"] ? {

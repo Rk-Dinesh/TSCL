@@ -15,7 +15,7 @@ import { API, formatDate1 } from "../../../Host";
 import decryptData from "../../../Decrypt";
 import { useNavigate } from "react-router-dom";
 
-const GrivevanceAnalyticDashboard1 = () => {
+const GrivevanceAnalyticDashboard1 = ({ feature }) => {
   const [report, setReport] = useState([]);
   const [department, setDepartment] = useState([]);
   const token = localStorage.getItem("token");
@@ -25,6 +25,7 @@ const GrivevanceAnalyticDashboard1 = () => {
   const [zoneData, setZoneData] = useState([]);
   const [complaintData, setComplaintData] = useState([]);
   const navigate = useNavigate();
+  const userId = localStorage.getItem("code");
 
   useEffect(() => {
     fetchGrievances();
@@ -45,12 +46,19 @@ const GrivevanceAnalyticDashboard1 = () => {
 
   const fetchGrievances = async () => {
     try {
-      const response = await axios.get(`${API}/new-grievance/get`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const responseData = decryptData(response.data.data);
+      const apiEndpoint =
+        feature === "dashboardengineer"
+          ? `${API}/new-grievance/departmentonlyGrievanceCounts?assign_user=${userId}`
+          : `${API}/new-grievance/departmentonlyGrievanceCounts`;
+      const response = await axios.get(
+        apiEndpoint,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const responseData = response.data.data;
       setReport(responseData);
     } catch (error) {
       console.error("Error fetching existing Dept:", error);
@@ -73,7 +81,11 @@ const GrivevanceAnalyticDashboard1 = () => {
 
   const fetchGrievanceCounts = async () => {
     try {
-      const response = await axios.get(`${API}/new-grievance/grievancecounts`, {
+      const apiEndpoint =
+        feature === "dashboardengineer"
+          ? `${API}/new-grievance/grievancecountsbyid?user_id=${userId}`
+          : `${API}/new-grievance/grievancecounts`;
+      const response = await axios.get(apiEndpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -94,7 +106,11 @@ const GrivevanceAnalyticDashboard1 = () => {
 
   const fetchPriority = async () => {
     try {
-      const response = await axios.get(`${API}/new-grievance/prioritycounts`, {
+      const apiEndpoint =
+      feature === "dashboardengineer"
+        ? `${API}/new-grievance/prioritycounts?assign_user=${userId}`
+        : `${API}/new-grievance/prioritycounts`;
+      const response = await axios.get(apiEndpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,7 +123,11 @@ const GrivevanceAnalyticDashboard1 = () => {
 
   const fetchzones = async () => {
     try {
-      const response = await axios.get(`${API}/new-grievance/locationZone`, {
+      const apiEndpoint =
+      feature === "dashboardengineer"
+        ? `${API}/new-grievance/locationZone?assign_user=${userId}`
+        : `${API}/new-grievance/locationZone`;
+      const response = await axios.get(apiEndpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +140,11 @@ const GrivevanceAnalyticDashboard1 = () => {
 
   const fetchcomplaint = async () => {
     try {
-      const response = await axios.get(`${API}/new-grievance/complaintcount`, {
+      const apiEndpoint =
+      feature === "dashboardengineer"
+        ? `${API}/new-grievance/complaintcount?assign_user=${userId}`
+        : `${API}/new-grievance/complaintcount`;
+      const response = await axios.get(apiEndpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -132,8 +156,10 @@ const GrivevanceAnalyticDashboard1 = () => {
   };
 
   const filteredDataDept = department.reduce((acc, dept) => {
-    const reports = report.filter((r) => r.dept_name === dept.dept_name);
-    acc.push({ name: dept.dept_name, value: reports.length });
+    const totalValue = report
+      .filter((r) => r.department === dept.dept_name)
+      .reduce((sum, r) => sum + r.count, 0);
+    acc.push({ name: dept.dept_name, value: totalValue });
     return acc;
   }, []);
 

@@ -294,7 +294,7 @@ const ViewRequestJE = () => {
               formData.append("files", files[i]);
             }
             formData.append("grievance_id", grievanceId);
-            formData.append("created_by_user", "admin");
+            formData.append("created_by_user", localStorage.getItem('name'));
 
             const attachmentResponse = await axios.post(
               `${API}/grievance-worksheet-attachment/post`,

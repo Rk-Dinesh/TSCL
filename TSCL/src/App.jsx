@@ -152,13 +152,27 @@ function App() {
               <>
                 <Route
                   path="/dashboard"
-                  element={<Tabs permissions={memoizedFeatures["dashboard"]} />}
+                  element={<Tabs permissions={memoizedFeatures["dashboard"]} feature={'dashboard'}/>}
                 />
-                <Route path="/dashboardview" element={<GrivencesTable />} />
+                <Route path="/dashboardview" element={<GrivencesTable feature={'dashboard'}/>} />
                 <Route path="/view" element={<ViewRequest />} />
                 <Route
                   path="/escalation"
-                  element={<EscalationCommissioner />}
+                  element={<EscalationCommissioner feature={'dashboard'}/>}
+                />
+              </>
+            )}
+            {memoizedFeatures["dashboardengineer"] && (
+              <>
+                <Route
+                  path="/dashboard"
+                  element={<Tabs permissions={memoizedFeatures["dashboardengineer"] } feature={'dashboardengineer'}/>}
+                />
+                <Route path="/dashboardview" element={<GrivencesTable feature={'dashboardengineer'}/>} />
+                <Route path="/view" element={<ViewRequest />} />
+                <Route
+                  path="/escalation"
+                  element={<EscalationCommissioner feature={'dashboardengineer'}/>}
                 />
               </>
             )}
@@ -413,6 +427,7 @@ function App() {
                 element={
                   <EscalationCommissioner
                     permissions={memoizedFeatures["escalation"]}
+                    feature={'escalation'}
                   />
                 }
               />

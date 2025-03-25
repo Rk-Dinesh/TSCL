@@ -15,7 +15,7 @@ import DocumentDownload from "../../components/DocumentDownload";
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
 
-const EscalationCommissioner = ({ permissions }) => {
+const EscalationCommissioner = ({ permissions ,feature}) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
@@ -32,6 +32,7 @@ const EscalationCommissioner = ({ permissions }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const dept = localStorage.getItem("dept");
+  const userId = localStorage.getItem("code");
   const [selectedDoc, setSelectedDoc] = useState(null);
 
   const navigate = useNavigate();
@@ -47,8 +48,12 @@ const EscalationCommissioner = ({ permissions }) => {
   };
 
   const handlerefresh = () => {
+    const apiEndpoint =
+            feature === "dashboardengineer"
+              ? `${API}/grievance-escalation/get?escalated_userid=${userId}`
+              : `${API}/grievance-escalation/get`;
     axios
-      .get(`${API}/grievance-escalation/get`, {
+      .get(apiEndpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
