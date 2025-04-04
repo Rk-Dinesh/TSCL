@@ -321,58 +321,43 @@ const Grivences = ({ permissions, include, endpoint }) => {
             <table className="w-full mt-2">
               <thead className="border-b border-gray-300">
                 <tr className="">
-                  <th className="">
-                    <p className="mx-3 my-2 font-lexend font-medium whitespace-nowrap">
-                      #
-                    </p>
-                  </th>
-                  <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-medium whitespace-nowrap">
-                      Complaint No
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Origin
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
-                      Raised by <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
-                      Complaint Type <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
-                      Department
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
-                      Assigned JE <RiExpandUpDownLine />
-                    </p>
-                  </th>
-
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
-                      Date and Time <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium whitespace-nowrap">
-                      Priority <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
-                    </p>
-                  </th>
+                  {[
+                    "#",
+                    "Complaint No",
+                    "Origin",
+                    "Raised by",
+                    "Complaint Type",
+                    "Department",
+                    "Assigned JE",
+                    "Date and Time",
+                    "Priority",
+                    "Status",
+                  ].map((heading) => (
+                    <th key={heading} className="">
+                      <p
+                        className={`flex gap-2 items-center mx-${
+                          heading === "#"
+                            ? "3"
+                            : heading === "Origin" ||
+                              heading === "Priority" ||
+                              heading === "Status"
+                            ? "2"
+                            : "1.5"
+                        } my-2 font-lexend font-medium ${
+                          heading === "Origin" ||
+                          heading === "Priority" ||
+                          heading === "Status"
+                            ? "justify-center"
+                            : "justify-start"
+                        } whitespace-nowrap`}
+                      >
+                        {heading}{" "}
+                        {heading !== "#" && heading !== "Complaint No" && (
+                          <RiExpandUpDownLine />
+                        )}
+                      </p>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>

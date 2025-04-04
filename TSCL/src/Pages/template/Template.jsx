@@ -158,47 +158,35 @@ const Template = ({ permissions }) => {
             </div>
             <div className="overflow-x-auto  ">
               <table className="w-full  mt-1">
-                <thead className=" border-b-2 border-gray-300">
-                  <tr className="border-b-2 border-gray-300">
-                    <th className="">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                         Template Title
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                        Department
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Complaint Type <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Desc <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Date & Time <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 font-semibold font-lexend whitespace-nowrap text-center">
-                        Action
-                      </p>
-                    </th>
-                  </tr>
-                </thead>
+              <thead className="border-b-2 border-gray-300">
+  <tr className="border-b-2 border-gray-300">
+    {[
+      "#",
+      "Template Title",
+      "Department",
+      "Complaint Type",
+      "Desc",
+      "Date & Time",
+    ].map((heading) => (
+      <th key={heading} className="">
+        <p
+          className={`flex gap-2 items-center mx-${
+            heading === "#" ? "6" : "1.5"
+          } my-2 font-lexend font-semibold ${
+            heading !== "#" ? "justify-start" : ""
+          } whitespace-nowrap`}
+        >
+          {heading} {heading !== "#" && <RiExpandUpDownLine />}
+        </p>
+      </th>
+    ))}
+    <th>
+      <p className="mx-1.5 my-2 font-semibold font-lexend whitespace-nowrap text-center">
+        Action
+      </p>
+    </th>
+  </tr>
+</thead>
                 <tbody>
                   {currentItemsOnPage.map((temps, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>

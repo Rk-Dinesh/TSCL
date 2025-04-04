@@ -500,68 +500,46 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
             )}
             <div className=" rounded-lg  py-3 overflow-x-auto">
               <table className="w-full mt-1 ">
-                <thead className=" border-b border-gray-300  ">
-                  <tr className="">
+                <thead className="border-b border-gray-300">
+                  <tr>
+                    {/* Conditional rendering for the lightning bolt icon */}
                     {include === "yes" && (
-                      <th className="">
-                        <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                      <th>
+                        <p className="mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
                           <AiOutlineThunderbolt className="text-xl text-center text-primary" />
                         </p>
                       </th>
                     )}
-                    <th className="">
-                      <p className=" mx-3 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Complaint No
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Origin
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Complaint
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Department
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Date and Time <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Raised by <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Assigned JE <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Priority <RiExpandUpDownLine />
-                      </p>
-                    </th>
-
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
+                    {/* Dynamically generate the rest of the table headers */}
+                    {[
+                      "#",
+                      "Complaint No",
+                      "Origin",
+                      "Complaint",
+                      "Department",
+                      "Date and Time",
+                      "Raised by",
+                      "Assigned JE",
+                      "Priority",
+                      "Status",
+                    ].map((heading) => (
+                      <th key={heading}>
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#" ? "3" : "1.5"
+                          } my-2 font-lexend font-medium ${
+                            ["Origin", "Priority", "Status"].includes(heading)
+                              ? "justify-center"
+                              : "justify-start"
+                          } whitespace-nowrap`}
+                        >
+                          {heading}{" "}
+                          {heading !== "#" &&
+                            heading !== "Complaint No" &&
+                            heading !== "Origin" && <RiExpandUpDownLine />}
+                        </p>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -614,10 +592,7 @@ const RequestAdmin = ({ permissions, include, endpoint }) => {
                       </td>
                       <td className="flex gap-1 items-center justify-center text-gray-700">
                         <img
-                          src={
-                            grievanceImages[report.grievance_mode] ||
-                            logo
-                          }
+                          src={grievanceImages[report.grievance_mode] || logo}
                           alt={report.grievance_mode}
                           className="w-6 h-6 mx-1.5 my-2 rounded-full"
                         />

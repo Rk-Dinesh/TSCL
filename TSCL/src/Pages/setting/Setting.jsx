@@ -20,7 +20,7 @@ const Settings = ({ permissions }) => {
 
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
- const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [role, setRole] = useState([]);
@@ -37,7 +37,7 @@ const Settings = ({ permissions }) => {
 
   useEffect(() => {
     handlerefresh();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -124,10 +124,12 @@ const Settings = ({ permissions }) => {
             setSearchValue={setSearchValue}
           />
 
-          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+          <div
+            className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
               role.length < 7 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
@@ -148,50 +150,44 @@ const Settings = ({ permissions }) => {
             </div>
             <div className="overflow-x-auto  ">
               <table className="w-full  mt-3">
-                <thead className=" border-b-2 border-gray-300">
+                <thead className="border-b-2 border-gray-300">
                   <tr className="border-b-2 border-gray-300">
-                    <th className="">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                        Role Name <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedBy <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        UpdatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 font-semibold font-lexend whitespace-nowrap text-center">
-                        Action
-                      </p>
-                    </th>
+                    {[
+                      "#",
+                      "Role Name",
+                      "Status",
+                      "CreatedBy",
+                      "CreatedAt",
+                      "UpdatedAt",
+                      "Action",
+                    ].map((heading) => (
+                      <th key={heading} className="">
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#" ? "3" : "1.5"
+                          } my-2 font-lexend ${
+                            heading === "Action"
+                              ? "justify-center"
+                              : "justify-start"
+                          } font-semibold whitespace-nowrap`}
+                        >
+                          {heading !== "Action" && heading !== "#" && (
+                            <>
+                              {heading} <RiExpandUpDownLine />
+                            </>
+                          )}
+                          {heading === "#" && "#"}
+                          {heading === "Action" && "Action"}
+                        </p>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {currentItemsOnPage.map((roles, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
-                        <p className=" mx-3 my-2 font-lexend text-center whitespace-nowrap text-sm text-gray-700">
+                        <p className=" mx-1 my-2 font-lexend text-center whitespace-nowrap text-sm text-gray-700">
                           {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}

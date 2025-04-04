@@ -500,88 +500,57 @@ const RequestJE = ({ permissions, include, endpoint }) => {
             )}
             <div className=" rounded-lg  py-3 overflow-x-auto ">
               <table className="w-full mt-2 ">
-                <thead className=" border-b border-gray-300  ">
-                  <tr className="">
+                <thead className="border-b border-gray-300">
+                  <tr>
                     {include === "yes" && (
-                      <th className="">
-                        <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                      <th>
+                        <p className="mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
                           <AiOutlineThunderbolt className="text-xl text-center text-primary" />
                         </p>
                       </th>
                     )}
-                    <th className="">
-                      <p className=" mx-6 my-2 font-lexend  font-medium whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Complaint No
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Origin
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Complaint
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Ward
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-center font-lexend font-medium  whitespace-nowrap">
-                        Street
-                      </p>
-                    </th>
-
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Raised by
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Phone
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Date and Time
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Priority
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Status
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Action
-                      </p>
-                    </th>
+                    {[
+                      "#",
+                      "Complaint No",
+                      "Origin",
+                      "Complaint",
+                      "Ward",
+                      "Street",
+                      "Raised by",
+                      "Phone",
+                      "Date and Time",
+                      "Priority",
+                      "Status",
+                      "Action",
+                    ].map((heading) => (
+                      <th key={heading}>
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#" ? "6" : "1.5"
+                          } my-2 font-lexend font-medium ${
+                            ["Origin", "Street", "Priority", "Status"].includes(
+                              heading
+                            )
+                              ? "justify-center"
+                              : "justify-start"
+                          } whitespace-nowrap`}
+                        >
+                          {heading}
+                        </p>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {currentItemsOnPage.map((report, index) => (
                     <tr
-                    className={`${
-                      report.isEsacalted === "yes"
-                        ? "bg-red-500"
-                        : report.isHighlighted === "yes"
-                        ? "bg-yellow-200"
-                        : "border-gray-300"
-                    } border-b`}                    
+                      className={`${
+                        report.isEsacalted === "yes"
+                          ? "bg-red-500"
+                          : report.isHighlighted === "yes"
+                          ? "bg-yellow-200"
+                          : "border-gray-300"
+                      } border-b`}
                       key={index}
                     >
                       {include === "yes" && (

@@ -32,7 +32,7 @@ const Admin = ({ permissions }) => {
   const [isChange, setIsChange] = useState(false);
   const [phoneID, setPhoneID] = useState(null);
   const [adminId, setAdminId] = useState(null);
-const [fileupload, setFileupload] = useState(false);
+  const [fileupload, setFileupload] = useState(false);
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [deleteId, setdeleteId] = useState(null);
 
@@ -40,7 +40,7 @@ const [fileupload, setFileupload] = useState(false);
   const [ExistingEmployees, setExistingEmployees] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [admin, setAdmin] = useState([]);
@@ -64,7 +64,7 @@ const [fileupload, setFileupload] = useState(false);
     fetchExistingEmployees();
     fetchZones();
     fetchWards();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -208,7 +208,7 @@ const [fileupload, setFileupload] = useState(false);
 
   const uploadFile = async (file) => {
     try {
-      setFileupload(true)
+      setFileupload(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -227,14 +227,14 @@ const [fileupload, setFileupload] = useState(false);
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
-        setFileupload(false)
+        setFileupload(false);
       } else {
         toast.error("Data failed to Upload");
-        setFileupload(false)
+        setFileupload(false);
       }
     } catch (error) {
       console.log(error);
-      setFileupload(false)
+      setFileupload(false);
     }
   };
   const setDocs = (event) => {
@@ -382,10 +382,12 @@ const [fileupload, setFileupload] = useState(false);
             onClick={() => setIsModal(true)}
           />
 
-          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+          <div
+            className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
               admin.length < 7 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
@@ -408,57 +410,41 @@ const [fileupload, setFileupload] = useState(false);
               <table className="w-full  mt-3">
                 <thead>
                   <tr className="border-b-2 border-gray-300">
-                    <th className="py-2">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Username <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Department
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Phone
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Email
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Status
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Role
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        CreatedBy
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="mx-1 my-3 text-start font-lexend font-semibold whitespace-nowrap">
-                        Action
-                      </div>
-                    </th>
+                    {[
+                      "#",
+                      "Username",
+                      "Department",
+                      "Phone",
+                      "Email",
+                      "Status",
+                      "Role",
+                      "CreatedBy",
+                      "Action",
+                    ].map((heading) => (
+                      <th key={heading} className="py-2">
+                        <div
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#"
+                              ? "6"
+                              : heading === "Phone"
+                              ? "3"
+                              : "1"
+                          } my-2 font-lexend font-semibold ${
+                            heading === "Action"
+                              ? "justify-start"
+                              : "justify-start"
+                          } whitespace-nowrap`}
+                        >
+                          {heading !== "Action" && heading !== "#" && (
+                            <>
+                              {heading} <RiExpandUpDownLine />
+                            </>
+                          )}
+                          {heading === "#" && "#"}
+                          {heading === "Action" && "Action"}
+                        </div>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>

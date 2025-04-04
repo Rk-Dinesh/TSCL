@@ -165,39 +165,38 @@ const Ward = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
-      setFileupload(true)
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append('created_by_user', localStorage.getItem('name'));
+      setFileupload(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("created_by_user", localStorage.getItem("name"));
 
-        const response = await axios.post(`${API}/ward/uploadcsv`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+      const response = await axios.post(`${API}/ward/uploadcsv`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-        if (response.status === 200) {
-            setButtonText("Bulk Upload");
-            setFile(null);
-            handlerefresh();
-            toast.success('Data Uploaded successfully');
-            setFileupload(false)
-        }
+      if (response.status === 200) {
+        setButtonText("Bulk Upload");
+        setFile(null);
+        handlerefresh();
+        toast.success("Data Uploaded successfully");
+        setFileupload(false);
+      }
     } catch (error) {
-        
-        if (error.response && error.response.data && error.response.data.error) {
-            toast.error(error.response.data.error); 
-            setButtonText("Bulk Upload");
-            setFile(null);
-            setFileupload(false)
-        } else {
-            toast.error("An unexpected error occurred"); 
-            setButtonText("Bulk Upload");
-            setFile(null);
-            setFileupload(false)
-        }
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+        setButtonText("Bulk Upload");
+        setFile(null);
+        setFileupload(false);
+      } else {
+        toast.error("An unexpected error occurred");
+        setButtonText("Bulk Upload");
+        setFile(null);
+        setFileupload(false);
+      }
     }
-};
+  };
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
   };
@@ -351,47 +350,31 @@ const Ward = ({ permissions }) => {
             </div>
             <div className="overflow-x-auto ">
               <table className="w-full mt-3 ">
-                <thead className=" border-b-2 border-gray-300">
+                <thead className="border-b-2 border-gray-300">
                   <tr className="border-b-2 border-gray-300">
-                    <th className="">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
-                        Ward <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
-                        Zone <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
+                    {[
+                      "#",
+                      "Ward",
+                      "Zone",
+                      "Status",
+                      "CreatedBy",
+                      "CreatedAt",
+                      "UpdatedAt",
+                    ].map((heading) => (
+                      <th key={heading} className="">
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#" ? "6" : "1.5"
+                          } my-2 font-lexend font-semibold ${
+                            heading !== "#" ? "justify-start" : "justify-center"
+                          } whitespace-nowrap`}
+                        >
+                          {heading} {heading !== "#" && <RiExpandUpDownLine />}
+                        </p>
+                      </th>
+                    ))}
                     <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                        CreatedBy <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                        CreatedAt
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                        UpdatedAt
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="text-center mx-1.5 my-3 font-semibold font-lexend">
+                      <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
                         Action
                       </p>
                     </th>
@@ -401,7 +384,7 @@ const Ward = ({ permissions }) => {
                   {currentItemsOnPage.map((wards, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
-                        <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">
+                        <div className="items-center mx-2 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">
                           {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}

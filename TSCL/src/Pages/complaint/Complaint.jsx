@@ -39,7 +39,7 @@ const Complaint = ({ permissions }) => {
   const [ExistingDept, setExistingDept] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
   const [complaint, setComplaint] = useState([]);
@@ -60,7 +60,7 @@ const Complaint = ({ permissions }) => {
     handlerefresh();
     fetchExistingDepts();
     // fetchExistingRoles();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -181,7 +181,7 @@ const Complaint = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
-      setFileupload(true)
+      setFileupload(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -200,14 +200,14 @@ const Complaint = ({ permissions }) => {
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
-        setFileupload(false)
+        setFileupload(false);
       } else {
         toast.error("Data failed to Upload");
-        setFileupload(false)
+        setFileupload(false);
       }
     } catch (error) {
       console.log(error);
-      setFileupload(false)
+      setFileupload(false);
     }
   };
   const setDocs = (event) => {
@@ -362,10 +362,12 @@ const Complaint = ({ permissions }) => {
             hasCreatePermission={hasCreatePermission}
             onClick={() => setIsModal(true)}
           />
-          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+          <div
+            className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
               complaint.length < 6 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
@@ -387,70 +389,31 @@ const Complaint = ({ permissions }) => {
             <table className="w-full  ">
               <thead>
                 <tr className="border-b-2 border-gray-300 py-1">
-                  <th className="py-2">
-                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                      #
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Complaint <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Department
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      TAT Type
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Duration
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Priority
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Escalation-1
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Escalation-2
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Escalation-3
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      Status
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold whitespace-nowrap">
-                      CreatedBy
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
+                  {[
+                    "#",
+                    "Complaint",
+                    "Department",
+                    "TAT Type",
+                    "Duration",
+                    "Priority",
+                    "Escalation-1",
+                    "Escalation-2",
+                    "Escalation-3",
+                    "Status",
+                    "CreatedBy",
+                  ].map((heading) => (
+                    <th key={heading} className="py-2">
+                      <p
+                        className={`flex gap-2 items-center mx-${
+                          heading === "#" ? "6" : "1.5"
+                        } my-2 font-lexend font-semibold ${
+                          heading !== "#" ? "justify-start" : "justify-center"
+                        } whitespace-nowrap`}
+                      >
+                        {heading} {heading !== "#" && <RiExpandUpDownLine />}
+                      </p>
+                    </th>
+                  ))}
                   <th>
                     <p className="mx-3 my-3 text-center font-lexend font-semibold whitespace-nowrap">
                       Action

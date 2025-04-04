@@ -48,7 +48,7 @@ const Request = ({ permissions, include, endpoint }) => {
   const [grievanceImages, setGrievanceImages] = useState({});
   const [selectedPhone, setSelectedPhone] = useState("");
   const [hasPermission, setHasPermission] = useState(false);
-  const [Agent, setAgent] = useState([])
+  const [Agent, setAgent] = useState([]);
 
   useEffect(() => {
     const fetchComplaintType = async () => {
@@ -81,7 +81,7 @@ const Request = ({ permissions, include, endpoint }) => {
 
     handlerefresh();
     fetchComplaintType();
-    fetchAgent()
+    fetchAgent();
     fetchActiveStatus();
     dispatch(fetchOrigin());
   }, []);
@@ -106,7 +106,7 @@ const Request = ({ permissions, include, endpoint }) => {
         },
       });
       const responseData = decryptData(response.data.data);
-      setReport(responseData);      
+      setReport(responseData);
       const filteredCenters = responseData.filter((grievances) =>
         Object.values(grievances).some((value) =>
           value.toString().toLowerCase().includes(searchValue.toLowerCase())
@@ -376,14 +376,16 @@ const Request = ({ permissions, include, endpoint }) => {
                     onChange={handleSelectChange}
                   >
                     <option value="" className="text-gray-400">
-                      {localStorage.getItem("agentphone")? `${localStorage.getItem("agentphone")}` : "Select Agent Number"}
+                      {localStorage.getItem("agentphone")
+                        ? `${localStorage.getItem("agentphone")}`
+                        : "Select Agent Number"}
                     </option>
                     {Agent &&
-                          Agent.map((option, index) => (
-                            <option key={index} value={option.caller_number}>
-                              {option.agent_name}
-                            </option>
-                          ))}
+                      Agent.map((option, index) => (
+                        <option key={index} value={option.caller_number}>
+                          {option.agent_name}
+                        </option>
+                      ))}
                   </select>
 
                   {hasPermission && (
@@ -494,75 +496,53 @@ const Request = ({ permissions, include, endpoint }) => {
             )}
             <div className="overflow-x-auto">
               <table className="w-full mt-2 ">
-                <thead className=" border-b border-gray-300  ">
+                <thead className="border-b border-gray-300">
                   <tr className="">
                     {include === "yes" && (
                       <th className="">
-                        <p className=" mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
+                        <p className="mx-3 my-2 font-lexend text-center font-semibold whitespace-nowrap">
                           <AiOutlineThunderbolt className="text-xl text-center text-primary" />
                         </p>
                       </th>
                     )}
-                    <th className="">
-                      <p className=" mx-3 my-2 font-lexend  font-medium whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                        Complaint No
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Origin
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Raised by <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Complaint Type <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Department
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Complaint
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Assigned JE <RiExpandUpDownLine />
-                      </p>
-                    </th>
-
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Date and Time <RiExpandUpDownLine />
-                      </p>
-                    </th>
-
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
-
-                    <th>
-                      <p className="flex gap-2 items-center justify-center mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Action <RiExpandUpDownLine />
-                      </p>
-                    </th>
+                    {[
+                      "#",
+                      "Complaint No",
+                      "Origin",
+                      "Raised by",
+                      "Complaint Type",
+                      "Department",
+                      "Complaint",
+                      "Assigned JE",
+                      "Date and Time",
+                      "Status",
+                      "Action",
+                    ].map((heading) => (
+                      <th key={heading} className="">
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#"
+                              ? "3"
+                              : heading === "Origin" ||
+                                heading === "Status" ||
+                                heading === "Action"
+                              ? "1.5"
+                              : "2"
+                          } my-2 font-lexend font-medium ${
+                            heading === "Origin" ||
+                            heading === "Status" ||
+                            heading === "Action"
+                              ? "justify-center"
+                              : "justify-start"
+                          } whitespace-nowrap`}
+                        >
+                          {heading}{" "}
+                          {heading !== "#" && heading !== "Complaint No" && (
+                            <RiExpandUpDownLine />
+                          )}
+                        </p>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>

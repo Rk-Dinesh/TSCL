@@ -152,7 +152,7 @@ const Organization = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
-      setFileupload(true)
+      setFileupload(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -171,14 +171,14 @@ const Organization = ({ permissions }) => {
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
-        setFileupload(false)
+        setFileupload(false);
       } else {
         toast.error("Data failed to Upload");
-        setFileupload(false)
+        setFileupload(false);
       }
     } catch (error) {
       console.log(error);
-      setFileupload(false)
+      setFileupload(false);
     }
   };
   const setDocs = (event) => {
@@ -294,38 +294,22 @@ const Organization = ({ permissions }) => {
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
             <div className="overflow-x-auto no-scrollbar my-2">
               <table className="w-full  ">
-                <thead className=" border-b-2 border-gray-300">
-                  <tr className="border-b-2 border-gray-300">
-                    <th className="py-2">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Org Name <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedBy <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Last UpdatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
+                <thead className="border-b-2 border-gray-300 ">
+                  <tr className="border-b-2 border-gray-300 ">
+                    {[
+                      "#",
+                      "Org Name",
+                      "Status",
+                      "CreatedBy",
+                      "CreatedAt",
+                      "Last UpdatedAt",
+                    ].map((heading) => (
+                      <th key={heading} className="py-2 ">
+                        <p className="flex gap-2 items-center mx-4 my-2 font-lexend font-semibold whitespace-nowrap">
+                          {heading} {heading !== "#" && <RiExpandUpDownLine />}
+                        </p>
+                      </th>
+                    ))}
                     <th>
                       <p className="text-start mx-1.5 my-3 font-semibold font-lexend">
                         Action
@@ -337,7 +321,7 @@ const Organization = ({ permissions }) => {
                   {currentItemsOnPage.map((org, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
-                        <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center">
+                        <div className="items-center mx-3 my-2 font-lexend whitespace-nowrap text-sm text-center">
                           {firstIndex + index + 1 < 10
                             ? `0${firstIndex + index + 1}`
                             : firstIndex + index + 1}

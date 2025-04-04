@@ -16,8 +16,6 @@ import HeaderButton from "../../components/HeaderButton";
 import AddEnquiryResource from "./AddEnquiryResource";
 import EditEnquiryResource from "./EditEnquiryResource";
 
-
-
 const EnquiryResource = ({ permissions }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
@@ -65,7 +63,7 @@ const EnquiryResource = ({ permissions }) => {
       .get(`${API}/resource/get`, {
         headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       })
       .then((response) => {
         const reponseData = decryptData(response.data.data);
@@ -116,22 +114,22 @@ const EnquiryResource = ({ permissions }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`${API}/resource/delete?res_id=${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.delete(
+        `${API}/resource/delete?res_id=${deleteId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
+      );
       toggleDeleteCloseModal();
       handlerefresh();
-      setResource(
-        resource.filter((status) => resource.res_id !== deleteId)
-      );
+      setResource(resource.filter((status) => resource.res_id !== deleteId));
       toast.success("Deleted successfully");
     } catch (error) {
       toast.error("Failed to delete");
     }
   };
-
 
   const setDocs = (event) => {
     setSelectedDoc(event.target.value);
@@ -172,10 +170,7 @@ const EnquiryResource = ({ permissions }) => {
 
         for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
           const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(
-            startIndex + rowsPerPage,
-            resource.length
-          );
+          const endIndex = Math.min(startIndex + rowsPerPage, resource.length);
           const currentPageData = resource.slice(startIndex, endIndex);
 
           const tableData = currentPageData.map((row) => [
@@ -220,8 +215,7 @@ const EnquiryResource = ({ permissions }) => {
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search Enquiry Resource"
             />
-     
-   
+
             {hasDownloadPermission && (
               <DocumentDownload
                 selectedDoc={selectedDoc}
@@ -239,38 +233,28 @@ const EnquiryResource = ({ permissions }) => {
           <div className="bg-white mx-4 rounded-lg my-3  h-3/5 ">
             <div className="overflow-x-auto no-scrollbar my-2">
               <table className="w-full  ">
-                <thead className=" border-b-2 border-gray-300">
+                <thead className="border-b-2 border-gray-300">
                   <tr className="border-b-2 border-gray-300">
-                    <th className="py-2">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Resource Name <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedBy <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Last UpdatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
+                    {[
+                      "#",
+                      "Resource Name",
+                      "Status",
+                      "CreatedBy",
+                      "CreatedAt",
+                      "Last UpdatedAt",
+                    ].map((heading) => (
+                      <th key={heading} className="py-2">
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#" ? "6" : "1.5"
+                          } my-2 font-lexend font-semibold ${
+                            heading !== "#" ? "justify-start" : "justify-center"
+                          } whitespace-nowrap`}
+                        >
+                          {heading} {heading !== "#" && <RiExpandUpDownLine />}
+                        </p>
+                      </th>
+                    ))}
                     <th>
                       <p className="text-start mx-1.5 my-3 font-semibold font-lexend">
                         Action
@@ -289,7 +273,11 @@ const EnquiryResource = ({ permissions }) => {
                         </div>
                       </td>
                       <td className="flex items-center gap-2 ml-4">
-                        <img src={res.image} alt="Icon" className="w-6 h-6 rounded-full"/>
+                        <img
+                          src={res.image}
+                          alt="Icon"
+                          className="w-6 h-6 rounded-full"
+                        />
                         <p className="capitalize mx-1.5 my-2 font-lexend text-start whitespace-nowrap text-sm text-gray-800">
                           {res.res_name}
                         </p>

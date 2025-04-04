@@ -171,14 +171,11 @@ const RequestHead = ({ permissions, include, endpoint }) => {
 
   const fetchDeptUser = async () => {
     try {
-      const response = await axios.get(
-        `${API}/user/get`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API}/user/get`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const responseData = decryptData(response.data.data);
 
       setDataUsers(responseData);
@@ -224,11 +221,11 @@ const RequestHead = ({ permissions, include, endpoint }) => {
   const handleComplaintTypeClick = (Type) => {
     setSelected(Type);
     setSelectedDepartment(null);
-    setSelecetedComplaint(null)
+    setSelecetedComplaint(null);
     setSelectedZone(null);
     setSelectedWard(null);
     setSelectedStatus(null);
-    setSelectedStreet(null)
+    setSelectedStreet(null);
     setSelectedComplainttype(null);
     setSelectedPrior(null);
     setSelectedAssign(null);
@@ -668,9 +665,11 @@ const RequestHead = ({ permissions, include, endpoint }) => {
             </select>
           </div>
         </div>
-        <div className={`bg-white  mx-4 rounded-lg mt-3 overflow-x-auto p-3 ${
-              report.length < 8 ? "h-4/5" : "h-fit"
-            }`}>
+        <div
+          className={`bg-white  mx-4 rounded-lg mt-3 overflow-x-auto p-3 ${
+            report.length < 8 ? "h-4/5" : "h-fit"
+          }`}
+        >
           <div className="flex flex-col md:flex-row justify-between items-center md:gap-6 gap-2 md:mt-2 mx-3">
             <div className="flex flex-wrap gap-3">
               <p className="md:text-lg text-sm whitespace-nowrap">
@@ -751,82 +750,38 @@ const RequestHead = ({ permissions, include, endpoint }) => {
             }`}
           >
             <table className="w-full md:mt-1 ">
-              <thead className=" border-b border-gray-300  ">
-                <tr className="">
-                  <th className="">
-                    <p className=" mx-6 my-2 font-lexend font-medium whitespace-nowrap">
-                      #
-                    </p>
-                  </th>
-                  <th>
-                    <p className="mx-1.5 my-2 text-start font-lexend font-medium  whitespace-nowrap">
-                      Complaint No
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Origin
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Complaint Type
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Department
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Complaint
-                      <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Date and Time <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Raised by <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Zone <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Ward <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Street <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Assigned JE <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Priority <RiExpandUpDownLine />
-                    </p>
-                  </th>
-
-                  <th>
-                    <p className="flex gap-2 items-center justify-center mx-2 my-2 font-lexend font-medium  whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
-                    </p>
-                  </th>
+              <thead className="border-b border-gray-300">
+                <tr>
+                  {[
+                    "#",
+                    "Complaint No",
+                    "Origin",
+                    "Complaint Type",
+                    "Department",
+                    "Complaint",
+                    "Date and Time",
+                    "Raised by",
+                    "Zone",
+                    "Ward",
+                    "Street",
+                    "Assigned JE",
+                    "Priority",
+                    "Status",
+                  ].map((heading) => (
+                    <th key={heading}>
+                      <p
+                        className={`flex gap-2 items-center mx-${
+                          heading === "#" ? "6" : "1.5"
+                        } my-2 font-lexend font-medium ${
+                          ["Origin", "Priority", "Status"].includes(heading)
+                            ? "justify-center"
+                            : "justify-start"
+                        } whitespace-nowrap`}
+                      >
+                        {heading} {heading !== "#" && <RiExpandUpDownLine />}
+                      </p>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>

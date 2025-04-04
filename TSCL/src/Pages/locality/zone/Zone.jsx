@@ -279,47 +279,35 @@ const Zone = ({ permissions }) => {
           <div className="bg-white mx-4 rounded-lg my-2  h-3/5 ">
             <div className="overflow-x-auto no-scrollbar ">
               <table className="w-full mt-3 ">
-                <thead className=" border-b-2 border-gray-300">
-                  <tr className="border-b-2 border-gray-300">
-                    <th className="">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-semibold">
-                        Zone <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold  whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                        CreatedBy <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                        CreatedAt
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5  my-2 font-lexend font-semibold">
-                        UpdatedAt
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
-                        Action
-                      </p>
-                    </th>
-                  </tr>
-                </thead>
+              <thead className="border-b-2 border-gray-300">
+  <tr className="border-b-2 border-gray-300">
+    {[
+      "#",
+      "Zone",
+      "Status",
+      "CreatedBy",
+      "CreatedAt",
+      "UpdatedAt",
+    ].map((heading) => (
+      <th key={heading} className="">
+        <p
+          className={`flex gap-2 items-center mx-${
+            heading === "#" ? "6" : "1.5"
+          } my-2 font-lexend font-semibold ${
+            heading !== "#" ? "justify-start" : ""
+          } whitespace-nowrap`}
+        >
+          {heading} {heading !== "#" && <RiExpandUpDownLine />}
+        </p>
+      </th>
+    ))}
+    <th>
+      <p className="text-center mx-1.5 my-3 font-lexend font-semibold">
+        Action
+      </p>
+    </th>
+  </tr>
+</thead>
                 <tbody>
                   {currentItemsOnPage.map((zones, index) => (
                     <tr className="border-b-2 border-gray-300 " key={index}>

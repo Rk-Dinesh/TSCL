@@ -366,7 +366,7 @@ const [fileupload, setFileupload] = useState(false);
               </select>
             </div>
             <table className="w-full  mt-3">
-              <thead className="">
+            <thead className="">
                 <tr className="border-b-2 border-gray-300">
                   <th className="py-2">
                     <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">

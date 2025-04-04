@@ -118,37 +118,33 @@ const AlohaAgent = ({ permissions }) => {
           <div className="bg-white mx-4 rounded-lg my-3 h-3/5 ">
             <div className="overflow-x-auto  no-scrollbar">
               <table className="w-full  mt-3">
-                <thead className=" border-b-2 border-gray-300">
-                  <tr className="border-b-2 border-gray-300">
-                    <th className="">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                        Agent Name
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font- whitespace-nowrap">
-                        Phone
-                        <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        CreatedAt <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="mx-1.5 my-2 font-semibold font-lexend whitespace-nowrap text-center">
-                        Action
-                      </p>
-                    </th>
-                  </tr>
-                </thead>
+              <thead className="border-b-2 border-gray-300">
+  <tr className="border-b-2 border-gray-300">
+    {[
+      "#",
+      "Agent Name",
+      "Phone",
+      "CreatedAt",
+    ].map((heading) => (
+      <th key={heading} className="">
+        <p
+          className={`flex gap-2 items-center mx-${
+            heading === "#" ? "6" : "1.5"
+          } my-2 font-lexend font-semibold ${
+            heading !== "#" ? "justify-start" : "justify-center"
+          } whitespace-nowrap`}
+        >
+          {heading} {heading !== "#" && <RiExpandUpDownLine />}
+        </p>
+      </th>
+    ))}
+    <th>
+      <p className="mx-1.5 my-2 font-semibold font-lexend whitespace-nowrap text-center">
+        Action
+      </p>
+    </th>
+  </tr>
+</thead>
                 <tbody>
                   {currentItemsOnPage.map((data, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>

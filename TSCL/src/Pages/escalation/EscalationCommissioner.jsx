@@ -15,7 +15,7 @@ import DocumentDownload from "../../components/DocumentDownload";
 const csvData = `org_name,status,created_by_user
 organization,active,admin`;
 
-const EscalationCommissioner = ({ permissions ,feature}) => {
+const EscalationCommissioner = ({ permissions, feature }) => {
   const hasCreatePermission = permissions?.includes("create");
   const hasEditPermission = permissions?.includes("edit");
   const hasDeletePermission = permissions?.includes("delete");
@@ -39,7 +39,7 @@ const EscalationCommissioner = ({ permissions ,feature}) => {
 
   useEffect(() => {
     handlerefresh();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -49,9 +49,9 @@ const EscalationCommissioner = ({ permissions ,feature}) => {
 
   const handlerefresh = () => {
     const apiEndpoint =
-            feature === "dashboardengineer"
-              ? `${API}/grievance-escalation/get?escalated_userid=${userId}`
-              : `${API}/grievance-escalation/get`;
+      feature === "dashboardengineer"
+        ? `${API}/grievance-escalation/get?escalated_userid=${userId}`
+        : `${API}/grievance-escalation/get`;
     axios
       .get(apiEndpoint, {
         headers: {
@@ -241,10 +241,12 @@ const EscalationCommissioner = ({ permissions ,feature}) => {
             </div>
           </div>
 
-          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+          <div
+            className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
               organization.length < 6 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
@@ -265,58 +267,40 @@ const EscalationCommissioner = ({ permissions ,feature}) => {
             </div>
             <div className="overflow-x-auto my-1">
               <table className="w-full  ">
-                <thead className=" border-b-2 border-gray-300">
+                <thead className="border-b-2 border-gray-300">
                   <tr className="border-b-2 border-gray-300">
-                    <th className="py-2">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th className="">
-                      <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Complaint No <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Department <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Complaint <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-center font-semibold whitespace-nowrap">
-                        Date <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Over Due <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Escalated User <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Escalation Level <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                        Status <RiExpandUpDownLine />
-                      </p>
-                    </th>
-                    <th>
-                      <p className="flex gap-2 items-center justify-start mx-1.5 my-2 font-lexend font-medium  whitespace-nowrap">
-                        Action
-                      </p>
-                    </th>
+                    {[
+                      "#",
+                      "Complaint No",
+                      "Department",
+                      "Complaint",
+                      "Date",
+                      "Over Due",
+                      "Escalated User",
+                      "Escalation Level",
+                      "Status",
+                      "Action",
+                    ].map((heading) => (
+                      <th key={heading} className="py-2">
+                        <p
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#" ? "6" : "1.5"
+                          } my-2 font-lexend font-semibold ${
+                            heading === "Date"
+                              ? "justify-center"
+                              : "justify-start"
+                          } whitespace-nowrap`}
+                        >
+                          {heading !== "Action" && heading !== "#" && (
+                            <>
+                              {heading} <RiExpandUpDownLine />
+                            </>
+                          )}
+                          {heading === "#" && "#"}
+                          {heading === "Action" && "Action"}
+                        </p>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -330,12 +314,13 @@ const EscalationCommissioner = ({ permissions ,feature}) => {
                         </div>
                       </td>
                       <td>
-                        <p className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
-                         onClick={() =>
-                          navigate(
-                            `/escalateview?grievanceId=${escalate.grievance_id}`
-                          )
-                        }
+                        <p
+                          className="border-2 w-28 border-slate-900 rounded-lg text-center py-1 my-1 capitalize text-slate-900 "
+                          onClick={() =>
+                            navigate(
+                              `/escalateview?grievanceId=${escalate.grievance_id}`
+                            )
+                          }
                         >
                           {escalate.grievance_id}
                         </p>

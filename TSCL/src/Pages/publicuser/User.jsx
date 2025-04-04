@@ -54,7 +54,7 @@ const User = ({ permissions }) => {
 
   useEffect(() => {
     handlerefresh();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -150,7 +150,7 @@ const User = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
-      setFileupload(true)
+      setFileupload(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -169,14 +169,14 @@ const User = ({ permissions }) => {
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
-        setFileupload(false)
+        setFileupload(false);
       } else {
         toast.error("Data failed to Upload");
-        setFileupload(false)
+        setFileupload(false);
       }
     } catch (error) {
       console.log(error);
-      setFileupload(false)
+      setFileupload(false);
     }
   };
   const setDocs = (event) => {
@@ -275,7 +275,7 @@ const User = ({ permissions }) => {
     const value = parseInt(event.target.value, 10);
     setItemsPerPage(value);
     setCurrentPage(1);
-  }
+  };
 
   return (
     <Fragment>
@@ -310,10 +310,12 @@ const User = ({ permissions }) => {
             onClick={() => setIsModal(true)}
           />
 
-          <div className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
+          <div
+            className={`bg-white  mx-4 rounded-lg overflow-x-auto mt-1  p-3 ${
               user.length < 6 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
@@ -336,45 +338,39 @@ const User = ({ permissions }) => {
               <table className="w-full  mt-3">
                 <thead>
                   <tr className="border-b-2 border-gray-300">
-                    <th className="py-2">
-                      <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                        #
-                      </p>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Public Username <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-3  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Phone
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Email
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Status
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="flex gap-2 items-center justify-start mx-1  my-2 font-lexend font-semibold whitespace-nowrap">
-                        Verification Status
-                        <RiExpandUpDownLine />
-                      </div>
-                    </th>
-                    <th>
-                      <div className="mx-3 my-3 font-lexend font-semibold whitespace-nowrap text-center">
-                        Action
-                      </div>
-                    </th>
+                    {[
+                      "#",
+                      "Public Username",
+                      "Phone",
+                      "Email",
+                      "Status",
+                      "Verification Status",
+                      "Action",
+                    ].map((heading) => (
+                      <th key={heading} className="py-2">
+                        <div
+                          className={`flex gap-2 items-center mx-${
+                            heading === "#"
+                              ? "5"
+                              : heading === "Phone"
+                              ? "3"
+                              : "1"
+                          } my-2 font-lexend font-semibold ${
+                            heading === "Action"
+                              ? "justify-center"
+                              : "justify-start"
+                          } whitespace-nowrap`}
+                        >
+                          {heading !== "Action" && heading !== "#" && (
+                            <>
+                              {heading} <RiExpandUpDownLine />
+                            </>
+                          )}
+                          {heading === "#" && "#"}
+                          {heading === "Action" && "Action"}
+                        </div>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>

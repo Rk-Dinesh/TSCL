@@ -7,7 +7,7 @@ import { API, formatDate1 } from "../../../Host";
 import Pagination from "../../../components/Pagination";
 import SearchHeader from "../../../components/SearchHeader";
 
-const GrivencesTable = ({feature}) => {
+const GrivencesTable = ({ feature }) => {
   const location = useLocation();
   const endpoints = location.state?.endpoint;
   const [searchValue, setSearchValue] = useState("");
@@ -17,16 +17,17 @@ const GrivencesTable = ({feature}) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [grievance, setGrievance] = useState([]);
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("code"); 
+  const userId = localStorage.getItem("code");
   const navigate = useNavigate();
   const [status, setStatus] = useState([]);
   const [statusColors, setStatusColors] = useState({});
 
+
   useEffect(() => {
     const apiEndpoint =
-          feature === "dashboardengineer"
-            ? `${API}/new-grievance/${endpoints}?assign_user=${userId}`
-            : `${API}/new-grievance/${endpoints}`;
+      feature === "dashboardengineer"
+        ? `${API}/new-grievance/${endpoints}?assign_user=${userId}`
+        : `${API}/new-grievance/${endpoints}`;
     axios
       .get(apiEndpoint, {
         headers: {

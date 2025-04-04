@@ -56,7 +56,7 @@ const Department = ({ permissions }) => {
   useEffect(() => {
     handlerefresh();
     fetchExistingOrganiZations();
-  }, [searchValue, currentPage,itemsPerPage]);
+  }, [searchValue, currentPage, itemsPerPage]);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -165,7 +165,7 @@ const Department = ({ permissions }) => {
 
   const uploadFile = async (file) => {
     try {
-      setFileupload(true)
+      setFileupload(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -184,14 +184,14 @@ const Department = ({ permissions }) => {
         setFile(null);
         handlerefresh();
         toast.success("Data Uploaded Successfully");
-        setFileupload(false)
+        setFileupload(false);
       } else {
         toast.error("Data failed to Upload");
-        setFileupload(false)
+        setFileupload(false);
       }
     } catch (error) {
       console.log(error);
-      setFileupload(false)
+      setFileupload(false);
     }
   };
   const setDocs = (event) => {
@@ -312,10 +312,12 @@ const Department = ({ permissions }) => {
             onClick={() => setIsModal(true)}
           />
 
-          <div className={`bg-white  mx-4 rounded-lg mt-1  p-3 overflow-y-auto ${
+          <div
+            className={`bg-white  mx-4 rounded-lg mt-1  p-3 overflow-y-auto ${
               department.length < 5 ? "h-3/5" : "h-fit"
-            }`}>
-          <div className="flex items-center gap-3 mx-3">
+            }`}
+          >
+            <div className="flex items-center gap-3 mx-3">
               <label
                 htmlFor="itemsPerPage"
                 className="font-medium text-gray-600"
@@ -337,43 +339,29 @@ const Department = ({ permissions }) => {
             <table className="w-full  mt-1">
               <thead className="">
                 <tr className="border-b-2 border-gray-300">
-                  <th className="py-2">
-                    <p className=" mx-6 my-2 font-lexend font-semibold whitespace-nowrap">
-                      #
-                    </p>
-                  </th>
-                  <th className="">
-                    <p className="flex gap-2 items-center mx-3 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                      Department Name <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th className="">
-                    <p className="flex gap-2 items-center mx-1.5 my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                      Org Name <RiExpandUpDownLine />
-                    </p>
-                  </th>
+                  {[
+                    "#",
+                    "Department Name",
+                    "Org Name",
+                    "Status",
+                    "CreatedBy",
+                    "CreatedAt",
+                    "Last UpdatedAt",
+                  ].map((heading) => (
+                    <th key={heading} className="py-2">
+                      <p
+                        className={`flex gap-2 items-center mx-${
+                          heading === "#" ? "6" : "1.5"
+                        } my-2 font-lexend font-semibold whitespace-nowrap ${
+                          heading === "#" ? "" : "justify-start"
+                        }`}
+                      >
+                        {heading} {heading !== "#" && <RiExpandUpDownLine />}
+                      </p>
+                    </th>
+                  ))}
                   <th>
-                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold  whitespace-nowrap">
-                      Status <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                      CreatedBy <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                      CreatedAt <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="flex gap-2 items-center mx-1.5  my-2 font-lexend justify-start font-semibold whitespace-nowrap">
-                      Last UpdatedAt <RiExpandUpDownLine />
-                    </p>
-                  </th>
-                  <th>
-                    <p className="text-center mx-1.5 my-3 font-semibold font-lexend  whitespace-nowrap">
+                    <p className="text-center mx-1.5 my-3 font-semibold font-lexend whitespace-nowrap">
                       Action
                     </p>
                   </th>
