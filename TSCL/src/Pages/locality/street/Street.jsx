@@ -17,6 +17,7 @@ import FileUploadButton from "../../../components/FileUploadButton";
 import DocumentDownload from "../../../components/DocumentDownload";
 import HeaderButton from "../../../components/HeaderButton";
 import API_ENDPOINTS from "../../../ApiEndpoints/api/ApiClient";
+import PaginationLimit from "../../../components/PaginationLimit";
 
 const csvData = `ward_id,street_name
  Ward***,streetName`;
@@ -37,6 +38,7 @@ const Street = ({ permissions }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
   const [street, setStreet] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -57,33 +59,39 @@ const Street = ({ permissions }) => {
     fetchExistingWards();
   }, [searchValue, currentPage, itemsPerPage]);
 
+  const handlerefresh = () => {
+    axios
+      .get(API_ENDPOINTS.GET_STREETLIMIT.url, {
+        params: {
+          page: currentPage,
+          limit: itemsPerPage,
+          search: searchValue, // Send search query to backend
+        },
+        headers: API_ENDPOINTS.GET_STREETLIMIT.headers,
+      })
+      .then((response) => {
+        const responseData = decryptData(response.data.data);
+        setCurrentItems(responseData); // Set current items directly
+        setTotalPages(response.data.metadata.totalPages); // Update total pages
+        setTotalItems(response.data.metadata.totalItems); // Update total items
+      })
+      .catch((error) => {
+        console.error("Error fetching streets:", error);
+        toast.error("Failed to fetch streets");
+      });
+  };
+
+  useEffect(() => {
+    if (searchValue.trim() !== "") {
+        setCurrentPage(1); // Reset to the first page 
+    }
+}, [searchValue]);
+
+  // Handle pagination
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
-  };
-
-  const handlerefresh = () => {
-    axios
-      .get(API_ENDPOINTS.GET_STREET.url, {
-        headers: API_ENDPOINTS.GET_STREET.headers,
-      })
-      .then((response) => {
-        const responseData = decryptData(response.data.data);
-        setStreet(responseData);
-
-        const filteredCenters = responseData.filter((streets) =>
-          Object.values(streets).some((value) =>
-            value.toString().toLowerCase().includes(searchValue.toLowerCase())
-          )
-        );
-
-        setTotalPages(Math.ceil(filteredCenters.length / itemsPerPage));
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-
-        setCurrentItems(filteredCenters.slice(firstIndex, lastIndex));
-      });
   };
 
   const toggleModal = () => {
@@ -118,16 +126,6 @@ const Street = ({ permissions }) => {
       console.error("Error fetching existing roles:", error);
     }
   };
-
-  const lastIndex = currentPage * itemsPerPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const filteredCenters = street.filter((streets) =>
-    Object.values(streets).some((value) =>
-      value.toString().toLowerCase().includes(searchValue.toLowerCase())
-    )
-  );
-
-  const currentItemsOnPage = filteredCenters.slice(firstIndex, lastIndex);
 
   const handleDelete = async () => {
     try {
@@ -328,7 +326,7 @@ const Street = ({ permissions }) => {
 
           <div
             className={`bg-white  mx-4 rounded-lg mt-1  p-3 ${
-              street.length < 6 ? "h-3/5" : "h-fit"
+              currentItems.length < 6 ? "h-3/5" : "h-fit"
             }`}
           >
             <div className="flex items-center gap-3 mx-3">
@@ -384,13 +382,11 @@ const Street = ({ permissions }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItemsOnPage.map((streets, index) => (
+                  {currentItems.map((streets, index) => (
                     <tr className="border-b-2 border-gray-300" key={index}>
                       <td className="">
                         <div className="items-center mx-6 my-2 font-lexend whitespace-nowrap text-sm text-center text-gray-700">
-                          {firstIndex + index + 1 < 10
-                            ? `0${firstIndex + index + 1}`
-                            : firstIndex + index + 1}
+                          {(currentPage - 1) * itemsPerPage + index + 1}
                         </div>
                       </td>
                       <td>
@@ -472,14 +468,13 @@ const Street = ({ permissions }) => {
 
           <div className=" my-2 mb-5 mx-7">
             <BulkUploadButton handleDownload={handleDownload} />
-            <Pagination
-              Length={street.length}
+            <PaginationLimit
+              Length={currentItems.length}
               currentPage={currentPage}
               totalPages={totalPages}
-              firstIndex={firstIndex}
-              lastIndex={lastIndex}
+              totalItems={totalItems}
               paginate={paginate}
-              hasNextPage={lastIndex >= filteredCenters.length}
+              hasNextPage={currentPage < totalPages}
             />
           </div>
         </div>
