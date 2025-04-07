@@ -324,6 +324,7 @@ const API_ENDPOINTS = {
   //STREET
 
   GET_STREET: { url: `${BASE_URL}/street/get`, headers: authHeaders },
+  GET_STREETLIMIT: { url: `${BASE_URL}/street/getlimit`, headers: authHeaders },
   POST_STREET: { url: `${BASE_URL}}/street/post`, headers: authHeaders },
   GET_WARD_STREETACTIVE: {
     url: `${BASE_URL}/ward/getactive`,
